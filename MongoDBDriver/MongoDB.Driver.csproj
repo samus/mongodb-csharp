@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>MongoDB.Driver</AssemblyName>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\scorder\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <RunCodeAnalysis>True</RunCodeAnalysis>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bson\BsonBoolean.cs" />
+    <Compile Include="Bson\BsonConvert.cs" />
+    <Compile Include="Bson\BsonDate.cs" />
+    <Compile Include="Bson\BsonDocument.cs" />
+    <Compile Include="Bson\BsonNumber.cs" />
+    <Compile Include="Bson\BsonInteger.cs" />
+    <Compile Include="Bson\BsonOid.cs" />
+    <Compile Include="Collection.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Bson\Types.cs" />
+    <Compile Include="Bson\BsonWriter.cs" />
+    <Compile Include="Document.cs" />
+    <Compile Include="IO\GetMoreMessage.cs" />
+    <Compile Include="IO\InsertMessage.cs" />
+    <Compile Include="IO\KillCursorsMessage.cs" />
+    <Compile Include="IO\Message.cs" />
+    <Compile Include="IO\MessageHeader.cs" />
+    <Compile Include="IO\QueryMessage.cs" />
+    <Compile Include="IO\RequestMessage.cs" />
+    <Compile Include="Mongo.cs" />
+    <Compile Include="IO\MsgMessage.cs" />
+    <Compile Include="IO\ReplyMessage.cs" />
+    <Compile Include="Bson\BsonString.cs" />
+    <Compile Include="Bson\BsonReader.cs" />
+    <Compile Include="Bson\BsonElement.cs" />
+    <Compile Include="Cursor.cs" />
+    <Compile Include="Oid.cs" />
+    <Compile Include="IO\DeleteMessage.cs" />
+    <Compile Include="IO\UpdateMessage.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Bson\" />
+  </ItemGroup>
+</Project>

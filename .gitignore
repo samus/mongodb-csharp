@@ -1,0 +1,13 @@
+
+*~
+*.dll
+*.*~
+*.mdb
+*.pdb
+*.pidb
+
+*.userprefs
+*.usertasks
+
+test-results/*.xml
+MongoDB.Net-Tests/test-results/MongoDB.Driver.Tests.csproj.test-cache
