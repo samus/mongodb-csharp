@@ -17,9 +17,10 @@ namespace MongoDB.Driver.Bson
 		public void TestFromDocument(){
 			Document doc = new Document();
 			doc.Add("string", "test");
-			doc.Add("int", 1);			
+			doc.Add("int", 1);
+            doc.Add("long", 852009);
 			BsonDocument bdoc = BsonConvert.From(doc);
-			Assert.AreEqual(2,bdoc.Count);
+			Assert.AreEqual(3,bdoc.Count);
 			
 			/*doc.Add("date", DateTime.MinValue);  
 			Assert.Throws<ArgumentOutOfRangeException>(
@@ -33,6 +34,14 @@ namespace MongoDB.Driver.Bson
 			Assert.AreEqual(typeof(BsonInteger),t.GetType());
 			Assert.AreEqual(1, ((BsonInteger)t).Val);
 		}
+
+        [Test]
+        public void TestFromLong(){
+            long comparer = 852009;
+            BsonType l = BsonConvert.From(comparer);
+            Assert.AreEqual(typeof(BsonLong), l.GetType());
+            Assert.AreEqual(comparer, ((BsonLong)l).Val);
+        }
 		
 		[Test]
 		public void TestCreate(){

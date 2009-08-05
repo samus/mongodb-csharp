@@ -30,6 +30,20 @@ namespace MongoDB.Driver.Bson
 			
 			Assert.AreEqual(w.Val, r.Val);
 		}
+
+        [Test]
+        public void TestBsonLong(){
+            InitStreams();
+            BsonLong w = new BsonLong(852009);
+            w.Write(writer);
+
+            FlushAndGotoBegin();
+
+            BsonLong r = new BsonLong();
+            r.Read(reader);
+
+            Assert.AreEqual(w.Val, r.Val);
+        }
 		
 		[Test]
 		public void TestBsonBoolean(){
