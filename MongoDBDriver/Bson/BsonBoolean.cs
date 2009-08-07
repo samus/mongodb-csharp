@@ -43,7 +43,8 @@ namespace MongoDB.Driver.Bson
 		public override string ToString ()
 		{
 			return string.Format("[BsonBoolean: Val={0}, TypeNum={1}, Size={2}]", Val, TypeNum, Size);
-		}		
+		}
+		
 
 		public object ToNative(){
 			return this.Val;

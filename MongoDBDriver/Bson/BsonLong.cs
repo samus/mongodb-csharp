@@ -6,6 +6,7 @@ namespace MongoDB.Driver.Bson
 {
 	public class BsonLong :BsonType
 	{
+
         long val;
         public long Val {
 			get { return val; }
