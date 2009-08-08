@@ -16,11 +16,11 @@ namespace MongoDB.Driver.Bson
 	/// </summary>
 	public class BsonDocument : System.Collections.DictionaryBase, BsonType
 	{
-		private List<String> orderedKeys = new List<String>();
+		protected List<String> orderedKeys = new List<String>();
 		
-		public BsonDocument(){
-		}
-		public BsonElement this[ String key ]  {
+		public BsonDocument(){}
+		
+		public virtual BsonElement this[ String key ]  {
 			get{
 				return (BsonElement)Dictionary[key];
 			}
@@ -34,17 +34,17 @@ namespace MongoDB.Driver.Bson
 		
 		public ICollection Keys  {
 			get  {
-				return(orderedKeys);
+				return (ICollection)orderedKeys;
 			}
 		}
 		
 		public ICollection Values  {
 			get  {
-				return( Dictionary.Values );
+				return Dictionary.Values;
 			}
 		}
 
-		public void Add( String key, BsonElement value )  {
+		public virtual void Add( String key, BsonElement value )  {
 			if(orderedKeys.Contains(key)) throw new ArgumentException("Key already exists");
 			this[key] = value;
 		}
@@ -53,6 +53,10 @@ namespace MongoDB.Driver.Bson
 		}
 		public void Add(String key, BsonType val){
 			this.Add(new BsonElement(key, val));
+		}
+		
+		public void Add(String key, Object val){
+			this.Add(new BsonElement(key, BsonConvert.From(val)));
 		}
 		
 		public BsonDocument Append(String key, BsonElement value){
@@ -77,7 +81,7 @@ namespace MongoDB.Driver.Bson
 			orderedKeys.Remove(key);
 		}
 		
-		public byte TypeNum {
+		public virtual byte TypeNum {
 			get {return (byte)BsonDataType.Obj;}
 		}
 		
@@ -102,35 +106,21 @@ namespace MongoDB.Driver.Bson
 			writer.Write((byte)0);
 		}
 		
-//		public void Read(BsonReader reader){
-//			int size = reader.ReadInt32();
-//			foreach(String key in this.Keys){
-//				BsonElement be = this[key];
-//				be.Read(reader);
-//			}
-//			byte eoo = reader.ReadByte();
-//			size++;
-//			if(size != this.Size) throw new System.IO.InvalidDataException("Document is not the same size as the stream reported");
-//		}
-		
 		public int Read(BsonReader reader){
 			int size = reader.ReadInt32();
 			int bytesRead = 4;
-//			try{
-				while(bytesRead + 1 < size){
-					BsonElement be = new BsonElement();
-					bytesRead += be.Read(reader);
-					this.Add(be);
-				}
-				byte eoo = reader.ReadByte();
-				bytesRead++;
-				if(eoo != (byte)0) throw new System.IO.InvalidDataException("Document not null terminated");			
-				if(size != bytesRead) {
-					throw new System.IO.InvalidDataException(string.Format("Should have read {0} bytes from stream but only read {1}]", size, bytesRead));
-				}
-//			}catch(ArgumentOutOfRangeException aor){
-//				throw new System.IO.InvalidDataException("Document out of sync with stream bytesRead: " + bytesRead + " size: " + size + " Doc: " + this.ToString());
-//			}
+
+			while(bytesRead + 1 < size){
+				BsonElement be = new BsonElement();
+				bytesRead += be.Read(reader);
+				this.Add(be);
+			}
+			byte eoo = reader.ReadByte();
+			bytesRead++;
+			if(eoo != (byte)0) throw new System.IO.InvalidDataException("Document not null terminated");			
+			if(size != bytesRead) {
+				throw new System.IO.InvalidDataException(string.Format("Should have read {0} bytes from stream but only read {1}]", size, bytesRead));
+			}
 			return bytesRead;
 		}
 		
@@ -141,7 +131,7 @@ namespace MongoDB.Driver.Bson
 				doc[key] = be.Val.ToNative();
 			}
 			return doc;
-		}	
+		}
 		
 		public override string ToString ()
 		{

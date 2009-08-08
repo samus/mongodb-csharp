@@ -27,6 +27,8 @@ namespace MongoDB.Driver.Bson
 				ret = From((Document)val);
 			}else if(t == typeof(int)){
 				ret = From((int)val);
+			}else if(t == typeof(long)){
+				ret = From((long)val);
 			}else if(t == typeof(bool)){
 				ret = From((bool)val);
 			}else if(t == typeof(Oid)){
@@ -56,6 +58,10 @@ namespace MongoDB.Driver.Bson
 			return new BsonInteger(val);
 		}
 		
+		public static BsonLong From(long val){
+			return new BsonLong();
+		}
+		
 		public static BsonNumber From(double val){
 			return new BsonNumber(val);
 		}
@@ -83,9 +89,11 @@ namespace MongoDB.Driver.Bson
 			}else if(type == BsonDataType.Obj){
 				ret = new BsonDocument();
 			}else if(type == BsonDataType.Array){
-				ret = new BsonDocument();				
+				ret = new BsonArray();				
 			}else if(type == BsonDataType.Integer){
 				ret = new BsonInteger();
+			}else if(type == BsonDataType.Long){
+				ret = new BsonLong();
 			}else if(type == BsonDataType.Boolean){
 				ret = new BsonBoolean();
 			}else if(type == BsonDataType.Oid){

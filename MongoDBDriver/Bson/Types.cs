@@ -33,6 +33,7 @@ namespace MongoDB.Driver.Bson
 						//should be evaluated.
 		Integer = 16, //int32
 		Timestamp = 17, //int64 	first 4 are a timestamp, next 4 are an incremented field
+		Long 	 = 18, 	//int64 	 64 bit integer 
 		MinKey = -1, //VOID 	See Splitting Shards
 		MaxKey = 127 //VOID 	See Splitting Shards
 	}

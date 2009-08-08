@@ -116,5 +116,73 @@ namespace MongoDB.Driver.Bson
 			Assert.AreEqual("2C000000075F6964004A75384CFAC16EA58B290350016100000000000000F03F016200000000000000004000",hexdump, "Dump not correct");
 		}
 		
+		[Test]
+		public void TestArrayElements(){
+			String hexdoc = "82000000075f6964004a78937917220000000061cf0461005d0000" +
+							"00013000000000000000f03f013100000000000000004001320000" +
+							"000000000008400133000000000000001040013400000000000000" +
+							"145001350000000000000018400136000000000000001c40013700" +
+							"00000000000020400002620005000000746573740000";
+
+			byte[] bytes = HexToBytes(hexdoc);
+			MemoryStream buf = new MemoryStream(bytes);
+			BsonReader reader = new BsonReader(buf);
+			
+			BsonDocument bdoc = new BsonDocument();
+			bdoc.Read(reader);
+			Assert.AreEqual(BsonDataType.Array, (BsonDataType)bdoc["a"].Val.TypeNum);
+			
+			buf = new MemoryStream();
+			BsonWriter writer = new BsonWriter(buf);
+			bdoc.Write(writer);
+
+			String hexdump = BitConverter.ToString(buf.ToArray());
+			hexdump = hexdump.Replace("-","").ToLower();
+			
+			Assert.AreEqual(hexdoc, hexdump);
+		}
+		
+		[Test]
+		public void TestArraysWithHoles(){
+			String hexdoc = 
+				"46000000075F6964004A79BFD517220000000061D304617272617900" +
+				"29000000023000020000006100023100020000006200023200020000" + 
+				"0063000234000200000065000000";
+			byte[] bytes = HexToBytes(hexdoc);
+			MemoryStream buf = new MemoryStream(bytes);
+			BsonReader reader = new BsonReader(buf);
+			BsonDocument bdoc = new BsonDocument();
+			bdoc.Read(reader);
+			Assert.AreEqual(BsonDataType.Array, (BsonDataType)bdoc["array"].Val.TypeNum);
+			
+			buf = new MemoryStream();
+			BsonWriter writer = new BsonWriter(buf);
+			bdoc.Write(writer);
+
+			String hexdump = BitConverter.ToString(buf.ToArray());
+			hexdump = hexdump.Replace("-","");
+			
+			Assert.AreEqual(hexdoc, hexdump);			
+		}
+
+		private byte[] HexToBytes(string hex){
+			//TODO externalize somewhere.
+			if(hex.Length % 2 == 1){
+				System.Console.WriteLine("uneven number of hex pairs.");
+				hex = "0" + hex;
+			}			
+			int numberChars = hex.Length;
+			byte[] bytes = new byte[numberChars / 2];
+			for (int i = 0; i < numberChars; i += 2){
+				try{
+					bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+				}
+				catch{
+					//failed to convert these 2 chars, they may contain illegal charracters
+					bytes[i / 2] = 0;
+				}
+			}			
+			return bytes;			
+		}
 	}
 }

@@ -36,6 +36,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bson\TestBsonArray.cs" />
     <Compile Include="Bson\TestBsonConvert.cs" />
     <Compile Include="Bson\TestBsonDate.cs" />
     <Compile Include="Bson\TestBsonDocument.cs" />
