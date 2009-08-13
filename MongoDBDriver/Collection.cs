@@ -31,6 +31,15 @@ namespace MongoDB.Driver
 			get{ return dbName + "." + name;}
 		}
 		
+		private CollectionMetaData metaData;		
+		public CollectionMetaData MetaData {
+			get { 
+				if(metaData == null){
+					metaData = new CollectionMetaData(this.dbName,this.name, this.connection);
+				}
+				return metaData;
+			}
+		}		
 				
 		public Collection(string name, Connection conn, string dbName)
 		{

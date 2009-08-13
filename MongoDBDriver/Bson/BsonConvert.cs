@@ -16,6 +16,11 @@ namespace MongoDB.Driver.Bson
 	
 		public static BsonType From(Object val){
 			Type t = val.GetType();
+			//special case enums
+			if(val is Enum){
+				t = Enum.GetUnderlyingType(t);
+			}
+			
 			BsonType ret = null;
 			if(t == typeof(Double)){
 				ret = From((double)val);
@@ -34,9 +39,9 @@ namespace MongoDB.Driver.Bson
 			}else if(t == typeof(Oid)){
 				ret = From((Oid)val);
 			}else if(t == typeof(DateTime)){
-				ret = From((DateTime)val);				
+				ret = From((DateTime)val);
 			}else{
-				throw new ArgumentOutOfRangeException("Type not recognized");
+				throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized",t.FullName));
 			}
 			
 			return ret;
@@ -59,7 +64,7 @@ namespace MongoDB.Driver.Bson
 		}
 		
 		public static BsonLong From(long val){
-			return new BsonLong();
+			return new BsonLong(val);
 		}
 		
 		public static BsonNumber From(double val){

@@ -57,6 +57,7 @@
     <Compile Include="Bson\BsonInteger.cs" />
     <Compile Include="Bson\BsonOid.cs" />
     <Compile Include="Collection.cs" />
+    <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="AssemblyInfo.cs" />

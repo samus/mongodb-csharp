@@ -1,8 +1,4 @@
-﻿/*
- * User: scorder
- */
-
-using System;
+﻿using System;
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
 

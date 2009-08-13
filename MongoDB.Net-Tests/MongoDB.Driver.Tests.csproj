@@ -46,6 +46,7 @@
     <Compile Include="Bson\TestBsonTypes.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
+    <Compile Include="TestCollectionMetaData.cs" />
     <Compile Include="TestCursor.cs" />
     <Compile Include="TestDocument.cs" />
     <Compile Include="TestMongo.cs" />
