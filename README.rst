@@ -12,6 +12,7 @@ Current Features
 - Many BSON types supported
 - Isolation and conversion between BSON types and native .net types.
 - Database, Collection and Cursor objects.
+- Index handling routines (List, Create, Drop)
 
 Missing Features
 ================
