@@ -42,6 +42,19 @@ namespace MongoDB.Driver
 				Assert.IsNull(result["j"]);							
 			}
 		}
+		
+		[Test]
+		public void TestFindGTRange(){
+			Document query = new Document();
+			query["j"] = new Document().Append("$gt",20);
+			
+			Cursor c = db["tests"]["reads"].Find(query);
+			foreach(Document result in c.Documents){			
+				Assert.IsNotNull(result);
+				Object j = result["j"];
+				Assert.IsTrue((double)j > 20);
+			}			
+		}
 
 		[Test]
 		public void TestSimpleInsert(){

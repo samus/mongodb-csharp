@@ -120,7 +120,6 @@ namespace MongoDB.Driver
 			GetMoreMessage gmm = new GetMoreMessage(this.FullCollectionName, this.Id, this.Limit);
 
 			this.reply = connection.SendTwoWayMessage(gmm);
-			this.reply.Documents = null;
 			this.id = this.reply.CursorID;
 		}
 		

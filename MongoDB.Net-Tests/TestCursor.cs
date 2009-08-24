@@ -50,8 +50,10 @@ namespace MongoDB.Driver
 				}
 			}
 			Assert.IsTrue(reads > 0, "No documents were returned.");
-			System.Console.Out.Write(String.Format("{0} records read", reads));
 			Assert.IsTrue(idchanges > 0,String.Format("ReadMore message never sent. {0} changes seen", idchanges));
+			Assert.AreEqual(9999,reads, "Not all documents returned.");
+			System.Console.Out.Write(String.Format("{0} records read", reads));
+			
 
 		}
 		[Test]
