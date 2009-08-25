@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="Bson\BsonArray.cs" />
     <Compile Include="Bson\BsonBoolean.cs" />
-    <Compile Include="Bson\BsonContainer.cs" />
     <Compile Include="Bson\BsonConvert.cs" />
     <Compile Include="Bson\BsonDate.cs" />
     <Compile Include="Bson\BsonDocument.cs" />

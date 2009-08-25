@@ -76,6 +76,24 @@ namespace MongoDB.Driver
 			return cur;
 		}
 		
+		public long Count(){
+			return this.Count(new Document());
+		}
+		
+		public long Count(Document spec){
+			Database db = new Database(this.connection, this.dbName);
+			Collection cmd = db["$cmd"];
+			Document ret = cmd.FindOne(new Document().Append("count",this.Name).Append("query",spec));
+			if(ret.Contains("ok") && (double)ret["ok"] == 1){
+				double n = (double)ret["n"];
+				return Convert.ToInt64(n);
+			}else{
+				//FIXME This is an exception condition when the namespace is missing. -1 might be better here but the console returns 0.
+				return 0;
+			}
+			
+		}
+		
 		public void Insert(Document doc){
 			Document[] docs = new Document[]{doc,};
 			this.Insert(docs);
