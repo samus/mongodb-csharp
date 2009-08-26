@@ -19,7 +19,7 @@ namespace MongoDB.Driver.Bson
 			Byte[] output = buf.ToArray();
 			String hexdump = BitConverter.ToString(output);
 			hexdump = hexdump.Replace("-","");
-			Assert.AreEqual("74657374000",hexdump, "Dump not correct");
+			Assert.AreEqual("746573740000",hexdump, "Dump not correct");
 		}		
 		
 		[Test]

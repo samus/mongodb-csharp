@@ -27,12 +27,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.core">
-      <Package>nunit-2.4</Package>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <Package>nunit-2.4</Package>
-    </Reference>
+    <Reference Include="nunit.core" />
+    <Reference Include="nunit.framework" />
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -65,4 +61,9 @@
     <Folder Include="IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties InternalTargetFrameworkVersion="3.5" />
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
