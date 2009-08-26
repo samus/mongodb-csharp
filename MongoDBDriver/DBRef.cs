@@ -36,7 +36,7 @@ namespace MongoDB.Driver
 		}
 		
 		public override bool Equals(object obj){
-			if(obj.GetType is DBRef){
+			if(obj.GetType() is DBRef){
 				DBRef comp = (DBRef)obj;
 				return comp.Id.Equals(this.Id) && comp.CollectionName.Equals(this.CollectionName);
 			}
