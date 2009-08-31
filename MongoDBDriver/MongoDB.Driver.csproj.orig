@@ -1,14 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}</ProjectGuid>
+    <ProjectGuid>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>MongoDB.Driver.Tests</AssemblyName>
+    <AssemblyName>MongoDB.Driver</AssemblyName>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\scorder\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <RunCodeAnalysis>True</RunCodeAnalysis>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -35,9 +39,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -45,46 +50,60 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.core, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\lib\nunit.core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\nunit.framework.dll</HintPath>
-      </Reference>
-      <Reference Include="System.Data" />
-      <Reference Include="System.Xml" />
-    </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Bson\TestBsonConvert.cs" />
-    <Compile Include="Bson\TestBsonDate.cs" />
-    <Compile Include="Bson\TestBsonDocument.cs" />
-    <Compile Include="Bson\TestBsonElement.cs" />
-    <Compile Include="Bson\TestBsonReader.cs" />
-    <Compile Include="Bson\TestBsonString.cs" />
-    <Compile Include="Bson\TestBsonTypes.cs" />
-    <Compile Include="IO\TestQueryMessage.cs" />
-    <Compile Include="TestCollection.cs" />
-    <Compile Include="TestCursor.cs" />
-    <Compile Include="TestDocument.cs" />
-    <Compile Include="TestMongo.cs" />
-    <Compile Include="TestConnection.cs" />
-    <Compile Include="IO\TestMsgMessage.cs" />
-    <Compile Include="TestB.cs" />
-    <None Include="test-data\tests.reads.txt" />
-    <None Include="test-data\tests.smallreads.txt" />
-    <Compile Include="Bson\TestBsonRegex.cs" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
-      <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
-      <Name>MongoDB.Driver</Name>
-    </ProjectReference>
+    <Compile Include="Bson\BsonBoolean.cs" />
+    <Compile Include="Bson\BsonConvert.cs" />
+    <Compile Include="Bson\BsonDate.cs" />
+    <Compile Include="Bson\BsonDocument.cs" />
+    <Compile Include="Bson\BsonLong.cs" />
+    <Compile Include="Bson\BsonNumber.cs" />
+    <Compile Include="Bson\BsonInteger.cs" />
+    <Compile Include="Bson\BsonOid.cs" />
+    <Compile Include="Collection.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Bson\Types.cs" />
+    <Compile Include="Bson\BsonWriter.cs" />
+    <Compile Include="Document.cs" />
+    <Compile Include="IO\GetMoreMessage.cs" />
+    <Compile Include="IO\InsertMessage.cs" />
+    <Compile Include="IO\KillCursorsMessage.cs" />
+    <Compile Include="IO\Message.cs" />
+    <Compile Include="IO\MessageHeader.cs" />
+    <Compile Include="IO\QueryMessage.cs" />
+    <Compile Include="IO\RequestMessage.cs" />
+    <Compile Include="Mongo.cs" />
+    <Compile Include="IO\MsgMessage.cs" />
+    <Compile Include="IO\ReplyMessage.cs" />
+    <Compile Include="Bson\BsonString.cs" />
+    <Compile Include="Bson\BsonReader.cs" />
+    <Compile Include="Bson\BsonElement.cs" />
+    <Compile Include="Cursor.cs" />
+    <Compile Include="MongoException.cs" />
+    <Compile Include="Oid.cs" />
+    <Compile Include="IO\DeleteMessage.cs" />
+    <Compile Include="IO\UpdateMessage.cs" />
+    <Compile Include="ServerPair.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework Client Profile</ProductName>
@@ -112,9 +131,4 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="3.5" />
-    </MonoDevelop>
-  </ProjectExtensions>
 </Project>
