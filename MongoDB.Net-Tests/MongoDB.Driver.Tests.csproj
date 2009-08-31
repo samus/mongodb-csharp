@@ -52,7 +52,7 @@
       <HintPath>..\..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\lib\nunit.core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77"/>
       <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
         <SpecificVersion>False</SpecificVersion>
         <HintPath>..\..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\nunit.framework.dll</HintPath>
