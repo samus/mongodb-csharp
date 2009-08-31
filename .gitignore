@@ -5,6 +5,10 @@
 *.mdb
 *.pdb
 *.pidb
+*.vcproj.*.user
+*.ncb
+*.aps
+*.suo
 
 *.userprefs
 *.usertasks
