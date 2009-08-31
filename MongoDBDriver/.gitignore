@@ -2,3 +2,4 @@ obj/*
 *.xml
 *.dll
 *.mdb
+*.pidb

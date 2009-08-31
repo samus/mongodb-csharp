@@ -35,6 +35,10 @@ namespace MongoDB.Driver.Bson
 				ret = From((Oid)val);
 			}else if(t == typeof(DateTime)){
 				ret = From((DateTime)val);				
+			}else if(t == typeof(MongoRegex)){
+				ret = From((MongoRegex)val);
+			}else if(t == typeof(DBRef)){
+				ret = From((DBRef)val);
 			}else{
 				throw new ArgumentOutOfRangeException("Type not recognized");
 			}
@@ -78,6 +82,17 @@ namespace MongoDB.Driver.Bson
 			return new BsonDate(val);
 		}		
 		
+		public static BsonRegex From(MongoRegex val){
+			return new BsonRegex(val.Expression, val.Options);
+		}
+		
+		public static BsonDocument From(DBRef val){
+			BsonDocument ret = new BsonDocument();
+			ret.Add(new BsonElement("$ref", new BsonString(val.CollectionName)));
+			ret.Add(new BsonElement("$id", new BsonString(val.Id)));
+			return ret;
+		}
+		
 		public static BsonType Create(BsonDataType type){
 			BsonType ret = null;
 			if(type == BsonDataType.Number){
@@ -99,7 +114,9 @@ namespace MongoDB.Driver.Bson
 			}else if(type == BsonDataType.Oid){
 				ret = new BsonOid();
 			}else if(type == BsonDataType.Date){
-				ret = new BsonDate();				
+				ret = new BsonDate();
+			}else if(type == BsonDataType.Regex){
+				ret = new BsonRegex();
 			}else{
 				throw new ArgumentOutOfRangeException("Type: " + type + " not recognized");
 			}			

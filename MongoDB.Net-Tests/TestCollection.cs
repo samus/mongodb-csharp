@@ -186,6 +186,36 @@ namespace MongoDB.Driver
 			Assert.IsTrue(found,"Should have found docs updated for TestMany");			
 		}
 		
+		[Test]
+		public void TestCount(){
+			Collection counts = db["tests"]["counts"];
+			int top = 100;
+			for(int i = 0; i < top; i++){
+				counts.Insert(new Document().Append("Last", "Cordr").Append("First","Sam").Append("cnt", i));
+			}
+			long cnt = counts.Count();
+			Assert.AreEqual(top,cnt, "Count not the same as number of inserted records");
+		}
+		
+		[Test]
+		public void TestCountWithSpec(){
+			Collection counts = db["tests"]["counts_spec"];
+			counts.Insert(new Document().Append("Last", "Cordr").Append("First","Sam").Append("cnt", 1));
+			counts.Insert(new Document().Append("Last", "Cordr").Append("First","Sam").Append("cnt", 2));
+			counts.Insert(new Document().Append("Last", "Corder").Append("First","Sam").Append("cnt", 3));
+			
+			Assert.AreEqual(2, counts.Count(new Document().Append("Last", "Cordr")));
+			Assert.AreEqual(1, counts.Count(new Document().Append("Last", "Corder")));
+			Assert.AreEqual(0, counts.Count(new Document().Append("Last", "Brown")));
+			                
+		}
+		
+		[Test]
+		public void TestCountInvalidCollection(){
+			Collection counts = db["tests"]["counts_wtf"];
+			Assert.AreEqual(0, counts.Count());
+		}
+		
 		[TestFixtureSetUp]
 		public void Init(){
 			db.Connect();
@@ -202,6 +232,10 @@ namespace MongoDB.Driver
 			db["tests"]["$cmd"].FindOne(new Document().Append("drop","inserts"));
 			
 			db["tests"]["$cmd"].FindOne(new Document().Append("drop","updates"));
+			
+			db["tests"]["$cmd"].FindOne(new Document().Append("drop","counts"));
+			
+			db["tests"]["$cmd"].FindOne(new Document().Append("drop","counts_spec"));
 		}
 	}
 }

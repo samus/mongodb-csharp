@@ -82,6 +82,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bson\Types.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
+    <Compile Include="DBRef.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="IO\GetMoreMessage.cs" />
     <Compile Include="IO\InsertMessage.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="IO\DeleteMessage.cs" />
     <Compile Include="IO\UpdateMessage.cs" />
     <Compile Include="ServerPair.cs" />
+    <Compile Include="MongoRegex.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

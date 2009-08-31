@@ -135,12 +135,29 @@ namespace MongoDB.Driver.Bson
 		}
 		
 		public object ToNative(){
+			//FIXME Duplication.  Decide if this is best or to just convert to a document and then call the IsDBRef(doc) on the native type.
+			if(this.isDBRef()) return ToDBRef();
+			return ToDocument();
+		}
+		
+		protected bool isDBRef(){
+			return (this.Contains("$ref") && this.Contains("$id"));
+		}
+		
+		protected DBRef ToDBRef(){
+			DBRef rf = new DBRef();
+			rf.CollectionName = (String)this["$ref"].Val.ToNative();
+			rf.Id = (String)this["$id"].Val.ToNative();
+			return rf;
+		}
+		
+		protected Document ToDocument(){
 			Document doc = new Document();
 			foreach(String key in this.Keys){
 				BsonElement be = this[key];
 				doc[key] = be.Val.ToNative();
 			}
-			return doc;
+			return doc;			
 		}	
 		
 		public override string ToString ()
