@@ -59,12 +59,12 @@ namespace MongoDB.Driver
 		
 		public Boolean Connect(){
 			connection.Open();
-			return connection.Opened;
+			return connection.State == ConnectionState.Opened;
 		}
 		
 		public Boolean Disconnect(){
 			connection.Close();
-			return connection.Opened == false;
+			return connection.State == ConnectionState.Closed;
 		}
 	}
 }

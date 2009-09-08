@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.IO;
@@ -110,25 +111,37 @@ namespace MongoDB.Driver
 			if(this.Fields != null){
 				query.ReturnFieldSelector = BsonConvert.From(this.Fields);
 			}
-			
-			this.reply = connection.SendTwoWayMessage(query);
-			this.id = this.reply.CursorID;
-			if(this.Limit < 0)this.Limit = this.Limit * -1;
+			try{
+				this.reply = connection.SendTwoWayMessage(query);
+				this.id = this.reply.CursorID;
+				if(this.Limit < 0)this.Limit = this.Limit * -1;
+			}catch(IOException ioe){
+				throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
+			}
+
 		}
 		
 		private void RetrieveMoreData(){
 			GetMoreMessage gmm = new GetMoreMessage(this.FullCollectionName, this.Id, this.Limit);
-
-			this.reply = connection.SendTwoWayMessage(gmm);
-			this.id = this.reply.CursorID;
+			try{
+				this.reply = connection.SendTwoWayMessage(gmm);
+				this.id = this.reply.CursorID;
+			}catch(IOException ioe){
+				this.id = 0;
+				throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
+			}
 		}
 		
 		
 		public void Dispose(){
 			if(this.Id == 0) return; //All server side resources disposed of.
-			KillCursorsMessage kcm = new KillCursorsMessage(this.Id);			
-			connection.SendMessage(kcm);
-			this.id = 0;
+			KillCursorsMessage kcm = new KillCursorsMessage(this.Id);
+			try{
+				this.id = 0;
+				connection.SendMessage(kcm);
+			}catch(IOException ioe){
+				throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
+			}
 		}
 	}
 }

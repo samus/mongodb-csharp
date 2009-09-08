@@ -15,7 +15,7 @@ namespace MongoDB.Driver
 	/// </summary>
 	public class CollectionMetaData
 	{
-		private Connection connection;		
+		private Connection connection;	
 		private string fullName;		
 		private string name;
 		private Database db;

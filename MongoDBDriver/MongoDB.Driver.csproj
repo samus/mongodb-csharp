@@ -52,6 +52,7 @@
     <Compile Include="Bson\BsonDate.cs" />
     <Compile Include="Bson\BsonDocument.cs" />
     <Compile Include="Bson\BsonLong.cs" />
+    <Compile Include="Bson\BsonNullUndefined.cs" />
     <Compile Include="Bson\BsonNumber.cs" />
     <Compile Include="Bson\BsonInteger.cs" />
     <Compile Include="Bson\BsonOid.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bson\Types.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
+    <Compile Include="DatabaseMetaData.cs" />
     <Compile Include="DBRef.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="IO\GetMoreMessage.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="Bson\BsonReader.cs" />
     <Compile Include="Bson\BsonElement.cs" />
     <Compile Include="Cursor.cs" />
+    <Compile Include="MongoExceptions.cs" />
     <Compile Include="Oid.cs" />
     <Compile Include="IO\DeleteMessage.cs" />
     <Compile Include="IO\UpdateMessage.cs" />

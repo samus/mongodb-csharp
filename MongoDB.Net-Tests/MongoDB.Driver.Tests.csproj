@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -30,10 +30,10 @@
     <Reference Include="nunit.core">
       <Package>nunit-2.4</Package>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+    <Reference Include="nunit.framework">
       <Package>nunit-2.4</Package>
     </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\TestBsonArray.cs" />
@@ -48,6 +48,9 @@
     <Compile Include="TestCollection.cs" />
     <Compile Include="TestCollectionMetaData.cs" />
     <Compile Include="TestCursor.cs" />
+    <Compile Include="TestDatabase.cs" />
+    <Compile Include="TestDatabaseMetaData.cs" />
+    <Compile Include="TestDBRef.cs" />
     <Compile Include="TestDocument.cs" />
     <Compile Include="TestMongo.cs" />
     <Compile Include="TestConnection.cs" />
@@ -56,6 +59,8 @@
     <None Include="test-data\tests.reads.txt" />
     <None Include="test-data\tests.smallreads.txt" />
     <Compile Include="Bson\TestBsonRegex.cs" />
+    <Compile Include="TestMongoExceptions.cs" />
+    <Compile Include="TestOid.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
@@ -65,9 +70,4 @@
     <Folder Include="IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="3.5" />
-    </MonoDevelop>
-  </ProjectExtensions>
 </Project>

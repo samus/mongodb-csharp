@@ -1,9 +1,6 @@
-/*
- * User: scorder
- * Date: 7/8/2009
- */
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.IO;
@@ -111,14 +108,22 @@ namespace MongoDB.Driver
 				bdocs.Add(BsonConvert.From(doc));
 			}
 			im.BsonDocuments = bdocs.ToArray();
-			this.connection.SendMessage(im);
+			try{
+				this.connection.SendMessage(im);	
+			}catch(IOException ioe){
+				throw new MongoCommException("Could not insert document, communication failure", this.connection,ioe);
+			}	
 		}
 		
 		public void Delete(Document selector){
 			DeleteMessage dm = new DeleteMessage();
 			dm.FullCollectionName = this.FullName;
 			dm.Selector = BsonConvert.From(selector);
-			this.connection.SendMessage(dm);
+			try{
+				this.connection.SendMessage(dm);
+			}catch(IOException ioe){
+				throw new MongoCommException("Could not delete document, communication failure", this.connection,ioe);
+			}
 		}
 		
 		public void Update(Document doc){
@@ -145,11 +150,16 @@ namespace MongoDB.Driver
 			um.Selector = BsonConvert.From(selector);
 			um.Document = BsonConvert.From(doc);
 			um.Upsert = upsert;
+			try{
+				this.connection.SendMessage(um);
+			}catch(IOException ioe){
+				throw new MongoCommException("Could not update document, communication failure", this.connection,ioe);
+			}			
 			
-			this.connection.SendMessage(um);
 		}
 		
 		public void UpdateAll(Document doc, Document selector){
+			//TODO do this server side with generated code.
 			Cursor toUpdate = this.Find(selector);
 			foreach(Document udoc in toUpdate.Documents){
 				Document updSel = new Document();

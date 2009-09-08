@@ -137,7 +137,7 @@ namespace MongoDB.Driver.Bson
 		protected DBRef ToDBRef(){
 			DBRef rf = new DBRef();
 			rf.CollectionName = (String)this["$ref"].Val.ToNative();
-			rf.Id = (String)this["$id"].Val.ToNative();
+			rf.Id = this["$id"].Val.ToNative();
 			return rf;
 		}
 		

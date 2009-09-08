@@ -94,7 +94,7 @@ namespace MongoDB.Driver.Bson
 		public static BsonDocument From(DBRef val){
 			BsonDocument ret = new BsonDocument();
 			ret.Add(new BsonElement("$ref", new BsonString(val.CollectionName)));
-			ret.Add(new BsonElement("$id", new BsonString(val.Id)));
+			ret.Add(new BsonElement("$id", From(val.Id)));
 			return ret;
 		}
 		
@@ -122,8 +122,13 @@ namespace MongoDB.Driver.Bson
 				ret = new BsonDate();
 			}else if(type == BsonDataType.Regex){
 				ret = new BsonRegex();
+			}else if(type == BsonDataType.Undefined){
+				ret = new BsonUndefined();
+			}else if(type == BsonDataType.Null){
+				ret = new BsonNull();
 			}else{
-				throw new ArgumentOutOfRangeException("Type: " + type + " not recognized");
+				string typename = Enum.GetName(typeof(BsonDataType), type);
+				throw new ArgumentOutOfRangeException("type",typename + "is not recognized");
 			}			
 			return ret;			
 		}
