@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using MongoDB.Driver.Util;
 using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver
@@ -19,6 +19,30 @@ namespace MongoDB.Driver
 		public Database(Connection conn, String name){
 			this.connection = conn;
 			this.name = name;
+		}
+
+		
+
+		public bool Authenticate(string username, string password){
+			this.connection.Open();
+			Collection cmd = this["$cmd"];
+			Document nonceResult = cmd.FindOne(new Document().Append("getnonce", 1.0));
+			String nonce = (String)nonceResult["nonce"];
+			string pwd = Hash.MD5Hash(username + ":mongo:" + password);
+			Document auth = new Document();
+			auth.Add("authenticate", 1.0);
+			auth.Add("user", username);
+			auth.Add("nonce", nonce);
+			auth.Add("key", Hash.MD5Hash(nonce + username + pwd));
+			Document authResult = cmd.FindOne(auth);
+			double ok = (double)authResult["ok"];
+			bool result = false;
+			if (ok == 1.0){
+				result = true;
+			}
+			this.connection.Close();
+			return result;
+			
 		}
 		
 		public List<String> GetCollectionNames(){
