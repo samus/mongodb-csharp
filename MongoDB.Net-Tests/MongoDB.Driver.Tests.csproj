@@ -71,6 +71,9 @@
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
     <Compile Include="TestCursor.cs" />
+    <Compile Include="TestDatabase.cs" />
+    <Compile Include="TestDatabaseMetaData.cs" />
+    <Compile Include="TestDBRef.cs" />
     <Compile Include="TestDocument.cs" />
     <Compile Include="TestMongo.cs" />
     <Compile Include="TestConnection.cs" />
@@ -79,6 +82,8 @@
     <None Include="test-data\tests.reads.txt" />
     <None Include="test-data\tests.smallreads.txt" />
     <Compile Include="Bson\TestBsonRegex.cs" />
+    <Compile Include="TestMongoExceptions.cs" />
+    <Compile Include="TestOid.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
@@ -112,10 +117,5 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="3.5" />
-    </MonoDevelop>
     <VisualStudio />
-  </ProjectExtensions>
 </Project>

@@ -9,10 +9,13 @@ Current Features
 - Insert
 - Update
 - Delete
-- Many BSON types supported
+- Most BSON types supported
+- DBRef support
 - Isolation and conversion between BSON types and native .net types.
 - Database, Collection and Cursor objects.
 - Index handling routines (List, Create, Drop)
+- Count
+- Roughly 80% unit test coverage.  This can and will be improved on.
 
 Missing Features
 ================
@@ -20,10 +23,10 @@ Missing Features
 - Auto reconnect options
 - Connection pooling
 - Authentication
-- Several BSON Types (easy to add)
+- A few BSON Types (easy to add)
 - Database commands (can send queries to $cmd if necessary)
 - Exceptions
-- hint, explain, count, $where
+- hint, explain, $where
 - database profiling: set/get profiling level, get profiling info
 - GridFS support
 - Many unit tests
@@ -35,3 +38,23 @@ Currently using the driver in the GAC is not supported.  Simply copy the driver 
 Patches
 =======
 Patches are welcome and will likely be accepted.  By submitting a patch you assign the copyright to me, Sam Corder.  This is necessary to simplify the number of copyright holders should it become necessary that the copyright need to be reassigned or the code relicensed.  The code will always be available under an OSI approved license.
+
+Usage
+=====
+One of the best sources for how to use the driver is the unit tests.  Basic usage can be found in the TestCollection set of test cases.
+
+At the simplest query the database like this:
+ using MongoDB.Driver;
+ Mongo db = new Mongo();
+ db.Connect(); //Connect to localhost on the default port.
+ Document query = new Document();
+ query["field1"] = 10;
+ Document result = db["tests"]["reads"].FindOne(query);
+ db.Disconnect();
+
+Contributors
+============
+Sam Corder (samus)
+Sergey Bartunov (sbos)
+
+

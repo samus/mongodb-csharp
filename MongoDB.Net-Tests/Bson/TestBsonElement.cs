@@ -8,13 +8,13 @@ using NUnit.Framework;
 
 namespace MongoDB.Driver.Bson
 {
-	[TestFixture]
-	public class TestBsonElement
-	{
-		[Test]
-		public void TestMethod()
-		{
-			// TODO: Add your test.
-		}
-	}
+    [TestFixture]
+    public class TestBsonElement
+    {
+        [Test]
+        public void TestMethod()
+        {
+            // TODO: Add your test.
+        }
+    }
 }
