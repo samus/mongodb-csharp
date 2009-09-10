@@ -52,4 +52,9 @@ At the simplest query the database like this:
  Document result = db["tests"]["reads"].FindOne(query);
  db.Disconnect();
 
+Contributors
+============
+Sam Corder (samus)
+Sergey Bartunov (sbos)
+
 

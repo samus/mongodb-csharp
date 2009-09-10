@@ -96,14 +96,10 @@ namespace MongoDB.Driver
             this.Insert(docs);
         }
         
-        public void Insert(List<Document> docs){
-            this.Insert(docs.ToArray());
-        }
-        
-        public void Insert(Document[] docs){
+        public void Insert(IEnumerable<Document> docs){
             InsertMessage im = new InsertMessage();
             im.FullCollectionName = this.FullName;
-            List<BsonDocument> bdocs = new List<BsonDocument>(docs.Length);
+            List<BsonDocument> bdocs = new List<BsonDocument>();
             foreach(Document doc in docs){
                 bdocs.Add(BsonConvert.From(doc));
             }
