@@ -44,6 +44,7 @@ namespace MongoDB.Driver
 
 		/// <summary>
 		/// To perform this test the user needs to be added useing the shell
+		/// Server must be started with --auth flag
 		/// </summary>
 		[Test]
 		public void TestAuthenticationGoodPassword(){

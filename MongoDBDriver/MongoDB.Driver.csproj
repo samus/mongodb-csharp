@@ -76,6 +76,7 @@
     <Compile Include="Bson\BsonNumber.cs" />
     <Compile Include="Bson\BsonInteger.cs" />
     <Compile Include="Bson\BsonOid.cs" />
+    <Compile Include="Bson\BsonRegex.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="Database.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="IO\UpdateMessage.cs" />
     <Compile Include="ServerPair.cs" />
     <Compile Include="MongoRegex.cs" />
+    <Compile Include="Util\Hash.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
