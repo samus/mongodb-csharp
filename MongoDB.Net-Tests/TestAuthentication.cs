@@ -1,10 +1,11 @@
 ﻿/*
  *  User: Sedward
  */
-
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using System.Security.Cryptography;
+using System.Text;
 using MongoDB.Driver;
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.IO;
@@ -14,53 +15,120 @@ namespace MongoDB.Driver
 	[TestFixture]
 	public class Authentication
 	{
-		//[Test]
-		//public void TestAddUser()
-		//{
-		//    Mongo mongo = new Mongo();
-		//    mongo.Connect();
-		//    Collection
-		//    Assert.IsNotNull(db);
-		//    db.AddUser("sed", "test");
-		//}
+	    [Test]
+        public void TestLoginGoodPassword(){
+            Connection conn = new Connection("127.0.0.1", 27017);
+            Database db = new Database(conn, "TestAuth");
+            conn.Open();
+            bool ok = db.Authenticate("testuser", "test1234");
+            Assert.IsTrue(ok);
+            db.Logout();
+            conn.Close();
+        }
 
-		//[Test]
-		//public void TestUserAdded()
-		//{
-		//    Mongo db = new Mongo();
-		//    db.Connect();
-		//    Collection c = db["system"]["users"];
-		//    Document result = c.FindOne(new Document().Append("username", "sed"));
-		//    Assert.IsNotNull(result);
+        [Test]
+        public void TestLoginBadPassword(){
+            Connection conn = new Connection("127.0.0.1", 27017);
+            Database db = new Database(conn, "TestAuth");
+            conn.Open();
+            bool ok = db.Authenticate("testuser", "badpassword");
+            Assert.IsFalse(ok);
+            conn.Close();
+        }
 
-		//}
+        [Test]
+        public void TestAdminLogin(){
+            Connection conn = new Connection("127.0.0.1", 27017);
+            Database db = new Database(conn, "admin");
+            conn.Open();
+            bool ok = db.Authenticate("adminuser", "admin1234");
+            Assert.IsTrue(ok);
+            conn.Close();
+        }
 
-		[Test]
-		public void AuthenticateTest()
-		{
-			double value = 1.0;
-			Assert.AreEqual(1, value);		
-		}
+        [Test]
+        public void TestAuthenticatedInsert(){
+            Connection conn = new Connection("127.0.0.1", 27017);
+            conn.Open();
+            Database db = new Database(conn, "TestAuth");
+            bool ok = db.Authenticate("testuser", "test1234");
+            Collection tests = db["inserts"];
+            if (ok)
+            {                
+                tests.Insert(new Document().Append("value", 34));
+            }
+            Document valA = tests.FindOne(new Document().Append("value", 34));
+            Assert.AreEqual(34, valA["value"]);
+            db.Logout();
+            conn.Close();
+        }
 
-		/// <summary>
-		/// To perform this test the user needs to be added useing the shell
-		/// Server must be started with --auth flag
-		/// </summary>
-		[Test]
-		public void TestAuthenticationGoodPassword(){
-			Connection conn = new Connection("127.0.0.1", 27017);
-			Database db = new Database(conn, "tests");
-			bool ok = db.Authenticate("seth", "test");
-			Assert.IsTrue(ok);
-		}
+        [Test]
+        public void TestUnauthenticatedInsert(){
+            Connection conn = new Connection("127.0.0.1", 27017);
+            conn.Open();
+            Database db = new Database(conn, "TestAuth");
+            Collection tests = db["inserts"];
+            tests.Insert(new Document().Append("value", 84));
+            Document valA = tests.FindOne(new Document().Append("value", 84));
+            Assert.AreNotEqual(84, valA["value"]);
+            conn.Close();
+        }
 
-		[Test]
-		public void TestAuthenticationBadPassword(){
-			Connection conn = new Connection("127.0.0.1", 27017);
-			Database db = new Database(conn, "tests");
-			bool ok = db.Authenticate("seth", "badpassword");
-			Assert.IsFalse(ok);
-		}
+        [Test]
+        public void TestLoggedOutInsert()
+        {
+            Connection conn = new Connection("127.0.0.1", 27017);
+            conn.Open();
+            Database db = new Database(conn, "TestAuth");
+            bool ok = db.Authenticate("testuser", "test1234");
+            Collection tests = db["inserts"];
+            if (ok)
+            {
+                db.Logout();
+                tests.Insert(new Document().Append("value", 47));
+            }
+            Document valA = tests.FindOne(new Document().Append("value", 47));
+            Assert.AreNotEqual(47, valA["value"]);
+            conn.Close();
+        }
+
+        [Test]
+        public void TestSetUp(){
+            Connection conn = new Connection("127.0.0.1", 27017);
+            conn.Open();
+            Database admindb = new Database(conn, "admin");
+            admindb.AddUser("adminuser", "admin1234");
+            bool ok = admindb.Authenticate("adminuser", "admin1234");
+            if (ok){
+                Database testAuth = new Database(conn, "TestAuth");
+                testAuth.AddUser("testuser", "test1234");
+            }
+            conn.Close();
+        }
+
+        [Test]
+        public void TestTearDown(){
+            Connection conn = new Connection("127.0.0.1", 27017);
+            conn.Open();
+            Database testAuth = new Database(conn, "TestAuth");
+            bool ok = testAuth.Authenticate("testuser", "test1234");
+            if (ok)
+            {
+                Collection cmd = testAuth["$cmd"];
+                cmd.FindOne(new Document().Append("drop", "inserts"));
+            }
+            Collection testAuthUsers = testAuth.GetCollection("system.users");
+            testAuthUsers.Delete(new Document().Append("user", "testuser"));
+                   
+            Database admin = new Database(conn, "admin");
+            bool ok2 = admin.Authenticate("adminuser", "admin1234");
+            if (ok2){
+               Collection adminUsers = admin.GetCollection("system.users");
+               adminUsers.Delete(new Document().Append("user", "adminuser"));
+            }
+        }
+
 
 
 	}
