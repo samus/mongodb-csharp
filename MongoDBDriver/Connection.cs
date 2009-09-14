@@ -19,34 +19,23 @@ namespace MongoDB.Driver
     /// Description of Connection.
     /// </summary>
     public class Connection
-    {
-        protected class AutoReconnectException : Exception{
-            RequestMessage toResend;
-            public RequestMessage ToResend {
-                get { return toResend; }
-                set { toResend = value; }
-            }
-            public AutoReconnectException(RequestMessage toReSend){
-                this.ToResend = toResend;
-            }
-        }
+    {       
+        public const string DEFAULTHOST = "localhost";
+        public const int DEFAULTPORT = 27017;
         
-        private static string DEFAULTHOST = "localhost";
-        private static int DEFAULTPORT = 27017;
-        
-        private TcpClient tcpclnt = new TcpClient();
+        protected TcpClient tcpclnt;
         #if DEBUG
         public TcpClient Tcpclnt {
             get { return tcpclnt; }
         }
         #endif
         
-        private String host;    
+        protected String host;    
         public string Host {
             get { return host; }
         }
         
-        private int port;       
+        protected int port;       
         public int Port {
             get { return port; }
         }
@@ -118,11 +107,11 @@ namespace MongoDB.Driver
         
         public void Reconnect(){
             Debug.WriteLine("Reconnecting", "Connection");
-            tcpclnt = new TcpClient();
             this.Open();
         }
         
-        public void Open(){
+        public virtual void Open(){
+            tcpclnt = new TcpClient();
             tcpclnt.Connect(this.Host, this.Port);
             this.state = ConnectionState.Opened;
         }

@@ -86,6 +86,7 @@
     <Compile Include="IO\UpdateMessage.cs" />
     <Compile Include="Bson\BsonRegex.cs" />
     <Compile Include="MongoRegex.cs" />
+    <Compile Include="PairedConnection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
