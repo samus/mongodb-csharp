@@ -15,8 +15,6 @@ namespace MongoDB.Driver
     /// </summary>
     public class Mongo
     {
-        private static int DEFAULTPORT = 27017;
-        
         private Connection connection;
         
         private String host;    
@@ -35,7 +33,7 @@ namespace MongoDB.Driver
         /// Creates the object with the default localhost:27017 parameters. The connection is
         /// created lazily.
         /// </summary>
-        public Mongo():this("localhost", DEFAULTPORT)
+        public Mongo():this(Connection.DEFAULTHOST,Connection.DEFAULTPORT)
         {
         }
         
@@ -46,6 +44,16 @@ namespace MongoDB.Driver
             this.Host = host;
             this.port = port;
             connection = new Connection(host, port);
+        }
+
+        public Mongo(String leftHost, String rightHost):this(leftHost,Connection.DEFAULTPORT,rightHost,Connection.DEFAULTPORT,false){}        
+
+        public Mongo(String leftHost, int leftPort, String rightHost, int rightPort):this(leftHost,leftPort,rightHost,rightPort,false){}
+        
+        public Mongo(String leftHost, int leftPort, String rightHost, int rightPort, bool slaveOk){
+            this.Host = host;
+            this.port = port;
+            connection = new PairedConnection(leftHost,leftPort,rightHost,rightPort,slaveOk);
         }
         
         public Database getDB(String name){
