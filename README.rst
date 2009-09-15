@@ -54,7 +54,8 @@ At the simplest query the database like this:
 
 Contributors
 ============
-Sam Corder (samus)
-Sergey Bartunov (sbos)
+- Sam Corder (samus)
+- Seth Edwards (Sedward)
+- Sergey Bartunov (sbos)
 
 

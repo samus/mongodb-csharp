@@ -93,7 +93,7 @@ namespace MongoDB.Driver
             conn.Close();
         }
 
-        [Test]
+        [TestFixtureSetUp]
         public void TestSetUp(){
             Connection conn = new Connection("127.0.0.1", 27017);
             conn.Open();
@@ -107,7 +107,7 @@ namespace MongoDB.Driver
             conn.Close();
         }
 
-        [Test]
+        [TestFixtureTearDown]
         public void TestTearDown(){
             Connection conn = new Connection("127.0.0.1", 27017);
             conn.Open();

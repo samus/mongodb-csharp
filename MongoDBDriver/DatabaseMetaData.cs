@@ -41,6 +41,6 @@ namespace MongoDB.Driver
         
         public Boolean DropDatabase(){
             throw new NotImplementedException();
-        }       
+        }
     }
 }

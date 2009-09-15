@@ -37,7 +37,7 @@ namespace MongoDB.Driver
         {
         }
         
-        public Mongo(String host):this(host,DEFAULTPORT){
+        public Mongo(String host):this(host,Connection.DEFAULTPORT){
         }
         
         public Mongo(String host, int port){

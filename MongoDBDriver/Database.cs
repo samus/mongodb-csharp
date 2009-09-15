@@ -32,9 +32,33 @@ namespace MongoDB.Driver
             this.name = name;
         }
 
-		
+        public List<String> GetCollectionNames(){
+            Collection namespaces = this["system.namespaces"];
+            Cursor cursor = namespaces.Find(null);
+            List<String> names = new List<string>();
+            foreach (Document doc in cursor.Documents){
+                names.Add((String)doc["name"]); //Fix Me: Should filter built-ins
+            }
+            return names;
+        }
 
-		public bool Authenticate(string username, string password){
+        public Collection this[ String name ]  {
+            get{
+                return this.GetCollection(name);
+            }
+        }   
+        
+        public Collection GetCollection(String name){
+            Collection col = new Collection(name, this.connection, this.Name);
+            return col;
+        }
+        
+        public Document FollowReference(DBRef reference){
+            if(reference == null) throw new ArgumentNullException("reference cannot be null");
+            Document query = new Document().Append("_id", reference.Id);
+            return this[reference.CollectionName].FindOne(query);
+        }
+        public bool Authenticate(string username, string password){
             bool result = false;
             if (this.connection.State == ConnectionState.Opened)
             {
@@ -65,7 +89,16 @@ namespace MongoDB.Driver
                 throw new MongoCommException("Operation cannot be performed on a closed connection.", this.connection);
             }
             return result;
-		}
+        }
+
+        public void Logout(){
+            Collection cmd = this["$cmd"];
+            Document logoutResult = cmd.FindOne(new Document().Append("logout", 1.0));
+            double ok = (double)logoutResult["ok"];
+            if (ok != 1.0){
+                throw new MongoException("An error occured logging out.", null);
+            }
+        }
 
         public void AddUser(string username, string password){
             if (this.connection.State == ConnectionState.Opened){
@@ -81,58 +114,19 @@ namespace MongoDB.Driver
                 }
             }
         }
-
-        public void Logout(){
-            Collection cmd = this["$cmd"];
-            Document logoutResult = cmd.FindOne(new Document().Append("logout", 1.0));
-            double ok = (double)logoutResult["ok"];
-            if (ok != 1.0){
-                throw new MongoException("An error occured logging out.", null);
-            }
-        }
-
-
-		
-        public List<String> GetCollectionNames(){
-            Collection namespaces = this["system.namespaces"];
-            Cursor cursor = namespaces.Find(null);
-            List<String> names = new List<string>();
-            foreach (Document doc in cursor.Documents){
-                names.Add((String)doc["name"]); //Fix Me: Should filter built-ins
-            }
-            return names;
-        }
-
+        
         private string md5Hash(string text)
         {
             MD5 md5 = MD5.Create();
             byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(text));
-
+            
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < hash.Length; i++)
             {
                 sb.Append(hash[i].ToString("x2"));
             }
-
             return sb.ToString();
+        }
 
-        }
-        
-        public Collection this[ String name ]  {
-            get{
-                return this.GetCollection(name);
-            }
-        }   
-        
-        public Collection GetCollection(String name){
-            Collection col = new Collection(name, this.connection, this.Name);
-            return col;
-        }
-        
-        public Document FollowReference(DBRef reference){
-            if(reference == null) throw new ArgumentNullException("reference cannot be null");
-            Document query = new Document().Append("_id", reference.Id);
-            return this[reference.CollectionName].FindOne(query);
-        }       
     }
 }

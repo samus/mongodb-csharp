@@ -248,5 +248,3 @@ namespace MongoDB.Driver
         }
     }
 }
-
-
