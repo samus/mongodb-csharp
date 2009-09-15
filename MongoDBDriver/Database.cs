@@ -12,12 +12,12 @@ namespace MongoDB.Driver
     {
         private Connection connection;
         
-        private String name;        
+        private String name;
         public string Name {
             get { return name; }
         }
 
-        private DatabaseMetaData metaData;      
+        private DatabaseMetaData metaData;
         public DatabaseMetaData MetaData {
             get { 
                 if(metaData == null){
@@ -58,37 +58,25 @@ namespace MongoDB.Driver
             Document query = new Document().Append("_id", reference.Id);
             return this[reference.CollectionName].FindOne(query);
         }
+        
         public bool Authenticate(string username, string password){
-            bool result = false;
-            if (this.connection.State == ConnectionState.Opened)
-            {
-                Collection cmd = this["$cmd"];
-                Document nonceResult = cmd.FindOne(new Document().Append("getnonce", 1.0));
-                String nonce = (String)nonceResult["nonce"];
-                if (nonce == null)
-                {
-                    throw new MongoException("Error retrieveing nonce", null);
-                }
-                else {
-                    string pwd = md5Hash(username + ":mongo:" + password);
-                    Document auth = new Document();
-                    auth.Add("authenticate", 1.0);
-                    auth.Add("user", username);
-                    auth.Add("nonce", nonce);
-                    auth.Add("key", md5Hash(nonce + username + pwd));
-                    Document authResult = cmd.FindOne(auth);
-                    double ok = (double)authResult["ok"];
-                    if (ok == 1.0)
-                    {
-                        result = true;
-                    }
-                }
-                
+            Collection cmd = this["$cmd"];
+            Document nonceResult = cmd.FindOne(new Document().Append("getnonce", 1.0));
+            String nonce = (String)nonceResult["nonce"];
+            if (nonce == null){
+                throw new MongoException("Error retrieving nonce", null);
             }
-            else{
-                throw new MongoCommException("Operation cannot be performed on a closed connection.", this.connection);
+            else {
+                string pwd = Database.Hash(username + ":mongo:" + password);
+                Document auth = new Document();
+                auth.Add("authenticate", 1.0);
+                auth.Add("user", username);
+                auth.Add("nonce", nonce);
+                auth.Add("key", Database.Hash(nonce + username + pwd));
+                Document authResult = cmd.FindOne(auth);
+                return (1.0 == (double)authResult["ok"]);
             }
-            return result;
+            return false;
         }
 
         public void Logout(){
@@ -96,36 +84,14 @@ namespace MongoDB.Driver
             Document logoutResult = cmd.FindOne(new Document().Append("logout", 1.0));
             double ok = (double)logoutResult["ok"];
             if (ok != 1.0){
-                throw new MongoException("An error occured logging out.", null);
-            }
-        }
-
-        public void AddUser(string username, string password){
-            if (this.connection.State == ConnectionState.Opened){
-                Collection users = this.GetCollection("system.users");
-                string pwd = md5Hash(username + ":mongo:" + password);
-                Document user = new Document().Append("user", username).Append("pwd", pwd);
-                Document userExists = users.FindOne(new Document().Append("user",username));
-                if (userExists != null){
-                    throw new MongoException("A user with the name " + username + " already exists in this database.", null);
-                }
-                else{
-                   users.Insert(user);
-                }
+                throw new MongoException(String.Format("Error logging out: {0}",(string)logoutResult["msg"]), null);
             }
         }
         
-        private string md5Hash(string text)
-        {
+        internal static string Hash(string text){
             MD5 md5 = MD5.Create();
             byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(text));
-            
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++)
-            {
-                sb.Append(hash[i].ToString("x2"));
-            }
-            return sb.ToString();
+            return BitConverter.ToString(hash).Replace("-","").ToLower();
         }
 
     }

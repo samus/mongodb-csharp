@@ -42,5 +42,36 @@ namespace MongoDB.Driver
         public Boolean DropDatabase(){
             throw new NotImplementedException();
         }
+        
+        public void AddUser(string username, string password){
+            Collection users = db["system.users"];
+            string pwd = Database.Hash(username + ":mongo:" + password);
+            Document user = new Document().Append("user", username).Append("pwd", pwd);
+            Document userExists = users.FindOne(new Document().Append("user",username));
+            if (userExists != null){
+                throw new MongoException("A user with the name " + username + " already exists in this database.", null);
+            }
+            else{
+               users.Insert(user);
+            }
+        }
+
+        public void RemoveUser(string username){
+            Collection users = db["system.users"];
+            users.Delete(new Document().Append("user", username));
+        }
+
+        public Cursor ListUsers(){
+            Collection users = db["system.users"];
+            return users.FindAll();
+        }
+
+        public Document FindUser(string username){
+            return FindUser(new Document().Append("user",username));
+        }
+
+        public Document FindUser(Document spec){
+            return db["system.users"].FindOne(spec);
+        }
     }
 }

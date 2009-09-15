@@ -13,123 +13,98 @@ using MongoDB.Driver.IO;
 namespace MongoDB.Driver
 {
 	[TestFixture]
-	public class Authentication
+	public class TestAuthentication
 	{
+        Mongo mongo = new Mongo();
+        
+        Database db;
+        String testuser = "testuser";
+        String testpass = "test1234";
+        
+        Database admindb;
+        String adminuser = "adminuser";
+        String adminpass = "admin1234";
+        
 	    [Test]
         public void TestLoginGoodPassword(){
-            Connection conn = new Connection("127.0.0.1", 27017);
-            Database db = new Database(conn, "TestAuth");
-            conn.Open();
-            bool ok = db.Authenticate("testuser", "test1234");
+            bool ok = Authenticate();
             Assert.IsTrue(ok);
             db.Logout();
-            conn.Close();
         }
 
         [Test]
         public void TestLoginBadPassword(){
-            Connection conn = new Connection("127.0.0.1", 27017);
-            Database db = new Database(conn, "TestAuth");
-            conn.Open();
             bool ok = db.Authenticate("testuser", "badpassword");
             Assert.IsFalse(ok);
-            conn.Close();
         }
 
         [Test]
         public void TestAdminLogin(){
-            Connection conn = new Connection("127.0.0.1", 27017);
-            Database db = new Database(conn, "admin");
-            conn.Open();
-            bool ok = db.Authenticate("adminuser", "admin1234");
+            bool ok = admindb.Authenticate(adminuser, adminpass);
             Assert.IsTrue(ok);
-            conn.Close();
+            admindb.Logout();
         }
 
         [Test]
         public void TestAuthenticatedInsert(){
-            Connection conn = new Connection("127.0.0.1", 27017);
-            conn.Open();
-            Database db = new Database(conn, "TestAuth");
-            bool ok = db.Authenticate("testuser", "test1234");
+            bool ok = Authenticate();
             Collection tests = db["inserts"];
-            if (ok)
-            {                
+            if (ok){
                 tests.Insert(new Document().Append("value", 34));
             }
             Document valA = tests.FindOne(new Document().Append("value", 34));
             Assert.AreEqual(34, valA["value"]);
             db.Logout();
-            conn.Close();
         }
 
         [Test]
         public void TestUnauthenticatedInsert(){
-            Connection conn = new Connection("127.0.0.1", 27017);
-            conn.Open();
-            Database db = new Database(conn, "TestAuth");
+            try{
+                db.Logout();
+            }catch(MongoException){
+                //We don't care.  Just wanted to make sure we weren't logged in
+            }
             Collection tests = db["inserts"];
             tests.Insert(new Document().Append("value", 84));
             Document valA = tests.FindOne(new Document().Append("value", 84));
             Assert.AreNotEqual(84, valA["value"]);
-            conn.Close();
         }
-
-        [Test]
-        public void TestLoggedOutInsert()
-        {
-            Connection conn = new Connection("127.0.0.1", 27017);
-            conn.Open();
-            Database db = new Database(conn, "TestAuth");
-            bool ok = db.Authenticate("testuser", "test1234");
-            Collection tests = db["inserts"];
-            if (ok)
-            {
-                db.Logout();
-                tests.Insert(new Document().Append("value", 47));
-            }
-            Document valA = tests.FindOne(new Document().Append("value", 47));
-            Assert.AreNotEqual(47, valA["value"]);
-            conn.Close();
-        }
-
+        
         [TestFixtureSetUp]
         public void TestSetUp(){
-            Connection conn = new Connection("127.0.0.1", 27017);
-            conn.Open();
-            Database admindb = new Database(conn, "admin");
-            admindb.AddUser("adminuser", "admin1234");
-            bool ok = admindb.Authenticate("adminuser", "admin1234");
-            if (ok){
-                Database testAuth = new Database(conn, "TestAuth");
-                testAuth.AddUser("testuser", "test1234");
-            }
-            conn.Close();
+            mongo.Connect();
+            db = mongo["TestAuth"];
+            admindb = mongo["admin"];
+
+            admindb.MetaData.AddUser(adminuser, adminpass);
+            bool ok = admindb.Authenticate(adminuser, adminpass);
+            db.MetaData.AddUser(testuser, testpass);
+            admindb.Logout();
         }
 
         [TestFixtureTearDown]
         public void TestTearDown(){
-            Connection conn = new Connection("127.0.0.1", 27017);
-            conn.Open();
-            Database testAuth = new Database(conn, "TestAuth");
-            bool ok = testAuth.Authenticate("testuser", "test1234");
-            if (ok)
-            {
-                Collection cmd = testAuth["$cmd"];
-                cmd.FindOne(new Document().Append("drop", "inserts"));
-            }
-            Collection testAuthUsers = testAuth.GetCollection("system.users");
-            testAuthUsers.Delete(new Document().Append("user", "testuser"));
-                   
-            Database admin = new Database(conn, "admin");
-            bool ok2 = admin.Authenticate("adminuser", "admin1234");
-            if (ok2){
-               Collection adminUsers = admin.GetCollection("system.users");
-               adminUsers.Delete(new Document().Append("user", "adminuser"));
-            }
+            /*
+             * In case clean up fails open a Mongo shell and execute the following commands
+             * use admin
+             * db.auth("adminuser", "admin1234");
+             * db.system.users.find(); //should see adminuser
+             * db.system.users.remove({user:"adminuser"});
+             * db.system.users.find(); //should not see adminuser or any other.
+             * Tests should now run.
+             */
+            Authenticate();
+            admindb.Authenticate(adminuser, adminpass);
+            
+            db.MetaData.DropCollection("inserts");
+            
+            db.MetaData.RemoveUser(testuser);
+            admindb.MetaData.RemoveUser(adminuser);
         }
 
-
-
-	}
+        protected bool Authenticate(){
+            return db.Authenticate(testuser,testpass);
+        }
+    }
 }
+//error: {"$err" : "unauthorized"} incorporate sometime.
