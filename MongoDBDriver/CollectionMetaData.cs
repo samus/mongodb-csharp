@@ -15,13 +15,11 @@ namespace MongoDB.Driver
     /// </summary>
     public class CollectionMetaData
     {
-        private Connection connection;  
         private string fullName;        
         private string name;
         private Database db;
         
         public CollectionMetaData(string dbName, string name, Connection conn){
-            this.connection = conn;
             this.fullName = dbName + "." + name;
             this.name = name;
             this.db = new Database(conn, dbName);

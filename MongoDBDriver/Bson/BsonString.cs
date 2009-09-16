@@ -18,7 +18,7 @@ namespace MongoDB.Driver.Bson
             this.Val = str; 
         }
         
-        public byte TypeNum {
+        public virtual byte TypeNum {
             get{
                 return (byte)BsonDataType.String;
             }
@@ -53,8 +53,8 @@ namespace MongoDB.Driver.Bson
             return string.Format("[BsonString: Val={0}, TypeNum={1}, Size={2}]", Val, TypeNum, Size);
         }
         
-        public object ToNative(){
+        public virtual object ToNative(){
             return this.Val;
-        }       
+        }
     }
 }

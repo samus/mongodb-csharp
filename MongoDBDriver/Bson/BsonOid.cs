@@ -9,9 +9,6 @@ using MongoDB.Driver;
 
 namespace MongoDB.Driver.Bson
 {
-    /// <summary>
-    /// Description of BsonOid.
-    /// </summary>
     public class BsonOid:BsonType{
         private byte[] val;
 

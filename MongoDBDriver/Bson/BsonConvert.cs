@@ -44,6 +44,10 @@ namespace MongoDB.Driver.Bson
                 ret = From((MongoRegex)val);
             }else if(t == typeof(DBRef)){
                 ret = From((DBRef)val);
+            }else if(t == typeof(Code)){
+                ret = From((Code)val);
+            }else if(t == typeof(CodeWScope)){
+                ret = From((CodeWScope)val);
             }else{
                 throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized",t.FullName));
             }
@@ -98,6 +102,14 @@ namespace MongoDB.Driver.Bson
             return ret;
         }
         
+        public static BsonCode From(Code val){
+            return new BsonCode(val);
+        }
+        
+        public static BsonCodeWScope From(CodeWScope val){
+            return new BsonCodeWScope(val);
+        }
+        
         public static BsonType Create(BsonDataType type){
             BsonType ret = null;
             if(type == BsonDataType.Number){
@@ -126,6 +138,10 @@ namespace MongoDB.Driver.Bson
                 ret = new BsonUndefined();
             }else if(type == BsonDataType.Null){
                 ret = new BsonNull();
+            }else if(type == BsonDataType.Code){
+                ret = new BsonCode();
+            }else if(type == BsonDataType.CodeWScope){
+                ret = new BsonCodeWScope();
             }else{
                 string typename = Enum.GetName(typeof(BsonDataType), type);
                 throw new ArgumentOutOfRangeException("type",typename + "is not recognized");

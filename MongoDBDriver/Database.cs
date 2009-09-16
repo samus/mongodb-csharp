@@ -76,7 +76,6 @@ namespace MongoDB.Driver
                 Document authResult = cmd.FindOne(auth);
                 return (1.0 == (double)authResult["ok"]);
             }
-            return false;
         }
 
         public void Logout(){

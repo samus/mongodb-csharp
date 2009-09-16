@@ -110,6 +110,9 @@
     <Compile Include="IO\UpdateMessage.cs" />
     <Compile Include="MongoRegex.cs" />
     <Compile Include="PairedConnection.cs" />
+    <Compile Include="Bson\BsonCodeWScope.cs" />
+    <Compile Include="Code.cs" />
+    <Compile Include="CodeWScope.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

@@ -73,7 +73,7 @@ namespace MongoDB.Driver
                 ReplyMessage reply = new ReplyMessage();                
                 reply.Read(tcpclnt.GetStream());
                 return reply;
-            }catch(IOException ioe){
+            }catch(IOException){
                 this.Reconnect();
                 throw;
             }
@@ -93,7 +93,7 @@ namespace MongoDB.Driver
             try{
                 msg.Write(tcpclnt.GetStream()); 
                 
-            }catch(IOException ioe){//Sending doesn't seem to always trigger the detection of a closed socket.
+            }catch(IOException){//Sending doesn't seem to always trigger the detection of a closed socket.
                 this.Reconnect();
                 throw;
             }

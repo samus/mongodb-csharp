@@ -77,7 +77,7 @@ namespace MongoDB.Driver
             admindb = mongo["admin"];
 
             admindb.MetaData.AddUser(adminuser, adminpass);
-            bool ok = admindb.Authenticate(adminuser, adminpass);
+            admindb.Authenticate(adminuser, adminpass);
             db.MetaData.AddUser(testuser, testpass);
             admindb.Logout();
         }

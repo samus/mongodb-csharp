@@ -13,8 +13,8 @@ namespace MongoDB.Driver
         {
             bool thrown = false;
             try{
-                Oid bad = new Oid("BAD0");
-            }catch(Exception ex){
+                new Oid("BAD0");
+            }catch(Exception){
                 thrown = true;
             }
             Assert.IsTrue(thrown,"No length exception thrown");
@@ -24,7 +24,7 @@ namespace MongoDB.Driver
         public void TestIDCharacters(){
             bool thrown = false;
             try{
-                Oid bad = new Oid("BADBOYc30a57000000008ecb");
+                new Oid("BADBOYc30a57000000008ecb");
             }catch(Exception){
                 thrown = true;
             }
@@ -35,7 +35,7 @@ namespace MongoDB.Driver
         public void TestNullValue(){
             bool thrown = false;
             try{
-                Oid bad = new Oid(null);
+                new Oid(null);
             }catch(Exception){
                 thrown = true;
             }
@@ -46,7 +46,7 @@ namespace MongoDB.Driver
         public void TestCtor(){     
             bool thrown = false;
             try{
-                Oid good = new Oid("4a7067c30a57000000008ecb");
+                new Oid("4a7067c30a57000000008ecb");
             }catch(ArgumentException ae){
                 thrown = true;
                 System.Console.WriteLine(ae.ToString());
