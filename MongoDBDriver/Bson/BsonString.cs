@@ -1,21 +1,16 @@
 
 using System;
+using System.Text;
 
 namespace MongoDB.Driver.Bson
 {
     public class BsonString:BsonType
     {
+        private UTF8Encoding encoding = new UTF8Encoding();
         private String val;
-
         public string Val {
             get {return val;}
             set {val = value;}
-        }
-
-        public BsonString(){}
-        
-        public BsonString(String str){
-            this.Val = str; 
         }
         
         public virtual byte TypeNum {
@@ -26,20 +21,27 @@ namespace MongoDB.Driver.Bson
         
         public int Size {
             get {
-                int ret = 0;
-                ret = 4; //size bytes
+                int basesize = 5; //size bytes + terminator            
+                int ret;
                 if(this.val != null) {
-                    ret += this.val.Length;
+                    ret = encoding.GetByteCount(this.val);
                 }else{
-                    ret += 0;
+                    ret = 0;
                 }
-                ret += 1; //terminator
-                return ret;
+                return basesize + ret;
             }
+        }
+
+
+        public BsonString(){}
+        
+        public BsonString(String str){
+            this.Val = str; 
         }
         
         public void Write(BsonWriter writer){
-            writer.Write(this.Val.Length + 1);
+            //TODO Calling GetByteCount may be expensive.  Possibly just do the same work write(String) does.
+            writer.Write(encoding.GetByteCount(this.val) + 1);
             writer.Write(this.Val);
         }
         

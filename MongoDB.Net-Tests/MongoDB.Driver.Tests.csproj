@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -81,6 +81,7 @@
     <Compile Include="TestConnection.cs" />
     <Compile Include="IO\TestMsgMessage.cs" />
     <Compile Include="TestB.cs" />
+    <None Include="test-data\tests.charreads.txt" />
     <None Include="test-data\tests.reads.txt" />
     <None Include="test-data\tests.smallreads.txt" />
     <Compile Include="Bson\TestBsonRegex.cs" />

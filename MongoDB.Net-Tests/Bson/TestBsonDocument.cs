@@ -66,7 +66,26 @@ namespace MongoDB.Driver.Bson
             hexdump = hexdump.Replace("-","");
             Assert.AreEqual(20,output[0],"Size didn't take into count null terminator");
             Assert.AreEqual("1400000002746573740005000000746573740000",hexdump, "Dump not correct");
-        }       
+        }
+
+        [Test]
+        public void TestFormattingWithUKPound(){
+            BsonDocument doc = new BsonDocument();
+            MemoryStream buf = new MemoryStream();
+            BsonWriter writer = new BsonWriter(buf);
+            
+            doc.Add("_id", new BsonOid(new Oid("4ABBED9D1D8B0F0218000001")));
+            doc.Add("test", new BsonString("1234£56"));
+            doc.Write(writer);
+            writer.Flush();
+            
+            Byte[] output = buf.ToArray();
+            String hexdump = BitConverter.ToString(output);
+            hexdump = hexdump.Replace("-","");
+            //Assert.AreEqual(20,output[0],"Size didn't take into count null terminator");
+            Assert.AreEqual("29000000075F6964004ABBED9D1D8B0F02180000010274657374000900000031323334C2A335360000",hexdump, "Dump not correct");
+        }
+        
         
         [Test]
         public void TestElements(){

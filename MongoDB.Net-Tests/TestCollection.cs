@@ -57,6 +57,15 @@ namespace MongoDB.Driver
         }
 
         [Test]
+        public void TestFindOneObjectContainingUKPound(){
+            Document query = new Document();
+            Document result = db["tests"]["charreads"].FindOne(query);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Contains("test"));
+            Assert.AreEqual("1234£56",result["test"]);
+        }
+        
+        [Test]
         public void TestSimpleInsert(){
             Collection inserts = db["tests"]["inserts"];
             Document indoc = new Document();
@@ -82,6 +91,17 @@ namespace MongoDB.Driver
             Document result = inserts.FindOne(new Document().Append("x",2));
             Assert.IsNotNull(result);
             Assert.AreEqual(1,result["y"]);
+        }
+        
+        [Test]
+        public void TestPoundSymbolInsert(){
+            Collection inserts = db["tests"]["inserts"];
+            Document indoc = new Document().Append("x","1234£56").Append("y",1);;
+            inserts.Insert(indoc);
+
+            Document result = inserts.FindOne(new Document().Append("x","1234£56"));
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1,result["y"]);            
         }
         
         [Test]
