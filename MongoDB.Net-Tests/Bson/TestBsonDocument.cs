@@ -1,7 +1,3 @@
-/*
- * User: scorder
- * Date: 7/15/2009
- */
 using System;
 using System.IO;
 
@@ -200,8 +196,8 @@ namespace MongoDB.Driver.Bson
                     //failed to convert these 2 chars, they may contain illegal charracters
                     bytes[i / 2] = 0;
                 }
-            }           
-            return bytes;           
+            }
+            return bytes;
         }
     }
 }
