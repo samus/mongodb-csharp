@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+
 using NUnit.Framework;
 
 namespace MongoDB.Driver
@@ -9,8 +10,7 @@ namespace MongoDB.Driver
     public class TestOid
     {
         [Test]
-        public void TestIDLength()
-        {
+        public void TestIDLength(){
             bool thrown = false;
             try{
                 new Oid("BAD0");
@@ -35,7 +35,7 @@ namespace MongoDB.Driver
         public void TestNullValue(){
             bool thrown = false;
             try{
-                new Oid(null);
+                new Oid(String.Empty);
             }catch(Exception){
                 thrown = true;
             }
@@ -49,9 +49,30 @@ namespace MongoDB.Driver
                 new Oid("4a7067c30a57000000008ecb");
             }catch(ArgumentException ae){
                 thrown = true;
-                System.Console.WriteLine(ae.ToString());
             }
             Assert.IsFalse(thrown,"ID should be fine.");                        
         }
+        
+        [Test]
+        public void TestDecode(){
+            string hex = "4a7067c30a57000000008ecb";
+            Oid oid = new Oid(hex);
+            
+            Assert.AreEqual(hex,oid.ToString());
+        }
+        
+        [Test]
+        public void TestEquals(){
+            string hex = "4a7067c30a57000000008ecb";
+            Assert.AreEqual(new Oid(hex), new Oid(hex));
+            
+        }
+        [Test]
+        public void TestNotEquals(){
+            string hex = "4a7067c30a57000000008ecb";
+            string hex2 = "4a7067c30a57000000008ecc";
+            Assert.AreNotEqual(new Oid(hex), new Oid(hex2));
+            
+        }        
     }
 }

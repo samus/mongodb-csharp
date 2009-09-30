@@ -72,7 +72,7 @@ namespace MongoDB.Driver
         public void DropIndex(string name){
             Document cmd = new Document();
             cmd.Append("deleteIndexes",this.name).Append("index",name);
-            db["$cmd"].FindOne(cmd);
+			db.SendCommand(cmd);
             this.refresh();
         }
         

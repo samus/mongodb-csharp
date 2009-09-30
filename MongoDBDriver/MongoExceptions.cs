@@ -28,4 +28,22 @@ namespace MongoDB.Driver
             this.port = conn.Port;          
         }       
     }
+	
+	public class MongoCommandException : MongoException
+	{
+		private Document error;
+		public Document Error {
+			get {return error;}
+		}
+		
+		private Document command;
+		public Document Command{
+			get {return command;}
+		}
+		
+		public MongoCommandException(string message, Document error, Document command):base(message,null){
+			this.error = error;
+			this.command = command;
+		}
+	}
 }

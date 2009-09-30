@@ -11,7 +11,8 @@ namespace MongoDB.Driver
     public class Database
     {
         private Connection connection;
-        
+        private Collection command;
+		
         private String name;
         public string Name {
             get { return name; }
@@ -30,6 +31,7 @@ namespace MongoDB.Driver
         public Database(Connection conn, String name){
             this.connection = conn;
             this.name = name;
+			this.command = this["$cmd"];
         }
 
         public List<String> GetCollectionNames(){
@@ -60,8 +62,7 @@ namespace MongoDB.Driver
         }
         
         public bool Authenticate(string username, string password){
-            Collection cmd = this["$cmd"];
-            Document nonceResult = cmd.FindOne(new Document().Append("getnonce", 1.0));
+            Document nonceResult = this.SendCommand("getnonce");
             String nonce = (String)nonceResult["nonce"];
             if (nonce == null){
                 throw new MongoException("Error retrieving nonce", null);
@@ -73,18 +74,37 @@ namespace MongoDB.Driver
                 auth.Add("user", username);
                 auth.Add("nonce", nonce);
                 auth.Add("key", Database.Hash(nonce + username + pwd));
-                Document authResult = cmd.FindOne(auth);
-                return (1.0 == (double)authResult["ok"]);
+                try{
+                    this.SendCommand(auth);
+                    return true;
+                }catch(MongoCommandException){
+                    return false;
+                }
             }
         }
 
         public void Logout(){
-            Collection cmd = this["$cmd"];
-            Document logoutResult = cmd.FindOne(new Document().Append("logout", 1.0));
-            double ok = (double)logoutResult["ok"];
+            this.SendCommand("logout");
+        }
+        
+        public Document SendCommand(string str){
+            Document cmd = new Document().Append(str,1.0);
+            return this.SendCommand(cmd);
+        }
+        
+        public Document SendCommand(Document cmd){
+            Document result = this.command.FindOne(cmd);
+            double ok = (double)result["ok"];
             if (ok != 1.0){
-                throw new MongoException(String.Format("Error logging out: {0}",(string)logoutResult["msg"]), null);
+                string msg;
+                if(result.Contains("msg")){
+                    msg = (string)result["msg"];
+                }else{
+                    msg = string.Empty;
+                }
+                throw new MongoCommandException(msg,result,cmd);
             }
+            return result;
         }
         
         internal static string Hash(string text){
@@ -92,6 +112,5 @@ namespace MongoDB.Driver
             byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(text));
             return BitConverter.ToString(hash).Replace("-","").ToLower();
         }
-
     }
 }

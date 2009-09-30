@@ -48,11 +48,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.core, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NUnit.Framework">
+      <HintPath>$(SharpDevelopBinPath)\Tools\NUnit\NUnit.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -87,6 +84,7 @@
     <Compile Include="Bson\TestBsonRegex.cs" />
     <Compile Include="TestMongoExceptions.cs" />
     <Compile Include="TestOid.cs" />
+    <Compile Include="TestOidGenerator.cs" />
     <Compile Include="TestPairedConnection.cs" />
     <Compile Include="Bson\TestBsonCode.cs" />
   </ItemGroup>

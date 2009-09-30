@@ -7,9 +7,6 @@ using MongoDB.Driver.IO;
 
 namespace MongoDB.Driver
 {
-    /// <summary>
-    /// Description of Collection.
-    /// </summary>
     public class Collection
     {
         private Connection connection;
@@ -36,7 +33,9 @@ namespace MongoDB.Driver
                 }
                 return metaData;
             }
-        }       
+        }
+        
+        private static OidGenerator oidGenerator = new OidGenerator();
                 
         public Collection(string name, Connection conn, string dbName)
         {
@@ -79,12 +78,11 @@ namespace MongoDB.Driver
         
         public long Count(Document spec){
             Database db = new Database(this.connection, this.dbName);
-            Collection cmd = db["$cmd"];
-            Document ret = cmd.FindOne(new Document().Append("count",this.Name).Append("query",spec));
-            if(ret.Contains("ok") && (double)ret["ok"] == 1){
+            try{
+                Document ret = db.SendCommand(new Document().Append("count",this.Name).Append("query",spec));
                 double n = (double)ret["n"];
                 return Convert.ToInt64(n);
-            }else{
+            }catch(MongoCommandException){
                 //FIXME This is an exception condition when the namespace is missing. -1 might be better here but the console returns 0.
                 return 0;
             }
@@ -101,6 +99,7 @@ namespace MongoDB.Driver
             im.FullCollectionName = this.FullName;
             List<BsonDocument> bdocs = new List<BsonDocument>();
             foreach(Document doc in docs){
+                if(doc.Contains("_id") == false) doc["_id"] = oidGenerator.Generate();
                 bdocs.Add(BsonConvert.From(doc));
             }
             im.BsonDocuments = bdocs.ToArray();
@@ -127,10 +126,11 @@ namespace MongoDB.Driver
             //otherwise just set the upsert flag to 1 to insert and send onward.
             Document selector = new Document();
             int upsert = 0;
-            if(doc["_id"] != null){
+            if(doc.Contains("_id")  & doc["_id"] != null){
                 selector["_id"] = doc["_id"];   
             }else{
                 //Likely a new document
+                doc["_id"] = oidGenerator.Generate();
                 upsert = 1;
             }
             this.Update(doc, selector, upsert);
