@@ -8,9 +8,7 @@ using MongoDB.Driver.IO;
 namespace MongoDB.Driver
 {
     
-    
-    public class Cursor : IDisposable
-    {
+	public class Cursor : ICursor {
         private Connection connection;
         
         private long id = -1;

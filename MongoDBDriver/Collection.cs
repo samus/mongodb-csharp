@@ -10,8 +10,7 @@ namespace MongoDB.Driver
     /// <summary>
     /// Description of Collection.
     /// </summary>
-    public class Collection
-    {
+	public class Collection : IMongoCollection {
         private Connection connection;
         
         private string name;        
@@ -46,7 +45,7 @@ namespace MongoDB.Driver
         }
                 
         public Document FindOne(Document spec){
-            Cursor cur = this.Find(spec, -1,0,null);
+			ICursor cur = this.Find(spec, -1, 0, null);
             foreach(Document doc in cur.Documents){
                 cur.Dispose();
                 return doc;
@@ -54,20 +53,20 @@ namespace MongoDB.Driver
             //FIXME Decide if this should throw a not found exception instead of returning null.
             return null; //this.Find(spec, -1, 0, null)[0];
         }
-        public Cursor FindAll(){
+		public ICursor FindAll() {
             Document spec = new Document();
             return this.Find(spec, 0, 0, null);
         }
         
-        public Cursor Find(Document spec){
+		public ICursor Find(Document spec) {
             return this.Find(spec, 0, 0, null);
         }
         
-        public Cursor Find(Document spec, int limit, int skip){
+		public ICursor Find(Document spec, int limit, int skip) {
             return this.Find(spec, limit, skip, null);
         }
         
-        public Cursor Find(Document spec, int limit, int skip, Document fields){
+		public ICursor Find(Document spec, int limit, int skip, Document fields) {
             if(spec == null) spec = new Document();
             Cursor cur = new Cursor(connection, this.FullName, spec, limit, skip, fields);
             return cur;
@@ -79,7 +78,7 @@ namespace MongoDB.Driver
         
         public long Count(Document spec){
             Database db = new Database(this.connection, this.dbName);
-            Collection cmd = db["$cmd"];
+			IMongoCollection cmd = db["$cmd"];
             Document ret = cmd.FindOne(new Document().Append("count",this.Name).Append("query",spec));
             if(ret.Contains("ok") && (double)ret["ok"] == 1){
                 double n = (double)ret["n"];
@@ -156,7 +155,7 @@ namespace MongoDB.Driver
         
         public void UpdateAll(Document doc, Document selector){
             //TODO do this server side with generated code.
-            Cursor toUpdate = this.Find(selector);
+			ICursor toUpdate = this.Find(selector);
             foreach(Document udoc in toUpdate.Documents){
                 Document updSel = new Document();
                 updSel["_id"] = udoc["_id"];

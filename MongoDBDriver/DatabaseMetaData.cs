@@ -44,7 +44,7 @@ namespace MongoDB.Driver
         }
         
         public void AddUser(string username, string password){
-            Collection users = db["system.users"];
+            IMongoCollection users = db["system.users"];
             string pwd = Database.Hash(username + ":mongo:" + password);
             Document user = new Document().Append("user", username).Append("pwd", pwd);
             Document userExists = users.FindOne(new Document().Append("user",username));
@@ -57,12 +57,12 @@ namespace MongoDB.Driver
         }
 
         public void RemoveUser(string username){
-            Collection users = db["system.users"];
+            IMongoCollection users = db["system.users"];
             users.Delete(new Document().Append("user", username));
         }
 
-        public Cursor ListUsers(){
-            Collection users = db["system.users"];
+        public ICursor ListUsers(){
+            IMongoCollection users = db["system.users"];
             return users.FindAll();
         }
 

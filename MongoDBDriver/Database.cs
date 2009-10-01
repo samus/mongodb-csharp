@@ -33,8 +33,8 @@ namespace MongoDB.Driver
         }
 
         public List<String> GetCollectionNames(){
-            Collection namespaces = this["system.namespaces"];
-            Cursor cursor = namespaces.Find(null);
+            IMongoCollection namespaces = this["system.namespaces"];
+            ICursor cursor = namespaces.Find(null);
             List<String> names = new List<string>();
             foreach (Document doc in cursor.Documents){
                 names.Add((String)doc["name"]); //Fix Me: Should filter built-ins
@@ -42,14 +42,15 @@ namespace MongoDB.Driver
             return names;
         }
 
-        public Collection this[ String name ]  {
+        public IMongoCollection this[ String name ]  {
             get{
                 return this.GetCollection(name);
             }
         }   
         
-        public Collection GetCollection(String name){
-            Collection col = new Collection(name, this.connection, this.Name);
+		public IMongoCollection GetCollection(String name)
+		{
+            IMongoCollection col = new Collection(name, this.connection, this.Name);
             return col;
         }
         
@@ -60,7 +61,7 @@ namespace MongoDB.Driver
         }
         
         public bool Authenticate(string username, string password){
-            Collection cmd = this["$cmd"];
+            IMongoCollection cmd = this["$cmd"];
             Document nonceResult = cmd.FindOne(new Document().Append("getnonce", 1.0));
             String nonce = (String)nonceResult["nonce"];
             if (nonce == null){
@@ -79,7 +80,7 @@ namespace MongoDB.Driver
         }
 
         public void Logout(){
-            Collection cmd = this["$cmd"];
+            IMongoCollection cmd = this["$cmd"];
             Document logoutResult = cmd.FindOne(new Document().Append("logout", 1.0));
             double ok = (double)logoutResult["ok"];
             if (ok != 1.0){
