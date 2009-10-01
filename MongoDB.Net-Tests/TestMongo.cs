@@ -29,7 +29,15 @@ namespace MongoDB.Driver
         
         [Test()]
         public void TestThatConnectMustBeCalled(){
-            Assert.Fail("Write Test");
+            Mongo m = new Mongo();
+            bool thrown = false;
+            try{
+                Database db = m["admin"];
+                db["$cmd"].FindOne(new Document().Append("listDatabases", 1.0));
+            }catch(MongoCommException){
+                thrown = true;
+            }
+            Assert.IsTrue(thrown, "MongoComException not thrown");
         }
     }
 }

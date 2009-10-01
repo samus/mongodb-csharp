@@ -34,7 +34,7 @@ namespace MongoDB.Driver
             WriteBadMessage(conn);
             try{    
                 QueryMessage qmsg = generateQueryMessage();
-                ReplyMessage rmsg = conn.SendTwoWayMessage(qmsg);
+                conn.SendTwoWayMessage(qmsg);
                 
             }catch(IOException){
                 //Should be able to resend.

@@ -77,8 +77,6 @@ namespace MongoDB.Driver
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
-            int idchanges = 0;
-            long id = 0;
             foreach(Document doc in c.Documents){
                 reads++;
             }

@@ -37,7 +37,7 @@ namespace MongoDB.Driver
         {
         }
         
-        public Mongo(String host):this(host,DEFAULTPORT){
+        public Mongo(String host):this(host,Connection.DEFAULTPORT){
         }
         
         public Mongo(String host, int port){
@@ -51,8 +51,8 @@ namespace MongoDB.Driver
         public Mongo(String leftHost, int leftPort, String rightHost, int rightPort):this(leftHost,leftPort,rightHost,rightPort,false){}
         
         public Mongo(String leftHost, int leftPort, String rightHost, int rightPort, bool slaveOk){
-            this.Host = host;
-            this.port = port;
+            this.Host = leftHost;
+            this.port = leftPort;
             connection = new PairedConnection(leftHost,leftPort,rightHost,rightPort,slaveOk);
         }
         

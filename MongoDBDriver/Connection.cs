@@ -64,13 +64,16 @@ namespace MongoDB.Driver
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
         public ReplyMessage SendTwoWayMessage(RequestMessage msg){
+            if (this.State != ConnectionState.Opened){
+                throw new MongoCommException("Operation cannot be performed on a closed connection.", this);
+            }
             try{
                 msg.Write(tcpclnt.GetStream());
                 
                 ReplyMessage reply = new ReplyMessage();                
                 reply.Read(tcpclnt.GetStream());
                 return reply;
-            }catch(IOException ioe){
+            }catch(IOException){
                 this.Reconnect();
                 throw;
             }
@@ -84,10 +87,13 @@ namespace MongoDB.Driver
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>        
         public void SendMessage(RequestMessage msg){
+            if (this.State != ConnectionState.Opened){
+                throw new MongoCommException("Operation cannot be performed on a closed connection.", this);
+            }
             try{
                 msg.Write(tcpclnt.GetStream()); 
                 
-            }catch(IOException ioe){//Sending doesn't seem to always trigger the detection of a closed socket.
+            }catch(IOException){//Sending doesn't seem to always trigger the detection of a closed socket.
                 this.Reconnect();
                 throw;
             }
@@ -102,7 +108,7 @@ namespace MongoDB.Driver
         public void SendMsgMessage(String message){
             MsgMessage msg = new MsgMessage();
             msg.Message = message;
-            msg.Write(tcpclnt.GetStream());
+            this.SendMessage(msg);
         }
         
         public void Reconnect(){

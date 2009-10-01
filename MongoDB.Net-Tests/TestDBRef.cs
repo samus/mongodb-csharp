@@ -39,8 +39,8 @@ namespace MongoDB.Driver
         public void TestFromIncompleteDocumentThrowsArguementException(){
             bool thrown = false;
             try {
-                DBRef bad = DBRef.FromDocument(new Document().Append(DBRef.RefName,"tests"));
-            } catch (ArgumentException ae) {
+                DBRef.FromDocument(new Document().Append(DBRef.RefName,"tests"));
+            } catch (ArgumentException) {
                 thrown = true;
             }
             Assert.IsTrue(thrown,"ArgumentException should have been thrown when trying to create convert from incomplete document");

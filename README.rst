@@ -1,6 +1,6 @@
 MongoDB-CSharp
 ==============
-This is a preliminary release of a driver to connect to MongoDB using .Net.  It is written entirely in C# and has been tested and developed under both Windows and Mono 2.0 (Ubuntu 32-bit 9.04).  Currently only basic features have been implemented.  The api is very likely to change and be in flux for a while.  There are many features to be added and refined.
+This is a community supported release of a driver to connect to MongoDB using .Net.  It is written entirely in C# and has been tested and developed under both Windows and Mono 2.0 (Ubuntu 32-bit 9.04).  Currently many features have been implemented with a few remaining.  The api is very likely to change and be in flux for a while but is quickly settling down.  At this point it is becoming a solid base to add many more advanced features.
 
 Current Features
 ================
@@ -16,16 +16,16 @@ Current Features
 - Index handling routines (List, Create, Drop)
 - Count
 - Roughly 80% unit test coverage.  This can and will be improved on.
+- Paired connections
+- Authentication (Does not reauthorize on auto reconnect yet).
 
 Missing Features
 ================
-- Paired connections
 - Auto reconnect options
-- Connection pooling
-- Authentication
+- Connection pooling (maybe not implemented)
 - A few BSON Types (easy to add)
 - Database commands (can send queries to $cmd if necessary)
-- Exceptions
+- Exceptions (In progress)
 - hint, explain, $where
 - database profiling: set/get profiling level, get profiling info
 - GridFS support
@@ -54,7 +54,8 @@ At the simplest query the database like this:
 
 Contributors
 ============
-Sam Corder (samus)
-Sergey Bartunov (sbos)
+- Sam Corder (samus)
+- Seth Edwards (Sedward)
+- Sergey Bartunov (sbos)
 
 

@@ -125,7 +125,6 @@ namespace MongoDB.Driver
             GetMoreMessage gmm = new GetMoreMessage(this.FullCollectionName, this.Id, this.Limit);
             try{
                 this.reply = connection.SendTwoWayMessage(gmm);
-			this.reply.Documents = null;
                 this.id = this.reply.CursorID;
             }catch(IOException ioe){
                 this.id = 0;
