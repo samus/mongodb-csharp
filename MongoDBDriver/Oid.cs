@@ -31,5 +31,9 @@ namespace MongoDB.Driver
                 throw new ArgumentOutOfRangeException("value","Value contains invalid characters");
             }
         }
+
+        public override string ToString() {
+            return string.Format(@"ObjectId(""{0}"")", value);
+        }
     }
 }

@@ -100,6 +100,98 @@ namespace MongoDB.Driver
                 Assert.AreEqual(cnt, d[key], "Order wasn't reset on CopyTo");
                 cnt++;
             }           
-        }       
+        }
+
+        [Test]
+        public void TestTwoDocumentsWithSameContentInSameOrderAreEqual() {
+            Document d1 = new Document().Append("k1", "v1").Append("k2", "v2");
+            Document d2 = new Document().Append("k1", "v1").Append("k2", "v2");
+            Assert.AreEqual(d1, d2);
+        }
+
+        [Test]
+        public void TestTwoDocumentsWithSameContentInDifferentOrderAreNotEqual() {
+            Document d1 = new Document().Append("k1", "v1").Append("k2", "v2");
+            Document d2 = new Document().Append("k2", "v2").Append("k1", "v1");
+            Assert.AreNotEqual(d1, d2);
+        }
+
+        [Test]
+        public void TestTwoDocumentsWithSameArrayContentAreEqual() {
+            Document d1 = new Document().Append("k1", new string[] { "v1", "v2" });
+            Document d2 = new Document().Append("k1", new string[] { "v1", "v2" });
+            Assert.AreEqual(d1, d2);
+        }
+
+        [Test]
+        public void TestTwoDocumentsWithMisorderedArrayContentAreNotEqual() {
+            Document d1 = new Document().Append("k1", new string[] { "v1", "v2" });
+            Document d2 = new Document().Append("k1", new string[] { "v2", "v1" });
+            Assert.AreNotEqual(d1, d2);
+        }
+
+        [Test]
+        public void TestTwoDocumentsWithSameDocumentChildTreeAreEqual() {
+            Document d1 = new Document().Append("k1", new Document().Append("k2",new Document().Append("k3","foo")));
+            Document d2 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "foo")));
+            Assert.AreEqual(d1, d2);
+        }
+
+        [Test]
+        public void TestTwoDocumentsWithDifferentDocumentChildTreeAreNotEqual() {
+            Document d1 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "foo")));
+            Document d2 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "bar")));
+            Assert.AreNotEqual(d1, d2);
+        }
+
+        [Test]
+        public void TestToStringForDocWithSingleStringField() {
+            var doc = new Document().Append("foo", "bar");
+            Assert.AreEqual(@"{ ""foo"": ""bar"" }", doc.ToString());
+        }
+        [Test]
+        public void TestToStringForDocWithSingleIntField() {
+            var doc = new Document().Append("foo", 10);
+            Assert.AreEqual(@"{ ""foo"": 10 }", doc.ToString());
+        }
+        [Test]
+        public void TestToStringForDocWithSingleDoubleField() {
+            var doc = new Document().Append("foo", 10.1);
+            Assert.AreEqual(@"{ ""foo"": 10.1 }", doc.ToString());
+        }
+        [Test]
+        public void TestToStringForDocWithSingleDateTimeField() {
+            var doc = new Document().Append("foo", DateTime.Parse("2009-10-10T07:00:00.0000000Z"));
+            Assert.AreEqual(@"{ ""foo"": ""2009-10-10T07:00:00.0000000Z"" }", doc.ToString());
+        }
+        [Test]
+        public void TestToStringForDocWithSingleOidField() {
+            var doc = new Document().Append("foo", new Oid("4ac7ee91f693066f1c96b649"));
+            Assert.AreEqual(@"{ ""foo"": ObjectId(""4ac7ee91f693066f1c96b649"") }", doc.ToString());
+        }
+        [Test]
+        public void TestToStringForDocWithMultipleFields() {
+            var doc = new Document().Append("foo", "bar").Append("baz", 42);
+            Assert.AreEqual(@"{ ""foo"": ""bar"", ""baz"": 42 }", doc.ToString());
+        }
+        [Test]
+        public void TestToStringForDocWithSubDocField() {
+            var doc = new Document().Append("foo", "bar").Append("baz", new Document().Append("a", 1));
+            Assert.AreEqual(@"{ ""foo"": ""bar"", ""baz"": { ""a"": 1 } }", doc.ToString());
+        }
+        [Test]
+        public void TestToStringForDocWithArrayOfInts() {
+            var doc = new Document().Append("foo", new[] {1,2,3,4});
+            Assert.AreEqual(@"{ ""foo"": [ 1, 2, 3, 4 ] }", doc.ToString());
+        }
+        [Test]
+        public void TestToStringForDocWithArrayOfDocs() {
+            var doc = new Document().Append("foo", new[] {
+                new Document().Append("a", 1),
+                new Document().Append("b", 2),
+                new Document().Append("c", 3),
+            });
+            Assert.AreEqual(@"{ ""foo"": [ { ""a"": 1 }, { ""b"": 2 }, { ""c"": 3 } ] }", doc.ToString());
+        }
     }
 }
