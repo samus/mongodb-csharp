@@ -142,8 +142,14 @@ namespace MongoDB.Driver {
         }
 
         private void SerializeType(object value, StringBuilder json) {
+            if (value == null) {
+                json.Append("null");
+                return;
+            }
             var t = value.GetType();
-            if (t.IsArray) {
+            if (value is bool) {
+                json.Append(((bool)value) ? "true" : "false");
+            } else if (t.IsArray) {
                 json.Append("[ ");
                 bool first = true;
                 foreach (var v in (Array)value) {

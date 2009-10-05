@@ -145,25 +145,47 @@ namespace MongoDB.Driver
         }
 
         [Test]
+        public void TestToStringForDocWithSingleNullField() {
+            var doc = new Document().Append("foo", null);
+            Assert.AreEqual(@"{ ""foo"": null }", doc.ToString());
+        }
+
+        [Test]
+        public void TestToStringForDocWithSingleTrueField() {
+            var doc = new Document().Append("foo", true);
+            Assert.AreEqual(@"{ ""foo"": true }", doc.ToString());
+        }
+
+        [Test]
+        public void TestToStringForDocWithSingleFalseField() {
+            var doc = new Document().Append("foo", false);
+            Assert.AreEqual(@"{ ""foo"": false }", doc.ToString());
+        }
+
+        [Test]
         public void TestToStringForDocWithSingleStringField() {
             var doc = new Document().Append("foo", "bar");
             Assert.AreEqual(@"{ ""foo"": ""bar"" }", doc.ToString());
         }
+
         [Test]
         public void TestToStringForDocWithSingleIntField() {
             var doc = new Document().Append("foo", 10);
             Assert.AreEqual(@"{ ""foo"": 10 }", doc.ToString());
         }
+
         [Test]
         public void TestToStringForDocWithSingleDoubleField() {
             var doc = new Document().Append("foo", 10.1);
             Assert.AreEqual(@"{ ""foo"": 10.1 }", doc.ToString());
         }
+
         [Test]
         public void TestToStringForDocWithSingleDateTimeField() {
             var doc = new Document().Append("foo", DateTime.Parse("2009-10-10T07:00:00.0000000Z"));
             Assert.AreEqual(@"{ ""foo"": ""2009-10-10T07:00:00.0000000Z"" }", doc.ToString());
         }
+
         [Test]
         public void TestToStringForDocWithSingleOidField() {
             var doc = new Document().Append("foo", new Oid("4ac7ee91f693066f1c96b649"));
@@ -174,6 +196,7 @@ namespace MongoDB.Driver
             var doc = new Document().Append("foo", "bar").Append("baz", 42);
             Assert.AreEqual(@"{ ""foo"": ""bar"", ""baz"": 42 }", doc.ToString());
         }
+
         [Test]
         public void TestToStringForDocWithSubDocField() {
             var doc = new Document().Append("foo", "bar").Append("baz", new Document().Append("a", 1));
@@ -184,6 +207,7 @@ namespace MongoDB.Driver
             var doc = new Document().Append("foo", new[] {1,2,3,4});
             Assert.AreEqual(@"{ ""foo"": [ 1, 2, 3, 4 ] }", doc.ToString());
         }
+
         [Test]
         public void TestToStringForDocWithArrayOfDocs() {
             var doc = new Document().Append("foo", new[] {
