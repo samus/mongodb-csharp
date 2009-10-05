@@ -62,7 +62,8 @@ namespace MongoDB.Driver.Bson
         }
         public byte[] ReadBytes(int len){
             return reader.ReadBytes(len);
-        }       
+        }
+
         
         public Int32 ReadInt32(){
             return reader.ReadInt32();
