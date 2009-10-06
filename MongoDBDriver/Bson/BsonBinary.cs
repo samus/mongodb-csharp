@@ -46,6 +46,7 @@ namespace MongoDB.Driver.Bson
 
         public int Read(BsonReader reader){
             int size = reader.ReadInt32();
+            this.Subtype = reader.ReadByte();
             this.Val = reader.ReadBytes(size);
             return this.Size;
         }
