@@ -13,24 +13,26 @@ namespace MongoDB.Driver.Bson
 
         //    Optional data subtype. Default is 0x02 
         //    See http://www.mongodb.org/display/DOCS/BSON#BSON-noteondatabinary
-        public enum SubtypeCode : byte{
-            Bytes = 2,
-            UUID = 3,
-            MD5 = 5,
-            UserDefined = 8
-        }      
+        //private  enum SubtypeCode : byte
+        //{
+        //    Bytes = 2,
+        //    UUID = 3,
+        //    MD5 = 5,
+        //    UserDefined = 8
+        //}      
 
         public BsonBinary() { }
 
-        public BsonBinary(byte[] val){
-            this.val = val;
-            this.subtype = (byte)SubtypeCode.Bytes;            
+        public BsonBinary(Binary binary){
+            this.val = binary.Bytes;
+            this.subtype = binary.Subtype;
+            
         }
 
-        public BsonBinary(byte[] val, SubtypeCode subtype)
-        {
-            this.val = val;
-            this.subtype = (byte)subtype;
+        private byte subtype;
+        public byte Subtype{
+            get { return this.subtype; }
+            set { this.subtype = value; }
         }
 
         public int Size{
@@ -41,15 +43,9 @@ namespace MongoDB.Driver.Bson
             get { return (byte)BsonDataType.Binary; }
         }
 
-        private byte subtype;
-        public byte Subtype {
-            get { return this.subtype; }
-            set { this.subtype = value; }
-        }
 
         public int Read(BsonReader reader){
             int size = reader.ReadInt32();
-            this.Subtype = reader.ReadByte();
             this.Val = reader.ReadBytes(size);
             return this.Size;
         }
@@ -61,7 +57,8 @@ namespace MongoDB.Driver.Bson
         }
 
         public virtual object ToNative(){
-            return this.Val;
+            
+            return new Binary(this.Val);
         }
 
         public override string ToString()

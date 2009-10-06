@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\BsonArray.cs" />
+    <Compile Include="Bson\BsonBinary.cs" />
     <Compile Include="Bson\BsonBoolean.cs" />
     <Compile Include="Bson\BsonConvert.cs" />
     <Compile Include="Bson\BsonDate.cs" />
@@ -90,8 +91,6 @@
     <Compile Include="DatabaseMetaData.cs" />
     <Compile Include="DBRef.cs" />
     <Compile Include="Document.cs" />
-    <Compile Include="GridFS\Chunk.cs" />
-    <Compile Include="GridFS\GridFS.cs" />
     <Compile Include="IO\GetMoreMessage.cs" />
     <Compile Include="IO\InsertMessage.cs" />
     <Compile Include="IO\KillCursorsMessage.cs" />
@@ -116,6 +115,7 @@
     <Compile Include="Bson\BsonCodeWScope.cs" />
     <Compile Include="Code.cs" />
     <Compile Include="CodeWScope.cs" />
+    <Compile Include="Binary.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

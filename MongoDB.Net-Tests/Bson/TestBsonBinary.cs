@@ -10,8 +10,9 @@ namespace MongoDB.Driver.Bson
         [Test]
         public void TestBinary()
         {
-            byte[] data = File.ReadAllBytes(@"C:\API\test.txt");
-            BsonBinary binaryIn = new BsonBinary(data, BsonBinary.SubtypeCode.Bytes);
+            
+            byte[] data = File.ReadAllBytes(@"test-data\tests.binary.txt");
+            BsonBinary binaryIn = new BsonBinary(new Binary(data));
             MemoryStream stream = new MemoryStream();
             BsonWriter bsonWriter = new BsonWriter(stream);
             binaryIn.Write(bsonWriter);
