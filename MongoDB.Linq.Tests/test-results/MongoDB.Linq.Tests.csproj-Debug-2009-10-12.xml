@@ -1,0 +1,2301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <UnitTestResult>
+      <TestDate>2009-10-12T22:40:45</TestDate>
+      <Status>Success Failure</Status>
+      <TotalFailures>75</TotalFailures>
+      <TotalSuccess>2</TotalSuccess>
+      <TotalIgnored>0</TotalIgnored>
+      <Time />
+      <Message>Child test failed</Message>
+    </UnitTestResult>
+  </Results>
+  <Tests>
+    <TestRecord Name="MongoDB">
+      <Results>
+        <UnitTestResult>
+          <TestDate>2009-10-12T22:40:45</TestDate>
+          <Status>Success Failure</Status>
+          <TotalFailures>75</TotalFailures>
+          <TotalSuccess>2</TotalSuccess>
+          <TotalIgnored>0</TotalIgnored>
+          <Time />
+          <Message>Child test failed</Message>
+        </UnitTestResult>
+      </Results>
+      <Tests>
+        <TestRecord Name="Linq">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2009-10-12T22:40:45</TestDate>
+              <Status>Success Failure</Status>
+              <TotalFailures>75</TotalFailures>
+              <TotalSuccess>2</TotalSuccess>
+              <TotalIgnored>0</TotalIgnored>
+              <Time />
+              <Message>Child test failed</Message>
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="Tests">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2009-10-12T22:40:45</TestDate>
+                  <Status>Success Failure</Status>
+                  <TotalFailures>75</TotalFailures>
+                  <TotalSuccess>2</TotalSuccess>
+                  <TotalIgnored>0</TotalIgnored>
+                  <Time />
+                  <Message>Child test failed</Message>
+                </UnitTestResult>
+              </Results>
+              <Tests>
+                <TestRecord Name="TestExpressions">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2009-10-12T22:40:45</TestDate>
+                      <Status>Success Failure</Status>
+                      <TotalFailures>2</TotalFailures>
+                      <TotalSuccess>2</TotalSuccess>
+                      <TotalIgnored>0</TotalIgnored>
+                      <Time />
+                      <Message>Child test failed</Message>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="Evaluating_a_MethodCallExpression_with_known_return_type">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Success</Status>
+                          <TotalFailures>0</TotalFailures>
+                          <TotalSuccess>1</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>Test successful
+
+Execution time: 0.11ms</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Evaluating_a_MethodCallExpression_with_unknown_return_type">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Success</Status>
+                          <TotalFailures>0</TotalFailures>
+                          <TotalSuccess>1</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>Test successful
+
+Execution time: 0.01ms</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Getting_at_member_expression_values">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.InvalidCastException : Cannot cast from source type to destination type.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestExpressions.Getting_at_member_expression_values () [0x0007c] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestExpressions.cs:18 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Getting_field_from_closure">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.NullReferenceException : Object reference not set to an instance of an object</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestExpressions.Getting_field_from_closure () [0x00034] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestExpressions.cs:34 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+                <TestRecord Name="TestMongoDocumentQuerySyntax">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2009-10-12T22:40:45</TestDate>
+                      <Status>Failure</Status>
+                      <TotalFailures>44</TotalFailures>
+                      <TotalSuccess>0</TotalSuccess>
+                      <TotalIgnored>0</TotalIgnored>
+                      <Time />
+                      <Message>Child test failed</Message>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="Can_use_equality_op_on_DateTime">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_op_on_DateTime_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_op_on_double">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_op_on_double_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_op_on_int">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_op_on_int_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_op_on_string">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_op_on_string_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_Equals">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_op_on_DateTime">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_op_on_DateTime_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_op_on_double">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_op_on_double_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_op_on_int">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_op_on_int_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_or_equal_op_on_DateTime">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_or_equal_op_on_DateTime_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_or_equal_op_on_double">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_or_equal_op_on_double_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_or_equal_op_on_int">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_or_equal_op_on_int_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_in_query">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_in_query_with_array_ref">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_op_on_DateTime">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_op_on_DateTime_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_op_on_double">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_op_on_double_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_op_on_int">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_op_on_int_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_op_on_string">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_op_on_string_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_op_on_DateTime">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_op_on_DateTime_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_op_on_double">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_op_on_double_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_op_on_int">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_op_on_int_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_or_equal_op_on_DateTime">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_or_equal_op_on_DateTime_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_or_equal_op_on_double">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_or_equal_op_on_double_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_or_equal_op_on_int">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_or_equal_op_on_int_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_not_in_query">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+                <TestRecord Name="TestQueryExecution">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2009-10-12T22:40:45</TestDate>
+                      <Status>Failure</Status>
+                      <TotalFailures>1</TotalFailures>
+                      <TotalSuccess>0</TotalSuccess>
+                      <TotalIgnored>0</TotalIgnored>
+                      <Time />
+                      <Message>System.ArgumentNullException : Argument cannot be null.
+Parameter name: s</Message>
+                      <StackTrace>  at System.Int32.Parse (System.String s) [0x00000] 
+  at MongoDB.Linq.Tests.AppSettingsFactory.get_Port () [0x00000] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/AppSettingsFactory.cs:11 
+  at MongoDB.Linq.Tests.AppSettingsFactory.CreateMongo () [0x00000] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/AppSettingsFactory.cs:14 
+  at MongoDB.Linq.Tests.TestQueryExecution.GlobalSetup () [0x0000a] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestQueryExecution.cs:15 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] </StackTrace>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="Can_build_simple_query">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in TestQueryExecution</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+                <TestRecord Name="TestQueryParsing">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2009-10-12T22:40:45</TestDate>
+                      <Status>Failure</Status>
+                      <TotalFailures>28</TotalFailures>
+                      <TotalSuccess>0</TotalSuccess>
+                      <TotalIgnored>0</TotalIgnored>
+                      <Time />
+                      <Message>Child test failed</Message>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="Can_call_AsEnumerable_on_query">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_call_ToList_on_query">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_chain_Take_and_Skip">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_compose_queries">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_do_and_queries">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_dot_notation_for_queries">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_where_clause_with_equals">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_where_clause_with_equals_method_on_Document_indexer">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_where_clause_with_equals_method_on_value">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_where_clause_with_key_as_variable">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_where_clause_with_left_and_right_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_where_clause_with_left_cast_to_string">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_where_clause_with_right_cast_to_object">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_equality_where_clause_with_value_as_variable">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_or_equal">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_greater_than_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_inequality_reversed">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Can_use_less_than_or_equal">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="First_on_empty_sequence_throws">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="FirstOrDefault_produces_limit_1">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="No_skip_produces_zero_skip">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="No_take_produces_zero_limit">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="No_where_produces_empty_Query">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Skip_5_produces_skip_5">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                    <TestRecord Name="Take_5_produces_limit_5">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2009-10-12T22:40:45</TestDate>
+                          <Status>Failure</Status>
+                          <TotalFailures>1</TotalFailures>
+                          <TotalSuccess>0</TotalSuccess>
+                          <TotalIgnored>0</TotalIgnored>
+                          <Time />
+                          <Message>System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Mock`1
+  ----&gt; System.TypeInitializationException : An exception was thrown by the type initializer for Moq.Proxy.CastleProxyFactory
+  ----&gt; System.TypeLoadException : A type load exception has occurred.</Message>
+                          <StackTrace>  at MongoDB.Linq.Tests.TestMongoDocumentQuerySyntax.Setup () [0x0001f] in /home/samus/Documents/Projects/mongodb-csharp/MongoDB.Linq.Tests/TestMongoDocumentQuerySyntax.cs:20 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x00000] 
+--TypeInitializationException
+  at Moq.Mock`1[MongoDB.Driver.IMongoCollection]..cctor () [0x00000] 
+--TypeLoadException
+  at Castle.DynamicProxy.ModuleScope..ctor (Boolean savePhysicalAssembly) [0x00000] 
+  at Castle.DynamicProxy.ModuleScope..ctor () [0x00000] 
+  at Castle.DynamicProxy.DefaultProxyBuilder..ctor () [0x00000] 
+  at Castle.DynamicProxy.ProxyGenerator..ctor () [0x00000] 
+  at Moq.Proxy.CastleProxyFactory..cctor () [0x00000] </StackTrace>
+                          <ConsoleOutput />
+                          <ConsoleError>initializing queryable
+</ConsoleError>
+                        </UnitTestResult>
+                      </Results>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+              </Tests>
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+      </Tests>
+    </TestRecord>
+  </Tests>
+</TestRecord>
