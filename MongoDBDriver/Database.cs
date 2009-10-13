@@ -11,8 +11,8 @@ namespace MongoDB.Driver
     public class Database
     {
         private Connection connection;
-        private Collection command;
-		
+        private IMongoCollection command;
+        
         private String name;
         public string Name {
             get { return name; }
@@ -31,12 +31,12 @@ namespace MongoDB.Driver
         public Database(Connection conn, String name){
             this.connection = conn;
             this.name = name;
-			this.command = this["$cmd"];
+            this.command = this["$cmd"];
         }
 
         public List<String> GetCollectionNames(){
-            Collection namespaces = this["system.namespaces"];
-            Cursor cursor = namespaces.Find(null);
+            IMongoCollection namespaces = this["system.namespaces"];
+            ICursor cursor = namespaces.Find(null);
             List<String> names = new List<string>();
             foreach (Document doc in cursor.Documents){
                 names.Add((String)doc["name"]); //Fix Me: Should filter built-ins
@@ -44,14 +44,14 @@ namespace MongoDB.Driver
             return names;
         }
 
-        public Collection this[ String name ]  {
+        public IMongoCollection this[ String name ]  {
             get{
                 return this.GetCollection(name);
             }
         }   
         
-        public Collection GetCollection(String name){
-            Collection col = new Collection(name, this.connection, this.Name);
+        public IMongoCollection GetCollection(String name){
+            IMongoCollection col = new Collection(name, this.connection, this.Name);
             return col;
         }
         
