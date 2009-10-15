@@ -48,7 +48,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestAuthenticatedInsert(){
             bool ok = Authenticate();
-            Collection tests = db["inserts"];
+            IMongoCollection tests = db["inserts"];
             if (ok){
                 tests.Insert(new Document().Append("value", 34));
             }
@@ -64,7 +64,7 @@ namespace MongoDB.Driver
             }catch(MongoException){
                 //We don't care.  Just wanted to make sure we weren't logged in
             }
-            Collection tests = db["inserts"];
+            IMongoCollection tests = db["inserts"];
             tests.Insert(new Document().Append("value", 84));
             Document valA = tests.FindOne(new Document().Append("value", 84));
             Assert.AreNotEqual(84, valA["value"]);

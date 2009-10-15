@@ -91,6 +91,8 @@
     <Compile Include="DatabaseMetaData.cs" />
     <Compile Include="DBRef.cs" />
     <Compile Include="Document.cs" />
+    <Compile Include="ICursor.cs" />
+    <Compile Include="IMongoCollection.cs" />
     <Compile Include="IO\GetMoreMessage.cs" />
     <Compile Include="IO\InsertMessage.cs" />
     <Compile Include="IO\KillCursorsMessage.cs" />

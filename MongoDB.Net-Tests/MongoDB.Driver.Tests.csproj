@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -59,10 +59,12 @@
     <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\redist\nunit.framework.dll</HintPath>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\TestBsonBinary.cs" />
@@ -96,6 +98,10 @@
     <Compile Include="Bson\TestBsonCode.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
+      <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
+      <Name>MongoDB.Driver</Name>
+    </ProjectReference>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
     </BootstrapperPackage>

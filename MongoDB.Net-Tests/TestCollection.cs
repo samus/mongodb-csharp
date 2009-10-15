@@ -35,7 +35,7 @@ namespace MongoDB.Driver
             Document fields = new Document();
             fields["x"] = 1;
                         
-            Cursor c = db["tests"]["reads"].Find(query,-1,0,fields);
+            ICursor c = db["tests"]["reads"].Find(query,-1,0,fields);
             foreach(Document result in c.Documents){            
                 Assert.IsNotNull(result);
                 Assert.AreEqual(4, result["x"]);
@@ -48,7 +48,7 @@ namespace MongoDB.Driver
             Document query = new Document();
             query["j"] = new Document().Append("$gt",20);
             
-            Cursor c = db["tests"]["reads"].Find(query);
+            ICursor c = db["tests"]["reads"].Find(query);
             foreach(Document result in c.Documents){            
                 Assert.IsNotNull(result);
                 Object j = result["j"];
@@ -67,7 +67,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestSimpleInsert(){
-            Collection inserts = db["tests"]["inserts"];
+            IMongoCollection inserts = db["tests"]["inserts"];
             Document indoc = new Document();
             indoc["song"] = "Palmdale";
             indoc["artist"] = "Afroman";
@@ -82,7 +82,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestReallySimpleInsert(){
-            Collection inserts = db["tests"]["inserts"];
+            IMongoCollection inserts = db["tests"]["inserts"];
             Document indoc = new Document();
             indoc["y"] = 1;
             indoc["x"] = 2;
@@ -95,7 +95,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestPoundSymbolInsert(){
-            Collection inserts = db["tests"]["inserts"];
+            IMongoCollection inserts = db["tests"]["inserts"];
             Document indoc = new Document().Append("x","1234£56").Append("y",1);;
             inserts.Insert(indoc);
 
@@ -106,7 +106,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestArrayInsert(){
-            Collection inserts = db["tests"]["inserts"];
+            IMongoCollection inserts = db["tests"]["inserts"];
             Document indoc1 = new Document();
             indoc1["song"] = "The Axe";
             indoc1["artist"] = "Tinsley Ellis";
@@ -130,7 +130,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestDelete(){
-            Collection deletes = db["tests"]["deletes"];
+            IMongoCollection deletes = db["tests"]["deletes"];
             Document doc = new Document();
             doc["y"] = 1;
             doc["x"] = 2;
@@ -150,7 +150,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestUpdateUpsertNotExisting(){
-            Collection updates = db["tests"]["updates"];
+            IMongoCollection updates = db["tests"]["updates"];
             Document doc = new Document();
             doc["First"] = "Sam";
             doc["Last"] = "Corder";
@@ -164,7 +164,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestUpdateUpsertExisting(){
-            Collection updates = db["tests"]["updates"];
+            IMongoCollection updates = db["tests"]["updates"];
             Document doc = new Document();
             doc["First"] = "Mtt";
             doc["Last"] = "Brewer";
@@ -187,13 +187,13 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestUpdateMany(){
-            Collection updates = db["tests"]["updates"];
+            IMongoCollection updates = db["tests"]["updates"];
             
             updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam"));
             updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam2"));
             
             Document selector = new Document().Append("Last", "Cordr");
-            Cursor results = updates.Find(selector);
+            ICursor results = updates.Find(selector);
             bool found = false;
             foreach(Document doc in results.Documents){
                 Assert.AreEqual("Cordr", doc["Last"]);
@@ -217,7 +217,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCount(){
-            Collection counts = db["tests"]["counts"];
+            IMongoCollection counts = db["tests"]["counts"];
             int top = 100;
             for(int i = 0; i < top; i++){
                 counts.Insert(new Document().Append("Last", "Cordr").Append("First","Sam").Append("cnt", i));
@@ -228,7 +228,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCountWithSpec(){
-            Collection counts = db["tests"]["counts_spec"];
+            IMongoCollection counts = db["tests"]["counts_spec"];
             counts.Insert(new Document().Append("Last", "Cordr").Append("First","Sam").Append("cnt", 1));
             counts.Insert(new Document().Append("Last", "Cordr").Append("First","Sam").Append("cnt", 2));
             counts.Insert(new Document().Append("Last", "Corder").Append("First","Sam").Append("cnt", 3));
@@ -241,7 +241,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCountInvalidCollection(){
-            Collection counts = db["tests"]["counts_wtf"];
+            IMongoCollection counts = db["tests"]["counts_wtf"];
             Assert.AreEqual(0, counts.Count());
         }
         

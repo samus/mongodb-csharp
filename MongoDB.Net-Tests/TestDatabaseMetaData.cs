@@ -57,10 +57,15 @@ namespace MongoDB.Driver
         [Test]
         public void TestDropInvalidCollection(){
             Database tests = db["tests"];
-            bool dropped = tests.MetaData.DropCollection("todrop_notexists");
+            bool thrown = false;
+            try{
+                tests.MetaData.DropCollection("todrop_notexists");
+            }catch(MongoCommandException){
+                thrown = true;
+            }
             
-            Assert.IsFalse(dropped,"Dropped was false");
-
+            Assert.IsTrue(thrown,"Command exception should have been thrown");
+            
             List<String> names = tests.GetCollectionNames();
             Assert.IsFalse(names.Contains("tests.todrop_notexists"));
             

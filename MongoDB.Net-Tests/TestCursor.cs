@@ -24,7 +24,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCanReadSmall()
         {
-            Cursor c = db["tests"]["smallreads"].FindAll();
+            ICursor c = db["tests"]["smallreads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
@@ -36,7 +36,7 @@ namespace MongoDB.Driver
         }
         [Test]
         public void TestCanReadMore(){
-            Cursor c = db["tests"]["reads"].FindAll();
+            ICursor c = db["tests"]["reads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
@@ -59,7 +59,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCanReadAndKillCursor()
         {
-            Cursor c = db["tests"]["reads"].FindAll();
+            ICursor c = db["tests"]["reads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             foreach(Document doc in c.Documents){
@@ -72,7 +72,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCanLimit()
         {
-            Cursor c = db["tests"]["reads"].FindAll();
+            ICursor c = db["tests"]["reads"].FindAll();
             c.Limit = 5;
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");

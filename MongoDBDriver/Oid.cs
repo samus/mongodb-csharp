@@ -24,16 +24,16 @@ namespace MongoDB.Driver{
             this.Value = value;
         }
         
-        public override string ToString(){
-            return BitConverter.ToString(value).Replace("-","").ToLower();
-        }
-        
         public override bool Equals(object obj){
             if(obj.GetType() == typeof(Oid)){
                 string hex = ((Oid)obj).ToString();
                 return this.ToString().Equals(hex);
             }
             return false;
+        }
+        
+        public override string ToString() {
+            return string.Format(@"ObjectId(""{0}"")", BitConverter.ToString(value).Replace("-","").ToLower());
         }
         
         protected void ValidateHex(string val){

@@ -34,7 +34,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestReferenceNonOid(){
             Database tests = mongo["tests"];
-            Collection refs = tests["refs"];
+            IMongoCollection refs = tests["refs"];
             
             Document doc = new Document().Append("_id",123).Append("msg", "this has a non oid key");
             refs.Insert(doc);
