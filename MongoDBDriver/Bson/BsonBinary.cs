@@ -23,10 +23,14 @@ namespace MongoDB.Driver.Bson
 
         public BsonBinary() { }
 
+        public BsonBinary(byte[] bytes, byte subtype){
+            this.val = bytes;
+            this.subtype = subtype;
+        }
+
         public BsonBinary(Binary binary){
             this.val = binary.Bytes;
-            this.subtype = binary.Subtype;
-            
+            this.subtype = binary.Subtype;            
         }
 
         private byte subtype;
@@ -46,10 +50,13 @@ namespace MongoDB.Driver.Bson
 
         public int Read(BsonReader reader){
             int size = reader.ReadInt32();
+            int bytesRead = 4;
             this.Subtype = reader.ReadByte();
+            bytesRead += sizeof(byte);
             this.Val = reader.ReadBytes(size);
-            return this.Size;
-        }
+            bytesRead += size;
+            return bytesRead;
+        }   
 
         public void Write(BsonWriter writer){
             writer.Write(this.Size);
