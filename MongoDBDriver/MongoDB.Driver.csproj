@@ -106,6 +106,7 @@
     <Compile Include="Bson\BsonReader.cs" />
     <Compile Include="Bson\BsonElement.cs" />
     <Compile Include="Cursor.cs" />
+    <Compile Include="MongoDBNull.cs" />
     <Compile Include="MongoExceptions.cs" />
     <Compile Include="Oid.cs" />
     <Compile Include="IO\DeleteMessage.cs" />

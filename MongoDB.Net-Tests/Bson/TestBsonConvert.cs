@@ -56,5 +56,17 @@ namespace MongoDB.Driver.Bson
             
         }
 
+        [Test]
+        public void TestFromNullValueObject(){
+            Object obj = null;
+            BsonType t = BsonConvert.From(obj);
+            Assert.AreEqual(typeof(BsonNull),t.GetType());
+        }
+        
+        [Test]
+        public void TestFromMongoDBNull(){
+            BsonType t = BsonConvert.From(MongoDBNull.Value);
+            Assert.AreEqual(typeof(BsonNull),t.GetType());
+        }        
     }
 }

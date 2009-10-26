@@ -29,6 +29,13 @@ namespace MongoDB.Driver
         }
         
         [Test]
+        public void TestFindNulls(){
+            Document query = new Document().Append("n",MongoDBNull.Value);
+            long numnulls = db["tests"]["smallreads"].Count(query);
+            Assert.AreEqual(4,numnulls);
+        }
+        
+        [Test]
         public void TestFindAttributeLimit(){
             Document query = new Document();
             query["j"] = 10;
@@ -55,6 +62,27 @@ namespace MongoDB.Driver
                 Assert.IsTrue((double)j > 20);
             }           
         }
+
+        [Test]
+        public void TestManualWhere(){
+            Document query = new Document().Append("$where", new Code("this.j % 2 == 0"));
+            ICursor c = db["tests"]["reads"].Find(query);
+            foreach(Document result in c.Documents){            
+                Assert.IsNotNull(result);
+                Object j = result["j"];
+                Assert.IsTrue((double)j % 2 == 0);
+            }                       
+        }
+        
+        [Test]
+        public void TestWhere(){
+            ICursor c = db["tests"]["reads"].Find("this.j % 2 == 0");
+            foreach(Document result in c.Documents){            
+                Assert.IsNotNull(result);
+                Object j = result["j"];
+                Assert.IsTrue((double)j % 2 == 0);
+            }                       
+        }        
 
         [Test]
         public void TestFindOneObjectContainingUKPound(){
