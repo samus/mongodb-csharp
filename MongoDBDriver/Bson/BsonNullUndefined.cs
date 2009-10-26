@@ -1,5 +1,7 @@
 ﻿using System;
 
+using MongoDB.Driver;
+
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
@@ -19,8 +21,6 @@ namespace MongoDB.Driver.Bson
             get;
         }
         
-
-        
         public int Read(BsonReader reader){
             return 0;
         }
@@ -30,7 +30,7 @@ namespace MongoDB.Driver.Bson
         }
         
         public object ToNative(){
-            return null;
+            return MongoDBNull.Value;
         }
     }
     

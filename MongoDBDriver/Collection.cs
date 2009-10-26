@@ -59,6 +59,12 @@ namespace MongoDB.Driver
             return this.Find(spec, 0, 0, null);
         }
         
+        public ICursor Find(String where){
+            Document spec = new Document();
+            spec.Append("$where", new Code(where));
+            return this.Find(spec, 0, 0, null);
+        }
+        
         public ICursor Find(Document spec) {
             return this.Find(spec, 0, 0, null);
         }

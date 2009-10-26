@@ -19,3 +19,7 @@ MongoDB.Net-Tests/test-results/MongoDB.Driver.Tests.csproj.test-cache
 *.suo
 /_UpgradeReport_Files/*
 obj/*
+MongoDB.Linq/obj/*
+MongoDB.Linq.Tests/bin/*
+MongoDB.Linq.Tests/obj/*
+

@@ -36,7 +36,7 @@ namespace MongoDB.Driver
 
         public List<String> GetCollectionNames(){
             IMongoCollection namespaces = this["system.namespaces"];
-            ICursor cursor = namespaces.Find(null);
+            ICursor cursor = namespaces.Find(new Document());
             List<String> names = new List<string>();
             foreach (Document doc in cursor.Documents){
                 names.Add((String)doc["name"]); //Fix Me: Should filter built-ins

@@ -15,6 +15,8 @@ namespace MongoDB.Driver.Bson
     {
     
         public static BsonType From(Object val){
+            if(val == null) return From(MongoDBNull.Value);
+            
             Type t = val.GetType();
             //special case enums
             if(val is Enum){
@@ -48,6 +50,8 @@ namespace MongoDB.Driver.Bson
                 ret = From((Code)val);
             }else if(t == typeof(CodeWScope)){
                 ret = From((CodeWScope)val);
+            }else if(t == typeof(MongoDBNull)){
+                ret = From((MongoDBNull)val);
             }else{
                 throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized",t.FullName));
             }
@@ -108,6 +112,10 @@ namespace MongoDB.Driver.Bson
         
         public static BsonCodeWScope From(CodeWScope val){
             return new BsonCodeWScope(val);
+        }
+        
+        public static BsonNull From(MongoDBNull val){
+            return new BsonNull();
         }
         
         public static BsonType Create(BsonDataType type){

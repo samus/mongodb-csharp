@@ -10,6 +10,7 @@ namespace MongoDB.Driver {
 		CollectionMetaData MetaData { get; }
 		Document FindOne(Document spec);
 		ICursor FindAll();
+		ICursor Find(String where);
 		ICursor Find(Document spec);
 		ICursor Find(Document spec, int limit, int skip);
 		ICursor Find(Document spec, int limit, int skip, Document fields);

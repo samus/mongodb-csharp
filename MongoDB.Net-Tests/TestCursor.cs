@@ -32,8 +32,9 @@ namespace MongoDB.Driver
                 reads++;
             }
             Assert.IsTrue(reads > 0, "No documents were returned.");
-            Assert.AreEqual(4, reads, "More than 4 documents in the small reads dataset");
+            Assert.AreEqual(5, reads, "More than 5 documents in the small reads dataset");
         }
+        
         [Test]
         public void TestCanReadMore(){
             ICursor c = db["tests"]["reads"].FindAll();
