@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\BsonArray.cs" />
+    <Compile Include="Bson\BsonBinary.cs" />
     <Compile Include="Bson\BsonBoolean.cs" />
     <Compile Include="Bson\BsonConvert.cs" />
     <Compile Include="Bson\BsonDate.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Bson\BsonCodeWScope.cs" />
     <Compile Include="Code.cs" />
     <Compile Include="CodeWScope.cs" />
+    <Compile Include="Binary.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

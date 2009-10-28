@@ -1,3 +1,8 @@
+/*
+ * User: scorder
+ * Date: 7/8/2009
+ */
+
 using System;
 using System.Collections;
 
