@@ -106,42 +106,42 @@ namespace MongoDB.Driver
         public void TestTwoDocumentsWithSameContentInSameOrderAreEqual() {
             Document d1 = new Document().Append("k1", "v1").Append("k2", "v2");
             Document d2 = new Document().Append("k1", "v1").Append("k2", "v2");
-            Assert.AreEqual(d1, d2);
+            AreEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithSameContentInDifferentOrderAreNotEqual() {
             Document d1 = new Document().Append("k1", "v1").Append("k2", "v2");
             Document d2 = new Document().Append("k2", "v2").Append("k1", "v1");
-            Assert.AreNotEqual(d1, d2);
+            AreNotEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithSameArrayContentAreEqual() {
             Document d1 = new Document().Append("k1", new string[] { "v1", "v2" });
             Document d2 = new Document().Append("k1", new string[] { "v1", "v2" });
-            Assert.AreEqual(d1, d2);
+            AreEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithMisorderedArrayContentAreNotEqual() {
             Document d1 = new Document().Append("k1", new string[] { "v1", "v2" });
             Document d2 = new Document().Append("k1", new string[] { "v2", "v1" });
-            Assert.AreNotEqual(d1, d2);
+            AreNotEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithSameDocumentChildTreeAreEqual() {
             Document d1 = new Document().Append("k1", new Document().Append("k2",new Document().Append("k3","foo")));
             Document d2 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "foo")));
-            Assert.AreEqual(d1, d2);
+            AreEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithDifferentDocumentChildTreeAreNotEqual() {
             Document d1 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "foo")));
             Document d2 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "bar")));
-            Assert.AreNotEqual(d1, d2);
+            AreNotEqual(d1, d2);
         }
 
         [Test]
@@ -216,6 +216,18 @@ namespace MongoDB.Driver
                 new Document().Append("c", 3),
             });
             Assert.AreEqual(@"{ ""foo"": [ { ""a"": 1 }, { ""b"": 2 }, { ""c"": 3 } ] }", doc.ToString());
+        }
+
+        private void AreEqual(Document d1, Document d2) {
+            if (!d1.Equals(d2)) {
+                Assert.Fail(string.Format("Documents don't match\r\nExpected: {0}\r\nActual:   {1}", d1, d2));
+            }
+        }
+        
+        private void AreNotEqual(Document d1, Document d2) {
+            if (d1.Equals(d2)) {
+                Assert.Fail(string.Format("Documents match\r\nExpected: not {0}\r\nActual:       {1}", d1, d2));
+            }
         }
     }
 }

@@ -1,7 +1,3 @@
-﻿/*
- * User: scorder
- */
-
 using System;
 using NUnit.Framework;
 
@@ -71,8 +67,7 @@ namespace MongoDB.Driver
         }
         
         [Test]
-        public void TestCanLimit()
-        {
+        public void TestCanLimit(){
             ICursor c = db["tests"]["reads"].FindAll();
             c.Limit = 5;
             
@@ -83,12 +78,6 @@ namespace MongoDB.Driver
             }
             Assert.IsTrue(reads > 0, "No documents were returned.");
             Assert.AreEqual(5, reads);
-
         }
-//      [Test]
-//      public void TestMethod()
-//      {
-//          Assert.Fail("Write Test");
-//      }
     }
 }
