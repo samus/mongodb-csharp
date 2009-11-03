@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 
 using MongoDB.Driver;
 
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
-    /// Description of BsonConvert.
+    /// Utility routines to map the conversion of native types to bson types.
     /// </summary>
     public static class BsonConvert
     {
@@ -50,6 +51,8 @@ namespace MongoDB.Driver.Bson
                 ret = From((MongoDBNull)val);
             }else if(t == typeof(Binary)){
                 ret = From((BsonBinary)val);
+            }else if(val is IEnumerable){
+                ret = From((IEnumerable)val);               
             }else{
                 throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized",t.FullName));
             }
@@ -64,6 +67,16 @@ namespace MongoDB.Driver.Bson
             }
             return bdoc;
         }
+        
+        public static BsonArray From(IEnumerable val){        
+            BsonArray array = new BsonArray();
+            
+            int num = 0;            
+            foreach (object obj in val){            
+                array.Add(num++, From(obj));        
+            }            
+            return array;
+        }        
         
         public static BsonOid From(Oid val){
             return new BsonOid(val);
@@ -157,8 +170,8 @@ namespace MongoDB.Driver.Bson
             }else{
                 string typename = Enum.GetName(typeof(BsonDataType), type);
                 throw new ArgumentOutOfRangeException("type",typename + "is not recognized");
-            }           
-            return ret;         
+            }
+            return ret;
         }
     }
 }
