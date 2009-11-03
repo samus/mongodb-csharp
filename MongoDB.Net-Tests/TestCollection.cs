@@ -62,6 +62,27 @@ namespace MongoDB.Driver
                 Assert.IsTrue((double)j > 20);
             }           
         }
+        
+        [Test]
+        public void TestManualWhere(){
+            Document query = new Document().Append("$where", new Code("this.j % 2 == 0"));
+            ICursor c = db["tests"]["reads"].Find(query);
+            foreach(Document result in c.Documents){            
+                Assert.IsNotNull(result);
+                Object j = result["j"];
+                Assert.IsTrue((double)j % 2 == 0);
+            }                       
+        }
+        
+        [Test]
+        public void TestWhere(){
+            ICursor c = db["tests"]["reads"].Find("this.j % 2 == 0");
+            foreach(Document result in c.Documents){            
+                Assert.IsNotNull(result);
+                Object j = result["j"];
+                Assert.IsTrue((double)j % 2 == 0);
+            }                       
+        }        
 
         [Test]
         public void TestManualWhere(){

@@ -67,6 +67,14 @@ namespace MongoDB.Driver.Bson
         public void TestFromMongoDBNull(){
             BsonType t = BsonConvert.From(MongoDBNull.Value);
             Assert.AreEqual(typeof(BsonNull),t.GetType());
-        }        
+        }
+        
+        [Test]
+        public void TestArrayToBson(){
+            string[] letters = {"a","b","c"};
+            BsonType t = BsonConvert.From(letters);
+            Assert.AreEqual(typeof(BsonArray),t.GetType());
+            
+        }
     }
 }
