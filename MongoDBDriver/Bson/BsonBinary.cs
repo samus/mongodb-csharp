@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 
 namespace MongoDB.Driver.Bson
@@ -20,7 +20,7 @@ namespace MongoDB.Driver.Bson
 
         public BsonBinary(Binary binary){
             this.val = binary.Bytes;
-            this.subtype = binary.Subtype;            
+            this.subtype = (byte)binary.Subtype;            
         }
 
         private byte subtype;
@@ -33,7 +33,7 @@ namespace MongoDB.Driver.Bson
             get {
 				int size = 4; //size int
 				size += 1; //subtype
-				if(this.Subtype == 2){
+				if(this.Subtype == (byte)Binary.TypeCode.General){
 					size += 4; //embedded size int
 				}
 				size += this.Val.Length;
@@ -51,7 +51,7 @@ namespace MongoDB.Driver.Bson
             int bytesRead = 4;
             this.Subtype = reader.ReadByte();
 			bytesRead += sizeof(byte);
-			if(this.Subtype == 2){
+			if(this.Subtype == (byte)Binary.TypeCode.General){
 				size = reader.ReadInt32();
 				bytesRead += 4;
 			}
@@ -61,11 +61,14 @@ namespace MongoDB.Driver.Bson
         }   
 
         public void Write(BsonWriter writer){
-            writer.Write(this.Size);
-            writer.Write(this.Subtype);
-			if(this.Subtype ==2){
-				writer.Write(this.Val.Length);
-			}
+        	if(this.Subtype == (byte)Binary.TypeCode.General){
+        		writer.Write(this.val.Length + sizeof(Int32));
+        		writer.Write(this.Subtype);
+        		writer.Write(this.Val.Length);
+        	}else{
+        		writer.Write(this.val.Length);
+        		writer.Write(this.Subtype);
+        	}
             writer.Write(this.Val);            
         }
 

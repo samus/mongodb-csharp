@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -29,6 +29,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <RootNamespace>MongoDB.Driver.Tests</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,21 +48,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Driver, Version=1.0.3560.34266, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MongoDBDriver\bin\Debug\MongoDB.Driver.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\lib\nunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\redist\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\TestBsonBinary.cs" />
@@ -93,6 +86,7 @@
     <Compile Include="TestOidGenerator.cs" />
     <Compile Include="TestPairedConnection.cs" />
     <Compile Include="Bson\TestBsonCode.cs" />
+    <Compile Include="Bson\TestBsonArray.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
@@ -115,10 +109,10 @@
       <Visible>False</Visible>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="test-data\tests.binary.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="test-data\tests.binary.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

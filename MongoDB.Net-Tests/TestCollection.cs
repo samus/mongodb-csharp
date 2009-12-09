@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
 
@@ -63,27 +63,6 @@ namespace MongoDB.Driver
             }           
         }
         
-        [Test]
-        public void TestManualWhere(){
-            Document query = new Document().Append("$where", new Code("this.j % 2 == 0"));
-            ICursor c = db["tests"]["reads"].Find(query);
-            foreach(Document result in c.Documents){            
-                Assert.IsNotNull(result);
-                Object j = result["j"];
-                Assert.IsTrue((double)j % 2 == 0);
-            }                       
-        }
-        
-        [Test]
-        public void TestWhere(){
-            ICursor c = db["tests"]["reads"].Find("this.j % 2 == 0");
-            foreach(Document result in c.Documents){            
-                Assert.IsNotNull(result);
-                Object j = result["j"];
-                Assert.IsTrue((double)j % 2 == 0);
-            }                       
-        }        
-
         [Test]
         public void TestManualWhere(){
             Document query = new Document().Append("$where", new Code("this.j % 2 == 0"));
@@ -177,6 +156,29 @@ namespace MongoDB.Driver
             Assert.AreEqual(2008,result["year"]);           
         }       
         
+        [Test]
+        public void TestInsertOfArray(){
+            OidGenerator ogen = new OidGenerator();
+            IMongoCollection inserts = db["tests"]["inserts"];
+            Document album = new Document();
+            album["_id"] = ogen.Generate();
+            album["artist"] = "Popa Chubby";
+            album["title"] = "Deliveries After Dark";
+            album["songs"] = new[] {
+                new Document().Append("title", "Let The Music Set You Free").Append("length", "5:15").Append("_id", ogen.Generate()),
+                new Document().Append("title", "Sally Likes to Run").Append("length", "4:06").Append("_id", ogen.Generate()),
+                new Document().Append("title", "Deliveries After Dark").Append("length", "4:17").Append("_id", ogen.Generate()),
+                new Document().Append("title", "Theme From The Godfather").Append("length", "3:06").Append("_id", ogen.Generate()),
+                new Document().Append("title", "Grown Man Crying Blues").Append("length", "8:09").Append("_id", ogen.Generate()),
+            };
+            inserts.Insert(album);
+			
+            Document result = inserts.FindOne(new Document().Append("songs.title","Deliveries After Dark"));
+            Assert.IsNotNull(result);
+            
+            Assert.AreEqual(album.ToString(), result.ToString());
+        }
+				
         [Test]
         public void TestDelete(){
             IMongoCollection deletes = db["tests"]["deletes"];

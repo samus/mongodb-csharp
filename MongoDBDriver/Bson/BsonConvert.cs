@@ -50,7 +50,7 @@ namespace MongoDB.Driver.Bson
             }else if(t == typeof(MongoDBNull)){
                 ret = From((MongoDBNull)val);
             }else if(t == typeof(Binary)){
-                ret = From((BsonBinary)val);
+                ret = From((Binary)val);
             }else if(val is IEnumerable){
                 ret = From((IEnumerable)val);               
             }else{

@@ -69,6 +69,32 @@ namespace MongoDB.Driver.Bson
                 ikey++;
             }
         }
-        
+		[Test]
+		public void TestToNativeProducesArrayWithAllValuesTheSameType(){
+			Document[] songs = new[] {
+				new Document().Append("title", "Let The Music Set You Free").Append("length", "5:15"),
+				new Document().Append("title", "Sally Likes to Run").Append("length", "4:06"),
+				new Document().Append("title", "Deliveries After Dark").Append("length", "4:17"),
+				new Document().Append("title", "Theme From The Godfather").Append("length", "3:06"),
+				new Document().Append("title", "Grown Man Crying Blues").Append("length", "8:09"),
+			};
+			BsonArray ba = new BsonArray();
+			ba.Add(1,"A");
+			ba.Add(2,"B");
+			ba.Add(3,"C");			
+			Object obj = ba.ToNative();
+			Assert.AreEqual(typeof(string[]),obj.GetType());
+		}
+		
+		[Test]
+		public void TestElementsSameType(){
+			BsonArray ba = new BsonArray();
+			ba.Add(1,"A");
+			ba.Add(2,"B");
+			ba.Add(3,"C");
+			
+			Assert.IsTrue(ba.ElementsSameType());
+			
+		}
     }
 }

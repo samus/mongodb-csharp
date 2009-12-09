@@ -124,7 +124,7 @@ namespace MongoDB.Driver.Bson
             return bytesRead;
         }
         
-        public object ToNative(){
+        public virtual object ToNative(){
             //FIXME Duplication.  Decide if this is best or to just convert to a document and then call the IsDBRef(doc) on the native type.
             if(this.isDBRef()) return ToDBRef();
             return ToDocument();

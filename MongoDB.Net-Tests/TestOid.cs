@@ -1,4 +1,4 @@
-﻿
+
 
 using System;
 
@@ -58,7 +58,7 @@ namespace MongoDB.Driver
             string hex = "4a7067c30a57000000008ecb";
             Oid oid = new Oid(hex);
             
-            Assert.AreEqual(hex,"ObjectId(\"" + oid.ToString() + "\")");
+            Assert.AreEqual("ObjectId(\"" + hex + "\")", oid.ToString());
         }
         
         [Test]

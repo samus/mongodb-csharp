@@ -76,5 +76,15 @@ namespace MongoDB.Driver.Bson
             Assert.AreEqual(typeof(BsonArray),t.GetType());
             
         }
+        [Test]
+        public void TestFromDocumentWithDocumentArray(){
+            var doc = new Document().Append("foo", new[] {
+                new Document().Append("a", 1),
+                new Document().Append("b", 2),
+                new Document().Append("c", 3),
+            });
+            BsonType t = BsonConvert.From(doc);
+            Assert.AreEqual(t.Size,60);
+        }
     }
 }

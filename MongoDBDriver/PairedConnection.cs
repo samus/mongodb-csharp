@@ -46,11 +46,15 @@ namespace MongoDB.Driver
         public override void Open(){
             try{
                 TryOpen();
-            }catch(SocketException){
-                //Couldn't connect.  Try to connect to the slave instance.
-                SwapHosts();
-                this.Close();
-                this.TryOpen();
+            }catch(Exception ex){
+                if (ex is SocketException || ex is System.IO.IOException){
+                    //Couldn't connect.  Try to connect to the slave instance.
+                    SwapHosts();
+                    this.Close();
+                    this.TryOpen();
+                }else{
+                    throw;
+                }
             }
         }
         

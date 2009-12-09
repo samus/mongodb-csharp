@@ -1,12 +1,9 @@
-/*
- * User: scorder
- */
 using System;
 
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
-    /// Description of BsonArray.
+    /// Class to translate between Mongo and .net arrays.
     /// </summary>
     public class BsonArray : BsonDocument{
         
@@ -61,7 +58,45 @@ namespace MongoDB.Driver.Bson
                 }
                 Dictionary[skey] = value;
             }
-        }       
-        
+        }
+		public override object ToNative(){
+			if(this.ElementsSameType() == true){
+				return this.ToArray();
+			}else{
+				return base.ToNative();
+			}
+        }
+		
+        public bool ElementsSameType(){
+        	if(this.Keys.Count < 1) return false;
+        	byte comp = 0;
+            foreach(String key in this.Keys){
+                BsonElement be = this[key];
+                byte test = be.Val.TypeNum;
+                if(comp == 0){
+                    comp = test;
+                }else{
+                    if(comp != test) return false;
+                }
+            }
+			return true;
+        }
+		
+		public object ToArray(){
+			Type arrayType = null;
+			Array ret = null;
+			int idx = 0;
+            foreach(String key in this.Keys){
+				if(ret == null){
+					int length = this.Keys.Count;
+					arrayType = this[key].Val.ToNative().GetType();
+					ret = Array.CreateInstance(arrayType,length);
+				}
+                BsonElement be = this[key];
+				ret.SetValue(be.Val.ToNative(), idx);
+				idx++;
+            }
+			return ret;
+		}
     }
 }
