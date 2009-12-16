@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using MongoDB.Driver;
@@ -192,7 +192,15 @@ namespace MongoDB.Linq.Tests {
                     .Append("bar","zoop"),
                 q.Query);
         }
-        
+		
+		[Test]
+		public void Can_do_and_queries_on_same_key(){
+            var q = (IMongoQuery)(from d in queryable where (int)d["foo"] < 10 && (int)d["foo"] > 5 select d);
+            Assert.AreEqual(
+                new Document().Append("foo", new Document().Append("$lt", 10).Append("$gt",5)),
+                q.Query);			
+		}
+		
         [Test]
         public void Can_compose_queries() {
             // Note (sdether): this passes without explicit AND support, which is a bit scary

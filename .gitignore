@@ -24,4 +24,4 @@ obj/*
 MongoDB.Linq/obj/*
 MongoDB.Linq.Tests/bin/*
 MongoDB.Linq.Tests/obj/*
-
+MongoDB.Linq.Tests/test-results/*

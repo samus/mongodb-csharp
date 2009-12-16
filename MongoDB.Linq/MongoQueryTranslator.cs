@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -231,7 +231,11 @@ namespace MongoDB.Linq {
                         case ExpressionType.GreaterThan: conditional = reverseConditional ? "$lt" : "$gt"; break;
                         case ExpressionType.GreaterThanOrEqual: conditional = reverseConditional ? "$lte" : "$gte"; break;
                     }
-                    Query.Append(key, new Document().Append(conditional, value));
+					if(Query.Contains(key)){
+						((Document)Query[key]).Append(conditional,value);
+					}else{
+                    		Query.Append(key, new Document().Append(conditional, value));
+					}
                     inConditional = false;
                     foundKey = false;
                     break;
