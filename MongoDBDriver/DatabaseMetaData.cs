@@ -40,7 +40,8 @@ namespace MongoDB.Driver
         }
         
         public Boolean DropDatabase(){
-            throw new NotImplementedException();
+			Document result = db.SendCommand("dropDatabase");
+			return result.Contains("ok") && ((double)result["ok"] == 1);
         }
         
         public void AddUser(string username, string password){
