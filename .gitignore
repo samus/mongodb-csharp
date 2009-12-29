@@ -27,3 +27,5 @@ MongoDB.Linq.Tests/obj/*
 MongoDB.Linq.Tests/test-results/*
 
 MongoDB.Driver.Benchmark/bin/*
+MongoDB.Driver.Benchmark/ProfilingSessions/*
+MongoDB.Driver.Benchmark/obj/*

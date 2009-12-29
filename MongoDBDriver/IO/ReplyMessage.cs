@@ -58,7 +58,9 @@ namespace MongoDB.Driver.IO
             
             BsonReader reader = new BsonReader(buffer);*/
             
-            BsonReader reader = new BsonReader(stream);
+            //BsonReader reader = new BsonReader(stream);
+            //BsonReader reader = new BsonReader(new BufferedStream(stream));
+            BsonReader reader = new BsonReader(new BufferedStream(stream, 4 * 1024));
             this.Header = ReadHeader(reader);
             
             this.ResponseFlag = reader.ReadInt32();
