@@ -9,7 +9,7 @@ Current Features
 - Insert
 - Update
 - Delete
-- Most BSON types supported
+- All BSON types supported
 - DBRef support
 - Isolation and conversion between BSON types and native .net types.
 - Database, Collection and Cursor objects.
@@ -18,17 +18,17 @@ Current Features
 - Roughly 80% unit test coverage.  This can and will be improved on.
 - Paired connections
 - Authentication (Does not reauthorize on auto reconnect yet).
+- Database Commands
+- Basic Linq support
 
 Missing Features
 ================
 - Auto reconnect options
 - Connection pooling (maybe not implemented)
-- A few BSON Types (easy to add)
-- Database commands (can send queries to $cmd if necessary)
 - Exceptions (In progress)
 - hint, explain, $where
 - database profiling: set/get profiling level, get profiling info
-- GridFS support
+- GridFS support (In progress)
 - Many unit tests
 
 Installation
@@ -56,6 +56,8 @@ Contributors
 ============
 - Sam Corder (samus)
 - Seth Edwards (Sedward)
+- Arne Classen (Sdether)
+- Andrew Kempe
 - Sergey Bartunov (sbos)
 
 
