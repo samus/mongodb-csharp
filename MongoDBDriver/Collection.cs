@@ -104,12 +104,12 @@ namespace MongoDB.Driver
         public void Insert(IEnumerable<Document> docs){
             InsertMessage im = new InsertMessage();
             im.FullCollectionName = this.FullName;
-            List<BsonDocument> bdocs = new List<BsonDocument>();
+            List<Document> idocs = new List<Document>();
             foreach(Document doc in docs){
                 if(doc.Contains("_id") == false) doc["_id"] = oidGenerator.Generate();
-                bdocs.Add(BsonConvert.From(doc));
             }
-            im.BsonDocuments = bdocs.ToArray();
+            idocs.AddRange(docs);
+            im.Documents = idocs.ToArray();
             try{
                 this.connection.SendMessage(im);    
             }catch(IOException ioe){

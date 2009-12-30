@@ -40,6 +40,6 @@ namespace MongoDB.Driver.IO
         }
         
         protected abstract void WriteBody(Stream stream);
-            
+
     }
 }

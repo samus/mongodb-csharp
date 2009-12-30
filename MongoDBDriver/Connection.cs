@@ -99,6 +99,20 @@ namespace MongoDB.Driver
             }
         }
         
+        public void SendMessage(InsertMessage msg){
+            //TODO Refactor this method out after performance tests.
+            if (this.State != ConnectionState.Opened){
+                throw new MongoCommException("Operation cannot be performed on a closed connection.", this);
+            }
+            try{
+                msg.Write(tcpclnt.GetStream()); 
+                
+            }catch(IOException){//Sending doesn't seem to always trigger the detection of a closed socket.
+                this.Reconnect();
+                throw;
+            }
+        }        
+        
         /// <summary>
         /// Just sends a simple message string to the database. 
         /// </summary>
