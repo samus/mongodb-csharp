@@ -34,7 +34,7 @@ namespace MongoDB.Driver.Bson
                 this.WriteString(key);
                 this.WriteValue(t,val);
             }
-            writer.Write((byte)0);            
+            writer.Write((byte)0);
         }
         
         public void WriteArray(IEnumerable arr){
@@ -48,6 +48,7 @@ namespace MongoDB.Driver.Bson
                 this.WriteValue(t,val);
                 keyname++;
             }
+            writer.Write((byte)0);
         }        
         
         public void WriteValue(BsonDataType dt, Object obj){
@@ -79,7 +80,7 @@ namespace MongoDB.Driver.Bson
                 case BsonDataType.String:
                     String str = (String)obj;
                     writer.Write(CalculateSize(str,false));
-                    writer.Write(str);
+                    this.WriteString(str);
                     return;
                 case BsonDataType.Obj:
                     this.WriteDocument((Document)obj);
@@ -119,7 +120,7 @@ namespace MongoDB.Driver.Bson
         }
         
         public void WriteString(String str){
-            writer.Write(str);
+            writer.Write(encoding.GetBytes(str));
             writer.Write((byte)0);
         }
         
@@ -213,6 +214,10 @@ namespace MongoDB.Driver.Bson
             if(val != null) size += encoding.GetByteCount(val);
             return size;
         }        
+        
+        public void Flush(){
+            writer.Flush();
+        }
         
         protected BsonDataType TranslateToBsonType(Object val){
             Type t = val.GetType();
