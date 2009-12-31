@@ -34,14 +34,21 @@ namespace MongoDB.Driver.IO
             this.CursorIDs = cursorIDs;
         }
         
-        protected override void WriteBody (Stream stream){
-            BsonWriter writer = new BsonWriter(stream);     
-            writer.Write(0);
-            writer.Write(this.CursorIDs.Length);
+        protected override void WriteBody (BsonWriter2 writer){
+            writer.WriteValue(BsonDataType.Integer,0);
+            writer.WriteValue(BsonDataType.Integer, this.CursorIDs.Length);            
+
             foreach(long id in this.CursorIDs){
-                writer.Write(id);               
+                writer.WriteValue(BsonDataType.Long, id);
             }
-            writer.Flush();
-        }           
+        }
+        
+        protected override int CalculateBodySize(BsonWriter2 writer){
+            int size = 8; //first int32, number of cursors
+            foreach(long id in this.CursorIDs){
+                size += 8;
+            }            
+            return size;
+        }         
     }
 }

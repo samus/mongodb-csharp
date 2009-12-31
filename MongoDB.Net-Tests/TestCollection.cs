@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
 
@@ -204,10 +204,10 @@ namespace MongoDB.Driver
             IMongoCollection updates = db["tests"]["updates"];
             Document doc = new Document();
             doc["First"] = "Sam";
-            doc["Last"] = "Corder";
+            doc["Last"] = "CorderNE";
             
             updates.Update(doc);
-            Document selector = new Document().Append("Last", "Corder");
+            Document selector = new Document().Append("Last", "CorderNE");
             Document result = updates.FindOne(selector);
             Assert.IsNotNull(result);
             Assert.AreEqual("Sam", result["First"]);
@@ -250,7 +250,7 @@ namespace MongoDB.Driver
                 Assert.AreEqual("Cordr", doc["Last"]);
                 found = true;
             }
-            Assert.IsTrue(found,"Should have found docs inserted for TestMany");
+            Assert.IsTrue(found,"Should have found docs inserted for TestUpdateMany");
             
             Document updateData = new Document().Append("Last", "Corder2");
             updates.UpdateAll(updateData, selector);

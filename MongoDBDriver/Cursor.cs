@@ -103,11 +103,11 @@ namespace MongoDB.Driver
         private void RetrieveData(){
             QueryMessage query = new QueryMessage();
             query.FullCollectionName = this.FullCollectionName;
-            query.Query = BsonConvert.From(this.Spec);
+            query.Query = this.Spec;
             query.NumberToReturn = this.Limit;
             query.NumberToSkip = this.Skip;
             if(this.Fields != null){
-                query.ReturnFieldSelector = BsonConvert.From(this.Fields);
+                query.ReturnFieldSelector = this.Fields;
             }
             try{
                 this.reply = connection.SendTwoWayMessage(query);

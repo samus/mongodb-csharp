@@ -10,7 +10,7 @@ namespace MongoDB.Driver.IO
     /// <summary>
     /// Description of InsertMessage.
     /// </summary>
-    public class InsertMessage : Message
+    public class InsertMessage : RequestMessage
     {
 
 //      MsgHeader header;             // standard message header
@@ -33,32 +33,17 @@ namespace MongoDB.Driver.IO
         public InsertMessage(){
             this.Header = new MessageHeader(OpCode.Insert);
         }
-        public void Write (Stream stream){
-            //protected override void WriteBody(Stream stream){
-            BufferedStream bstream = new BufferedStream(stream);
-            BinaryWriter writer = new BinaryWriter(bstream);
-            BsonWriter2 bwriter = new BsonWriter2(bstream);
-            
-            Header.MessageLength += this.CalculateBodySize(bwriter);
-            
-            writer.Write(Header.MessageLength);
-            writer.Write(Header.RequestId);
-            writer.Write(Header.ResponseTo);
-            writer.Write((int)Header.OpCode);
-            
-            Debug.WriteLine(Header, "Insert Message");
-            
-            writer.Write((int)0);
-            writer.Flush();
-            bwriter.WriteString(this.FullCollectionName);
+
+        protected override void WriteBody (BsonWriter2 writer){
+            writer.WriteValue(BsonDataType.Integer,0);
+            writer.WriteString(this.FullCollectionName);
             
             foreach(Document doc in this.Documents){
-                bwriter.WriteDocument(doc);
+                writer.WriteDocument(doc);
             }
-            bwriter.Flush();
         }
         
-        protected int CalculateBodySize(BsonWriter2 writer){
+        protected override int CalculateBodySize(BsonWriter2 writer){
             int size = 4; //first int32
             size += writer.CalculateSize(this.FullCollectionName,false);
             foreach(Document doc in this.Documents){

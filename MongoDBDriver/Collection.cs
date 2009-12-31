@@ -9,6 +9,12 @@ namespace MongoDB.Driver
 {
     public class Collection : IMongoCollection 
     {
+        public enum UpdateFlags:int
+        {
+            Upsert = 0,
+            MultiUpdate = 1
+        }
+        
         private Connection connection;
         
         private string name;        
@@ -106,7 +112,10 @@ namespace MongoDB.Driver
             im.FullCollectionName = this.FullName;
             List<Document> idocs = new List<Document>();
             foreach(Document doc in docs){
-                if(doc.Contains("_id") == false) doc["_id"] = oidGenerator.Generate();
+                if(doc.Contains("_id") == false){
+                    Oid _id = oidGenerator.Generate();
+                    doc.Prepend("_id",_id);
+                }
             }
             idocs.AddRange(docs);
             im.Documents = idocs.ToArray();
@@ -120,7 +129,7 @@ namespace MongoDB.Driver
         public void Delete(Document selector){
             DeleteMessage dm = new DeleteMessage();
             dm.FullCollectionName = this.FullName;
-            dm.Selector = BsonConvert.From(selector);
+            dm.Selector = selector;
             try{
                 this.connection.SendMessage(dm);
             }catch(IOException ioe){
@@ -137,7 +146,7 @@ namespace MongoDB.Driver
                 selector["_id"] = doc["_id"];   
             }else{
                 //Likely a new document
-                doc["_id"] = oidGenerator.Generate();
+                doc.Prepend("_id",oidGenerator.Generate());
                 upsert = 1;
             }
             this.Update(doc, selector, upsert);
@@ -147,12 +156,12 @@ namespace MongoDB.Driver
             this.Update(doc, selector, 0);
         }
         
-        public void Update(Document doc, Document selector, int upsert){
+        public void Update(Document doc, Document selector, UpdateFlags flags){
             UpdateMessage um = new UpdateMessage();
             um.FullCollectionName = this.FullName;
-            um.Selector = BsonConvert.From(selector);
-            um.Document = BsonConvert.From(doc);
-            um.Upsert = upsert;
+            um.Selector = selector;
+            um.Document = doc;
+            um.Flags = (int)flags;
             try{
                 this.connection.SendMessage(um);
             }catch(IOException ioe){
@@ -161,15 +170,31 @@ namespace MongoDB.Driver
             
         }
         
+        public void Update(Document doc, Document selector, int flags){
+            //TODO Update the interface and make a breaking change.
+            this.Update(doc,selector,(UpdateFlags)flags);
+        }
+        
+        /// <summary>
+        /// Runs a multiple update query against the database.  It will wrap any 
+        /// doc with $set if the passed in doc doesn't contain any '$' ops.
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="selector"></param>
         public void UpdateAll(Document doc, Document selector){
-            //TODO do this server side with generated code.
-			ICursor toUpdate = this.Find(selector);
-            foreach(Document udoc in toUpdate.Documents){
-                Document updSel = new Document();
-                updSel["_id"] = udoc["_id"];
-                udoc.Update(doc);
-                this.Update(udoc, updSel,0);
+            bool foundOp = false;
+            foreach(string key in doc.Keys){
+                if(key.IndexOf('$') == 0){
+                    foundOp = true;
+                    break;
+                }
             }
+            if(foundOp == false){
+                //wrap document in a $set.
+                Document s = new Document().Append("$set", doc);
+                doc = s;
+            }
+            this.Update(doc, selector, UpdateFlags.MultiUpdate);
         }
     }
 }

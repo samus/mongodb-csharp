@@ -1,11 +1,8 @@
-/*
- * User: scorder
- * Date: 7/21/2009
- */
 using System;
 using System.Diagnostics;
 using System.IO;
 
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO
 {
@@ -22,24 +19,22 @@ namespace MongoDB.Driver.IO
             MessageHeader header = this.Header;
             BufferedStream bstream = new BufferedStream(stream);
             BinaryWriter writer = new BinaryWriter(bstream);
+            BsonWriter2 bwriter = new BsonWriter2(bstream);
             
-            MemoryStream bodyBuffer = new MemoryStream();
-            this.WriteBody(bodyBuffer);
-            //Byte[] body = bodyBuffer.ToArray();
-            //header.MessageLength += body.Length;
-            header.MessageLength += (int)bodyBuffer.Position;
+            Header.MessageLength += this.CalculateBodySize(bwriter);
             
             writer.Write(header.MessageLength);
             writer.Write(header.RequestId);
             writer.Write(header.ResponseTo);
             writer.Write((int)header.OpCode);
-            bodyBuffer.WriteTo(bstream);
-            //writer.Write(body);
             writer.Flush();
-            Debug.WriteLine(header, "Request Message");
+            WriteBody(bwriter);
+            bwriter.Flush();
         }
         
-        protected abstract void WriteBody(Stream stream);
+        protected abstract void WriteBody(BsonWriter2 writer);
+        
+        protected abstract int CalculateBodySize(BsonWriter2 writer);
 
     }
 }

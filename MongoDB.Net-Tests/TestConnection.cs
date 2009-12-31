@@ -60,8 +60,8 @@ namespace MongoDB.Driver
         }
         
         protected QueryMessage generateQueryMessage(){
-            BsonDocument qdoc = new BsonDocument();
-            qdoc.Add("listDatabases", new BsonNumber(1.0));
+            Document qdoc = new Document();
+            qdoc.Add("listDatabases", 1.0);
             //QueryMessage qmsg = new QueryMessage(qdoc,"system.namespaces");
             QueryMessage qmsg = new QueryMessage(qdoc,"admin.$cmd");
             qmsg.NumberToReturn = -1;
