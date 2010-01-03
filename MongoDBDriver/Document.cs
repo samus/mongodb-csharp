@@ -50,6 +50,18 @@ namespace MongoDB.Driver {
             this.Add(key, value);
             return this;
         }
+        /// <summary>
+        /// Adds an item to the Document at the specified position
+        /// </summary>
+        public void Insert(String key, Object value, int Position){
+            Dictionary.Add(key, value);
+            //Relies on ArgumentException from above if key already exists.
+            orderedKeys.Insert(Position,key);
+        }
+        public Document Prepend(String key, Object value) {
+            this.Insert(key, value,0);
+            return this;
+        }
 
         public Document Update(Document from) {
             if (from == null) return this;

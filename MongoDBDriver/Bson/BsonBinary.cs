@@ -3,7 +3,7 @@ using System.Text;
 
 namespace MongoDB.Driver.Bson
 {
-	public class BsonBinary:BsonType
+    public class BsonBinary:BsonType
     {
         private byte[] val;
         public byte[] Val {
@@ -31,14 +31,14 @@ namespace MongoDB.Driver.Bson
 
         public int Size{
             get {
-				int size = 4; //size int
-				size += 1; //subtype
-				if(this.Subtype == (byte)Binary.TypeCode.General){
-					size += 4; //embedded size int
-				}
-				size += this.Val.Length;
-				return size; 
-			}
+                int size = 4; //size int
+                size += 1; //subtype
+                if(this.Subtype == (byte)Binary.TypeCode.General){
+                    size += 4; //embedded size int
+                }
+                size += this.Val.Length;
+                return size; 
+            }
         }
 
         public byte TypeNum{
@@ -50,25 +50,25 @@ namespace MongoDB.Driver.Bson
             int size = reader.ReadInt32();
             int bytesRead = 4;
             this.Subtype = reader.ReadByte();
-			bytesRead += sizeof(byte);
-			if(this.Subtype == (byte)Binary.TypeCode.General){
-				size = reader.ReadInt32();
-				bytesRead += 4;
-			}
+            bytesRead += sizeof(byte);
+            if(this.Subtype == (byte)Binary.TypeCode.General){
+                size = reader.ReadInt32();
+                bytesRead += 4;
+            }
             this.Val = reader.ReadBytes(size);
             bytesRead += size;
             return bytesRead;
         }   
 
         public void Write(BsonWriter writer){
-        	if(this.Subtype == (byte)Binary.TypeCode.General){
-        		writer.Write(this.val.Length + sizeof(Int32));
-        		writer.Write(this.Subtype);
-        		writer.Write(this.Val.Length);
-        	}else{
-        		writer.Write(this.val.Length);
-        		writer.Write(this.Subtype);
-        	}
+            if(this.Subtype == (byte)Binary.TypeCode.General){
+                writer.Write(this.val.Length + sizeof(Int32));
+                writer.Write(this.Subtype);
+                writer.Write(this.Val.Length);
+            }else{
+                writer.Write(this.val.Length);
+                writer.Write(this.Subtype);
+            }
             writer.Write(this.Val);            
         }
 
@@ -82,5 +82,5 @@ namespace MongoDB.Driver.Bson
             return string.Format("[BsonBinary: Val={0}, TypeNum={1}, Size={2}, Subtype={3}]", Val, TypeNum, Size, Subtype);
         }
 
-	}
+    }
 }

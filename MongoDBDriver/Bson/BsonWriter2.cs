@@ -8,7 +8,7 @@ using MongoDB.Driver;
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
-    /// Description of BsonWriter2.
+    /// Class that knows how to format a native object into bson bits.
     /// </summary>
     public class BsonWriter2
     {
@@ -77,46 +77,50 @@ namespace MongoDB.Driver.Bson
                 case BsonDataType.Number:
                     writer.Write((double)obj);
                     return;
-                case BsonDataType.String:
+                case BsonDataType.String:{
                     String str = (String)obj;
                     writer.Write(CalculateSize(str,false));
                     this.WriteString(str);
                     return;
+                    }
                 case BsonDataType.Obj:
                     this.WriteDocument((Document)obj);
                     return;
                 case BsonDataType.Array:
-    				this.WriteArray((IEnumerable)obj);
-    				return;
-//    		    case BsonDataType.Regex:{
-//                    MongoRegex r = (MongoRegex)val;
-//                    int size = CalculateSize(r.Expression,false);
-//                    size += CalculateSize(r.Options,false);
-//                    return size;
-//    				}
-//                case BsonDataType.Code:
-//                    Code c = (Code)val;
-//                    return CalculateSize(c.Value,true);
-//                case BsonDataType.CodeWScope:{
-//                    CodeWScope cw = (CodeWScope)val;
-//                    int size = CalculateSize(cw.Value,true);
-//                    size += CalculateSize(cw.Scope);
-//                    return size;
-//                    }
-//                case BsonDataType.Binary:{
-//                    Binary b = (Binary)val;
-//    				int size = 4; //size int
-//    				size += 1; //subtype
-//    				if(b.Subtype == Binary.TypeCode.General){
-//    					size += 4; //embedded size int
-//    				}
-//    				size += b.Bytes.Length;
-//    				return size;
-//                }
-//    			default:
-//    				return 0;
+                    this.WriteArray((IEnumerable)obj);
+                    return;
+                case BsonDataType.Regex:{
+                    MongoRegex r = (MongoRegex)obj;
+                    this.WriteString(r.Expression);
+                    this.WriteString(r.Options);
+                    return;
+                }
+                case BsonDataType.Code:{
+                    Code c = (Code)obj;
+                    this.WriteValue(BsonDataType.String,c.Value);
+                    return;
+                }
+                case BsonDataType.CodeWScope:{
+                    CodeWScope cw = (CodeWScope)obj;
+                    writer.Write(CalculateSize(cw));
+                    this.WriteValue(BsonDataType.String,cw.Value);
+                    this.WriteValue(BsonDataType.Obj,cw.Scope);
+                    return;
+                }
+                case BsonDataType.Binary:{
+                    Binary b = (Binary)obj;
+                    if(b.Subtype == Binary.TypeCode.General){
+                        writer.Write(b.Bytes.Length + sizeof(Int32));
+                        writer.Write((byte)b.Subtype);
+                        writer.Write(b.Bytes.Length);
+                    }else{
+                        writer.Write(b.Bytes.Length);
+                        writer.Write((int)b.Subtype);
+                    }
+                    writer.Write(b.Bytes);                    
+                    return;
+                }
             }
-            
         }
         
         public void WriteString(String str){
@@ -145,37 +149,36 @@ namespace MongoDB.Driver.Bson
                 case BsonDataType.Obj:
                     return CalculateSize((Document)val);
                 case BsonDataType.Array:
-    				return CalculateSize((IEnumerable)val);                    
-    		    case BsonDataType.Regex:{
+                    return CalculateSize((IEnumerable)val);                    
+                case BsonDataType.Regex:{
                     MongoRegex r = (MongoRegex)val;
                     int size = CalculateSize(r.Expression,false);
                     size += CalculateSize(r.Options,false);
                     return size;
-    				}
+                    }
                 case BsonDataType.Code:
                     Code c = (Code)val;
                     return CalculateSize(c.Value,true);
                 case BsonDataType.CodeWScope:{
                     CodeWScope cw = (CodeWScope)val;
-                    int size = CalculateSize(cw.Value,true);
+                    int size = 4;
+                    size += CalculateSize(cw.Value,true);
                     size += CalculateSize(cw.Scope);
                     return size;
                     }
                 case BsonDataType.Binary:{
                     Binary b = (Binary)val;
-    				int size = 4; //size int
-    				size += 1; //subtype
-    				if(b.Subtype == Binary.TypeCode.General){
-    					size += 4; //embedded size int
-    				}
-    				size += b.Bytes.Length;
-    				return size;
+                    int size = 4; //size int
+                    size += 1; //subtype
+                    if(b.Subtype == Binary.TypeCode.General){
+                        size += 4; //embedded size int
+                    }
+                    size += b.Bytes.Length;
+                    return size;
                 }
-    			default:
-    				return 0;
+                default:
+                    return 0;
             }
-
-
         }
         
         public int CalculateSize(Document doc){
@@ -191,17 +194,17 @@ namespace MongoDB.Driver.Bson
         }
         
         public int CalculateSize(IEnumerable arr){
-			int size = 4;//base size for the object
-			int keyname = 0;
+            int size = 4;//base size for the object
+            int keyname = 0;
             foreach(Object o in arr){
-			    int elsize = 1; //type
+                int elsize = 1; //type
                 size += CalculateSize(keyname.ToString(),false); //element name
                 size += CalculateSize(o);
                 size += elsize;
                 keyname++;    
             }            
-			size += 1; //terminator
-			return size;
+            size += 1; //terminator
+            return size;
         }
         
         public int CalculateSize(String val){
