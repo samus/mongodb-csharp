@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AssemblyName>MongoDB.Driver</AssemblyName>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\scorder\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <RunCodeAnalysis>True</RunCodeAnalysis>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
@@ -81,6 +81,7 @@
     <Compile Include="Bson\BsonNumber.cs" />
     <Compile Include="Bson\BsonInteger.cs" />
     <Compile Include="Bson\BsonOid.cs" />
+    <Compile Include="Bson\BsonReader2.cs" />
     <Compile Include="Bson\BsonRegex.cs" />
     <Compile Include="Bson\BsonWriter2.cs" />
     <Compile Include="Collection.cs" />

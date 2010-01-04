@@ -42,13 +42,11 @@ namespace MongoDB.Driver.IO
             writer.WriteDocument(this.Selector);
         }
         
-
         protected override int CalculateBodySize(BsonWriter2 writer){
             int size = 8; //first int32, second int32 
             size += writer.CalculateSize(this.FullCollectionName,false);
             size += writer.CalculateSize(selector);
             return size;
-        }        
-
+        }
     }
 }

@@ -1,8 +1,3 @@
-/*
- * User: scorder
- * Date: 7/15/2009
- */
-
 using System;
 using System.IO;
 

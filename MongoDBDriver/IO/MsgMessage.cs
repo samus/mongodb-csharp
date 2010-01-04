@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 using System.Text;
@@ -24,13 +23,13 @@ namespace MongoDB.Driver.IO
         public MsgMessage(){
             this.Header = new MessageHeader(OpCode.Msg);
         }
-
+        
         protected override void WriteBody (BsonWriter2 writer){
             writer.WriteString(this.Message);            
         }
         
         protected override int CalculateBodySize(BsonWriter2 writer){
             return writer.CalculateSize(this.Message,false);
-        }        
+        }
     }
 }

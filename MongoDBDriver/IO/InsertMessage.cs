@@ -33,7 +33,7 @@ namespace MongoDB.Driver.IO
         public InsertMessage(){
             this.Header = new MessageHeader(OpCode.Insert);
         }
-
+            
         protected override void WriteBody (BsonWriter2 writer){
             writer.WriteValue(BsonDataType.Integer,0);
             writer.WriteString(this.FullCollectionName);

@@ -97,7 +97,7 @@ namespace MongoDB.Driver
                 this.Reconnect();
                 throw;
             }
-        }       
+        }
         
         /// <summary>
         /// Just sends a simple message string to the database. 
@@ -128,5 +128,3 @@ namespace MongoDB.Driver
         }
     }
 }
-
-

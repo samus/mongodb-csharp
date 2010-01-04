@@ -1,7 +1,3 @@
-/*
- * User: scorder
- * Date: 7/7/2009
- */
 using System;
 using System.IO;
 using System.Text;
@@ -93,7 +89,7 @@ namespace MongoDB.Driver.IO
             this.ReturnFieldSelector = returnFieldSelector;
         }
 #endregion
-
+        
         protected override void WriteBody (BsonWriter2 writer){
             writer.WriteValue(BsonDataType.Integer,(int)this.Options);
             writer.WriteString(this.FullCollectionName);
@@ -104,8 +100,8 @@ namespace MongoDB.Driver.IO
                 writer.WriteDocument(this.ReturnFieldSelector);
             }
         }
-        
-        protected override int CalculateBodySize(BsonWriter2 writer){
+		
+		protected override int CalculateBodySize(BsonWriter2 writer){
             int size = 12; //options, numbertoskip, numbertoreturn
             size += writer.CalculateSize(this.FullCollectionName,false);
             size += writer.CalculateSize(this.Query);
@@ -114,6 +110,5 @@ namespace MongoDB.Driver.IO
             }
             return size;
         }        
-
     }
 }

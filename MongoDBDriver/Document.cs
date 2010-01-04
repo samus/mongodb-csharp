@@ -50,6 +50,7 @@ namespace MongoDB.Driver {
             this.Add(key, value);
             return this;
         }
+		
         /// <summary>
         /// Adds an item to the Document at the specified position
         /// </summary>
@@ -62,7 +63,7 @@ namespace MongoDB.Driver {
             this.Insert(key, value,0);
             return this;
         }
-        
+		
         public Document Update(Document from) {
             if (from == null) return this;
             foreach (String key in from.Keys) {

@@ -1,6 +1,3 @@
-/*
- * User: scorder
- */
 using System;
 using System.IO;
 using System.Text;
@@ -57,7 +54,7 @@ namespace MongoDB.Driver.IO
             writer.WriteString(this.FullCollectionName);
             writer.WriteValue(BsonDataType.Integer,this.NumberToReturn);
             writer.WriteValue(BsonDataType.Long,this.CursorID);
-        }
+        }       
         
         protected override int CalculateBodySize(BsonWriter2 writer){
             int size = 4; //first int32

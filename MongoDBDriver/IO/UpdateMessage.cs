@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 
@@ -47,7 +46,7 @@ namespace MongoDB.Driver.IO
         public UpdateMessage(){
             this.Header = new MessageHeader(OpCode.Update);
         }
-
+        
         protected override void WriteBody (BsonWriter2 writer){
             writer.WriteValue(BsonDataType.Integer,0);
             writer.WriteString(this.FullCollectionName);
@@ -63,6 +62,6 @@ namespace MongoDB.Driver.IO
             size += writer.CalculateSize(this.Selector);
             size += writer.CalculateSize(this.Document);
             return size;
-        }        
+        }       
     }
 }

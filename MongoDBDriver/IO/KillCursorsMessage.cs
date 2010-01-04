@@ -1,6 +1,3 @@
-﻿/*
- * User: scorder
- */
 using System;
 using System.IO;
 
@@ -47,8 +44,8 @@ namespace MongoDB.Driver.IO
             int size = 8; //first int32, number of cursors
             foreach(long id in this.CursorIDs){
                 size += 8;
-            }            
+            }
             return size;
-        }         
+        }           
     }
 }
