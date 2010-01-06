@@ -26,18 +26,18 @@ namespace MongoDB.Driver.Benchmark
             m.Connect();
             Database db = m["benchmark"];
 
-            db.MetaData.DropDatabase();
-            RunInsertTest("insert (small, no index)", db, "small_none",small,false,false);
-            RunInsertTest("insert (medium, no index)", db, "medium_none",medium,false,false);
-            RunInsertTest("insert (large, no index)", db, "large_none",large,false,false);
-
-            RunInsertTest("insert (small, indexed)", db, "small_index",small,true,false);
-            RunInsertTest("insert (medium, indexed)", db, "medium_index",medium,true,false);
-            RunInsertTest("insert (large, indexed)", db, "large_index",large,true,false);
-
-            RunInsertTest("batch insert (small, no index)", db, "small_bulk",small,false,true);
-            RunInsertTest("batch insert (medium, no index)", db, "medium_bulk",medium,false,true);
-            RunInsertTest("batch insert (large, no index)", db, "large_bulk",large,false,true);
+//            db.MetaData.DropDatabase();
+//            RunInsertTest("insert (small, no index)", db, "small_none",small,false,false);
+//            RunInsertTest("insert (medium, no index)", db, "medium_none",medium,false,false);
+//            RunInsertTest("insert (large, no index)", db, "large_none",large,false,false);
+//
+//            RunInsertTest("insert (small, indexed)", db, "small_index",small,true,false);
+//            RunInsertTest("insert (medium, indexed)", db, "medium_index",medium,true,false);
+//            RunInsertTest("insert (large, indexed)", db, "large_index",large,true,false);
+//
+//            RunInsertTest("batch insert (small, no index)", db, "small_bulk",small,false,true);
+//            RunInsertTest("batch insert (medium, no index)", db, "medium_bulk",medium,false,true);
+//            RunInsertTest("batch insert (large, no index)", db, "large_bulk",large,false,true);
           
             
             Document fonespec = new Document().Append("x",perTrial/2);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 
@@ -47,8 +47,8 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader2 reader = new BsonReader2(ms);
             
-            Object str = null;
-            int read = reader.ReadLenString(ref str);
+			String str = reader.ReadLenString();
+            int read = Encoding.UTF8.GetByteCount(str) + 5;
             Assert.AreEqual(buf.Length, read);
             Assert.AreEqual("test", (String)str);
         }
@@ -61,9 +61,10 @@ namespace MongoDB.Driver.Bson
             Document doc = new Document();
             
             int read = reader.ReadElement(doc);
-            Assert.AreEqual(buf.Length,read);
+            //Assert.AreEqual(buf.Length,read);
             Assert.IsTrue(doc.Contains("test"));
             Assert.AreEqual("test",(String)doc["test"]);
+			Assert.AreEqual(buf.Length,read);
         }
         
         [Test]
