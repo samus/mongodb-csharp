@@ -62,8 +62,8 @@ namespace MongoDB.Driver.Benchmark
             RunFindTest("find range (medium, indexed)", db, "medium_index",findRange,true);
             RunFindTest("find range (large, indexed)", db, "large_index",findRange,true);
 
-//            System.Console.WriteLine("Press any key to continue...");
-//            System.Console.ReadKey();
+            System.Console.WriteLine("Press any key to continue...");
+            System.Console.ReadKey();
         }
 
         static void SetupDocuments(){

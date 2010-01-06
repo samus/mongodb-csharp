@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -39,6 +39,7 @@ namespace MongoDB.Driver.Bson
             String s = reader.ReadString();
             Assert.AreEqual("1234£56",s);
             Assert.AreEqual(8,Encoding.UTF8.GetByteCount(s));            
+            Assert.AreEqual(9,reader.Position);
         }
         
         [Test]
@@ -48,8 +49,7 @@ namespace MongoDB.Driver.Bson
             BsonReader2 reader = new BsonReader2(ms);
             
 			String str = reader.ReadLenString();
-            int read = Encoding.UTF8.GetByteCount(str) + 5;
-            Assert.AreEqual(buf.Length, read);
+            Assert.AreEqual(buf.Length, reader.Position);
             Assert.AreEqual("test", (String)str);
         }
                 
@@ -60,11 +60,11 @@ namespace MongoDB.Driver.Bson
             BsonReader2 reader = new BsonReader2(ms);
             Document doc = new Document();
             
-            int read = reader.ReadElement(doc);
+            reader.ReadElement(doc);
             //Assert.AreEqual(buf.Length,read);
             Assert.IsTrue(doc.Contains("test"));
             Assert.AreEqual("test",(String)doc["test"]);
-			Assert.AreEqual(buf.Length,read);
+			Assert.AreEqual(buf.Length,reader.Position);
         }
         
         [Test]
@@ -73,9 +73,9 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader2 reader = new BsonReader2(ms);
             
-            Document doc = null;
-            int size = reader.ReadDocument(ref doc);
+            Document doc = reader.ReadDocument();
             
+            Assert.IsNotNull(doc);
         }
         
         [Test]
@@ -97,8 +97,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader2 reader = new BsonReader2(ms);
             
-            Document doc = new Document();
-            reader.ReadDocument(ref doc);
+            Document doc = reader.ReadDocument();
             
             Assert.IsNotNull(doc, "Document was null");
             Assert.IsTrue(doc.Contains("_id"));
@@ -117,10 +116,9 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader2 reader = new BsonReader2(ms);
             
-            Document doc = new Document();
-            int read = reader.ReadDocument(ref doc);
+            Document doc = reader.ReadDocument();
             Assert.IsNotNull(doc, "Document was null");
-            Assert.AreEqual(buf.Length, read);
+            Assert.AreEqual(buf.Length, reader.Position);
             Assert.IsTrue(doc.Contains("a"));
             
         }
