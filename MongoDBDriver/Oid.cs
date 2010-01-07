@@ -12,7 +12,12 @@ namespace MongoDB.Driver{
                 this.value = value; 
             }
         }
-        
+        public DateTime Created{
+            get{
+                int seconds = BitConverter.ToInt32(this.value,0);
+                return OidGenerator.epoch.AddSeconds(seconds);
+            }
+        }
         public Oid(){}
         
         public Oid(string value){

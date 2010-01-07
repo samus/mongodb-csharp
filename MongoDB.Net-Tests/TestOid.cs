@@ -74,5 +74,16 @@ namespace MongoDB.Driver
             Assert.AreNotEqual(new Oid(hex), new Oid(hex2));
             
         }        
+        
+        [Test]
+        public void TestDate(){
+            string hex = "958B454BD114BE541B000000";
+            Oid oid = new Oid(hex);
+            //Expected: 2010-01-07 02:24:56.633
+            DateTime expected = new DateTime(2010,1,7,7,21,57,DateTimeKind.Utc);
+            Assert.AreEqual(expected,oid.Created);
+            
+  
+        }
     }
 }
