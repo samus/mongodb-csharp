@@ -42,15 +42,15 @@ namespace MongoDB.Driver.IO
         public ReplyMessage(){
         }           
         public void Read(Stream stream){
-            BufferedStream bufstream = new BufferedStream(stream, 4 * 1024);
-            BinaryReader reader = new BinaryReader(bufstream);
+            stream = new BufferedStream(stream, 256);
+            BinaryReader reader = new BinaryReader(stream);
             this.Header = ReadHeader(reader);
             this.ResponseFlag = reader.ReadInt32();
             this.CursorID = reader.ReadInt64();
             this.StartingFrom = reader.ReadInt32();
             this.NumberReturned = reader.ReadInt32();            
             
-            BsonReader2 breader = new BsonReader2(bufstream);
+            BsonReader breader = new BsonReader(stream);
             List<Document> docs = new List<Document>();
             for(int num = 0; num < this.NumberReturned; num++){
                 docs.Add(breader.Read());

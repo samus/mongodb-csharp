@@ -19,7 +19,7 @@ namespace MongoDB.Driver.IO
             MessageHeader header = this.Header;
             BufferedStream bstream = new BufferedStream(stream);
             BinaryWriter writer = new BinaryWriter(bstream);
-            BsonWriter2 bwriter = new BsonWriter2(bstream);
+            BsonWriter bwriter = new BsonWriter(bstream);
             
             Header.MessageLength += this.CalculateBodySize(bwriter);
             
@@ -32,9 +32,9 @@ namespace MongoDB.Driver.IO
             bwriter.Flush();
         }
         
-        protected abstract void WriteBody(BsonWriter2 writer);
+        protected abstract void WriteBody(BsonWriter writer);
         
-        protected abstract int CalculateBodySize(BsonWriter2 writer);
+        protected abstract int CalculateBodySize(BsonWriter writer);
 
     }
 }

@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-# SharpDevelop 3.1.0.4077
+# SharpDevelop 3.1.1.5327
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver", "MongoDBDriver\MongoDB.Driver.csproj", "{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}"
 EndProject
 Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{502F3381-58AA-461B-B9D8-12578A588C61}"
 EndProject
-Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "MongoDBDriverTranslation", "MongoDBDriverTranslation\MongoDBDriverTranslation.mdproj", "{89828A32-BE79-4B3A-8605-0B32C06F942F}"
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "MongoDBDriverTranslation", "MongoDBDriverTranslation\MongoDBDriverTranslation.mdproj", "{4E35FC5B-3AC5-48FD-8986-592A8597296D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.Tests", "MongoDB.Net-Tests\MongoDB.Driver.Tests.csproj", "{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}"
 EndProject
@@ -26,6 +26,8 @@ Global
 		{2E48891E-72F9-445D-9A5A-DBA787BFFE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E48891E-72F9-445D-9A5A-DBA787BFFE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E48891E-72F9-445D-9A5A-DBA787BFFE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E35FC5B-3AC5-48FD-8986-592A8597296D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E35FC5B-3AC5-48FD-8986-592A8597296D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{502F3381-58AA-461B-B9D8-12578A588C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{502F3381-58AA-461B-B9D8-12578A588C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -36,8 +38,6 @@ Global
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89828A32-BE79-4B3A-8605-0B32C06F942F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89828A32-BE79-4B3A-8605-0B32C06F942F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -46,13 +46,24 @@ Global
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89828A32-BE79-4B3A-8605-0B32C06F942F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89828A32-BE79-4B3A-8605-0B32C06F942F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E35FC5B-3AC5-48FD-8986-592A8597296D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E35FC5B-3AC5-48FD-8986-592A8597296D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{502F3381-58AA-461B-B9D8-12578A588C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{502F3381-58AA-461B-B9D8-12578A588C61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MongoDBDriver\MongoDB.Driver.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 120
+		$1.RemoveTrailingWhitespace = True
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

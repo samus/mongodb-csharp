@@ -24,11 +24,11 @@ namespace MongoDB.Driver.IO
             this.Header = new MessageHeader(OpCode.Msg);
         }
         
-        protected override void WriteBody (BsonWriter2 writer){
+        protected override void WriteBody (BsonWriter writer){
             writer.WriteString(this.Message);            
         }
         
-        protected override int CalculateBodySize(BsonWriter2 writer){
+        protected override int CalculateBodySize(BsonWriter writer){
             return writer.CalculateSize(this.Message,false);
         }
     }

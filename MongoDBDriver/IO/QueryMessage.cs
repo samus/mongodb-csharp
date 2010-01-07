@@ -90,18 +90,18 @@ namespace MongoDB.Driver.IO
         }
 #endregion
         
-        protected override void WriteBody (BsonWriter2 writer){
+        protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,(int)this.Options);
             writer.WriteString(this.FullCollectionName);
             writer.WriteValue(BsonDataType.Integer,(int)this.NumberToSkip);
             writer.WriteValue(BsonDataType.Integer,(int)this.NumberToReturn);
-            writer.WriteDocument(this.Query);
+            writer.Write(this.Query);
             if(this.ReturnFieldSelector != null){
-                writer.WriteDocument(this.ReturnFieldSelector);
+                writer.Write(this.ReturnFieldSelector);
             }
         }
 		
-		protected override int CalculateBodySize(BsonWriter2 writer){
+		protected override int CalculateBodySize(BsonWriter writer){
             int size = 12; //options, numbertoskip, numbertoreturn
             size += writer.CalculateSize(this.FullCollectionName,false);
             size += writer.CalculateSize(this.Query);

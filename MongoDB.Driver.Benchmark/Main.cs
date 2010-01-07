@@ -1,7 +1,9 @@
 using System;
+using System.IO;
 using System.Threading;
 
 using MongoDB.Driver;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Benchmark
 {
@@ -26,19 +28,29 @@ namespace MongoDB.Driver.Benchmark
             m.Connect();
             Database db = m["benchmark"];
 
-//            db.MetaData.DropDatabase();
-//            RunInsertTest("insert (small, no index)", db, "small_none",small,false,false);
-//            RunInsertTest("insert (medium, no index)", db, "medium_none",medium,false,false);
-//            RunInsertTest("insert (large, no index)", db, "large_none",large,false,false);
-//
-//            RunInsertTest("insert (small, indexed)", db, "small_index",small,true,false);
-//            RunInsertTest("insert (medium, indexed)", db, "medium_index",medium,true,false);
-//            RunInsertTest("insert (large, indexed)", db, "large_index",large,true,false);
-//
-//            RunInsertTest("batch insert (small, no index)", db, "small_bulk",small,false,true);
-//            RunInsertTest("batch insert (medium, no index)", db, "medium_bulk",medium,false,true);
-//            RunInsertTest("batch insert (large, no index)", db, "large_bulk",large,false,true);
-          
+            db.MetaData.DropDatabase();
+            Console.WriteLine("Starting Tests");
+            
+            RunEncodeTest("encode (small)",small);
+            RunEncodeTest("encode (medium)", medium);
+            RunEncodeTest("encode (large)", large);
+            
+            RunDecodeTest("decode (small)",small);
+            RunDecodeTest("decode (medium)", medium);
+            RunDecodeTest("decode (large)", large);
+            
+            db.MetaData.DropDatabase();
+            RunInsertTest("insert (small, no index)", db, "small_none",small,false,false);
+            RunInsertTest("insert (medium, no index)", db, "medium_none",medium,false,false);
+            RunInsertTest("insert (large, no index)", db, "large_none",large,false,false);
+
+            RunInsertTest("insert (small, indexed)", db, "small_index",small,true,false);
+            RunInsertTest("insert (medium, indexed)", db, "medium_index",medium,true,false);
+            RunInsertTest("insert (large, indexed)", db, "large_index",large,true,false);
+
+            RunInsertTest("batch insert (small, no index)", db, "small_bulk",small,false,true);
+            RunInsertTest("batch insert (medium, no index)", db, "medium_bulk",medium,false,true);
+            RunInsertTest("batch insert (large, no index)", db, "large_bulk",large,false,true);            
             
             Document fonespec = new Document().Append("x",perTrial/2);
             RunFindTest("find_one (small, no index)", db, "small_none",fonespec,false);
@@ -91,7 +103,7 @@ namespace MongoDB.Driver.Benchmark
             }
             large.Append("harvested_words", harvestedWords);
         }
-
+#region Insert Tests
         static void RunInsertTest(string name, Database db, string col, Document doc, bool index, bool bulk){
             TimeSpan lowest = TimeSpan.MaxValue;
             for(int i = 0; i < trials; i++){
@@ -135,7 +147,7 @@ namespace MongoDB.Driver.Benchmark
                 db[col].Insert(ins);
             }
         }
-
+        
         static void DoBulkInsert(Database db, string col, Document doc, int size){
             for(int i = 0; i < perTrial / size; i++){
                 Document[] docs = new Document[size];
@@ -147,7 +159,71 @@ namespace MongoDB.Driver.Benchmark
                 db[col].Insert(docs);
             }
         }
+#endregion
 
+#region Encode Tests
+        static void RunEncodeTest(string name, Document doc){
+            TimeSpan lowest = TimeSpan.MaxValue;
+            for(int i = 0; i < trials; i++){
+                TimeSpan ret = TimeEncode(doc);
+                if(ret < lowest) lowest = ret;
+            }
+            int opsSec = (int)(perTrial/lowest.TotalSeconds);
+            Console.Out.WriteLine(String.Format("{0}{1} {2}", name + new string('.', 55 - name.Length), opsSec, lowest));            
+        }
+        
+        static TimeSpan TimeEncode(Document doc){
+            DateTime start = DateTime.Now;
+            DoEncode(doc);
+            DateTime stop = DateTime.Now;
+            TimeSpan t = stop - start;
+            return t;
+        }
+
+        static void DoEncode(Document doc){
+            MemoryStream ms = new MemoryStream();
+            for(int i = 0; i < perTrial; i++){
+                BsonWriter writer = new BsonWriter(ms);
+                writer.Write(doc);
+                ms.Seek(0,SeekOrigin.Begin);
+            }
+        }
+#endregion        
+
+        static void RunDecodeTest(string name, Document doc){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            writer.Write(doc);
+    
+            byte[] buff = ms.ToArray();
+            
+            TimeSpan lowest = TimeSpan.MaxValue;
+            for(int i = 0; i < trials; i++){
+                TimeSpan ret = TimeDecode(buff);
+                if(ret < lowest) lowest = ret;
+            }
+            int opsSec = (int)(perTrial/lowest.TotalSeconds);
+            Console.Out.WriteLine(String.Format("{0}{1} {2}", name + new string('.', 55 - name.Length), opsSec, lowest));            
+        }
+        
+        static TimeSpan TimeDecode(byte[] doc){
+            DateTime start = DateTime.Now;
+            DoDecode(doc);
+            DateTime stop = DateTime.Now;
+            TimeSpan t = stop - start;
+            return t;
+        }
+
+        static void DoDecode(byte[] buff){
+            MemoryStream ms = new MemoryStream(buff);
+            for(int i = 0; i < perTrial; i++){
+                BsonReader reader = new BsonReader(ms);
+                reader.Read();
+                ms.Seek(0,SeekOrigin.Begin);
+            }
+        }
+
+        #region Find Tests
         static void RunFindTest(string name, Database db, string col, Document spec, bool range){
             TimeSpan lowest = TimeSpan.MaxValue;
             for(int i = 0; i < trials; i++){
@@ -183,6 +259,7 @@ namespace MongoDB.Driver.Benchmark
                 }
             }
         }
+        #endregion
 
     }
 }

@@ -47,15 +47,15 @@ namespace MongoDB.Driver.IO
             this.Header = new MessageHeader(OpCode.Update);
         }
         
-        protected override void WriteBody (BsonWriter2 writer){
+        protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,0);
             writer.WriteString(this.FullCollectionName);
             writer.WriteValue(BsonDataType.Integer,this.Flags);
-            writer.WriteDocument(selector);
-            writer.WriteDocument(Document);
+            writer.Write(selector);
+            writer.Write(Document);
         }
         
-        protected override int CalculateBodySize(BsonWriter2 writer){
+        protected override int CalculateBodySize(BsonWriter writer){
             int size = 4; //first int32
             size += writer.CalculateSize(this.FullCollectionName,false);
             size += 4; //flags

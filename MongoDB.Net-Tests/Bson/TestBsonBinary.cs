@@ -13,17 +13,14 @@ namespace MongoDB.Driver.Bson
 		public void TestRoundTrip(){
 			Document idoc = new Document();
 			idoc.Add("b",new Binary(new byte[]{(byte)1,(byte)2}));
-            BsonDocument bidoc = BsonConvert.From(idoc);
 			
 			MemoryStream stream = new MemoryStream();
 			BsonWriter writer = new BsonWriter(stream);
-			bidoc.Write(writer);
+			writer.Write(idoc);
 			
 			stream.Seek(0,SeekOrigin.Begin);
 			BsonReader reader = new BsonReader(stream);
-			BsonDocument bodoc = new BsonDocument();
-			bodoc.Read(reader);
-			Document odoc = (Document) bodoc.ToNative();
+			Document odoc = reader.Read();
 			
 			Assert.AreEqual(idoc.ToString(), odoc.ToString());
 		}
@@ -36,68 +33,17 @@ namespace MongoDB.Driver.Bson
 			byte[] data = DecodeHex (hex);
 			MemoryStream inmem = new MemoryStream (data);
 			BsonReader inreader = new BsonReader (inmem);
-			BsonDocument indoc = new BsonDocument ();
-			indoc.Read (inreader);
+			Document indoc = new Document ();
+			indoc = inreader.Read();
 			
 			MemoryStream outmem = new MemoryStream ();
 			BsonWriter outwriter = new BsonWriter (outmem);
-			indoc.Write (outwriter);
+			outwriter.Write(indoc);
 			byte[] outdata = outmem.ToArray ();
 			String outhex = BitConverter.ToString (outdata);
 			outhex = outhex.Replace ("-", "");
 			
 			Assert.AreEqual (hex, outhex.ToLower());
-			
-		}
-		
-		[Test]
-		public void TestSimpleBinaryStorage(){
-			Binary b = new Binary();
-			byte[] data = new byte[2];
-			data[0] = (byte)1;
-			data[1] = (byte)2;
-			b.Subtype = Binary.TypeCode.General;
-			
-			BsonBinary binaryIn = new BsonBinary (new Binary (data));
-			MemoryStream stream = new MemoryStream ();
-			BsonWriter bsonWriter = new BsonWriter (stream);
-			binaryIn.Write (bsonWriter);
-			
-			string hex = BitConverter.ToString (stream.ToArray());
-			hex = hex.Replace ("-", "");
-			Assert.AreEqual("0600000002020000000102",hex);
-			
-		}
-		
-		[Test]
-		public void TestSimpleBinaryRead(){
-			string hex = "0600000002020000000102";
-			byte[] data = DecodeHex (hex);
-			MemoryStream stream = new MemoryStream (data);
-
-			BsonReader reader = new BsonReader(stream);
-			BsonBinary binaryOut = new BsonBinary ();
-			int read = binaryOut.Read(reader);
-			Assert.AreEqual(hex.Length/2,read);
-			Assert.AreEqual((byte)2,binaryOut.Subtype);
-			Assert.AreEqual(2,binaryOut.Val.Length);
-			Assert.AreEqual(hex.Length/2, binaryOut.Size);
-			
-		}
-		
-		[Test]
-		public void TestSimpleUnknownRead(){
-			string hex = "0600000001020000000102";
-			byte[] data = DecodeHex (hex);
-			MemoryStream stream = new MemoryStream (data);
-
-			BsonReader reader = new BsonReader(stream);
-			BsonBinary binaryOut = new BsonBinary ();
-			int read = binaryOut.Read(reader);
-			Assert.AreEqual(hex.Length/2,read);
-			Assert.AreEqual((byte)1,binaryOut.Subtype);
-			Assert.AreEqual(6,binaryOut.Val.Length);
-			Assert.AreEqual(hex.Length/2, binaryOut.Size);
 			
 		}
 		

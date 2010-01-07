@@ -31,7 +31,7 @@ namespace MongoDB.Driver.IO
             this.CursorIDs = cursorIDs;
         }
         
-        protected override void WriteBody (BsonWriter2 writer){
+        protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,0);
             writer.WriteValue(BsonDataType.Integer, this.CursorIDs.Length);            
 
@@ -40,7 +40,7 @@ namespace MongoDB.Driver.IO
             }
         }
         
-        protected override int CalculateBodySize(BsonWriter2 writer){
+        protected override int CalculateBodySize(BsonWriter writer){
             int size = 8; //first int32, number of cursors
             foreach(long id in this.CursorIDs){
                 size += 8;

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -70,20 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bson\BsonArray.cs" />
-    <Compile Include="Bson\BsonBinary.cs" />
-    <Compile Include="Bson\BsonBoolean.cs" />
-    <Compile Include="Bson\BsonConvert.cs" />
-    <Compile Include="Bson\BsonDate.cs" />
-    <Compile Include="Bson\BsonDocument.cs" />
-    <Compile Include="Bson\BsonLong.cs" />
-    <Compile Include="Bson\BsonNullUndefined.cs" />
-    <Compile Include="Bson\BsonNumber.cs" />
-    <Compile Include="Bson\BsonInteger.cs" />
-    <Compile Include="Bson\BsonOid.cs" />
-    <Compile Include="Bson\BsonReader2.cs" />
-    <Compile Include="Bson\BsonRegex.cs" />
-    <Compile Include="Bson\BsonWriter2.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connection.cs" />
@@ -106,9 +92,7 @@
     <Compile Include="Mongo.cs" />
     <Compile Include="IO\MsgMessage.cs" />
     <Compile Include="IO\ReplyMessage.cs" />
-    <Compile Include="Bson\BsonString.cs" />
     <Compile Include="Bson\BsonReader.cs" />
-    <Compile Include="Bson\BsonElement.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="MongoDBNull.cs" />
     <Compile Include="MongoExceptions.cs" />
@@ -118,7 +102,6 @@
     <Compile Include="MongoRegex.cs" />
     <Compile Include="OidGenerator.cs" />
     <Compile Include="PairedConnection.cs" />
-    <Compile Include="Bson\BsonCodeWScope.cs" />
     <Compile Include="Code.cs" />
     <Compile Include="CodeWScope.cs" />
     <Compile Include="Binary.cs" />

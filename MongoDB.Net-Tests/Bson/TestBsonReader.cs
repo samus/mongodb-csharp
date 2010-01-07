@@ -1,91 +1,211 @@
-/*
- * User: scorder
- * Date: 7/17/2009
- */
 using System;
 using System.IO;
+using System.Text;
 
 using NUnit.Framework;
 
 namespace MongoDB.Driver.Bson
 {
-
     [TestFixture]
-    public class TestBsonReaderWriter
+    public class TestBsonReader
     {
-        MemoryStream mem;
-        BsonReader reader;
-        BsonWriter writer;
-        
-        
-        //Not a true unit test but it will work for being lazy right now.
         [Test]
         public void TestReadString(){
-            InitStreams();
-            writer.Write("test");
-            FlushAndGotoBegin();
+            byte[] buf = HexToBytes("7465737400");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
             
-            Assert.AreEqual("test", reader.ReadString(5));      
+            String s = reader.ReadString();
+            Assert.AreEqual("test",s);
+            Assert.AreEqual(4,Encoding.UTF8.GetByteCount(s));
+        }
+        
+        [Test]
+        public void TestReadLongerString(){
+            byte[] buf = HexToBytes("7465737474657374746573747465737474657374746573747465737474657374746573747465737400");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
             
-            long start = mem.Position;
-            String[] values = {"one", "two", "three"};
-            foreach(string val in values){
-                writer.Write(val);
-            }
+            String s = reader.ReadString();
+            Assert.AreEqual("testtesttesttesttesttesttesttesttesttest",s);
+        }
+        
+        [Test]
+        public void TestReadStringWithUKPound(){
+            byte[] buf = HexToBytes("31323334C2A3353600");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            
+            String s = reader.ReadString();
+            Assert.AreEqual("1234£56",s);
+            Assert.AreEqual(8,Encoding.UTF8.GetByteCount(s));            
+            Assert.AreEqual(9,reader.Position);
+        }
+        
+        [Test]
+        public void TestReadStringValue(){
+            byte[] buf = HexToBytes("050000007465737400");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            
+			String str = reader.ReadLenString();
+            Assert.AreEqual(buf.Length, reader.Position);
+            Assert.AreEqual("test", (String)str);
+        }
+                
+        [Test]
+        public void TestReadStringElement(){
+            byte[] buf = HexToBytes("027465737400050000007465737400");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            Document doc = new Document();
+            
+            reader.ReadElement(doc);
+            //Assert.AreEqual(buf.Length,read);
+            Assert.IsTrue(doc.Contains("test"));
+            Assert.AreEqual("test",(String)doc["test"]);
+			Assert.AreEqual(buf.Length,reader.Position);
+        }
+        
+        [Test]
+        public void TestReadEmptyDocument(){
+            byte[] buf = HexToBytes("0500000000");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            
+            Document doc = reader.ReadDocument();
+            
+            Assert.IsNotNull(doc);
+        }
+        
+        [Test]
+        public void TestReadSimpleDocument(){
+            byte[] buf = HexToBytes("1400000002746573740005000000746573740000");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            
+            Document doc = reader.Read();
+            
+            Assert.IsNotNull(doc, "Document was null");
+            Assert.IsTrue(doc.Contains("test"));
+            Assert.AreEqual("test", (String)doc["test"]);
+        }
+        
+        [Test]
+        public void TestReadMultiElementDocument(){
+            byte[] buf = HexToBytes("2D000000075F6964004A753AD8FAC16EA58B290351016100000000000000F03F02620005000000746573740000");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            
+            Document doc = reader.ReadDocument();
+            
+            Assert.IsNotNull(doc, "Document was null");
+            Assert.IsTrue(doc.Contains("_id"));
+            Assert.IsTrue(doc.Contains("a"));
+            Assert.IsTrue(doc.Contains("b"));
+            Assert.AreEqual("ObjectId(\"4a753ad8fac16ea58b290351\")", ((Oid)doc["_id"]).ToString());
+            Assert.AreEqual(1, Convert.ToInt32(doc["a"]));
+            Assert.AreEqual("test", (String)doc["b"]);
+        }
+                
+        [Test]
+        public void TestReadDocWithDocs(){
+//            Document doc = new Document().Append("a", new Document().Append("b", new Document().Append("c",new Document())));
+//            Console.WriteLine(ConvertDocToHex(doc));
+            byte[] buf = HexToBytes("1D000000036100150000000362000D0000000363000500000000000000");
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            
+            Document doc = reader.ReadDocument();
+            Assert.IsNotNull(doc, "Document was null");
+            Assert.AreEqual(buf.Length, reader.Position);
+            Assert.IsTrue(doc.Contains("a"));
+            
+        }
+		
+		[Test]
+        public void TestDBRefRoundTrip(){
+			MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+			
+            Document source = new Document();
+            source.Append("x",1).Append("ref",new DBRef("refs","ref1"));
+			
+			writer.Write(source);
             writer.Flush();
-            mem.Seek(start, SeekOrigin.Begin);
+            ms.Seek(0,SeekOrigin.Begin);
             
-            foreach(string val in values){
-                Assert.AreEqual(val,reader.ReadString(val.Length + 1));
-            }
+            BsonReader reader = new BsonReader(ms);
+            Document copy = reader.Read();            
+            
+            Assert.IsTrue(copy.Contains("ref"));
+            Assert.IsTrue(copy["ref"].GetType() == typeof(DBRef));
+            
+            DBRef sref = (DBRef)source["ref"];
+            DBRef cref = (DBRef)copy["ref"];
+            
+            Assert.AreEqual(sref.Id, cref.Id);
+            
         }
         
         [Test]
-        public void TestReadStringNoLength(){       
-            InitStreams();
-            writer.Write("test");
-            FlushAndGotoBegin();
+        public void TestReadBigDocument(){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
             
-            Assert.AreEqual("test", reader.ReadString());       
-        }
-
-        [Test]
-        public void TestBoolean(){
-            InitStreams();
-            writer.Write(true);
-            FlushAndGotoBegin();
-            
-            Assert.IsTrue(reader.ReadBoolean());
-        }
-        
-        [Test]
-        public void TestInteger(){
-            InitStreams();
-            writer.Write(1);
-            FlushAndGotoBegin();
-            
-            Assert.AreEqual(1,reader.ReadInt32());
-        }
-        
-        [Test]
-        public void TestByte(){
-            byte v = (byte)1;
-            InitStreams();
-            writer.Write(v);
-            FlushAndGotoBegin();
-            
-            Assert.AreEqual(v,reader.ReadByte());
-        }       
-
-        protected void InitStreams(){
-            mem = new MemoryStream();
-            reader = new BsonReader(mem);
-            writer = new BsonWriter(mem);                   
-        }
-        
-        protected void FlushAndGotoBegin(){
+            Document expected = new Document();
+            expected.Append("str", "test")
+                .Append("int", 45)
+                .Append("long", (long)46)
+                .Append("num", 4.5)
+                .Append("date",DateTime.Today)
+                .Append("_id", new OidGenerator().Generate())
+                .Append("code", new Code("return 1;"))
+                .Append("subdoc", new Document().Append("a",1).Append("b",2))                
+                .Append("array", new String[]{"a","b","c","d"})
+                .Append("codewscope", new CodeWScope("return 2;", new Document().Append("c",1)))
+                .Append("binary", new Binary(new byte[]{0,1,2,3}))
+                .Append("regex", new MongoRegex("[A-Z]"))                
+            ;
+            writer.Write(expected);
             writer.Flush();
-            mem.Seek(0,SeekOrigin.Begin);           
+            ms.Seek(0,SeekOrigin.Begin);           
+            
+            BsonReader reader = new BsonReader(ms);
+            Document doc = reader.Read();
+            
+            Assert.IsNotNull(doc);
         }
+        
+        
+        private String ConvertDocToHex(Document doc){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            
+            writer.Write(doc);
+            return BitConverter.ToString(ms.ToArray()).Replace("-","");
+                        
+        }
+        
+        private byte[] HexToBytes(string hex){
+            //TODO externalize somewhere.
+            if(hex.Length % 2 == 1){
+                System.Console.WriteLine("uneven number of hex pairs.");
+                hex = "0" + hex;
+            }           
+            int numberChars = hex.Length;
+            byte[] bytes = new byte[numberChars / 2];
+            for (int i = 0; i < numberChars; i += 2){
+                try{
+                    bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+                }
+                catch{
+                    //failed to convert these 2 chars, they may contain illegal charracters
+                    bytes[i / 2] = 0;
+                }
+            }
+            return bytes;
+        }        
+        
     }
 }
