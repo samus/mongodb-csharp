@@ -20,18 +20,21 @@ namespace MongoDB.Driver.IO
         
         public void Write (Stream stream){
             MessageHeader header = this.Header;
-            BinaryWriter writer = new BinaryWriter(new BufferedStream(stream));
+            BufferedStream bstream = new BufferedStream(stream);
+            BinaryWriter writer = new BinaryWriter(bstream);
             
-            MemoryStream bodyBuffer = new MemoryStream();   
+            MemoryStream bodyBuffer = new MemoryStream();
             this.WriteBody(bodyBuffer);
-            Byte[] body = bodyBuffer.ToArray();
-            header.MessageLength += body.Length;
+            //Byte[] body = bodyBuffer.ToArray();
+            //header.MessageLength += body.Length;
+            header.MessageLength += (int)bodyBuffer.Position;
             
             writer.Write(header.MessageLength);
             writer.Write(header.RequestId);
             writer.Write(header.ResponseTo);
             writer.Write((int)header.OpCode);
-            writer.Write(body);
+            bodyBuffer.WriteTo(bstream);
+            //writer.Write(body);
             writer.Flush();
             Debug.WriteLine(header, "Request Message");
         }

@@ -1,8 +1,5 @@
-/*
- * User: scorder
- * Date: 7/7/2009
- */
 using System;
+using System.IO;
 using System.Text;
 
 namespace MongoDB.Driver.IO
@@ -17,7 +14,6 @@ namespace MongoDB.Driver.IO
             get { return header; }
             set { header = value; }
         }
-        
     }
 
 }
