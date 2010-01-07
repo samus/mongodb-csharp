@@ -4,10 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # SharpDevelop 3.1.1.5327
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver", "MongoDBDriver\MongoDB.Driver.csproj", "{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}"
 EndProject
-Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{502F3381-58AA-461B-B9D8-12578A588C61}"
-EndProject
-Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "MongoDBDriverTranslation", "MongoDBDriverTranslation\MongoDBDriverTranslation.mdproj", "{4E35FC5B-3AC5-48FD-8986-592A8597296D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.Tests", "MongoDB.Net-Tests\MongoDB.Driver.Tests.csproj", "{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Linq", "MongoDB.Linq\MongoDB.Linq.csproj", "{2E48891E-72F9-445D-9A5A-DBA787BFFE9E}"
@@ -15,6 +11,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Linq.Tests", "MongoDB.Linq.Tests\MongoDB.Linq.Tests.csproj", "{870FE8E1-3461-4C79-BF25-9C35E41BF582}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.Benchmark", "MongoDB.Driver.Benchmark\MongoDB.Driver.Benchmark.csproj", "{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.GridFS", "MongoDB.Driver.GridFS\MongoDB.Driver.GridFS.csproj", "{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.GridFS.Tests", "MongoDB.Driver.GridFS.Tests\MongoDB.Driver.GridFS.Tests.csproj", "{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +26,6 @@ Global
 		{2E48891E-72F9-445D-9A5A-DBA787BFFE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E48891E-72F9-445D-9A5A-DBA787BFFE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E48891E-72F9-445D-9A5A-DBA787BFFE9E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E35FC5B-3AC5-48FD-8986-592A8597296D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E35FC5B-3AC5-48FD-8986-592A8597296D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -46,10 +42,14 @@ Global
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E35FC5B-3AC5-48FD-8986-592A8597296D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E35FC5B-3AC5-48FD-8986-592A8597296D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MongoDBDriver\MongoDB.Driver.csproj

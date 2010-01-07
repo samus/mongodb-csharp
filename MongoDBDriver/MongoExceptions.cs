@@ -29,13 +29,6 @@ namespace MongoDB.Driver
         }       
     }
     
-    public class MongoReaderException : MongoException
-    {
-        //Nothing to add for now.
-        public MongoReaderException(string message):base(message,null){}
-        
-    }
-    
     public class MongoCommandException : MongoException
     {
         private Document error;
@@ -52,5 +45,18 @@ namespace MongoDB.Driver
             this.error = error;
             this.command = command;
         }
+    }
+
+    public class MongoGridFSException : Exception
+    {
+        private string filename;
+        public string Filename{
+            get { return filename; }
+        }
+
+        public MongoGridFSException(string message, string filename, Exception inner): base(message, inner){
+            this.filename = filename;
+        }
+
     }
 }
