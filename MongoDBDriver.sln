@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Linq", "MongoDB.Lin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Linq.Tests", "MongoDB.Linq.Tests\MongoDB.Linq.Tests.csproj", "{870FE8E1-3461-4C79-BF25-9C35E41BF582}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.GridFS", "MongoDB.Driver.GridFS\MongoDB.Driver.GridFS.csproj", "{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.GridFS.Tests", "MongoDB.Driver.GridFS.Tests\MongoDB.Driver.GridFS.Tests.csproj", "{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,14 @@ Global
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

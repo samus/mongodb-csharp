@@ -1,45 +1,42 @@
 ﻿using System;
+using System.Text;
 using System.IO;
-using MongoDB.Driver;
+using System.Collections.Generic;
 
 namespace MongoDB.Driver.GridFS
 {
     public class GridFS
     {
-        private const int DEFAULT_CHUNKSIZE = 256 * 1024;
-        private const string DEFAULT_ROOT = "fs";
-        private Mongo mongo;
-        Collection chunks;
-        Collection files;
-
-        #region Ctors
-        public GridFS(Mongo mongo){
-            this.mongo = mongo;
-            this.bucketName = DEFAULT_ROOT;
-            chunks = this.mongo[this.bucketName][".chunks"];
-            files = this.mongo[this.bucketName][".files"];
-        }
-
-        public GridFS(Mongo mongo, string bucketName){
-            this.mongo = mongo;
-            this.bucketName = bucketName;
-            chunks = this.mongo[this.bucketName][".chunks"];
-            files = this.mongo[this.bucketName][".files"];
-            
-        }
-
-        #endregion
-       
-        public void StoreFile()
+        public GridFS(Mongo mongo)
         {
-           Int32[] i = new Int32[DEFAULT_CHUNKSIZE];
+            this.mongo = mongo;
+            this.files = mongo["fs"]["files"];
+            this.chunks = mongo["fs"]["chunks"];
         }
 
-        #region Properties
-        private string bucketName;
-              
-        #endregion
-    }
+        public GridFS(Mongo mongo, string collection){
+            this.mongo = mongo;
+            this.files = mongo["fs"][collection];
+            this.chunks = mongo["fs"][collection];
+        }
+        
+        private Mongo mongo;
+        public Mongo Mongo
+        {
+            get { return this.mongo; }
+        }
+        private IMongoCollection files;
+        public IMongoCollection Files
+        {
+            get { return this.files; }
+        }
 
+        private IMongoCollection chunks;
+        public IMongoCollection Chunks
+        {
+            get { return this.chunks; }
+        }
+    
+    }
 
 }
