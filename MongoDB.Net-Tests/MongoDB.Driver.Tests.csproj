@@ -59,13 +59,7 @@
   <ItemGroup>
     <Compile Include="Bson\TestBsonBinary.cs" />
     <Compile Include="TestAuthentication.cs" />
-    <Compile Include="Bson\TestBsonConvert.cs" />
-    <Compile Include="Bson\TestBsonDate.cs" />
-    <Compile Include="Bson\TestBsonDocument.cs" />
-    <Compile Include="Bson\TestBsonElement.cs" />
     <Compile Include="Bson\TestBsonReader.cs" />
-    <Compile Include="Bson\TestBsonString.cs" />
-    <Compile Include="Bson\TestBsonTypes.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
     <Compile Include="TestCursor.cs" />
@@ -80,13 +74,11 @@
     <None Include="test-data\tests.charreads.txt" />
     <None Include="test-data\tests.reads.txt" />
     <None Include="test-data\tests.smallreads.txt" />
-    <Compile Include="Bson\TestBsonRegex.cs" />
     <Compile Include="TestMongoExceptions.cs" />
     <Compile Include="TestOid.cs" />
     <Compile Include="TestOidGenerator.cs" />
     <Compile Include="TestPairedConnection.cs" />
-    <Compile Include="Bson\TestBsonCode.cs" />
-    <Compile Include="Bson\TestBsonArray.cs" />
+    <Compile Include="Bson\TestBsonWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">

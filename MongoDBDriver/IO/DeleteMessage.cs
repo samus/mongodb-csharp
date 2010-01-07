@@ -25,8 +25,8 @@ namespace MongoDB.Driver.IO
             set { fullCollectionName = value; }
         }
         
-        private BsonDocument selector;      
-        public BsonDocument Selector {
+        private Document selector;      
+        public Document Selector {
             get { return selector; }
             set { selector = value; }
         }
@@ -35,14 +35,18 @@ namespace MongoDB.Driver.IO
             this.Header = new MessageHeader(OpCode.Delete);
         }
         
-        protected override void WriteBody(Stream stream){
-            BsonWriter writer = new BsonWriter(stream);
-            writer.Write((int)0);
-            writer.Write(this.FullCollectionName);
-            writer.Write((int)0);
-            selector.Write(writer);
+        protected override void WriteBody (BsonWriter writer){
+            writer.WriteValue(BsonDataType.Integer,0);
+            writer.WriteString(this.FullCollectionName);
+            writer.WriteValue(BsonDataType.Integer,0);
+            writer.Write(this.Selector);
         }
         
-
+        protected override int CalculateBodySize(BsonWriter writer){
+            int size = 8; //first int32, second int32 
+            size += writer.CalculateSize(this.FullCollectionName,false);
+            size += writer.CalculateSize(selector);
+            return size;
+        }
     }
 }

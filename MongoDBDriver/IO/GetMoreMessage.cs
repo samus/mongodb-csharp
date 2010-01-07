@@ -1,6 +1,3 @@
-/*
- * User: scorder
- */
 using System;
 using System.IO;
 using System.Text;
@@ -52,13 +49,19 @@ namespace MongoDB.Driver.IO
             this.NumberToReturn = numberToReturn;
         }
         
-        protected override void WriteBody (Stream stream){
-            BsonWriter writer = new BsonWriter(stream);     
-            writer.Write(0);
-            writer.Write(this.FullCollectionName);
-            writer.Write(this.NumberToReturn);
-            writer.Write(this.cursorID);
-            writer.Flush();
+        protected override void WriteBody (BsonWriter writer){
+            writer.WriteValue(BsonDataType.Integer,0);
+            writer.WriteString(this.FullCollectionName);
+            writer.WriteValue(BsonDataType.Integer,this.NumberToReturn);
+            writer.WriteValue(BsonDataType.Long,this.CursorID);
         }       
+        
+        protected override int CalculateBodySize(BsonWriter writer){
+            int size = 4; //first int32
+            size += writer.CalculateSize(this.FullCollectionName,false);
+            size += 12; //number to return + cursorid
+            return size;
+        }
+        
     }
 }

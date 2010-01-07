@@ -8,10 +8,11 @@ namespace MongoDB.Driver
 {
     public class OidGenerator
     {
+        internal static DateTime epoch = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
+        
         private int inc;
         private object inclock =  new object();
         
-        private DateTime epoch = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
         private byte[] machineHash;
         private byte[] procID;
         
@@ -38,10 +39,10 @@ namespace MongoDB.Driver
         }
         
         private int GenerateTime(){
-            DateTime now = DateTime.Now.ToUniversalTime();;
-            DateTime nowtime = new DateTime(epoch.Year, epoch.Month, epoch.Day, now.Hour, now.Minute, now.Second, now.Millisecond);
-            TimeSpan diff = nowtime - epoch;
-            return Convert.ToInt32(Math.Floor(diff.TotalMilliseconds));            
+            DateTime now = DateTime.UtcNow;
+            //DateTime nowtime = new DateTime(epoch.Year, epoch.Month, epoch.Day, now.Hour, now.Minute, now.Second, now.Millisecond);
+            TimeSpan diff = now - epoch;
+            return Convert.ToInt32(Math.Floor(diff.TotalSeconds));            
         }
         
         private int GenerateInc(){

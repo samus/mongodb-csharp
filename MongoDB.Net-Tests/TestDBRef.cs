@@ -1,4 +1,4 @@
-﻿
+
 
 using System;
 using NUnit.Framework;
@@ -65,5 +65,13 @@ namespace MongoDB.Driver
             Assert.IsTrue(DBRef.IsDocumentDBRef(doc));
             
         }
+		
+		[Test]
+		public void TestCastsToDocument(){
+			OidGenerator ogen = new OidGenerator();
+			DBRef dref = new DBRef("tests.dbrefs", ogen.Generate());
+			Document doc = (Document)dref;
+			Assert.AreEqual(dref.CollectionName, doc[DBRef.RefName]);
+		}
     }
 }

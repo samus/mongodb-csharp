@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 
@@ -16,7 +15,7 @@ namespace MongoDB.Driver.IO
         //    MsgHeader header;             // standard message header
         //    int32     ZERO;               // 0 - reserved for future use
         //    cstring   fullCollectionName; // "dbname.collectionname"
-        //    int32     upsert;             // value 0 or 1 for an 'upsert' operation
+        //    int32     flags;              // value 0 for upsert 1 for multiupdate operation
         //    BSON      selector;           // the query to select the document
         //    BSON      document;           // the document data to update with or insert
         //}
@@ -26,35 +25,43 @@ namespace MongoDB.Driver.IO
             set { fullCollectionName = value; }
         }
         
-        private BsonDocument selector;      
-        public BsonDocument Selector {
+        private Document selector;      
+        public Document Selector {
             get { return selector; }
             set { selector = value; }
         }
 
-        private BsonDocument document;      
-        public BsonDocument Document {
+        private Document document;      
+        public Document Document {
             get { return document; }
             set { document = value; }
         }
         
-        private int upsert;
-        public int Upsert{
-            get { return upsert; }
-            set { upsert = value; }
+        private int flags;
+        public int Flags{
+            get { return flags; }
+            set { flags = value; }
         }
         
         public UpdateMessage(){
             this.Header = new MessageHeader(OpCode.Update);
         }
         
-        protected override void WriteBody(Stream stream){
-            BsonWriter writer = new BsonWriter(stream);
-            writer.Write((int)0);
-            writer.Write(this.FullCollectionName);
-            writer.Write(this.Upsert);
-            selector.Write(writer);
-            document.Write(writer);
+        protected override void WriteBody (BsonWriter writer){
+            writer.WriteValue(BsonDataType.Integer,0);
+            writer.WriteString(this.FullCollectionName);
+            writer.WriteValue(BsonDataType.Integer,this.Flags);
+            writer.Write(selector);
+            writer.Write(Document);
+        }
+        
+        protected override int CalculateBodySize(BsonWriter writer){
+            int size = 4; //first int32
+            size += writer.CalculateSize(this.FullCollectionName,false);
+            size += 4; //flags
+            size += writer.CalculateSize(this.Selector);
+            size += writer.CalculateSize(this.Document);
+            return size;
         }       
     }
 }
