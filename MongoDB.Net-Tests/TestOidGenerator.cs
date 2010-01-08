@@ -12,7 +12,14 @@ namespace MongoDB.Driver
         public void TestGenerate(){
             OidGenerator ogen = new OidGenerator();
             Oid oid = ogen.Generate();
-            Console.WriteLine(oid.ToString());
+            
+            String hex = BitConverter.ToString(oid.Value).Replace("-","");
+            Assert.IsTrue(hex.EndsWith("000001"), "Increment didn't start with 1.");
+
+            oid = ogen.Generate();
+            hex = BitConverter.ToString(oid.Value).Replace("-","");
+            Assert.IsTrue(hex.EndsWith("000002"), "Next increment should have been 2");
+
         }
     }
 }
