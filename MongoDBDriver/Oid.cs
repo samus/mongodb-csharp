@@ -8,11 +8,21 @@ namespace MongoDB.Driver{
         private byte[] value;
         public byte[] Value {
             get { return this.value; }
-            set { 
+            set {
                 this.value = value; 
             }
         }
-        
+
+        public DateTime Created{
+            get{
+                byte[] time = new byte[4];
+                Array.Copy(this.value,time,4);
+                Array.Reverse(time);
+                int seconds = BitConverter.ToInt32(time,0);
+                return OidGenerator.epoch.AddSeconds(seconds);
+
+            }
+        }
         public Oid(){}
         
         public Oid(string value){
