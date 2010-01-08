@@ -12,18 +12,18 @@ namespace MongoDB.Driver.GridFS
         private FileMode fileMode;
         private BinaryReader binaryReader;
         private FileStream fileStream;
-        private GridSFS gridFS;
+        private GridFS gridFS;
         private byte[] buffer;
         private bool disposed = false;
         private bool isOpen = false;
 
         
 
-        public GridFile(GridSFS gridFS){
+        public GridFile(GridFS gridFS){
             this.gridFS = gridFS;
         }
 
-       
+        
         #region Dispose
         public void Dispose()
         {
@@ -54,34 +54,34 @@ namespace MongoDB.Driver.GridFS
 
         public void Open(string filename)
         {
-                Document file = this.gridFS.Files.FindOne(new Document().Append("filename", filename));
-                if (file != null)
-                {
-                    this.id = (Object)file["_id"];
-                    this.filename = (String)file["filename"];
-                    this.chunkSize = (Int32)file["chunkSize"];
-                    this.contentType = (String)file["contentType"];
-                    this.length = (Int32)file["length"];
-                    this.aliases = file.Contains("aliases") ? (string[])file["aliases"] : null;
-                    this.uploadDate = (DateTime)file["uploadDate"];
-                    this.md5 = (string)file["md5"];
-                }
-                else
-                {
-                    OidGenerator oidGenerator = new OidGenerator();
-                    this.id = oidGenerator.Generate();
-                    this.filename = filename;
-                    this.chunkSize = DEFAULT_CHUNKSIZE;
-                    this.contentType = DEFAULT_CONTENT_TYPE;
-                    this.uploadDate = null;
-                }
-                this.isOpen = true;
-          }
+            Document file = this.gridFS.Files.FindOne(new Document().Append("filename", filename));
+            if (file != null)
+            {
+                this.id = (Object)file["_id"];
+                this.filename = (String)file["filename"];
+                this.chunkSize = (Int32)file["chunkSize"];
+                this.contentType = (String)file["contentType"];
+                this.length = (Int32)file["length"];
+                this.aliases = file.Contains("aliases") ? (string[])file["aliases"] : null;
+                this.uploadDate = (DateTime)file["uploadDate"];
+                this.md5 = (string)file["md5"];
+            }
+            else
+            {
+                OidGenerator oidGenerator = new OidGenerator();
+                this.id = oidGenerator.Generate();
+                this.filename = filename;
+                this.chunkSize = DEFAULT_CHUNKSIZE;
+                this.contentType = DEFAULT_CONTENT_TYPE;
+                this.uploadDate = null;
+            }
+            this.isOpen = true;
+        }
         
         public void Write(byte[] data)
         {
             AssertOpen();
-                              
+            
         }
 
         public void Read(int length)
@@ -98,7 +98,7 @@ namespace MongoDB.Driver.GridFS
         public void Close(){
             AssertOpen();
             Dispose();
-        }   
+        }
 
         public bool FileExists(string filename)
         {
@@ -121,9 +121,9 @@ namespace MongoDB.Driver.GridFS
             }
             else
                 foreach (Document file in cursor.Documents)
-                {
-                    names.Add((string)file["filename"]);
-                }
+            {
+                names.Add((string)file["filename"]);
+            }
             return names;
         }
 
@@ -169,7 +169,7 @@ namespace MongoDB.Driver.GridFS
 
             this.gridFS.Chunks.Insert(chunks);
             
-                
+            
         }
 
 
@@ -238,7 +238,7 @@ namespace MongoDB.Driver.GridFS
             doc["chunkSize"] = this.chunkSize;
             if (this.uploadDate != null){
                 doc["uploadDate"] = this.uploadDate;
-            }            
+            }
             return doc;
         }
 

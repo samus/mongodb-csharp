@@ -31,17 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MongoDB.Driver, Version=1.0.3635.36608, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\mongodb-csharp\MongoDBDriver\bin\Debug\MongoDB.Driver.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.core, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\lib\nunit.core.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\API\NUnit\NUnit-2.5.0.9122\bin\net-2.0\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <HintPath>..\redist\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -67,6 +58,10 @@
     <ProjectReference Include="..\MongoDB.Driver.GridFS\MongoDB.Driver.GridFS.csproj">
       <Project>{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}</Project>
       <Name>MongoDB.Driver.GridFS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
+      <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
+      <Name>MongoDB.Driver</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

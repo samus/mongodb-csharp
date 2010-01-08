@@ -44,16 +44,15 @@ namespace MongoDB.Driver.GridFS
         }
 
         private Binary data;
-        public Binary Data
-        {
+        public Binary Data{
             get { return this.data; }
         }
 
         //Allow sorting by chunk number
         public int CompareTo(Object obj){
             GridChunk chunk = (GridChunk)obj;
-            return this.n.CompareTo(chunk.N);            
-           }
+            return this.n.CompareTo(chunk.N);
+        }
 
         public Document ToDocument()
         {
