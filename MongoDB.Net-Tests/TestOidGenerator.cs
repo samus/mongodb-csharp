@@ -20,6 +20,12 @@ namespace MongoDB.Driver
             hex = BitConverter.ToString(oid.Value).Replace("-","");
             Assert.IsTrue(hex.EndsWith("000002"), "Next increment should have been 2");
 
+            
+            DateTime created = oid.Created;
+            DateTime now = DateTime.UtcNow;
+            Console.Out.WriteLine(oid.Created);
+            Assert.AreEqual(now.Year, created.Year);
+            Assert.AreEqual(now.Month, created.Month);
         }
     }
 }
