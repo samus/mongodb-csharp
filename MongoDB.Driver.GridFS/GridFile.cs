@@ -12,14 +12,14 @@ namespace MongoDB.Driver.GridFS
         private FileMode fileMode;
         private BinaryReader binaryReader;
         private FileStream fileStream;
-        private GridSFS gridFS;
+        private GridFS gridFS;
         private byte[] buffer;
         private bool disposed = false;
         private bool isOpen = false;
 
         
 
-        public GridFile(GridSFS gridFS){
+        public GridFile(GridFS gridFS){
             this.gridFS = gridFS;
         }
 
@@ -167,12 +167,8 @@ namespace MongoDB.Driver.GridFS
                 chunks.Add(gridChunk.ToDocument());
             }
 
-            this.gridFS.Chunks.Insert(chunks);
-            
-                
+            this.gridFS.Chunks.Insert(chunks);                
         }
-
-
 
 
         private Object id;
