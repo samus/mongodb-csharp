@@ -29,3 +29,5 @@ MongoDB.Linq.Tests/test-results/*
 MongoDB.Driver.Benchmark/bin/*
 MongoDB.Driver.Benchmark/ProfilingSessions/*
 MongoDB.Driver.Benchmark/obj/*
+
+/MongoDB.Driver.GridFS.Tests/bin/Debug/nunit.framework.xml

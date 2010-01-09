@@ -14,8 +14,8 @@ namespace MongoDB.Driver.GridFS
         [Test]
         public void TestOpenNewGridFile()
         {
-            GridFS gridFS = new GridFS(db["tests"]);
-            using (GridFile gf = new GridFile(gridFS))
+            GridFile gridFS = new GridFile(db["tests"]);
+            using (GridFileInfo gf = new GridFileInfo(gridFS))
             {                
                 gf.Open("newfile.txt");
                 Console.WriteLine(gf.Id.ToString());
@@ -24,7 +24,7 @@ namespace MongoDB.Driver.GridFS
         
         [Test]
         public void TestFileDoesNotExist(){
-            GridFS fs = new GridFS(db["tests"]);
+            GridFile fs = new GridFile(db["tests"]);
             Assert.IsFalse(fs.Exists("non-existent filename"));
         }
         
