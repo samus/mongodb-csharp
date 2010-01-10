@@ -62,7 +62,8 @@ namespace MongoDB.Driver.GridFS
             //Create is delegated to a GridFileInfo because the stream needs access to the gfi and it
             //is easier to do it this way and only write the implementation once.
             GridFileInfo gfi = new GridFileInfo(this.db,this.name,filename);
-            gfi.Create(mode,access);
+            gfi.Create(mode,access); 
+
         }
         #endregion
         

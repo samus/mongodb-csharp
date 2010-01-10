@@ -130,8 +130,7 @@ namespace MongoDB.Driver.GridFS
                     else this.readPos = bufferSize + offset;
                     break;                  
             }
-            return readPos;
- 
+            return readPos; 
         }
         
         public override void SetLength(long value){
