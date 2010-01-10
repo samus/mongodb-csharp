@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\TestBsonBinary.cs" />
+    <Compile Include="Bson\TestRoundTrips.cs" />
     <Compile Include="TestAuthentication.cs" />
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
