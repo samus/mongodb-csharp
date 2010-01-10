@@ -13,11 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Linq", "MongoDB.Lin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Linq.Tests", "MongoDB.Linq.Tests\MongoDB.Linq.Tests.csproj", "{870FE8E1-3461-4C79-BF25-9C35E41BF582}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.GridFS", "MongoDB.Driver.GridFS\MongoDB.Driver.GridFS.csproj", "{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.Benchmark", "MongoDB.Driver.Benchmark\MongoDB.Driver.Benchmark.csproj", "{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.GridFS.Tests", "MongoDB.Driver.GridFS.Tests\MongoDB.Driver.GridFS.Tests.csproj", "{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.Benchmark", "MongoDB.Driver.Benchmark\MongoDB.Driver.Benchmark.csproj", "{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.GridFS", "MongoDB.Driver.GridFS\MongoDB.Driver.GridFS.csproj", "{BF6A8BCA-BED6-46D3-907F-91E076C55884}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,14 +29,6 @@ Global
 		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DCBE47DD-59A6-4212-AA4A-142838088B69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCBE47DD-59A6-4212-AA4A-142838088B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCBE47DD-59A6-4212-AA4A-142838088B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCBE47DD-59A6-4212-AA4A-142838088B69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,18 +41,18 @@ Global
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{870FE8E1-3461-4C79-BF25-9C35E41BF582}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF6A8BCA-BED6-46D3-907F-91E076C55884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF6A8BCA-BED6-46D3-907F-91E076C55884}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF6A8BCA-BED6-46D3-907F-91E076C55884}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF6A8BCA-BED6-46D3-907F-91E076C55884}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,9 +70,5 @@ Global
 		$2.inheritsSet = Mono
 		$2.inheritsScope = text/x-csharp
 		$2.scope = text/x-csharp
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		version = 0.1
-		StartupItem = MongoDBDriver\MongoDB.Driver.csproj
 	EndGlobalSection
 EndGlobal
