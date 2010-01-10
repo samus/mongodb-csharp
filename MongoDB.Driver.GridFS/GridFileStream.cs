@@ -10,7 +10,12 @@ namespace MongoDB.Driver.GridFS
     public class GridFileStream : Stream
     {
         private GridChunk chunk;
-        
+        private byte[] buffer;
+        private int readPos;
+        private int readLen;
+        private int writePos;
+        private int bufferSize;
+                
         #region Properties
         private GridFileInfo gridFileInfo;       
         public GridFileInfo GridFileInfo {
@@ -62,11 +67,37 @@ namespace MongoDB.Driver.GridFS
                     canWrite = true;
                 break;
             }
-            this.gridFileInfo = gridFileInfo;
+            this.gridFileInfo = gridfileinfo;
+            this.bufferSize = gridFileInfo.ChunkSize;
         }
         
-        public override void Write(byte[] buffer, int offset, int count){
-            throw new NotImplementedException();
+        public override void Write(byte[] array, int offset, int count){
+            if (array == null){
+                throw new ArgumentNullException("array", new Exception("array is null"));
+            }
+            if (offset < 0){
+                throw new ArgumentOutOfRangeException("offset", new Exception("offset is negative"));
+            }
+            if (count < 0){
+                throw new ArgumentOutOfRangeException("count",new Exception("count is negative"));
+            }
+            if ((array.Length - offset) < count){
+                throw new MongoGridFSException("Invalid count argument", gridFileInfo.FileName, null);
+            }
+            if (!canWrite){
+                throw new MongoGridFSException("Writing to this file is not supported", gridFileInfo.FileName, null);
+            }
+            else{
+                int num = writePos + count;
+                if (num > bufferSize){
+                    bufferSize = num;
+                    byte[] buffer2 = new byte[bufferSize];
+                    Buffer.BlockCopy(buffer,0,buffer2,0,bufferSize);
+                    buffer = buffer2;
+                }
+                Buffer.BlockCopy(array, offset, this.buffer, writePos, count);
+                this.writePos += count;
+            }            
         }
         
         public override long Seek(long offset, SeekOrigin origin){
@@ -83,6 +114,13 @@ namespace MongoDB.Driver.GridFS
         
         public override int Read(byte[] buffer, int offset, int count){
             throw new NotImplementedException();
+        }
+
+
+        protected override void Dispose(bool disposing){
+            this.canRead = false;
+            this.canWrite = false;
+            base.Dispose(disposing);
         }
     }
 }
