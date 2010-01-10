@@ -21,19 +21,26 @@ namespace MongoDB.Driver
         }
         
         public Oid Generate(){
+            //FIXME Endian issues with this code.  
+            //.Net runs in native endian mode which is usually little endian.  
+            //Big endian machines don't need the reversing (Linux+PPC, XNA on XBox)
             byte[] oid = new byte[12];
             int copyidx = 0;
 
-            Array.Copy(BitConverter.GetBytes(GenerateTime()),0,oid,copyidx,4);
+            byte[] time = BitConverter.GetBytes(GenerateTime());
+            Array.Reverse(time);
+            Array.Copy(time,0,oid,copyidx,4);
             copyidx += 4;
 
             Array.Copy(machineHash,0,oid,copyidx,3);
             copyidx += 3;
                        
-            Array.Copy(this.procID,0,oid,copyidx,2);
+            Array.Copy(this.procID,2,oid,copyidx,2);
             copyidx += 2;
             
-            Array.Copy(BitConverter.GetBytes(GenerateInc()),0,oid,copyidx,3);
+            byte[] inc = BitConverter.GetBytes(GenerateInc());
+            Array.Reverse(inc);
+            Array.Copy(inc,1,oid,copyidx,3);
             
             return new Oid(oid);            
         }
@@ -47,13 +54,14 @@ namespace MongoDB.Driver
         
         private int GenerateInc(){
             lock(this.inclock){
-                return inc++;    
+                return ++inc;    
             }
         }
         
         private void GenerateConstants(){
             this.machineHash = GenerateHostHash();
             this.procID = BitConverter.GetBytes(GenerateProcId());
+            Array.Reverse(this.procID);
         }
         
         private byte[] GenerateHostHash(){            
