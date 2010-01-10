@@ -9,15 +9,25 @@ namespace MongoDB.Driver.GridFS
     /// </summary>
     public class GridFileStream : Stream
     {
-        private GridFileInfo gridFileInfo;
+        private GridChunk chunk;
         
         #region Properties
+        private GridFileInfo gridFileInfo;       
+        public GridFileInfo GridFileInfo {
+            get { return gridFileInfo; }
+            set { gridFileInfo = value; }
+        }
+                
+        private bool canRead;
         public override bool CanRead {
-            get { return true; }
+            get { return canRead; }
         }
+        
+        private bool canWrite;
         public override bool CanWrite {
-            get { return true; }
+            get { return canRead; }
         }
+        
         public override bool CanSeek {
             get { return true; }
         }
@@ -27,7 +37,7 @@ namespace MongoDB.Driver.GridFS
                 return gridFileInfo.Length;
             }
         }
-        
+
         private long position;
         public override long Position {
             get {
@@ -39,7 +49,19 @@ namespace MongoDB.Driver.GridFS
         }
         #endregion
         
-        public GridFileStream(GridFileInfo gridfileinfo){
+        public GridFileStream(GridFileInfo gridfileinfo, FileAccess access){
+            switch (access){
+                case FileAccess.Read:
+                    canRead = true;
+                    break;
+                case FileAccess.ReadWrite:
+                    canRead = true;
+                    canWrite = true;
+                    break;
+                case FileAccess.Write:
+                    canWrite = true;
+                break;
+            }
             this.gridFileInfo = gridFileInfo;
         }
         

@@ -11,16 +11,16 @@ namespace MongoDB.Driver.GridFS
     public class GridFSTest{
         Mongo db = new Mongo();
         
-        [Test]
-        public void TestOpenNewGridFile()
-        {
-            GridFile gridFS = new GridFile(db["tests"]);
-            using (GridFileInfo gf = new GridFileInfo(gridFS))
-            {                
-                gf.Open("newfile.txt");
-                Console.WriteLine(gf.Id.ToString());
-            }
-        }
+//        [Test]
+//        public void TestOpenNewGridFile()
+//        {
+//            GridFile gridFS = new GridFile(db["tests"]);
+//            using (GridFileInfo gf = new GridFileInfo(gridFS))
+//            {                
+//                gf.Open("newfile.txt");
+//                Console.WriteLine(gf.Id.ToString());
+//            }
+//        }
         
         [Test]
         public void TestFileDoesNotExist(){
