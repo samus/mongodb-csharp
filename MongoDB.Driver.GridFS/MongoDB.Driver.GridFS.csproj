@@ -48,7 +48,6 @@
     <Compile Include="GridChunk.cs" />
     <Compile Include="GridFile.cs" />
     <Compile Include="GridFileInfo.cs" />
-    <Compile Include="GridFileMode.cs" />
     <Compile Include="GridFileStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

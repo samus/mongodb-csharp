@@ -13,108 +13,172 @@ namespace MongoDB.Driver.GridFS
     {
         private const int DEFAULT_CHUNKSIZE = 256 * 1024;
         private const string DEFAULT_CONTENT_TYPE = "text/plain";
+
         private FileMode fileMode;
         private BinaryReader binaryReader;
         private FileStream fileStream;
-        private GridFile gridFile;
         private byte[] buffer;
         private bool disposed = false;
         private bool isOpen = false;
-
         
-        private Object id;
+        private GridFile gridFile;
+
+
+        #region "filedata properties"
+        private Document filedata = new Document();
+
         public Object Id{
-            get { return this.id; }
-            set { this.id = value; }
+            get { return filedata["_id"]; }
+            set { filedata["_id"] = value; }
         }
 
-        private string filename;
-        public string Filename
+        public string FileName
         {
-            get { return this.filename; }
-            set { this.filename = value; }
+            get { return (String)filedata["filename"]; }
+            set { filedata["filename"] = value; }
         }
 
-        private string contentType;
         public string ContentType{
-            get { return this.contentType; }
-            set { this.contentType = value; }
+            get { return (String)filedata["contentType"]; }
+            set { filedata["contentType"] = value; }
         }
 
-        private int length;
         public int Length{
-            get { return this.length; }
-            set { this.length = value; }
+            get { return Convert.ToInt32(filedata["length"]); }
+            set { filedata["length"] = value; }
         }
 
-        private string[] aliases;
         public string[] Aliases{
-            get { return this.aliases; }
-            set { this.aliases = value; }
+            get { return (String[])filedata["aliases"]; }
+            set { filedata["aliases"] = value; }
         }
 
-        private int chunkSize;
         public int ChunkSize{
-            get { return this.chunkSize; }
-            set { this.chunkSize = value; }
+            get { return Convert.ToInt32(filedata["chunkSize"]); }
+            set { filedata["chunkSize"] = value; }
         }
 
-        private Object metadata;
         public Object Metadata{
-            get { return this.metadata; }
+            get { return (Document)filedata["metadata"]; }
         }
 
-        private DateTime? uploadDate;
         public DateTime? UploadDate{
-            get { return this.uploadDate; }
-            set { this.uploadDate = value; }
+            get { return Convert.ToDateTime(filedata["uploadDate"]); }
+            set { filedata["uploadDate"] = value; }
         }
-        private string md5;
+
         public string Md5{
-            get { return this.md5; }
-            set { this.md5 = value; }
-        }        
-
-        public GridFileInfo(GridFile gridFile){
-            this.gridFile = gridFile;
-        }
-
-        
-        #region Dispose
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    //TODO
-                    //Dispose managed resources
-                    if (fileStream != null){
-                        fileStream.Dispose();
-                    }
-                    if (binaryReader != null){
-                        binaryReader.Close();
-                    }
-                }
-            }
-            disposed = true;
-            isOpen = false;
+            get { return (String)filedata["md5"]; }
+            set { filedata["md5"] = value; }
         }
         #endregion
 
+        public GridFileInfo(Database db, string bucket, string filename){
+            this.gridFile = new GridFile(db,bucket);
+            this.FileName = filename;
+        }
+        public GridFileInfo(Database db, string filename){
+            this.gridFile = new GridFile(db);
+            this.FileName = filename;
+        }
+        
+        #region Create
+        /// <summary>
+        /// Creates the file named FileName and returns the GridFileStream
+        /// </summary>
+        /// <exception cref="IOEXception">If the file already exists</exception>
+        public GridFileStream Create(){
+            return Create(FileMode.CreateNew);
+        }
+        
+        public GridFileStream Create(FileMode mode){
+            return Create(mode,FileAccess.ReadWrite);
+        }        
+        
+        public GridFileStream Create(FileMode mode, FileAccess access){
+            switch (mode) {
+                case FileMode.CreateNew:
+                    if(gridFile.Exists(this.FileName)){
+                        throw new IOException("File already exists");
+                    }                    
+                    this.gridFile.Files.Insert(filedata);
+                    return new GridFileStream(this,access);
+                case FileMode.Create:
+                    if(gridFile.Exists(this.FileName)){
+                        return this.Open(FileMode.Truncate,access);
+                    }else{
+                        return this.Create(FileMode.CreateNew,access);
+                    }
+                default:
+                    throw new ArgumentException("Invalid FileMode", "mode");
+            }
+        }
+        #endregion
+        
+        /// <summary>
+        /// Creates a read-only GridFileStream to an existing file. 
+        /// </summary>
+        /// <returns></returns>
+        public GridFileStream OpenRead(){
+            return this.Open(FileMode.Open, FileAccess.Read);
+        }
+        
+        /// <summary>
+        /// Creates a write-only GridFileStream to an existing file.
+        /// </summary>
+        /// <returns></returns>
+        public GridFileStream OpenWrite(){
+            return this.Open(FileMode.Open, FileAccess.Write);
+        }
+        
+        public GridFileStream Open(FileMode mode, FileAccess access){
+            switch (mode) {
+                case FileMode.Create:
+                case FileMode.CreateNew:
+                    return this.Create(mode, access);
+                case FileMode.Truncate:
+                    this.Truncate();
+                    return new GridFileStream(this,access);
+            }
+            throw new NotImplementedException("Not all modes are implemented yet.");
+        }
+        
+        public void Delete(){
+            if(this.Id != null){
+                this.gridFile.Delete(this.Id);
+            }else{
+                this.gridFile.Delete(this.FileName);
+            }
+        }
+        
+        public void MoveTo(String newFileName){
+            this.gridFile.Move(this.FileName, newFileName);
+        }
+        
+        public void Truncate(){
+            if(filedata.Contains("_id") == false) return;
+            this.gridFile.Chunks.Delete(new Document().Append("files_id", filedata["_id"]));
+            this.Length = 0;
+            this.gridFile.Files.Update(filedata);
+        }
+        
+        private void LoadFileData(){
+            Document doc = this.gridFile.Files.FindOne(new Document().Append("filename",this.FileName));
+            if(doc != null){
+                filedata = doc;
+            }else{
+                //Throw an exception?
+            }
+        }
+
+        /*
         public void Open(string filename)
         {
             Document file = this.gridFile.Files.FindOne(new Document().Append("filename", filename));
             if (file != null)
             {
                 this.id = (Object)file["_id"];
-                this.filename = (String)file["filename"];
+                this.fileName = (String)file["filename"];
                 this.chunkSize = (Int32)file["chunkSize"];
                 this.contentType = (String)file["contentType"];
                 this.length = (Int32)file["length"];
@@ -126,7 +190,7 @@ namespace MongoDB.Driver.GridFS
             {
                 OidGenerator oidGenerator = new OidGenerator();
                 this.id = oidGenerator.Generate();
-                this.filename = filename;
+                this.fileName = filename;
                 this.chunkSize = DEFAULT_CHUNKSIZE;
                 this.contentType = DEFAULT_CONTENT_TYPE;
                 this.uploadDate = null;
@@ -186,7 +250,7 @@ namespace MongoDB.Driver.GridFS
         private void AssertOpen()
         {
             if (!isOpen){
-                throw new MongoGridFSException("Cannot write to a file when it is closed.", this.filename, new Exception("file is closed"));
+                throw new MongoGridFSException("Cannot write to a file when it is closed.", this.fileName, new Exception("file is closed"));
             }
         }
 
@@ -231,7 +295,7 @@ namespace MongoDB.Driver.GridFS
         public Document ToDocument(){
             Document doc = new Document();
             doc["_id"] = this.id;
-            doc["filename"] = this.filename;
+            doc["filename"] = this.fileName;
             doc["contentType"] = this.contentType;
             doc["length"] = this.length;
             doc["chunkSize"] = this.chunkSize;
@@ -240,7 +304,34 @@ namespace MongoDB.Driver.GridFS
             }
             return doc;
         }
+        */
+        #region Dispose
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
+        private void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    //TODO
+                    //Dispose managed resources
+                    if (fileStream != null){
+                        fileStream.Dispose();
+                    }
+                    if (binaryReader != null){
+                        binaryReader.Close();
+                    }
+                }
+            }
+            disposed = true;
+            isOpen = false;
+        }
+        #endregion
 
 
 
