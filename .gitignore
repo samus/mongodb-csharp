@@ -1,4 +1,4 @@
-#*.csproj
+*.csproj
 *~
 *.dll
 *.*~
@@ -9,9 +9,11 @@
 *.ncb
 *.aps
 *.suo
-
+*.sln
 *.userprefs
 *.usertasks
+*.orig
+*.cache
 
 test-results/*.xml
 MongoDB.Net-Tests/bin/*
