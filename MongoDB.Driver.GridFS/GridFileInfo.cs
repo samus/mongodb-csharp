@@ -76,10 +76,12 @@ namespace MongoDB.Driver.GridFS
         public GridFileInfo(Database db, string bucket, string filename){
             this.gridFile = new GridFile(db,bucket);
             this.FileName = filename;
+            if(gridFile.Exists(filename)) this.LoadFileData();
         }
         public GridFileInfo(Database db, string filename){
             this.gridFile = new GridFile(db);
             this.FileName = filename;
+            if(gridFile.Exists(filename)) this.LoadFileData();
         }
         
         #region Create

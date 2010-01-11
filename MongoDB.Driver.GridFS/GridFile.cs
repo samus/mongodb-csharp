@@ -45,24 +45,45 @@ namespace MongoDB.Driver.GridFS
         }
         
         public void Copy(String src, String dest){
-            //Is there away to do this server side instead of reading the file down local and then writing it back?
-            throw new NotImplementedException("Copy");
+            CodeWScope cw = new CodeWScope();
+            String template ="function(){{\n" +
+                            //"   print(\"Copying {1}\");\n" +
+                            "   var srcdoc = db.{0}.files.findOne({{filename:\"{1}\"}});\n" +
+                            "   if(srcdoc != undefined){{\n" +
+                            "       var srcid = srcdoc._id;\n" +
+                            "       var newid = ObjectId();\n" +
+                            "       srcdoc._id = newid\n" +
+                            "       srcdoc.filename = \"{2}\";\n" +
+                            "       db.{0}.files.insert(srcdoc);\n" +
+                            "       db.{0}.chunks.find({{files_id:srcid}}).forEach(function(chunk){{\n" +
+                            //"           print(\"copying chunk...\");\n" +
+                            "           chunk._id = ObjectId();\n" +
+                            "           chunk.files_id = newid;\n" +
+                            "           db.{0}.chunks.insert(chunk);\n" +
+                            "       }});\n" +
+                            "   }}" +
+                            "}}";
+            try{
+                db.Eval(String.Format(template,this.name, src, dest));
+            }catch(MongoCommandException mce){
+                Console.WriteLine(mce.ToString());
+            }
         }
         
         #region Create
         public GridFileStream Create(String filename){
-            return Create(name, FileMode.Create);
+            return Create(filename, FileMode.Create);
         }
         
         public GridFileStream Create(String filename, FileMode mode){
-            return Create(name,mode,FileAccess.ReadWrite);
+            return Create(filename,mode,FileAccess.ReadWrite);
         }
         
         public GridFileStream Create(String filename, FileMode mode, FileAccess access){
             //Create is delegated to a GridFileInfo because the stream needs access to the gfi and it
             //is easier to do it this way and only write the implementation once.
             GridFileInfo gfi = new GridFileInfo(this.db,this.name,filename);
-            gfi.Create(mode,access);
+            return gfi.Create(mode,access);
         }
         #endregion
         
