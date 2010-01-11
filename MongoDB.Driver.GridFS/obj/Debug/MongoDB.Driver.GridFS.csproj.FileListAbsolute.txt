@@ -15,3 +15,7 @@ C:\Users\Seth\Projects\mongo\mongodb-csharp\MongoDB.Driver.GridFS\obj\Debug\Mong
 C:\Documents and Settings\samus\My Documents\Projects\mongodb-csharp\MongoDB.Driver.GridFS\obj\Debug\ResolveAssemblyReference.cache
 C:\Documents and Settings\samus\My Documents\Projects\mongodb-csharp\MongoDB.Driver.GridFS\obj\Debug\MongoDB.Driver.GridFS.dll
 C:\Documents and Settings\samus\My Documents\Projects\mongodb-csharp\MongoDB.Driver.GridFS\obj\Debug\MongoDB.Driver.GridFS.pdb
+C:\Documents and Settings\samus\My Documents\Projects\mongodb-csharp\MongoDB.Driver.GridFS\bin\Debug\MongoDB.Driver.GridFS.dll
+C:\Documents and Settings\samus\My Documents\Projects\mongodb-csharp\MongoDB.Driver.GridFS\bin\Debug\MongoDB.Driver.GridFS.pdb
+C:\Documents and Settings\samus\My Documents\Projects\mongodb-csharp\MongoDB.Driver.GridFS\bin\Debug\MongoDB.Driver.dll
+C:\Documents and Settings\samus\My Documents\Projects\mongodb-csharp\MongoDB.Driver.GridFS\bin\Debug\MongoDB.Driver.pdb

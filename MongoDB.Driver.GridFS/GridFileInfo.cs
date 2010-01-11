@@ -76,11 +76,13 @@ namespace MongoDB.Driver.GridFS
         public GridFileInfo(Database db, string bucket, string filename){
             this.gridFile = new GridFile(db,bucket);
             this.FileName = filename;
+            this.ChunkSize = DEFAULT_CHUNKSIZE;
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
         public GridFileInfo(Database db, string filename){
             this.gridFile = new GridFile(db);
             this.FileName = filename;
+            this.ChunkSize = DEFAULT_CHUNKSIZE;
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
         
@@ -104,7 +106,7 @@ namespace MongoDB.Driver.GridFS
                         throw new IOException("File already exists");
                     }                    
                     this.gridFile.Files.Insert(filedata);
-                    return new GridFileStream(this,access);
+                    return new GridFileStream(this, this.gridFile.Chunks, access);
                 case FileMode.Create:
                     if(gridFile.Exists(this.FileName)){
                         return this.Open(FileMode.Truncate,access);
@@ -140,7 +142,7 @@ namespace MongoDB.Driver.GridFS
                     return this.Create(mode, access);
                 case FileMode.Truncate:
                     this.Truncate();
-                    return new GridFileStream(this,access);
+                    return new GridFileStream(this,this.gridFile.Chunks, access);
             }
             throw new NotImplementedException("Not all modes are implemented yet.");
         }

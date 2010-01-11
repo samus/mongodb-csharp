@@ -19,6 +19,34 @@ namespace MongoDB.Driver.GridFS
                 gfs.WriteByte(b);    
             }
             gfs.Close();
+            
+            //TODO add Asserts.
+        }
+        
+        [Test]
+        public void TestWriteMultipleBytes(){
+            GridFile fs = new GridFile(db["tests"], "gfstream");
+            GridFileStream gfs = fs.Create("multiplebytes.txt");
+            for(int x = 0; x < 256; x++){
+                gfs.Write(BitConverter.GetBytes(x),0,4);
+            }
+            gfs.Close();
+            
+            //TODO add Asserts.
+        }        
+        
+        [Test]
+        public void TestLargeWrite(){
+            GridFile fs = new GridFile(db["tests"], "gfstream");
+            GridFileStream gfs = fs.Create("largewrite.txt");
+            Byte[] buff = new byte[257 * 1024]; //intentionally bigger than default buffer size.
+            for(int i = 0; i < buff.Length; i++){
+                buff[0] = (byte)1;
+            }
+            gfs.Write(buff,0,buff.Length);
+            gfs.Close();
+            
+            //TODO add Asserts.
         }
         
         [TestFixtureSetUp]

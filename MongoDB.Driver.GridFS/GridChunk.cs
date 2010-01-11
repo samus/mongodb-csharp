@@ -5,11 +5,11 @@ using MongoDB.Driver;
 
 namespace MongoDB.Driver.GridFS
 {
-    public struct GridChunk : IComparable
+    public class GridChunk : IComparable //TODO Change back to a struct
     {
         public GridChunk(object filesId, int n, byte[] data){
-            OidGenerator oidGenerator = new OidGenerator();
-            this.id = oidGenerator.Generate();
+//            OidGenerator oidGenerator = new OidGenerator();
+//            this.id = oidGenerator.Generate();
             this.filesId = filesId;
             this.n = n;
             this.data = new Binary(data);
@@ -19,7 +19,7 @@ namespace MongoDB.Driver.GridFS
         {
             this.id = (Oid)doc["_id"];
             this.filesId = (Object)doc["files_id"];
-            this.n = (int)doc["n"];
+            this.n = Convert.ToDouble(doc["n"]);
             this.data = (Binary)doc["data"];
         }
 
@@ -37,8 +37,8 @@ namespace MongoDB.Driver.GridFS
         }
 
         //Chunk number
-        private int n;
-        public int N{
+        private double n;
+        public double N{
             get { return this.n; }
             set { this.n = value; }
         }
@@ -57,7 +57,7 @@ namespace MongoDB.Driver.GridFS
         public Document ToDocument()
         {
             Document doc = new Document();
-            doc["_id"] = this.id;
+            if(this.id != null) doc["_id"] = this.id;
             doc["files_id"] = this.filesId;
             doc["n"] = this.n;
             doc["data"] = this.data;
