@@ -26,7 +26,13 @@ namespace MongoDB.Driver.GridFS
             GridFile fs = new GridFile(db["tests"]);
             Assert.IsFalse(fs.Exists("non-existent filename"));
         }
-        
+
+        [Test]
+        public void TestFileDoes(){
+            GridFile fs = new GridFile(db["tests"]);
+            fs.Create("exists.txt");
+            Assert.IsTrue(fs.Exists("exists.txt"));
+        }
         [Test]
         public void TestCopy(){
             GridFile fs = new GridFile(db["tests"], "gfcopy");
@@ -51,6 +57,7 @@ namespace MongoDB.Driver.GridFS
         protected void CleanDB(){
             //Any collections that we might want to delete before the tests run should be done here.
             DropGridFileSystem("gfcopy");
+            DropGridFileSystem("fs");
         }
         
         protected void DropGridFileSystem(string filesystem){

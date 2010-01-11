@@ -76,17 +76,27 @@ namespace MongoDB.Driver.GridFS
         
         public override void Write(byte[] array, int offset, int count){
             ValidateWriteState(array,offset,count);
-            //Baby steps.  First write to the first chunk.
+            
+            //Baby steps.  First write to the first chunk.            
             EnsureWriteChunkLoaded();
-            if(array.Length - offset + count < buffer.Length - buffWritten){
-                //The whole thing will fit.
-                Array.Copy(array,offset,buffer,buffWritten,count);
-                buffWritten += count;
-                position += count;
-            }else{
-                //Need to flush the buffer to the current chunk.
-                throw new NotImplementedException("Can't write too much yet.");
+            int bytesLeftToWrite = count;
+            while(bytesLeftToWrite > 0){
+                int buffAvailable = buffer.Length - buffWritten;
+                int writeCount = 0;
+                if(buffAvailable < count){
+                    writeCount = buffAvailable;
+                }else{
+                    writeCount = count;
+                }
+                Array.Copy(array,offset,buffer,buffWritten,writeCount);
+                buffWritten += writeCount;
+                position += writeCount;
+                bytesLeftToWrite -= writeCount;
+                if(buffWritten >= buffer.Length){
+                    FlushBufferToChunk();
+                }
             }
+
             
 //            if (buffer == null){
 //                buffer = new byte[bufferSize];
@@ -193,15 +203,6 @@ namespace MongoDB.Driver.GridFS
                 return 0;
             }
         }
-
-        private void EnsureWriteChunkLoaded(){
-            //int chunknum = (int)Math.Floor((double)(this.position / this.gridFileInfo.ChunkSize));
-            if(chunk == null){
-                chunk = new GridChunk(this.GridFileInfo.Id, 0, new byte[0]);
-                buffWritten = 0;
-                chunkOffset = 0;
-            }
-        }
         
         private void FlushBufferToChunk(){
             //Still only dealing with one chunk for now.
@@ -210,6 +211,15 @@ namespace MongoDB.Driver.GridFS
             Array.Copy(buffer,0, chunkBytes,0,buffWritten);
             chunkOffset += buffWritten;
             buffWritten = 0;
+        }
+        
+        private void EnsureWriteChunkLoaded(){
+            //int chunknum = (int)Math.Floor((double)(this.position / this.gridFileInfo.ChunkSize));
+            if(chunk == null){
+                chunk = new GridChunk(this.GridFileInfo.Id, 0, new byte[0]);
+                buffWritten = 0;
+                chunkOffset = 0;
+            }
         }
         
         public override void Close(){
