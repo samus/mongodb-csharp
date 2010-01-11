@@ -1,5 +1,6 @@
-﻿
-using System;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace MongoDB.Driver.GridFS
@@ -9,11 +10,12 @@ namespace MongoDB.Driver.GridFS
     /// </summary>
     public class GridFileStream : Stream
     {
-        private List<GridChunk> chunks;
+        private IMongoCollection chunks;
+        //private List<GridChunk> chunks;
+        private GridChunk chunk;
+        private long chunkOffset;
         private byte[] buffer;
-        private int readPos;
-        private int writePos;
-        private int bufferSize;
+        private int buffWritten;
                 
         #region Properties
         private GridFileInfo gridFileInfo;       
@@ -53,7 +55,7 @@ namespace MongoDB.Driver.GridFS
         }
         #endregion
         
-        public GridFileStream(GridFileInfo gridfileinfo, FileAccess access){
+        public GridFileStream(GridFileInfo gridfileinfo, IMongoCollection chunks, FileAccess access){
             switch (access){
                 case FileAccess.Read:
                     canRead = true;
@@ -67,10 +69,41 @@ namespace MongoDB.Driver.GridFS
                 break;
             }
             this.gridFileInfo = gridfileinfo;
-            this.bufferSize = gridFileInfo.ChunkSize;
+            this.chunks = chunks;
+            this.buffer = new byte[gridFileInfo.ChunkSize];
+            //this.bufferSize = gridFileInfo.ChunkSize;
         }
         
         public override void Write(byte[] array, int offset, int count){
+            ValidateWriteState(array,offset,count);
+            //Baby steps.  First write to the first chunk.
+            EnsureWriteChunkLoaded();
+            if(array.Length - offset + count < buffer.Length - buffWritten){
+                //The whole thing will fit.
+                Array.Copy(array,offset,buffer,buffWritten,count);
+                buffWritten += count;
+                position += count;
+            }else{
+                //Need to flush the buffer to the current chunk.
+                throw new NotImplementedException("Can't write too much yet.");
+            }
+            
+//            if (buffer == null){
+//                buffer = new byte[bufferSize];
+//            }
+//            long num = position + count;
+//            if (num > bufferSize){
+//                bufferSize = num;
+//                byte[] buffer2 = new byte[bufferSize];
+//                Array.Copy(buffer,0,buffer2,0,bufferSize);
+//                buffer = buffer2;
+//            }
+//            Array.Copy(array, offset, this.buffer, position, count);                
+//            position += count;
+                                    
+        }
+        
+        private void ValidateWriteState(byte[] array, int offset, int count){
             if (array == null){
                 throw new ArgumentNullException("array", new Exception("array is null"));
             }
@@ -86,23 +119,9 @@ namespace MongoDB.Driver.GridFS
             else if (!canWrite){
                 throw new MongoGridFSException("Writing to this file is not supported", gridFileInfo.FileName, null);
             }
-            else{
-                if (buffer == null){
-                    buffer = new byte[bufferSize];
-                }
-                int num = writePos + count;
-                if (num > bufferSize){
-                    bufferSize = num;
-                    byte[] buffer2 = new byte[bufferSize];
-                    Array.Copy(buffer,0,buffer2,0,bufferSize);
-                    buffer = buffer2;
-                }
-                Array.Copy(array, offset, this.buffer, writePos, count);                
-                this.writePos += count;
-            }            
         }
         
-        public override int Seek(int offset, SeekOrigin origin){
+        public override long Seek(long offset, SeekOrigin origin){
             if ((origin < SeekOrigin.Begin) || (origin > SeekOrigin.End))
             {
                 throw new ArgumentException("Invalid Seek Origin");
@@ -115,11 +134,11 @@ namespace MongoDB.Driver.GridFS
                         throw new ArgumentException("Attempted seeking before the begining of the stream");
                     }
                     else
-                        this.readPos = offset;
+                        position = offset;
                     break;
 
                 case SeekOrigin.Current:
-                    readPos += offset;
+                    position += offset;
                     break;
 
                 case SeekOrigin.End:
@@ -127,10 +146,10 @@ namespace MongoDB.Driver.GridFS
                     {
                         throw new ArgumentException("Attempted seeking after the end of the stream");
                     }
-                    else this.readPos = bufferSize + offset;
+                    position = this.Length - offset;
                     break;                  
             }
-            return readPos; 
+            return position; 
         }
         
         public override void SetLength(long value){
@@ -138,10 +157,12 @@ namespace MongoDB.Driver.GridFS
         }
         
         public override void Flush(){
-            throw new NotImplementedException();
+            //Still only dealing with one chunk for now.
+            FlushBufferToChunk();
+            chunks.Insert(chunk.ToDocument());
         }
         
-        public override int Read([In,Out]byte[] array, int offset, int count){
+        public override int Read(byte[] array, int offset, int count){
             if (array == null)            {
                 throw new ArgumentNullException("array", new Exception("array is null"));
             }
@@ -159,23 +180,48 @@ namespace MongoDB.Driver.GridFS
             }
             else
             {
-                if (buffer == null){
-                    buffer = new byte[bufferSize];
-                }                
-                Array.Copy(buffer, readPos, array, offset, count);
-                readPos += count;
-                if (count == bufferSize){
-                    return 0;
-                }
-                else
-                    return count;              
+//                if (buffer == null){
+//                    buffer = new byte[bufferSize];
+//                }                
+//                Array.Copy(buffer, position, array, offset, count);
+//                position += count;
+//                if (count == bufferSize){
+//                    return 0;
+//                }
+//                else
+//                    return count;              
+                return 0;
             }
         }
 
-
+        private void EnsureWriteChunkLoaded(){
+            //int chunknum = (int)Math.Floor((double)(this.position / this.gridFileInfo.ChunkSize));
+            if(chunk == null){
+                chunk = new GridChunk(this.GridFileInfo.Id, 0, new byte[0]);
+                buffWritten = 0;
+                chunkOffset = 0;
+            }
+        }
+        
+        private void FlushBufferToChunk(){
+            //Still only dealing with one chunk for now.
+            byte[] chunkBytes = new byte[buffWritten];
+            chunk.Data.Bytes = chunkBytes;
+            Array.Copy(buffer,0, chunkBytes,0,buffWritten);
+            chunkOffset += buffWritten;
+            buffWritten = 0;
+        }
+        
+        public override void Close(){
+            this.Flush();
+            //Should also update gridFileInfo statistics.
+            base.Close();
+        }
+        
         protected override void Dispose(bool disposing){
             this.canRead = false;
             this.canWrite = false;
+            
             base.Dispose(disposing);
         }
     }
