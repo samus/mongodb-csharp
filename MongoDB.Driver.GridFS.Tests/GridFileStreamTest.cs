@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 using NUnit.Framework;
 
@@ -7,34 +8,17 @@ using MongoDB.Driver;
 namespace MongoDB.Driver.GridFS
 {
     [TestFixture]
-    public class GridFSTest{
+    public class GridFileStreamTest
+    {
         Mongo db = new Mongo();
-        
-        //[Test]
-        //public void TestOpenNewGridFile()
-        //{
-        //    GridFile gridFS = new GridFile(db["tests"]);
-        //    using (GridFileInfo gf = new GridFileInfo(gridFS))
-        //    {                
-        //        gf.Open("newfile.txt");
-        //        Console.WriteLine(gf.Id.ToString());
-        //    }
-        //}
-        
         [Test]
-        public void TestFileDoesNotExist(){
-            GridFile fs = new GridFile(db["tests"]);
-            Assert.IsFalse(fs.Exists("non-existent filename"));
-        }
-        
-        [Test]
-        public void TestCopy(){
-            GridFile fs = new GridFile(db["tests"], "gfcopy");
-            GridFileStream gfs = fs.Create("original.txt");
-            fs.Copy("original.txt", "copy.txt");
-            Assert.IsTrue(fs.Exists("original.txt"));
-            Assert.IsTrue(fs.Exists("copy.txt"));
-            //TODO Assert chunk data is the same too.
+        public void TestWrite(){
+            GridFile fs = new GridFile(db["tests"], "gfstream");
+            GridFileStream gfs = fs.Create("test.txt");
+            for(byte b = (byte)0; b < 128; b++){
+                gfs.WriteByte(b);    
+            }
+            gfs.Close();
         }
         
         [TestFixtureSetUp]
@@ -50,7 +34,7 @@ namespace MongoDB.Driver.GridFS
         
         protected void CleanDB(){
             //Any collections that we might want to delete before the tests run should be done here.
-            DropGridFileSystem("gfcopy");
+            DropGridFileSystem("gfstream");
         }
         
         protected void DropGridFileSystem(string filesystem){
@@ -60,5 +44,6 @@ namespace MongoDB.Driver.GridFS
             }catch(MongoCommandException){}//if it fails it is because the collection isn't there to start with.
             
         }
+        
     }
 }

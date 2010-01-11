@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GridFileInfoTest.cs" />
+    <Compile Include="GridFileStreamTest.cs" />
     <Compile Include="GridFSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -57,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDB.Driver.GridFS\MongoDB.Driver.GridFS.csproj">
-      <Project>{BF6A8BCA-BED6-46D3-907F-91E076C55884}</Project>
+      <Project>{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}</Project>
       <Name>MongoDB.Driver.GridFS</Name>
     </ProjectReference>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
