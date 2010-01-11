@@ -73,7 +73,7 @@ namespace MongoDB.Driver
             string hex2 = "4a7067c30a57000000008ecc";
             Assert.AreNotEqual(new Oid(hex), new Oid(hex2));
             
-        }        
+        }
         
         [Test]
         public void TestDate(){

@@ -84,6 +84,7 @@ namespace MongoDB.Driver.GridFS
             //is easier to do it this way and only write the implementation once.
             GridFileInfo gfi = new GridFileInfo(this.db,this.name,filename);
             return gfi.Create(mode,access);
+
         }
         #endregion
         
@@ -122,46 +123,8 @@ namespace MongoDB.Driver.GridFS
         public void Move(Object id, String dest){
             this.files.Update(new Document().Append("$set", new Document().Append("filename",dest)), new Document().Append("_id", id));
         }
-        #endregion
+        #endregion      
         
-        //public void StoreFile(string filepath)
-        //{
-        //    if (File.Exists(filepath))
-        //    {
-        //        fileStream = new FileStream(filepath, FileMode.Open);
-        //        binaryReader = new BinaryReader(fileStream);
-        //        int chunkNumber = 0;
-        //        int offset = 0;
-        //        int lastSize = (int)fileStream.Length % this.gridFile.ChunkSize;
-        //        double nthChunk = 0;
-        //        if (fileStream.Length > gridFile.ChunkSize)
-        //        {
-        //            nthChunk = Math.Ceiling(fileStream.Length / (double)gridFile.ChunkSize);
-        //        }
-        //        while (offset < fileStream.Length)
-        //        {
-        //            byte[] data = new byte[gridFile.ChunkSize];
-        //            if (chunkNumber < nthChunk)
-        //            {
-        //                data = binaryReader.ReadBytes(gridFile.ChunkSize);
-        //            }
-        //            else
-        //            {
-        //                data = binaryReader.ReadBytes(lastSize);
-        //            }
-                 
-        //            gridFile.Chunks.Add(new GridChunk(gridFile.Id, chunkNumber, data));
-        //            offset += gridFile.ChunkSize;
-        //            chunkNumber++;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new IOException("This file does not exist.");
-        //    }
-        //}
-
-    
     }
 
 }

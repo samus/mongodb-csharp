@@ -9,8 +9,12 @@ namespace MongoDB.Driver.GridFS
     /// </summary>
     public class GridFileStream : Stream
     {
-        private GridChunk chunk;
-        
+        private List<GridChunk> chunks;
+        private byte[] buffer;
+        private int readPos;
+        private int writePos;
+        private int bufferSize;
+                
         #region Properties
         private GridFileInfo gridFileInfo;       
         public GridFileInfo GridFileInfo {
@@ -62,15 +66,71 @@ namespace MongoDB.Driver.GridFS
                     canWrite = true;
                 break;
             }
-            this.gridFileInfo = gridFileInfo;
+            this.gridFileInfo = gridfileinfo;
+            this.bufferSize = gridFileInfo.ChunkSize;
         }
         
-        public override void Write(byte[] buffer, int offset, int count){
-            throw new NotImplementedException();
+        public override void Write(byte[] array, int offset, int count){
+            if (array == null){
+                throw new ArgumentNullException("array", new Exception("array is null"));
+            }
+            else if (offset < 0){
+                throw new ArgumentOutOfRangeException("offset", new Exception("offset is negative"));
+            }
+            else if (count < 0){
+                throw new ArgumentOutOfRangeException("count",new Exception("count is negative"));
+            }
+            else if ((array.Length - offset) < count){
+                throw new MongoGridFSException("Invalid count argument", gridFileInfo.FileName, null);
+            }
+            else if (!canWrite){
+                throw new MongoGridFSException("Writing to this file is not supported", gridFileInfo.FileName, null);
+            }
+            else{
+                if (buffer == null){
+                    buffer = new byte[bufferSize];
+                }
+                int num = writePos + count;
+                if (num > bufferSize){
+                    bufferSize = num;
+                    byte[] buffer2 = new byte[bufferSize];
+                    Array.Copy(buffer,0,buffer2,0,bufferSize);
+                    buffer = buffer2;
+                }
+                Array.Copy(array, offset, this.buffer, writePos, count);                
+                this.writePos += count;
+            }            
         }
         
-        public override long Seek(long offset, SeekOrigin origin){
-            throw new NotImplementedException();
+        public override int Seek(int offset, SeekOrigin origin){
+            if ((origin < SeekOrigin.Begin) || (origin > SeekOrigin.End))
+            {
+                throw new ArgumentException("Invalid Seek Origin");
+            }
+
+            switch (origin)
+            {
+                case SeekOrigin.Begin:
+                    if (offset < 0){
+                        throw new ArgumentException("Attempted seeking before the begining of the stream");
+                    }
+                    else
+                        this.readPos = offset;
+                    break;
+
+                case SeekOrigin.Current:
+                    readPos += offset;
+                    break;
+
+                case SeekOrigin.End:
+                    if (offset <= 0)
+                    {
+                        throw new ArgumentException("Attempted seeking after the end of the stream");
+                    }
+                    else this.readPos = bufferSize + offset;
+                    break;                  
+            }
+            return readPos; 
         }
         
         public override void SetLength(long value){
@@ -81,8 +141,42 @@ namespace MongoDB.Driver.GridFS
             throw new NotImplementedException();
         }
         
-        public override int Read(byte[] buffer, int offset, int count){
-            throw new NotImplementedException();
+        public override int Read([In,Out]byte[] array, int offset, int count){
+            if (array == null)            {
+                throw new ArgumentNullException("array", new Exception("array is null"));
+            }
+            else if (offset < 0){
+                throw new ArgumentOutOfRangeException("offset", new Exception("offset is negative"));
+            }
+            else if (count < 0){
+                throw new ArgumentOutOfRangeException("count", new Exception("count is negative"));
+            }
+            else if ((array.Length - offset) < count){
+                throw new MongoGridFSException("Invalid count argument", gridFileInfo.FileName, null);
+            }
+            else if (!canRead){
+                throw new MongoGridFSException("Reading this file is not supported", gridFileInfo.FileName, null);
+            }
+            else
+            {
+                if (buffer == null){
+                    buffer = new byte[bufferSize];
+                }                
+                Array.Copy(buffer, readPos, array, offset, count);
+                readPos += count;
+                if (count == bufferSize){
+                    return 0;
+                }
+                else
+                    return count;              
+            }
+        }
+
+
+        protected override void Dispose(bool disposing){
+            this.canRead = false;
+            this.canWrite = false;
+            base.Dispose(disposing);
         }
     }
 }

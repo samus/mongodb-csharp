@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}</ProjectGuid>
+    <ProjectGuid>{BF6A8BCA-BED6-46D3-907F-91E076C55884}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MongoDB.Driver.GridFS</RootNamespace>
@@ -46,9 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GridChunk.cs" />
+    <Compile Include="GridFile.cs" />
     <Compile Include="GridFileInfo.cs" />
     <Compile Include="GridFileStream.cs" />
-    <Compile Include="GridFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

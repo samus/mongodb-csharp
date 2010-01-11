@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDB.Driver.GridFS\MongoDB.Driver.GridFS.csproj">
-      <Project>{39900451-C8CD-4221-ABA6-35B9C6D1D6D3}</Project>
+      <Project>{BF6A8BCA-BED6-46D3-907F-91E076C55884}</Project>
       <Name>MongoDB.Driver.GridFS</Name>
     </ProjectReference>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
