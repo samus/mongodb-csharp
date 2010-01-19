@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 using NUnit.Framework;
@@ -15,38 +15,45 @@ namespace MongoDB.Driver.GridFS
         public void TestWrite(){
             GridFile fs = new GridFile(db["tests"], "gfstream");
             GridFileStream gfs = fs.Create("test.txt");
+            Object id = gfs.GridFileInfo.Id;
+
             for(byte b = (byte)0; b < 128; b++){
                 gfs.WriteByte(b);    
             }
             gfs.Close();
             
-            //TODO add Asserts.
+            Assert.AreEqual(1, db["tests"]["gfstream.chunks"].Count(new Document().Append("files_id", id)));
         }
         
         [Test]
         public void TestWriteMultipleBytes(){
             GridFile fs = new GridFile(db["tests"], "gfstream");
             GridFileStream gfs = fs.Create("multiplebytes.txt");
+            Object id = gfs.GridFileInfo.Id;
+
             for(int x = 0; x < 256; x++){
                 gfs.Write(BitConverter.GetBytes(x),0,4);
             }
             gfs.Close();
             
-            //TODO add Asserts.
+            Assert.AreEqual(1, db["tests"]["gfstream.chunks"].Count(new Document().Append("files_id", id)));
         }        
         
         [Test]
         public void TestLargeWrite(){
-            GridFile fs = new GridFile(db["tests"], "gfstream");
+            //GridFile fs = new GridFile(db["tests"], "gfstream");
+            GridFile fs = new GridFile(db["tests"]);
             GridFileStream gfs = fs.Create("largewrite.txt");
-            Byte[] buff = new byte[257 * 1024]; //intentionally bigger than default buffer size.
+            Object id = gfs.GridFileInfo.Id;
+            Byte[] buff = new byte[(256 * 1024) + 5]; //intentionally bigger than default buffer size.
             for(int i = 0; i < buff.Length; i++){
                 buff[0] = (byte)1;
             }
             gfs.Write(buff,0,buff.Length);
+            Assert.AreEqual(buff.Length, gfs.Position);
             gfs.Close();
-            
-            //TODO add Asserts.
+            //Assert.AreEqual(2, db["tests"]["gfstream.chunks"].Count(new Document().Append("files_id", id)));
+            Assert.AreEqual(2, db["tests"]["fs.chunks"].Count(new Document().Append("files_id", id)));
         }
         
         [TestFixtureSetUp]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +13,7 @@ namespace MongoDB.Driver.GridFS
         private IMongoCollection chunks;
         //private List<GridChunk> chunks;
         private GridChunk chunk;
-        private long chunkOffset;
+        private int chunkOffset;
         private byte[] buffer;
         private int buffWritten;
                 
@@ -94,6 +94,7 @@ namespace MongoDB.Driver.GridFS
                 bytesLeftToWrite -= writeCount;
                 if(buffWritten >= buffer.Length){
                     FlushBufferToChunk();
+                    //?Flush();
                 }
             }
 
@@ -112,7 +113,79 @@ namespace MongoDB.Driver.GridFS
 //            position += count;
                                     
         }
-        
+
+        private void EnsureWriteChunkLoaded(){
+            //int chunknum = (int)Math.Floor((double)(this.position / this.gridFileInfo.ChunkSize));
+            if(chunk == null){
+                chunk = new GridChunk(this.GridFileInfo.Id, 0, new byte[0]);
+                buffWritten = 0;
+                chunkOffset = 0;
+            }
+        }
+
+        /// <summary>
+        /// Flushes the internal buffer to one or more chunks.
+        /// </summary>
+        private void FlushBufferToChunk(){
+            //There are several ways that this method can be called.
+            //It could be called as part of Flush in which case the
+            //chunk size may not be the full size.
+            //It could be called on a chunk that has been persisted already
+            //If it isn't at the full size yet, the array should be resized
+            //up to the total chunk size and as much as the buffer copied to
+            //it as possible.  If there are left over bytes then we need to create
+            //a new chunk and write to that.
+
+            int bytesToWrite = buffWritten;
+            int bufferOffset = 0;
+            byte[] chunkBytes = chunk.Data.Bytes;
+            while(bytesToWrite > 0){
+                int chunkAvailable = chunkBytes.Length - chunkOffset;
+                int writeCount = 0;
+                if(chunkAvailable < bytesToWrite){
+                    //need to resize chunk if possible.
+                    writeCount = ResizeChunk(bytesToWrite - chunkAvailable) - chunkOffset;
+                    chunkBytes = chunk.Data.Bytes;
+                }else{
+                    writeCount = buffWritten;
+                }
+
+                Console.WriteLine(string.Format("buffer.length {0}, buffOffset {1}, " +
+                                                "chunkBytes.Length {2},chunkOffset {3}, writeCount {4}",
+                                                buffer.Length, bufferOffset, chunkBytes.Length, chunkOffset, writeCount));
+                Array.Copy(buffer,bufferOffset,chunkBytes,chunkOffset,writeCount);
+                bytesToWrite -= writeCount;
+                bufferOffset += writeCount;
+                chunkOffset += writeCount;
+                if(chunkOffset >= this.GridFileInfo.ChunkSize){
+                    Console.WriteLine("Saving chunk");
+                    SaveChunk();
+                    chunk = new GridChunk(this.GridFileInfo.Id, chunk.N + 1, new byte[0]);
+                    chunkOffset = 0;
+                }
+            }
+            buffWritten = 0;
+        }
+
+        /// <summary>
+        /// Resizes the chunk adding as much of the requested additional length and returns the new chunk size.
+        /// </summary>
+        private int ResizeChunk(int additionalLength){
+            Byte[] bytes = chunk.Data.Bytes;
+            int newsize = 0;
+            int maxchunkSize = this.GridFileInfo.ChunkSize;
+            if(bytes.Length + additionalLength <= maxchunkSize){
+                newsize = bytes.Length + additionalLength;
+            }else{
+                newsize = maxchunkSize;
+            }
+            Array.Resize(ref bytes, newsize);
+            chunk.Data.Bytes = bytes;
+            return newsize;
+        }
+
+
+
         private void ValidateWriteState(byte[] array, int offset, int count){
             if (array == null){
                 throw new ArgumentNullException("array", new Exception("array is null"));
@@ -169,11 +242,35 @@ namespace MongoDB.Driver.GridFS
         public override void Flush(){
             //Still only dealing with one chunk for now.
             FlushBufferToChunk();
-            chunks.Insert(chunk.ToDocument());
+            SaveChunk();
         }
-        
+        private void SaveChunk(){
+            Document cd = chunk.ToDocument();
+            if(cd.Contains("_id")){
+                chunks.Update(cd);
+            }else{
+                chunks.Insert(cd);
+                chunk.Id = cd["_id"];
+            }
+        }
+
         public override int Read(byte[] array, int offset, int count){
-            if (array == null)            {
+
+//                if (buffer == null){
+//                    buffer = new byte[bufferSize];
+//                }                
+//                Array.Copy(buffer, position, array, offset, count);
+//                position += count;
+//                if (count == bufferSize){
+//                    return 0;
+//                }
+//                else
+//                    return count;              
+            return 0;
+        }
+
+        private void ValidateReadState(byte[] array, int offset, int count){
+            if (array == null){
                 throw new ArgumentNullException("array", new Exception("array is null"));
             }
             else if (offset < 0){
@@ -187,38 +284,6 @@ namespace MongoDB.Driver.GridFS
             }
             else if (!canRead){
                 throw new MongoGridFSException("Reading this file is not supported", gridFileInfo.FileName, null);
-            }
-            else
-            {
-//                if (buffer == null){
-//                    buffer = new byte[bufferSize];
-//                }                
-//                Array.Copy(buffer, position, array, offset, count);
-//                position += count;
-//                if (count == bufferSize){
-//                    return 0;
-//                }
-//                else
-//                    return count;              
-                return 0;
-            }
-        }
-        
-        private void FlushBufferToChunk(){
-            //Still only dealing with one chunk for now.
-            byte[] chunkBytes = new byte[buffWritten];
-            chunk.Data.Bytes = chunkBytes;
-            Array.Copy(buffer,0, chunkBytes,0,buffWritten);
-            chunkOffset += buffWritten;
-            buffWritten = 0;
-        }
-        
-        private void EnsureWriteChunkLoaded(){
-            //int chunknum = (int)Math.Floor((double)(this.position / this.gridFileInfo.ChunkSize));
-            if(chunk == null){
-                chunk = new GridChunk(this.GridFileInfo.Id, 0, new byte[0]);
-                buffWritten = 0;
-                chunkOffset = 0;
             }
         }
         

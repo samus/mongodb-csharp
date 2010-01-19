@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using MongoDB.Driver;
@@ -19,13 +19,13 @@ namespace MongoDB.Driver.GridFS
         {
             this.id = (Oid)doc["_id"];
             this.filesId = (Object)doc["files_id"];
-            this.n = Convert.ToDouble(doc["n"]);
+            this.n = Convert.ToInt32(doc["n"]);
             this.data = (Binary)doc["data"];
         }
 
         // object id of the chunk in the _chunks collection
-        private Oid id;
-        public Oid Id{
+        private Object id;
+        public Object Id{
             get { return this.id; }
             set { this.id = value; }
         }
@@ -37,8 +37,8 @@ namespace MongoDB.Driver.GridFS
         }
 
         //Chunk number
-        private double n;
-        public double N{
+        private int n;
+        public int N{
             get { return this.n; }
             set { this.n = value; }
         }
