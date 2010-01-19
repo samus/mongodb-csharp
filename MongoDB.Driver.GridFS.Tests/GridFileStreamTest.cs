@@ -41,19 +41,20 @@ namespace MongoDB.Driver.GridFS
         
         [Test]
         public void TestLargeWrite(){
-            //GridFile fs = new GridFile(db["tests"], "gfstream");
-            GridFile fs = new GridFile(db["tests"]);
+            GridFile fs = new GridFile(db["tests"], "gfstream");
+            //GridFile fs = new GridFile(db["tests"]);
             GridFileStream gfs = fs.Create("largewrite.txt");
             Object id = gfs.GridFileInfo.Id;
-            Byte[] buff = new byte[(256 * 1024) + 5]; //intentionally bigger than default buffer size.
+            int chunks = 3;
+            Byte[] buff = new byte[(256 * 1024) * chunks]; //intentionally bigger than default buffer size.
             for(int i = 0; i < buff.Length; i++){
-                buff[0] = (byte)1;
+                buff[i] = (byte)(i % 128);
             }
             gfs.Write(buff,0,buff.Length);
             Assert.AreEqual(buff.Length, gfs.Position);
             gfs.Close();
-            //Assert.AreEqual(2, db["tests"]["gfstream.chunks"].Count(new Document().Append("files_id", id)));
-            Assert.AreEqual(2, db["tests"]["fs.chunks"].Count(new Document().Append("files_id", id)));
+            Assert.AreEqual(chunks, db["tests"]["gfstream.chunks"].Count(new Document().Append("files_id", id)));
+            //Assert.AreEqual(chunks, db["tests"]["fs.chunks"].Count(new Document().Append("files_id", id)));
         }
         
         [TestFixtureSetUp]

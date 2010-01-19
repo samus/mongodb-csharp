@@ -43,7 +43,7 @@ namespace MongoDB.Driver.GridFS
             set { filedata["contentType"] = value; }
         }
 
-        public int Length{
+        public long Length{
             get { return Convert.ToInt32(filedata["length"]); }
             set { filedata["length"] = value; }
         }
@@ -106,7 +106,7 @@ namespace MongoDB.Driver.GridFS
                         throw new IOException("File already exists");
                     }                    
                     this.gridFile.Files.Insert(filedata);
-                    return new GridFileStream(this, this.gridFile.Chunks, access);
+                    return new GridFileStream(this, this.gridFile.Files, this.gridFile.Chunks, access);
                 case FileMode.Create:
                     if(gridFile.Exists(this.FileName)){
                         return this.Open(FileMode.Truncate,access);
@@ -142,7 +142,7 @@ namespace MongoDB.Driver.GridFS
                     return this.Create(mode, access);
                 case FileMode.Truncate:
                     this.Truncate();
-                    return new GridFileStream(this,this.gridFile.Chunks, access);
+                    return new GridFileStream(this,this.gridFile.Files, this.gridFile.Chunks, access);
             }
             throw new NotImplementedException("Not all modes are implemented yet.");
         }
@@ -309,6 +309,9 @@ namespace MongoDB.Driver.GridFS
             return doc;
         }
         */
+       public Document ToDocument(){
+           return this.filedata;
+       }
         #region Dispose
         public void Dispose()
         {

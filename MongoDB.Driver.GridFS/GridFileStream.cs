@@ -10,6 +10,7 @@ namespace MongoDB.Driver.GridFS
     /// </summary>
     public class GridFileStream : Stream
     {
+        private IMongoCollection files;
         private IMongoCollection chunks;
         //private List<GridChunk> chunks;
         private GridChunk chunk;
@@ -55,7 +56,7 @@ namespace MongoDB.Driver.GridFS
         }
         #endregion
         
-        public GridFileStream(GridFileInfo gridfileinfo, IMongoCollection chunks, FileAccess access){
+        public GridFileStream(GridFileInfo gridfileinfo,IMongoCollection files, IMongoCollection chunks, FileAccess access){
             switch (access){
                 case FileAccess.Read:
                     canRead = true;
@@ -69,6 +70,7 @@ namespace MongoDB.Driver.GridFS
                 break;
             }
             this.gridFileInfo = gridfileinfo;
+            this.files = files;
             this.chunks = chunks;
             this.buffer = new byte[gridFileInfo.ChunkSize];
             //this.bufferSize = gridFileInfo.ChunkSize;
@@ -83,10 +85,10 @@ namespace MongoDB.Driver.GridFS
             while(bytesLeftToWrite > 0){
                 int buffAvailable = buffer.Length - buffWritten;
                 int writeCount = 0;
-                if(buffAvailable < count){
-                    writeCount = buffAvailable;
+                if(buffAvailable > bytesLeftToWrite){
+                    writeCount = bytesLeftToWrite;
                 }else{
-                    writeCount = count;
+                    writeCount = buffAvailable;
                 }
                 Array.Copy(array,offset,buffer,buffWritten,writeCount);
                 buffWritten += writeCount;
@@ -160,6 +162,7 @@ namespace MongoDB.Driver.GridFS
                 if(chunkOffset >= this.GridFileInfo.ChunkSize){
                     Console.WriteLine("Saving chunk");
                     SaveChunk();
+                    gridFileInfo.Length += chunk.Data.Bytes.LongLength;
                     chunk = new GridChunk(this.GridFileInfo.Id, chunk.N + 1, new byte[0]);
                     chunkOffset = 0;
                 }
@@ -245,6 +248,7 @@ namespace MongoDB.Driver.GridFS
             SaveChunk();
         }
         private void SaveChunk(){
+            if(chunkOffset == 0) return;
             Document cd = chunk.ToDocument();
             if(cd.Contains("_id")){
                 chunks.Update(cd);
@@ -289,6 +293,7 @@ namespace MongoDB.Driver.GridFS
         
         public override void Close(){
             this.Flush();
+            this.files.Update(this.GridFileInfo.ToDocument());
             //Should also update gridFileInfo statistics.
             base.Close();
         }
