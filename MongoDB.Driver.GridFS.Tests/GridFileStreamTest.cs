@@ -41,9 +41,10 @@ namespace MongoDB.Driver.GridFS
         
         [Test]
         public void TestLargeWrite(){
-            GridFile fs = new GridFile(db["tests"], "gfstream");
-            //GridFile fs = new GridFile(db["tests"]);
+            string fsname = "gfstream";
+            GridFile fs = new GridFile(db["tests"], fsname);
             GridFileStream gfs = fs.Create("largewrite.txt");
+            
             Object id = gfs.GridFileInfo.Id;
             int chunks = 3;
             Byte[] buff = new byte[(256 * 1024) * chunks]; //intentionally bigger than default buffer size.
@@ -53,8 +54,29 @@ namespace MongoDB.Driver.GridFS
             gfs.Write(buff,0,buff.Length);
             Assert.AreEqual(buff.Length, gfs.Position);
             gfs.Close();
-            Assert.AreEqual(chunks, db["tests"]["gfstream.chunks"].Count(new Document().Append("files_id", id)));
-            //Assert.AreEqual(chunks, db["tests"]["fs.chunks"].Count(new Document().Append("files_id", id)));
+            Assert.AreEqual(chunks, db["tests"][fsname + ".chunks"].Count(new Document().Append("files_id", id)));
+        }
+        
+        [Test]
+        public void TestNonSequentialWriteToOneChunk(){
+            GridFile fs = new GridFile(db["tests"], "gfstream");
+            GridFileStream gfs = fs.Create("nonsequential1.txt");
+            Object id = gfs.GridFileInfo.Id;
+            int chunksize = gfs.GridFileInfo.ChunkSize;
+            
+            gfs.Seek(chunksize/2, SeekOrigin.Begin);
+            for(int i = chunksize; i > chunksize/2; i--){
+                gfs.Write(new byte[]{(byte)(i % 128)}, 0, 1);
+            }
+            
+            gfs.Seek(0, SeekOrigin.Begin);
+            byte[] one = new byte[]{1};
+            for(int i = 0; i < chunksize/2; i++){
+                gfs.Write(one, 0, 1);
+            }            
+            gfs.Close();
+            
+            Assert.AreEqual(1, db["tests"]["gfstream.chunks"].Count(new Document().Append("files_id", id)));            
         }
         
         [TestFixtureSetUp]
