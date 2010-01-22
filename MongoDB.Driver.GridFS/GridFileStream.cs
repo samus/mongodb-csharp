@@ -6,12 +6,17 @@ using System.IO;
 using MongoDB.Driver;
 
 namespace MongoDB.Driver.GridFS
-{
+{   
     /// <summary>
     /// Stream for reading and writing to a file in GridFS.
     /// </summary>
     public class GridFileStream : Stream
     {
+//        public static String CHUNKID = "_id";
+//        public static String CHUNKFILESID = "files_id";
+//        public static String CHUNKN = "n";
+//        public static String CHUNKDATA = "data";
+        
         private IMongoCollection files;
         private IMongoCollection chunks;
         private Document chunk;
@@ -42,6 +47,7 @@ namespace MongoDB.Driver.GridFS
         
         public override long Length {
             get {
+                //FIXME This won't be the right value when the file has been written to but not saved.
                 return gridFileInfo.Length;
             }
         }
