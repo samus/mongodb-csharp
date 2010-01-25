@@ -45,7 +45,7 @@ namespace MongoDB.Driver.GridFS
         }        
         
         [Test]
-        public void TestLargeWrite(){
+        public void TestWriteTo3Chunks(){
             GridFileStream gfs = fs.Create("largewrite.txt");
             
             Object id = gfs.GridFileInfo.Id;
@@ -109,6 +109,31 @@ namespace MongoDB.Driver.GridFS
             Assert.AreEqual(chunks - 1, CountChunks(id));
             //TODO Assert some content checks.
         }        
+        
+        #region File API compatibility
+        
+        [Test]
+        public void TestSeekingBeyondEOF(){
+            int buffsize = 256;
+            FileStream gfs = File.Create("seektest.txt",buffsize);//,FileOptions.DeleteOnClose);
+            int chunks = 3;
+            //int buffsize = 256 * 1024;  
+            for(int c = 0; c < chunks; c++){
+                Byte[] buff = new byte[buffsize];
+                for(int i = 0; i < buff.Length; i++){
+                    buff[i] = (byte)(c);
+                }
+                if(c == 2) gfs.Seek(0, SeekOrigin.Begin); //On last chunk seek to start.
+                gfs.Write(buff,0,buff.Length);
+                gfs.Seek(5,SeekOrigin.Current);
+            }
+            gfs.Seek(50,SeekOrigin.End);
+            gfs.Write(new byte[]{5},0,1);
+            
+            
+        }
+        
+        #endregion
         
         
         [TestFixtureSetUp]
