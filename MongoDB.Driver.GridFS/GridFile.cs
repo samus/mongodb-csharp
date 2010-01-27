@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
@@ -87,6 +87,14 @@ namespace MongoDB.Driver.GridFS
 
         }
         #endregion
+
+        #region Opens
+        public GridFileStream OpenRead(String filename){
+            GridFileInfo gfi = new GridFileInfo(this.db, this.name, filename);
+            return gfi.OpenRead();
+        }
+        #endregion
+
         
         #region Delete
         public void Delete(Object id){

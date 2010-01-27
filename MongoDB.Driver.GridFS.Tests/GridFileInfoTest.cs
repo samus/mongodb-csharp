@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 using NUnit.Framework;
@@ -58,7 +58,34 @@ namespace MongoDB.Driver.GridFS
             Assert.IsFalse(gf.Exists(filename), "File should have been moved.");
             Assert.IsTrue(gf.Exists(filename2), "File wasn't");
         }
-        
+
+        [Test]
+        public void TestOpenNonExistentFails(){
+            string filename = "gfi-opennothere.txt";
+            GridFile gf = new GridFile(db["tests"], "gfopen");
+            GridFileInfo gfi = new GridFileInfo(db["tests"], "gfopen", filename);
+            bool thrown = false;
+            try{
+                GridFileStream gfs = gfi.OpenRead();
+            }catch(DirectoryNotFoundException dnfe){
+                Assert.AreEqual(filename, dnfe.Message);
+                thrown = true;
+            }
+            Assert.IsTrue(thrown);
+        }
+
+        [Test]
+        public void TestOpen(){
+            string filename = "gfi-open.txt";
+            GridFile gf = new GridFile(db["tests"], "gfopen");
+            GridFileStream gfs = gf.Create(filename);
+            gfs.Close();
+
+            gfs = gf.OpenRead(filename);
+            Assert.IsNotNull(gfs);
+
+        }
+
         [TestFixtureSetUp]
         public void Init(){
             db.Connect();
@@ -74,7 +101,8 @@ namespace MongoDB.Driver.GridFS
             //Any collections that we might want to delete before the tests run should be done here.
             DropGridFileSystem("gfcreate");
             DropGridFileSystem("gfdelete");
-            DropGridFileSystem("gfmove");            
+            DropGridFileSystem("gfmove");
+            DropGridFileSystem("gfopen");
         }
         
         protected void DropGridFileSystem(string filesystem){

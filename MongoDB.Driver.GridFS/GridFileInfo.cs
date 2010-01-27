@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -79,6 +79,7 @@ namespace MongoDB.Driver.GridFS
             this.ChunkSize = DEFAULT_CHUNKSIZE;
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
+
         public GridFileInfo(Database db, string filename){
             this.gridFile = new GridFile(db);
             this.FileName = filename;
@@ -143,6 +144,9 @@ namespace MongoDB.Driver.GridFS
                 case FileMode.Truncate:
                     this.Truncate();
                     return new GridFileStream(this,this.gridFile.Files, this.gridFile.Chunks, access);
+                case FileMode.Open:
+                    LoadFileData();
+                    return new GridFileStream(this,this.gridFile.Files, this.gridFile.Chunks, access);
             }
             throw new NotImplementedException("Not all modes are implemented yet.");
         }
@@ -171,7 +175,7 @@ namespace MongoDB.Driver.GridFS
             if(doc != null){
                 filedata = doc;
             }else{
-                //Throw an exception?
+                throw new DirectoryNotFoundException(this.FileName);
             }
         }
 

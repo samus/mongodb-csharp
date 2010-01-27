@@ -14,6 +14,7 @@ namespace MongoDB.Driver.GridFS
         GridFile fs;
 
         String filesystem = "gfstream";
+
         [Test]
         public void TestWrite(){
             GridFileStream gfs = fs.Create("test.txt");
@@ -86,6 +87,7 @@ namespace MongoDB.Driver.GridFS
             Assert.AreEqual(1, b.Bytes[chunksize/2 -1]);
             Assert.AreEqual(1, b.Bytes[0]);
         }
+
         [Test]
         public void TestNonSequentialWriteToPartialChunk(){
             string filename = "nonsequentialpartial.txt";
@@ -130,6 +132,12 @@ namespace MongoDB.Driver.GridFS
             chunk = GrabChunk(id, 1);
             b = (Binary)chunk["data"];
             Assert.AreEqual(1, b.Bytes[buffsize-1]);
+        }
+
+        [Test]
+        public void TestRead(){
+            string filename = "readme.txt";
+            GridFileStream gfs = fs.OpenRead(filename);
         }
 
         #region File API compatibility

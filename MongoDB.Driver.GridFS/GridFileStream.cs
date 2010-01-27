@@ -28,6 +28,7 @@ namespace MongoDB.Driver.GridFS
         private byte[] blankBuffer;
         private int buffPosition;
         private int highestBuffPosition;
+
                 
         #region Properties
         private GridFileInfo gridFileInfo;       
@@ -188,10 +189,10 @@ namespace MongoDB.Driver.GridFS
             int chunkSize = this.gridFileInfo.ChunkSize;
             bool chunkInRange = (chunk != null && position >= chunkLower && position < chunkUpper);
             if(chunkInRange == false){
-            	if(chunk != null  && chunkDirty){
-            		highestBuffPosition = Math.Max(highestBuffPosition, buffPosition);
-            		this.Flush();
-            	}
+                if(chunk != null  && chunkDirty){
+                    highestBuffPosition = Math.Max(highestBuffPosition, buffPosition);
+                    this.Flush();
+                }
                 int chunknum = (int)Math.Floor((double)(position / chunkSize));
                 Array.Copy(blankBuffer,buffer,buffer.Length);
                 LoadOrCreateChunk(chunknum);
@@ -200,7 +201,7 @@ namespace MongoDB.Driver.GridFS
                 chunkUpper = chunkLower + chunkSize;
             }
             buffPosition = (int)(position % chunkSize);
-        	highestBuffPosition = Math.Max(highestBuffPosition, buffPosition);
+            highestBuffPosition = Math.Max(highestBuffPosition, buffPosition);
             
         }
 
@@ -209,17 +210,17 @@ namespace MongoDB.Driver.GridFS
         /// </summary>
         /// <param name="num"></param>
         private void LoadOrCreateChunk(int num){
-        	Object fid = this.GridFileInfo.Id;
-        	Document spec = new Document().Append("files_id", fid).Append("n",num);
-        	chunk = this.chunks.FindOne(spec);
-        	if(chunk == null) {
-        		chunk = spec;
-        		highestBuffPosition = 0;
-        	}else{
-        		Binary b = (Binary)chunk["data"];
-        		highestBuffPosition = b.Bytes.Length;
-        		Array.Copy(b.Bytes,buffer, highestBuffPosition);
-        	}
+            Object fid = this.GridFileInfo.Id;
+            Document spec = new Document().Append("files_id", fid).Append("n",num);
+            chunk = this.chunks.FindOne(spec);
+            if(chunk == null) {
+                chunk = spec;
+                highestBuffPosition = 0;
+            }else{
+                Binary b = (Binary)chunk["data"];
+                highestBuffPosition = b.Bytes.Length;
+                Array.Copy(b.Bytes,buffer, highestBuffPosition);
+            }
         }
 
         public override void SetLength(long value){
