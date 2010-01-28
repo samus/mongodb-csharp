@@ -28,6 +28,7 @@ namespace MongoDB.Driver.GridFS
         private byte[] blankBuffer;
         private int buffPosition;
         private int highestBuffPosition;
+        private long highestPosWritten;
 
                 
         #region Properties
@@ -87,6 +88,7 @@ namespace MongoDB.Driver.GridFS
             this.chunks = chunks;
             this.buffer = new byte[gridFileInfo.ChunkSize];
             this.blankBuffer = new byte[gridFileInfo.ChunkSize];
+            this.highestPosWritten = this.gridFileInfo.Length;
             this.MoveTo(0);
         }
         
@@ -119,6 +121,8 @@ namespace MongoDB.Driver.GridFS
                 buffPosition += writeCount;
                 bytesLeftToWrite -= writeCount;
                 MoveTo(position + writeCount);
+                highestPosWritten = Math.Max(highestPosWritten, position);
+                offset = 0;
             }
         }
         
@@ -228,18 +232,23 @@ namespace MongoDB.Driver.GridFS
         }
 
         public override int Read(byte[] array, int offset, int count){
-
-//                if (buffer == null){
-//                    buffer = new byte[bufferSize];
-//                }                
-//                Array.Copy(buffer, position, array, offset, count);
-//                position += count;
-//                if (count == bufferSize){
-//                    return 0;
-//                }
-//                else
-//                    return count;              
-            return 0;
+            int bytesLeftToRead = count;
+            int bytesRead = 0;
+            while(bytesLeftToRead > 0  && this.position < this.Length){
+                int buffAvailable = buffer.Length - buffPosition;
+                int readCount = 0;
+                if(buffAvailable > bytesLeftToRead){
+                    readCount = bytesLeftToRead;
+                }else{
+                    readCount = buffAvailable;
+                }
+                Array.Copy(buffer,buffPosition,array,offset,readCount);
+                buffPosition += readCount;
+                bytesLeftToRead -= readCount;
+                bytesRead += readCount;
+                MoveTo(position + readCount);
+            }
+            return bytesRead;
         }
 
         private void ValidateReadState(byte[] array, int offset, int count){
@@ -262,8 +271,9 @@ namespace MongoDB.Driver.GridFS
         
         public override void Close(){
             this.Flush();
-            this.files.Update(this.GridFileInfo.ToDocument());
-            //Should also update gridFileInfo statistics.
+            //Should update more gridFileInfo statistics.
+            gridFileInfo.Length = highestPosWritten;
+            this.files.Update(gridFileInfo.ToDocument());
             base.Close();
         }
         

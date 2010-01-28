@@ -59,6 +59,42 @@ namespace MongoDB.Driver.GridFS
             Assert.AreEqual(chunks, CountChunks(id));
         }
 
+
+        [Test]
+        public void TestWriteMultipleBytesWithOffset(){
+            String filename = "multioffset.txt";
+            GridFileStream gfs = fs.Create(filename);
+            Object id = gfs.GridFileInfo.Id;
+            int chunks = 2;
+            int buffsize = 256 * 1024 * chunks;
+            byte[] buff = new byte[buffsize];
+
+            int x = 1;
+            for(int i = 4; i < buff.Length; i+=4){
+                Array.Copy(BitConverter.GetBytes(x++),0,buff,i,4);
+            }
+            gfs.Write(buff,4,buff.Length - 4);
+            gfs.Close();
+            
+            Assert.AreEqual(2, CountChunks(id));
+            
+            gfs = fs.OpenRead(filename);
+            buff = new Byte[4];
+            int read;
+            int val;
+            for(int i = 1; i <= buffsize/4; i++){
+                if(i == 65536){
+                    Console.WriteLine("break");
+                }                
+                read = gfs.Read(buff,0,4);
+                val = BitConverter.ToInt32(buff, 0);
+                Assert.AreEqual(4, read, "Not enough bytes were read");
+
+                Assert.AreEqual(i,val, "value read back was not the same as written. Pos: " + gfs.Position);
+            }
+
+        }
+
         [Test]
         public void TestNonSequentialWriteToOneChunk(){
             string filename = "nonsequential1.txt";
@@ -137,7 +173,22 @@ namespace MongoDB.Driver.GridFS
         [Test]
         public void TestRead(){
             string filename = "readme.txt";
-            GridFileStream gfs = fs.OpenRead(filename);
+            GridFileStream gfs = fs.Create(filename);
+            for(int i = 1; i <= 50; i++){
+                gfs.Write(BitConverter.GetBytes(i), 0, 4);
+            }
+            gfs.Close();
+
+            gfs = fs.OpenRead(filename);
+
+            Byte[] buff = new Byte[4];
+            int read;
+            for(int i = 1; i <= 50; i++){
+                read = gfs.Read(buff,0,4);
+                Assert.AreEqual(4, read, "Not enough bytes were read");
+                Assert.AreEqual(i,BitConverter.ToInt32(buff, 0), "value read back was not the same as written");
+            }
+
         }
 
         #region File API compatibility

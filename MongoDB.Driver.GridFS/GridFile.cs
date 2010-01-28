@@ -33,6 +33,7 @@ namespace MongoDB.Driver.GridFS
             this.db = db;
             this.files = db[bucket + ".files"];
             this.chunks = db[bucket + ".chunks"];
+            this.chunks.MetaData.CreateIndex(new Document().Append("files_id", 1).Append("n", 1),true);
             this.name = bucket;
         }
         
