@@ -119,19 +119,24 @@ namespace MongoDB.Driver.GridFS
                 Array.Copy(array,offset,buffer,buffPosition,writeCount);
                 chunkDirty = true;
                 buffPosition += writeCount;
+                offset += writeCount;
                 bytesLeftToWrite -= writeCount;
                 MoveTo(position + writeCount);
                 highestPosWritten = Math.Max(highestPosWritten, position);
-                offset = 0;
             }
         }
         
         public override void Flush(){
             if(chunkDirty == false) return;
-            byte[] data = new byte[highestBuffPosition];
-            Array.Copy(buffer,data,highestBuffPosition);
+            //avoid a copy if possible.
+            if(highestBuffPosition == buffer.Length){
+                chunk["data"] = new Binary(buffer);    
+            }else{
+                byte[] data = new byte[highestBuffPosition];
+                Array.Copy(buffer,data,highestBuffPosition);
+                chunk["data"] = new Binary(data);
+            }
             
-            chunk["data"] = new Binary(data);
             
             if(chunk.Contains("_id")){
                 chunks.Update(chunk);
@@ -150,7 +155,7 @@ namespace MongoDB.Driver.GridFS
             }else if ((array.Length - offset) < count){
                 throw new MongoGridFSException("Invalid count argument", gridFileInfo.FileName, null);
             }else if (!canWrite){
-                throw new MongoGridFSException("Writing to this file is not allowed", gridFileInfo.FileName, null);
+                throw new System.NotSupportedException("Stream does not support writing.");
             }
         }
         
@@ -246,6 +251,7 @@ namespace MongoDB.Driver.GridFS
                 buffPosition += readCount;
                 bytesLeftToRead -= readCount;
                 bytesRead += readCount;
+                offset += bytesRead;
                 MoveTo(position + readCount);
             }
             return bytesRead;

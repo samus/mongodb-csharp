@@ -68,14 +68,14 @@ namespace MongoDB.Driver.GridFS
             try{
                 GridFileStream gfs = gfi.OpenRead();
             }catch(DirectoryNotFoundException dnfe){
-                Assert.AreEqual(filename, dnfe.Message);
+                Assert.AreEqual(gf.Name + Path.VolumeSeparatorChar + filename, dnfe.Message);
                 thrown = true;
             }
             Assert.IsTrue(thrown);
         }
 
         [Test]
-        public void TestOpen(){
+        public void TestOpenReadOnly(){
             string filename = "gfi-open.txt";
             GridFile gf = new GridFile(db["tests"], "gfopen");
             GridFileStream gfs = gf.Create(filename);
@@ -83,7 +83,15 @@ namespace MongoDB.Driver.GridFS
 
             gfs = gf.OpenRead(filename);
             Assert.IsNotNull(gfs);
-
+            bool thrown = false;
+            try{
+                gfs.Write(new byte[]{0},0,1);
+            }catch(System.NotSupportedException){
+                thrown = true;
+            }catch(Exception ex){
+                Assert.Fail("Wrong exception thrown " + ex.GetType().Name);
+            }
+            Assert.IsTrue(thrown, "NotSupportedException not thrown");
         }
 
         [TestFixtureSetUp]

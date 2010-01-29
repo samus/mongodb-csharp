@@ -69,6 +69,7 @@ namespace MongoDB.Driver.GridFS
         public GridFileInfo(Database db, string bucket, string filename){
             this.gridFile = new GridFile(db,bucket);
             SetFileDataDefaults(filename);
+            this.ContentType = DEFAULT_CONTENT_TYPE;
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
 
@@ -172,13 +173,13 @@ namespace MongoDB.Driver.GridFS
             if(doc != null){
                 filedata = doc;
             }else{
-                throw new DirectoryNotFoundException(this.FileName);
+                throw new DirectoryNotFoundException(this.gridFile.Name + Path.VolumeSeparatorChar + this.FileName);
             }
         }
         
         public Document ToDocument(){
            return this.filedata;
-        }
+       }
         
         public override string ToString(){
             return filedata.ToString();

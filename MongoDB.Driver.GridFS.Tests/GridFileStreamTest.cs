@@ -59,37 +59,56 @@ namespace MongoDB.Driver.GridFS
             Assert.AreEqual(chunks, CountChunks(id));
         }
 
+        [Test]
+        public void TestWriteWithMultipleFlushes(){
+            string filename = "multiflush.txt";
+            GridFileStream gfs = fs.Create(filename);
+            Object id = gfs.GridFileInfo.Id;
+            int size = gfs.GridFileInfo.ChunkSize * 2;
+            byte[] buff;
+            
+            int x = 0;
+            for(int i = 0; i < size; i+=4){
+                buff = BitConverter.GetBytes(x);
+                gfs.Write(buff,0,buff.Length);
+                x++;
+                if(i % size/4 == 0){
+                    gfs.Flush();
+                }
+            }
+            gfs.Close();
+            
+            gfs = fs.OpenRead(filename);
+            int read;
+            int val;
+            buff = new byte[4];
+            for(int i = 0; i < size/4; i++){
+                read = gfs.Read(buff,0,4);
+                val = BitConverter.ToInt32(buff, 0);
+                Assert.AreEqual(4, read, "Not enough bytes were read. Pos: " + gfs.Position);
+                Assert.AreEqual(i,val, "value read back was not the same as written. Pos: " + gfs.Position);
+            }            
+        }
 
         [Test]
         public void TestWriteMultipleBytesWithOffset(){
             String filename = "multioffset.txt";
-            GridFileStream gfs = fs.Create(filename);
-            Object id = gfs.GridFileInfo.Id;
+            int offset = 4;
             int chunks = 2;
-            int buffsize = 256 * 1024 * chunks;
-            byte[] buff = new byte[buffsize];
-
-            int x = 1;
-            for(int i = 4; i < buff.Length; i+=4){
-                Array.Copy(BitConverter.GetBytes(x++),0,buff,i,4);
-            }
-            gfs.Write(buff,4,buff.Length - 4);
-            gfs.Close();
+            int chunksize = 100;
+            int size = chunks * chunksize;
             
+            Object id = CreateDummyFile(filename, size, chunksize, offset);
             Assert.AreEqual(2, CountChunks(id));
             
-            gfs = fs.OpenRead(filename);
-            buff = new Byte[4];
+            GridFileStream gfs = fs.OpenRead(filename);
+            byte[] buff = new Byte[4];
             int read;
             int val;
-            for(int i = 1; i <= buffsize/4; i++){
-                if(i == 65536){
-                    Console.WriteLine("break");
-                }                
+            for(int i = 1; i <= size/4 - offset; i++){
                 read = gfs.Read(buff,0,4);
                 val = BitConverter.ToInt32(buff, 0);
-                Assert.AreEqual(4, read, "Not enough bytes were read");
-
+                Assert.AreEqual(4, read, "Not enough bytes were read. Pos: " + gfs.Position);
                 Assert.AreEqual(i,val, "value read back was not the same as written. Pos: " + gfs.Position);
             }
 
@@ -188,7 +207,24 @@ namespace MongoDB.Driver.GridFS
                 Assert.AreEqual(4, read, "Not enough bytes were read");
                 Assert.AreEqual(i,BitConverter.ToInt32(buff, 0), "value read back was not the same as written");
             }
-
+        }
+        
+        [Test] 
+        public void TestReadIntoBufferBiggerThanChunk(){
+            string filename = "largereadbuffer.txt";
+            int size = 100;
+            Object id = CreateDummyFile(filename,size,50,0);
+            
+            GridFileStream gfs = fs.OpenRead(filename);
+            byte[] buff = new byte[size];
+            int read = gfs.Read(buff,0,size);
+            Assert.AreEqual(size, read, "Not all bytes read back from file.");
+            int expected = 0;
+            for(int i = 0; i < size; i+=4){
+                int val = BitConverter.ToInt32(buff,i);
+                Assert.AreEqual(expected, val, "Val was not same as expected. Pos: " + i);
+                expected++;
+            }
         }
 
         #region File API compatibility
@@ -196,7 +232,8 @@ namespace MongoDB.Driver.GridFS
         [Test]
         public void TestSeekingBeyondEOF(){
             int buffsize = 256;
-            FileStream gfs = File.Create("seektest.txt",buffsize);//,FileOptions.DeleteOnClose);
+            string filename = "seektest.txt";
+            FileStream gfs = File.Create(filename,buffsize);//,FileOptions.DeleteOnClose);
             int chunks = 3;
             //int buffsize = 256 * 1024;
             for(int c = 0; c < chunks; c++){
@@ -210,10 +247,9 @@ namespace MongoDB.Driver.GridFS
             }
             gfs.Seek(50,SeekOrigin.End);
             gfs.Write(new byte[]{5},0,1);
-
-
+            gfs.Close();
+            File.Delete(filename);
         }
-
         #endregion
 
 
@@ -250,6 +286,18 @@ namespace MongoDB.Driver.GridFS
             return db["tests"][filesystem + ".chunks"].FindOne(new Document().Append("files_id", fileid).Append("n", chunk));
         }
         
+        protected Object CreateDummyFile(string filename, int size, int chunksize, int initialOffset){
+            GridFileInfo gfi = new GridFileInfo(db["tests"], "gfstream", filename);
+            gfi.ChunkSize = chunksize;            
+            GridFileStream gfs = gfi.Create();
+            Object id = gfs.GridFileInfo.Id;
+            byte[] buff = CreateIntBuffer(size);
+            gfs.Write(buff,initialOffset,buff.Length - initialOffset);
+            gfs.Close();
+
+            return id;
+        }
+        
         protected byte[] CreateBuffer(int size, byte fill){
             Byte[] buff = new byte[size];
             for(int i = 0; i < buff.Length; i++){
@@ -257,6 +305,15 @@ namespace MongoDB.Driver.GridFS
             }
             return buff;
         }
-
+        
+        protected byte[] CreateIntBuffer(int size){
+            byte[] buff = new byte[size];
+            
+            int x = 1;
+            for(int i = 4; i < buff.Length; i+=4){
+                Array.Copy(BitConverter.GetBytes(x++),0,buff,i,4);
+            }
+            return buff;
+        }
     }
 }
