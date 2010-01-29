@@ -9,12 +9,14 @@ namespace MongoDB.Driver.GridFS
     /// Provides instance methods for the creation, copying, deletion, moving, and opening of files, 
     /// and aids in the creation of GridFileStream objects.  It also contains 
     /// </summary>
-    public sealed class GridFileInfo
+    public class GridFileInfo
     {
         private const int DEFAULT_CHUNKSIZE = 256 * 1024;
         private const string DEFAULT_CONTENT_TYPE = "text/plain";
         
         private GridFile gridFile;
+        private Database db;
+        private string bucket;
 
 
         #region "filedata properties"
@@ -67,6 +69,8 @@ namespace MongoDB.Driver.GridFS
         #endregion
 
         public GridFileInfo(Database db, string bucket, string filename){
+            this.db = db;
+            this.bucket = bucket;
             this.gridFile = new GridFile(db,bucket);
             SetFileDataDefaults(filename);
             this.ContentType = DEFAULT_CONTENT_TYPE;
@@ -74,6 +78,8 @@ namespace MongoDB.Driver.GridFS
         }
 
         public GridFileInfo(Database db, string filename){
+            this.db = db;
+            this.bucket = "fs";
             this.gridFile = new GridFile(db);
             SetFileDataDefaults(filename);
             if(gridFile.Exists(filename)) this.LoadFileData();
@@ -139,12 +145,21 @@ namespace MongoDB.Driver.GridFS
                 case FileMode.Create:
                 case FileMode.CreateNew:
                     return this.Create(mode, access);
-                case FileMode.Truncate:
-                    this.Truncate();
-                    return new GridFileStream(this,this.gridFile.Files, this.gridFile.Chunks, access);
                 case FileMode.Open:
                     LoadFileData();
                     return new GridFileStream(this,this.gridFile.Files, this.gridFile.Chunks, access);
+                case FileMode.OpenOrCreate:
+                    if(gridFile.Exists(this.FileName) == false) return this.Create(mode, access);
+                    LoadFileData();
+                    return new GridFileStream(this, this.gridFile.Files, this.gridFile.Chunks, access);
+                case FileMode.Truncate:
+                    this.Truncate();
+                    return new GridFileStream(this,this.gridFile.Files, this.gridFile.Chunks, access);
+                case FileMode.Append:
+                    LoadFileData();
+                    GridFileStream gfs = new GridFileStream(this,this.gridFile.Files, this.gridFile.Chunks, access);
+                    gfs.Seek(0,SeekOrigin.End);
+                    return gfs;
             }
             throw new NotImplementedException("Not all modes are implemented yet.");
         }
@@ -167,7 +182,12 @@ namespace MongoDB.Driver.GridFS
             this.Length = 0;
             this.gridFile.Files.Update(filedata);
         }
-        
+
+        public string CalcMD5(){
+            Document doc = this.db.SendCommand(new Document().Append("filemd5", this.Id).Append("root",this.bucket));
+            return (String)doc["md5"];
+        }
+
         private void LoadFileData(){
             Document doc = this.gridFile.Files.FindOne(new Document().Append("filename",this.FileName));
             if(doc != null){

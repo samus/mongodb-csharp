@@ -12,10 +12,6 @@ namespace MongoDB.Driver.GridFS
     /// </summary>
     public class GridFileStream : Stream
     {
-//        public static String CHUNKID = "_id";
-//        public static String CHUNKFILESID = "files_id";
-//        public static String CHUNKN = "n";
-//        public static String CHUNKDATA = "data";
         
         private IMongoCollection files;
         private IMongoCollection chunks;
@@ -279,6 +275,8 @@ namespace MongoDB.Driver.GridFS
             this.Flush();
             //Should update more gridFileInfo statistics.
             gridFileInfo.Length = highestPosWritten;
+            string md5 = gridFileInfo.CalcMD5();
+            gridFileInfo.Md5 = md5;
             this.files.Update(gridFileInfo.ToDocument());
             base.Close();
         }

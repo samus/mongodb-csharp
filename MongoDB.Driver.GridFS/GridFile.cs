@@ -6,10 +6,7 @@ using System.Collections.Generic;
 namespace MongoDB.Driver.GridFS
 {
     public class GridFile{
-        
-        private const int DEFAULT_CHUNKSIZE = 256 * 1024;
-        private const string DEFAULT_CONTENT_TYPE = "text/plain";
-        
+
         private Database db;
         
         private string name;
