@@ -33,8 +33,8 @@ MongoDB.Driver.Benchmark/ProfilingSessions/*
 MongoDB.Driver.Benchmark/obj/*
 
 
-/MongoDB.Driver.GridFS/bin/*
-/MongoDB.Driver.GridFS/obj/*
-/MongoDB.Driver.GridFS.Tests/bin/*
-/MongoDB.Driver.GridFS.Tests/obj/*
-/MongoDB.Driver.GridFS.Tests/test-results/*
+/MongoDB.GridFS/bin/*
+/MongoDB.GridFS/obj/*
+/MongoDB.GridFS.Tests/bin/*
+/MongoDB.GridFS.Tests/obj/*
+/MongoDB.GridFS.Tests/test-results/*

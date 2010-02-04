@@ -89,6 +89,10 @@ namespace MongoDB.GridFS
         #endregion
 
         #region Opens
+        public GridFileStream Open(string filename, FileMode mode, FileAccess access){
+            return new GridFileInfo(this.db, this.name, filename).Open(mode, access);
+        }
+
         public GridFileStream OpenRead(String filename){
             GridFileInfo gfi = new GridFileInfo(this.db, this.name, filename);
             return gfi.OpenRead();

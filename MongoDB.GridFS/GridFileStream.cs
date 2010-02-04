@@ -87,7 +87,50 @@ namespace MongoDB.GridFS
             this.highestPosWritten = this.gridFileInfo.Length;
             this.MoveTo(0);
         }
-        
+
+        /// <summary>
+        /// Reads data from the stream into the specified array.  It will fill the array in starting at offset and
+        /// adding count bytes returning the number of bytes read from the stream.
+        /// </summary>
+        public override int Read(byte[] array, int offset, int count){
+            int bytesLeftToRead = count;
+            int bytesRead = 0;
+            while(bytesLeftToRead > 0  && this.position < this.Length){
+                int buffAvailable = buffer.Length - buffPosition;
+                int readCount = 0;
+                if(buffAvailable > bytesLeftToRead){
+                    readCount = bytesLeftToRead;
+                }else{
+                    readCount = buffAvailable;
+                }
+                Array.Copy(buffer,buffPosition,array,offset,readCount);
+                buffPosition += readCount;
+                bytesLeftToRead -= readCount;
+                bytesRead += readCount;
+                offset += bytesRead;
+                MoveTo(position + readCount);
+            }
+            return bytesRead;
+        }
+
+        private void ValidateReadState(byte[] array, int offset, int count){
+            if (array == null){
+                throw new ArgumentNullException("array", new Exception("array is null"));
+            }
+            else if (offset < 0){
+                throw new ArgumentOutOfRangeException("offset", new Exception("offset is negative"));
+            }
+            else if (count < 0){
+                throw new ArgumentOutOfRangeException("count", new Exception("count is negative"));
+            }
+            else if ((array.Length - offset) < count){
+                throw new MongoGridFSException("Invalid count argument", gridFileInfo.FileName, null);
+            }
+            else if (!canRead){
+                throw new MongoGridFSException("Reading this file is not supported", gridFileInfo.FileName, null);
+            }
+        }
+
         /// <summary>
         /// Copies from the source array into the grid file.
         /// </summary>
@@ -122,6 +165,21 @@ namespace MongoDB.GridFS
             }
         }
         
+        private void ValidateWriteState(byte[] array, int offset, int count){
+            if (array == null){
+                throw new ArgumentNullException("array", new Exception("array is null"));
+            }else if (offset < 0){
+                throw new ArgumentOutOfRangeException("offset", new Exception("offset is negative"));
+            }else if (count < 0){
+                throw new ArgumentOutOfRangeException("count",new Exception("count is negative"));
+            }else if ((array.Length - offset) < count){
+                throw new MongoGridFSException("Invalid count argument", gridFileInfo.FileName, null);
+            }else if (!canWrite){
+                throw new System.NotSupportedException("Stream does not support writing.");
+            }
+        }
+        
+
         public override void Flush(){
             if(chunkDirty == false) return;
             //avoid a copy if possible.
@@ -139,22 +197,9 @@ namespace MongoDB.GridFS
             }else{
                 chunks.Insert(chunk);
             }
+            this.gridFileInfo.Length = highestPosWritten;
         }
-        
-        private void ValidateWriteState(byte[] array, int offset, int count){
-            if (array == null){
-                throw new ArgumentNullException("array", new Exception("array is null"));
-            }else if (offset < 0){
-                throw new ArgumentOutOfRangeException("offset", new Exception("offset is negative"));
-            }else if (count < 0){
-                throw new ArgumentOutOfRangeException("count",new Exception("count is negative"));
-            }else if ((array.Length - offset) < count){
-                throw new MongoGridFSException("Invalid count argument", gridFileInfo.FileName, null);
-            }else if (!canWrite){
-                throw new System.NotSupportedException("Stream does not support writing.");
-            }
-        }
-        
+
         public override long Seek(long offset, SeekOrigin origin){
             if ((origin < SeekOrigin.Begin) || (origin > SeekOrigin.End)){
                 throw new ArgumentException("Invalid Seek Origin");
@@ -181,6 +226,40 @@ namespace MongoDB.GridFS
             return position; 
         }
 
+        /// <summary>
+        /// Sets the length of this stream to the given value.
+        /// </summary>
+        /// <param name="value">
+        /// A <see cref="System.Int64"/>
+        /// </param>
+        public override void SetLength(long value){
+            if(value < 0) throw new ArgumentOutOfRangeException("length");
+            if(this.CanSeek == false || this.CanWrite == false) {
+                throw new NotSupportedException("The stream does not support both writing and seeking.");
+            }
+
+            if(value < highestPosWritten) {
+                TruncateAfter(value);
+            }else{
+                this.Seek(value, SeekOrigin.Begin);
+            }
+            chunkDirty = true;
+            this.gridFileInfo.Length = value;
+            highestPosWritten = value;
+
+        }
+
+        /// <summary>
+        /// Close the stream and flush any changes to the database.
+        /// </summary>
+        public override void Close(){
+            this.Flush();
+            EnsureNoHoles();
+            string md5 = gridFileInfo.CalcMD5();
+            gridFileInfo.Md5 = md5;
+            this.files.Update(gridFileInfo.ToDocument());
+            base.Close();
+        }
 
         /// <summary>
         /// Moves the current position to the new position.  If this causes a new chunk to need to be loaded it will take
@@ -228,59 +307,58 @@ namespace MongoDB.GridFS
             }
         }
 
-        public override void SetLength(long value){
-            throw new NotImplementedException();
+
+        /// <summary>
+        /// Deletes all chunks after the specified position and clears out any extra bytes if the position doesn't fall on
+        /// a chunk boundry.
+        /// </summary>
+        private void TruncateAfter(long value){
+            int chunknum = CalcChunkNum(value);
+            Document spec = new Document().Append("files_id", this.gridFileInfo.Id)
+                                            .Append("n",new Document().Append("$gt",chunknum));
+            this.chunks.Delete(spec);
+            this.MoveTo(value   );
+            Array.Copy(blankBuffer,0,buffer,buffPosition, buffer.Length - buffPosition);
+            highestBuffPosition = buffPosition;
         }
 
-        public override int Read(byte[] array, int offset, int count){
-            int bytesLeftToRead = count;
-            int bytesRead = 0;
-            while(bytesLeftToRead > 0  && this.position < this.Length){
-                int buffAvailable = buffer.Length - buffPosition;
-                int readCount = 0;
-                if(buffAvailable > bytesLeftToRead){
-                    readCount = bytesLeftToRead;
-                }else{
-                    readCount = buffAvailable;
+        private int CalcChunkNum(long position){
+            int chunkSize = this.gridFileInfo.ChunkSize;
+            return (int)Math.Floor((double)(position / chunkSize));
+        }
+
+        /// <summary>
+        /// Makes sure that at least a skelton chunk exists for all numbers.  If not the MD5 calculation will fail on a sparse file.
+        /// </summary>
+        private void EnsureNoHoles(){
+            int highChunk = CalcChunkNum(this.GridFileInfo.Length);
+            Document query = new Document().Append("files_id", this.GridFileInfo.Id)
+                                            .Append("n", new Document()
+                                            .Append("$lte",highChunk));
+            Document sort = new Document().Append("n",1);
+            Document fields = new Document().Append("_id", 1).Append("n",1);
+
+            byte[] data = new byte[1];
+            int i = 0;
+            using (ICursor cur = chunks.Find(new Document().Append("query",query).Append("sort",sort),0,0,fields)){
+                foreach(Document doc in cur.Documents){
+                    int n = Convert.ToInt32(doc["n"]);
+                    if(i < n){
+                        while(i < n){
+                            chunks.Insert(new Document().Append("files_id", this.gridFileInfo.Id)
+                                          .Append("n", i)
+                                          .Append("data", new Binary(data))
+                                          );
+                            i++;
+                        }
+                    }else{
+                        i++;
+                    }
                 }
-                Array.Copy(buffer,buffPosition,array,offset,readCount);
-                buffPosition += readCount;
-                bytesLeftToRead -= readCount;
-                bytesRead += readCount;
-                offset += bytesRead;
-                MoveTo(position + readCount);
             }
-            return bytesRead;
+
         }
 
-        private void ValidateReadState(byte[] array, int offset, int count){
-            if (array == null){
-                throw new ArgumentNullException("array", new Exception("array is null"));
-            }
-            else if (offset < 0){
-                throw new ArgumentOutOfRangeException("offset", new Exception("offset is negative"));
-            }
-            else if (count < 0){
-                throw new ArgumentOutOfRangeException("count", new Exception("count is negative"));
-            }
-            else if ((array.Length - offset) < count){
-                throw new MongoGridFSException("Invalid count argument", gridFileInfo.FileName, null);
-            }
-            else if (!canRead){
-                throw new MongoGridFSException("Reading this file is not supported", gridFileInfo.FileName, null);
-            }
-        }
-        
-        public override void Close(){
-            this.Flush();
-            //Should update more gridFileInfo statistics.
-            gridFileInfo.Length = highestPosWritten;
-            string md5 = gridFileInfo.CalcMD5();
-            gridFileInfo.Md5 = md5;
-            this.files.Update(gridFileInfo.ToDocument());
-            base.Close();
-        }
-        
         protected override void Dispose(bool disposing){
             this.canRead = false;
             this.canWrite = false;

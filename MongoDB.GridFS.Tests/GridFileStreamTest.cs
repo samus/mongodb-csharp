@@ -227,6 +227,41 @@ namespace MongoDB.GridFS
             }
         }
 
+        [Test]
+        public void TestSetLengthBigger(){
+            string filename = "setlengthbigger.txt";
+            GridFileStream gfs = fs.Create(filename);
+            Object id = gfs.GridFileInfo.Id;
+            long length = 256 * 1024 * 5;
+
+            gfs.WriteByte(1);
+            gfs.SetLength(length);
+            gfs.WriteByte(2);
+            gfs.Close();
+            GridFileInfo gfi = new GridFileInfo(db["tests"],filesystem,filename);
+
+            Assert.AreEqual(length + 1, gfi.Length);
+            Assert.AreEqual(6, CountChunks(id));
+
+        }
+
+        [Test]
+        public void TestSetLengthSmaller(){
+            string filename = "setlengthsmaller.txt";
+            int chunksize = 256 * 1024;
+            int chunks = 4;
+            int size = chunks * chunksize;
+            int newsize = (size / 2) - (chunksize/2);
+            Object id = this.CreateDummyFile(filename, size,chunksize,0);
+
+            GridFileStream gfs = fs.Open(filename,FileMode.Open,FileAccess.ReadWrite);
+            gfs.SetLength(newsize);
+            gfs.Close();
+            Assert.AreEqual(newsize, gfs.GridFileInfo.Length);
+        }
+
+
+
         #region File API compatibility
 
         [Test]

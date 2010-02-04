@@ -15,9 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Linq.Tests", "Mongo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.Benchmark", "MongoDB.Driver.Benchmark\MongoDB.Driver.Benchmark.csproj", "{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.GridFS.Tests", "MongoDB.Driver.GridFS.Tests\MongoDB.GridFS.Tests.csproj", "{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.GridFS.Tests", "MongoDB.GridFS.Tests\MongoDB.GridFS.Tests.csproj", "{6E1ACAC5-C179-422B-8B20-74B6DA573A0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.GridFS", "MongoDB.Driver.GridFS\MongoDB.GridFS.csproj", "{BF6A8BCA-BED6-46D3-907F-91E076C55884}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.GridFS", "MongoDB.GridFS\MongoDB.GridFS.csproj", "{BF6A8BCA-BED6-46D3-907F-91E076C55884}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
