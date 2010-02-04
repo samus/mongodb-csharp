@@ -13,7 +13,7 @@ namespace MongoDB.Driver
     /// <summary>
     /// Description of Mongo.
     /// </summary>
-    public class Mongo
+    public class Mongo : IDisposable
     {
         private Connection connection;
         
@@ -74,5 +74,10 @@ namespace MongoDB.Driver
             connection.Close();
             return connection.State == ConnectionState.Closed;
         }
+
+        public void Dispose (){
+            this.Disconnect();
+        }
+
     }
 }
