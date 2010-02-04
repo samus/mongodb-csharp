@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -48,7 +48,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader reader = new BsonReader(ms);
             
-			String str = reader.ReadLenString();
+            String str = reader.ReadLenString();
             Assert.AreEqual(buf.Length, reader.Position);
             Assert.AreEqual("test", (String)str);
         }
@@ -64,7 +64,7 @@ namespace MongoDB.Driver.Bson
             //Assert.AreEqual(buf.Length,read);
             Assert.IsTrue(doc.Contains("test"));
             Assert.AreEqual("test",(String)doc["test"]);
-			Assert.AreEqual(buf.Length,reader.Position);
+            Assert.AreEqual(buf.Length,reader.Position);
         }
         
         [Test]
@@ -120,31 +120,6 @@ namespace MongoDB.Driver.Bson
             Assert.IsNotNull(doc, "Document was null");
             Assert.AreEqual(buf.Length, reader.Position);
             Assert.IsTrue(doc.Contains("a"));
-            
-        }
-		
-		[Test]
-        public void TestDBRefRoundTrip(){
-			MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
-			
-            Document source = new Document();
-            source.Append("x",1).Append("ref",new DBRef("refs","ref1"));
-			
-			writer.Write(source);
-            writer.Flush();
-            ms.Seek(0,SeekOrigin.Begin);
-            
-            BsonReader reader = new BsonReader(ms);
-            Document copy = reader.Read();            
-            
-            Assert.IsTrue(copy.Contains("ref"));
-            Assert.IsTrue(copy["ref"].GetType() == typeof(DBRef));
-            
-            DBRef sref = (DBRef)source["ref"];
-            DBRef cref = (DBRef)copy["ref"];
-            
-            Assert.AreEqual(sref.Id, cref.Id);
             
         }
         
