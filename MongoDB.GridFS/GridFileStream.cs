@@ -254,6 +254,7 @@ namespace MongoDB.GridFS
         /// </summary>
         public override void Close(){
             this.Flush();
+            this.gridFileInfo.Length = highestPosWritten;
             EnsureNoHoles();
             string md5 = gridFileInfo.CalcMD5();
             gridFileInfo.Md5 = md5;
