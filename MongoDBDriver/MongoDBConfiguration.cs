@@ -24,10 +24,10 @@ namespace MongoDB.Driver.Configuration
 
         }
 
-        [ConfigurationProperty("collection", IsRequired = true)]
-        public string Collection{
-            get { return (String)this["collection"]; }
-            set { this["collection"] = value; }
+        [ConfigurationProperty("database", IsRequired = true)]
+        public string Database{
+            get { return (String)this["database"]; }
+            set { this["database"] = value; }
         }
 
         [ConfigurationProperty("use_authentication", DefaultValue = false, IsRequired = false)]

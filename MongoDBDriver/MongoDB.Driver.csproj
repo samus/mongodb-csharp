@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -66,6 +66,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -94,6 +95,7 @@
     <Compile Include="IO\ReplyMessage.cs" />
     <Compile Include="Bson\BsonReader.cs" />
     <Compile Include="Cursor.cs" />
+    <Compile Include="MongoDBConfiguration.cs" />
     <Compile Include="MongoDBNull.cs" />
     <Compile Include="MongoExceptions.cs" />
     <Compile Include="Oid.cs" />

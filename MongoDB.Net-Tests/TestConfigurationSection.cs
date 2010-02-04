@@ -16,7 +16,7 @@ namespace MongoDB.Driver.Tests
             MongoDBConfiguration config = (MongoDBConfiguration)System.Configuration.ConfigurationManager.GetSection("MongoDB");
             Assert.AreEqual("servername", config.Host);
             Assert.AreEqual(27017, config.Port);
-            Assert.AreEqual("testcollection", config.Collection);
+            Assert.AreEqual("test", config.Database);
        }
 
     }
