@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 using MongoDB.Driver;
 
-namespace MongoDB.Driver.GridFS
+namespace MongoDB.GridFS
 {
     [TestFixture]
     public class GridFileStreamTest

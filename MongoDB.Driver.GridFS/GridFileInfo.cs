@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MongoDB.Driver.GridFS
+using MongoDB.Driver;
+
+namespace MongoDB.GridFS
 {
     /// <summary>
     /// Provides instance methods for the creation, copying, deletion, moving, and opening of files, 
@@ -73,7 +75,6 @@ namespace MongoDB.Driver.GridFS
             this.bucket = bucket;
             this.gridFile = new GridFile(db,bucket);
             SetFileDataDefaults(filename);
-            this.ContentType = DEFAULT_CONTENT_TYPE;
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
 
@@ -143,6 +144,11 @@ namespace MongoDB.Driver.GridFS
         public GridFileStream Open(FileMode mode, FileAccess access){
             switch (mode) {
                 case FileMode.Create:
+                    if(gridFile.Exists(this.FileName) == true){
+                        return this.Open(FileMode.Truncate, access);
+                    }else{
+                        return this.Create(FileMode.CreateNew, access);
+                    }
                 case FileMode.CreateNew:
                     return this.Create(mode, access);
                 case FileMode.Open:

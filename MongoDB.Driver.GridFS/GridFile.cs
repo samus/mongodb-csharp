@@ -3,7 +3,9 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver.GridFS
+using MongoDB.Driver;
+
+namespace MongoDB.GridFS
 {
     public class GridFile{
 
@@ -90,6 +92,11 @@ namespace MongoDB.Driver.GridFS
         public GridFileStream OpenRead(String filename){
             GridFileInfo gfi = new GridFileInfo(this.db, this.name, filename);
             return gfi.OpenRead();
+        }
+
+        public GridFileStream OpenWrite(String filename){
+            GridFileInfo gfi = new GridFileInfo(this.db, this.name, filename);
+            return gfi.OpenWrite();
         }
         #endregion
 

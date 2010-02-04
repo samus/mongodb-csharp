@@ -3,7 +3,9 @@ using System.IO;
 
 using NUnit.Framework;
 
-namespace MongoDB.Driver.GridFS
+using MongoDB.Driver;
+
+namespace MongoDB.GridFS
 {
     [TestFixture]
     public class GridFileInfoTest

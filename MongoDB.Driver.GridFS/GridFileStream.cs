@@ -5,7 +5,7 @@ using System.IO;
 
 using MongoDB.Driver;
 
-namespace MongoDB.Driver.GridFS
+namespace MongoDB.GridFS
 {   
     /// <summary>
     /// Stream for reading and writing to a file in GridFS.
