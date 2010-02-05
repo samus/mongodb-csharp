@@ -8,7 +8,7 @@
     <Packages>
       <Packages>
         <Package name="Tarball">
-          <Builder TargetDirectory="..\..\..\..\..\home\dev\Projects\MongoDBDriver\MongoDBDriver" DefaultConfiguration="Debug" ctype="TarballDeployTarget">
+          <Builder TargetDirectory="..\..\..\..\dev\Projects\MongoDBDriver\MongoDBDriver" DefaultConfiguration="Debug" ctype="TarballDeployTarget">
             <ChildEntries>
               <SolutionItemReference path="MongoDBDriver\MongoDBDriver.csproj" />
             </ChildEntries>

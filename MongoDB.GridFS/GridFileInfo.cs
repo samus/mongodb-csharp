@@ -9,7 +9,9 @@ namespace MongoDB.GridFS
 {
     /// <summary>
     /// Provides instance methods for the creation, copying, deletion, moving, and opening of files, 
-    /// and aids in the creation of GridFileStream objects.  It also contains 
+    /// and aids in the creation of GridFileStream objects.  The api is very similar to the FileInfo class in
+    /// System.IO.
+    /// 
     /// </summary>
     public class GridFileInfo
     {
@@ -40,6 +42,10 @@ namespace MongoDB.GridFS
             set { filedata["contentType"] = value; }
         }
 
+        /// <summary>
+        /// Writing to the length property will not affect the actual data of the file.  Open a GridFileStream
+        /// and call SetLength instead. 
+        /// </summary>
         public long Length{
             get { return Convert.ToInt32(filedata["length"]); }
             set { filedata["length"] = value; }
@@ -167,7 +173,7 @@ namespace MongoDB.GridFS
                     gfs.Seek(0,SeekOrigin.End);
                     return gfs;
             }
-            throw new NotImplementedException("Not all modes are implemented yet.");
+            throw new NotImplementedException("Mode not implemented.");
         }
         
         public void Delete(){

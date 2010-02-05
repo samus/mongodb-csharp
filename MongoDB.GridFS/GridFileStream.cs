@@ -10,6 +10,12 @@ namespace MongoDB.GridFS
     /// <summary>
     /// Stream for reading and writing to a file in GridFS.
     /// </summary>
+    /// <remarks>
+    /// When using the stream for random io it is possible to produce chunks in the begining and middle of the
+    /// file that are not full size followed by other chunks that are full size.  This only affects the md5 sum
+    /// that is calculated on the file on close.  Because of this do not rely on the md5 sum of a file when doing 
+    /// random io.  Writing to the stream sequentially works fine and will produce a consistent md5.
+    /// </remarks>
     public class GridFileStream : Stream
     {
         
@@ -50,7 +56,6 @@ namespace MongoDB.GridFS
         
         public override long Length {
             get {
-                //FIXME This won't be the right value when the file has been written to but not saved.
                 return gridFileInfo.Length;
             }
         }
@@ -180,6 +185,11 @@ namespace MongoDB.GridFS
         }
         
 
+        /// <summary>
+        /// Flushes any changes to current chunk to the database.  It can be called in client code at any time or it
+        /// will automatically be called on Close() and when the stream position moves off the bounds of the current
+        /// chunk.
+        /// </summary>
         public override void Flush(){
             if(chunkDirty == false) return;
             //avoid a copy if possible.
@@ -200,6 +210,11 @@ namespace MongoDB.GridFS
             this.gridFileInfo.Length = highestPosWritten;
         }
 
+        /// <summary>
+        /// Seek to any location in the stream.  Seeking past the end of the file is allowed.  Any writes to that
+        /// location will cause the file to grow to that size.  Any holes that may be created from the seek will
+        /// be zero filled on close.
+        /// </summary>
         public override long Seek(long offset, SeekOrigin origin){
             if ((origin < SeekOrigin.Begin) || (origin > SeekOrigin.End)){
                 throw new ArgumentException("Invalid Seek Origin");

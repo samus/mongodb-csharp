@@ -41,33 +41,45 @@ namespace MongoDB.GridFS
         }
         
         public ICursor ListFiles(Document query){
-            return this.files.Find(new Document().Append("query",query).Append("orderby", new Document().Append("filename", 1)));
+            return this.files.Find(new Document().Append("query",query)
+                                                .Append("orderby", new Document()
+                                                .Append("filename", 1)));
         }
         
+        /// <summary>
+        /// Copies one file to another.  The destination file must not exist or an IOException will be thrown.
+        /// </summary>
+        /// <exception cref="FileNotFoundException">Source file not found.</exception>
+        /// <exception cref="IOException">Destination file already exists.</exception>
+        /// <exception cref="MongoCommandException">A database error occurred executing the copy function.</exception>
         public void Copy(String src, String dest){
-            CodeWScope cw = new CodeWScope();
-            String template ="function(){{\n" +
-                            //"   print(\"Copying {1}\");\n" +
-                            "   var srcdoc = db.{0}.files.findOne({{filename:\"{1}\"}});\n" +
-                            "   if(srcdoc != undefined){{\n" +
+            if(Exists(src) == false) throw new FileNotFoundException("Not found in the database.", src);
+            if(Exists(dest) == true) throw new IOException("Destination file already exists.");
+            
+            Document scope = new Document().Append("bucket", this.name).Append("srcfile", src).Append("destfile",dest);
+            String func ="function(){\n" +
+                            //"   print(\"copying \" + srcfile);\n" +
+                            "   var files = db[bucket + \".files\"];\n" +
+                            "   var chunks = db[bucket + \".chunks\"];\n" +
+                            "   var srcdoc = files.findOne({filename:srcfile});\n" +
+                            //"   return srcdoc; \n" +
+                            "   if(srcdoc != undefined){\n" +
                             "       var srcid = srcdoc._id;\n" +
                             "       var newid = ObjectId();\n" +
                             "       srcdoc._id = newid\n" +
-                            "       srcdoc.filename = \"{2}\";\n" +
-                            "       db.{0}.files.insert(srcdoc);\n" +
-                            "       db.{0}.chunks.find({{files_id:srcid}}).forEach(function(chunk){{\n" +
+                            "       srcdoc.filename = destfile;\n" +
+                            "       files.insert(srcdoc);\n" +
+                            "       chunks.find({files_id:srcid}).forEach(function(chunk){\n" +
                             //"           print(\"copying chunk...\");\n" +
                             "           chunk._id = ObjectId();\n" +
                             "           chunk.files_id = newid;\n" +
-                            "           db.{0}.chunks.insert(chunk);\n" +
-                            "       }});\n" +
-                            "   }}" +
-                            "}}";
-            try{
-                db.Eval(String.Format(template,this.name, src, dest));
-            }catch(MongoCommandException mce){
-                Console.WriteLine(mce.ToString());
-            }
+                            "           chunks.insert(chunk);\n" +
+                            "       });\n" +
+                            "       return true;\n" +
+                            "   }\n" +
+                            "   return false;\n" +
+                            "}";
+            Document result = db.Eval(func,scope);
         }
         
         #region Create

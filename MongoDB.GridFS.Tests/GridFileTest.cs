@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 using NUnit.Framework;
 
@@ -26,6 +27,10 @@ namespace MongoDB.GridFS
         public void TestCopy(){
             GridFile fs = new GridFile(db["tests"], "gfcopy");
             GridFileStream gfs = fs.Create("original.txt");
+            gfs.WriteByte(1);
+            gfs.Seek(1024 * 256 * 2, SeekOrigin.Begin);
+            gfs.WriteByte(2);
+            gfs.Close();
             fs.Copy("original.txt", "copy.txt");
             Assert.IsTrue(fs.Exists("original.txt"));
             Assert.IsTrue(fs.Exists("copy.txt"));
