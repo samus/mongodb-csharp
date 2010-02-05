@@ -8,6 +8,7 @@ namespace MongoDB.Driver
     public class TestDatabase
     {
         Mongo mongo = new Mongo();
+        Database db;
         
         [Test]
         public void TestFollowReference(){
@@ -57,10 +58,36 @@ namespace MongoDB.Driver
             
         }
         
+        [Test]
+        public void TestEvalNoScope(){
+            Document result = db.Eval("function(){return 3;}");
+            Assert.AreEqual(3, result["retval"]);
+        }
+        
+        [Test]
+        public void TestEvalWithScope(){
+            int val = 3;
+            Document scope = new Document().Append("x",val);
+            Document result = db.Eval("function(){return x;}", scope);
+            Assert.AreEqual(val, result["retval"]);            
+        }
+        
+        [Test]
+        public void TestEvalWithScopeAsFunctionParameters(){
+            int x = 3;
+            int y = 4;
+            string func = "adder = function(a, b){return a + b;}; return adder(x,y)";
+            Document scope = new Document().Append("x",x).Append("y", y);
+            Document result = db.Eval(func, scope);
+            Console.Out.WriteLine(result.ToString());
+            Assert.AreEqual(x + y, result["retval"]);                        
+        }
+       
 
         [TestFixtureSetUp]
         public void Init(){
             mongo.Connect();
+            db = mongo["tests"];
             cleanDB();
         }
         

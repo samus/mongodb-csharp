@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
 
@@ -73,7 +73,28 @@ namespace MongoDB.Driver
                 Assert.IsTrue((double)j % 2 == 0);
             }                       
         }
+        [Test]
+        public void TestFindWhereEquivalency(){
+            IMongoCollection col = db["tests"]["reads"];
+            Document lt = new Document().Append("j", new Document().Append("$lt", 5));
+            string where = "this.j < 5";
+            Document explicitWhere = new Document().Append("$where", new Code(where));
+            CodeWScope func = new CodeWScope("function() { return this.j < 5; }", new Document());
+            Document funcDoc = new Document().Append("$where", func);
+            
+            Assert.AreEqual(4, CountDocs(col.Find(lt)), "Basic find didn't return 4 docs");
+            Assert.AreEqual(4, CountDocs(col.Find(where)), "String where didn't return 4 docs");
+            Assert.AreEqual(4, CountDocs(col.Find(explicitWhere)), "Explicit where didn't return 4 docs");
+            Assert.AreEqual(4, CountDocs(col.Find(funcDoc)), "Function where didn't return 4 docs");
+        }
         
+        private int CountDocs(ICursor cur){
+            int cnt = 0;
+            foreach(Document doc in cur.Documents){
+                cnt++;
+            }
+            return cnt;
+        }
         [Test]
         public void TestWhere(){
             ICursor c = db["tests"]["reads"].Find("this.j % 2 == 0");

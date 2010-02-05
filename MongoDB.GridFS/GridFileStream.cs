@@ -339,7 +339,7 @@ namespace MongoDB.GridFS
             Document sort = new Document().Append("n",1);
             Document fields = new Document().Append("_id", 1).Append("n",1);
 
-            byte[] data = new byte[1];
+            Binary data = new Binary(this.blankBuffer);
             int i = 0;
             using (ICursor cur = chunks.Find(new Document().Append("query",query).Append("sort",sort),0,0,fields)){
                 foreach(Document doc in cur.Documents){
@@ -348,7 +348,7 @@ namespace MongoDB.GridFS
                         while(i < n){
                             chunks.Insert(new Document().Append("files_id", this.gridFileInfo.Id)
                                           .Append("n", i)
-                                          .Append("data", new Binary(data))
+                                          .Append("data", data)
                                           );
                             i++;
                         }
