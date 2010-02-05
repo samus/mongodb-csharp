@@ -15,6 +15,23 @@
             <RootEntry path="MongoDBDriver.sln" id="MongoDBDriver" />
           </Builder>
         </Package>
+        <Package name="Zip Debug">
+          <Builder targetFile="redist\MongoDBDriver-Debug.zip" platform="Windows" configuration="Debug" ctype="BinariesZipPackageBuilder">
+            <ChildEntries>
+              <SolutionItemReference path="MongoDBDriver\MongoDB.Driver.csproj" />
+              <SolutionItemReference path="MongoDB.Linq\MongoDB.Linq.csproj" />
+              <SolutionItemReference path="MongoDB.GridFS\MongoDB.GridFS.csproj" />
+            </ChildEntries>
+            <ExcludedFiles>
+              <File>MongoDB.Linq,ProgramFiles,MongoDB.Linq.dll.mdb</File>
+              <File>MongoDB.Linq,ProgramFiles,MongoDB.Driver.dll.mdb</File>
+              <File>MongoDB.GridFS,ProgramFiles,MongoDB.GridFS.dll.mdb</File>
+              <File>MongoDB.GridFS,ProgramFiles,MongoDB.Driver.dll.mdb</File>
+              <File>MongoDB.Driver,ProgramFiles,MongoDB.Driver.dll.mdb</File>
+            </ExcludedFiles>
+            <RootEntry path="MongoDBDriver.sln" id=":root:" />
+          </Builder>
+        </Package>
       </Packages>
     </Packages>
   </PropertyGroup>

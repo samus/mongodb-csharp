@@ -37,3 +37,5 @@ MongoDB.Driver.Benchmark/obj/*
 /MongoDB.GridFS.Tests/bin/*
 /MongoDB.GridFS.Tests/obj/*
 /MongoDB.GridFS.Tests/test-results/*
+
+/redist/*.zip
