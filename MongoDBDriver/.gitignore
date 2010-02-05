@@ -3,3 +3,4 @@ obj/*
 *.dll
 *.mdb
 *.pidb
+*.csproj
