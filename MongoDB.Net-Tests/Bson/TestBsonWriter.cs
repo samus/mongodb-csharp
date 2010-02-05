@@ -85,5 +85,17 @@ namespace MongoDB.Driver.Bson
             hexdump = hexdump.Replace("-","");
             Assert.AreEqual(expected, hexdump);
         }
+
+        [Test]
+        public void TestNullsDontThrowExceptionsExceptions(){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            Document doc = new Document().Append("n", null);
+            try{
+                writer.Write(doc);
+            }catch(NullReferenceException){
+                Assert.Fail("Null Reference Exception was thrown on trying to serialize a null value");
+            }
+        }
     }
 }

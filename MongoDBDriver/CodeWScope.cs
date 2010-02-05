@@ -19,5 +19,8 @@ namespace MongoDB.Driver
             this.Value = code;
             this.Scope = scope;
         }
+        public override string ToString() {
+            return string.Format(@"CodeWScope(""{0}, {1}"")", this.Value, this.scope);
+        }        
     }
 }

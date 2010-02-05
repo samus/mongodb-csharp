@@ -11,7 +11,7 @@ namespace MongoDB.Driver
     {
         private Connection connection;
         private IMongoCollection command;
-        
+
         private String name;
         public string Name {
             get { return name; }
@@ -19,14 +19,14 @@ namespace MongoDB.Driver
 
         private DatabaseMetaData metaData;
         public DatabaseMetaData MetaData {
-            get { 
+            get {
                 if(metaData == null){
                     metaData = new DatabaseMetaData(this.Name,this.connection);
                 }
                 return metaData;
             }
         }
-        
+
         public Database(Connection conn, String name){
             this.connection = conn;
             this.name = name;
@@ -47,19 +47,19 @@ namespace MongoDB.Driver
             get{
                 return this.GetCollection(name);
             }
-        }   
-        
+        }
+
         public IMongoCollection GetCollection(String name){
             IMongoCollection col = new Collection(name, this.connection, this.Name);
             return col;
         }
-        
+
         public Document FollowReference(DBRef reference){
             if(reference == null) throw new ArgumentNullException("reference cannot be null");
             Document query = new Document().Append("_id", reference.Id);
             return this[reference.CollectionName].FindOne(query);
         }
-        
+
         public bool Authenticate(string username, string password){
             Document nonceResult = this.SendCommand("getnonce");
             String nonce = (String)nonceResult["nonce"];
@@ -85,12 +85,22 @@ namespace MongoDB.Driver
         public void Logout(){
             this.SendCommand("logout");
         }
-        
+        public Document Eval(string func){
+            return Eval(func, new Document());
+        }
+        public Document Eval(string func, Document scope){
+            return Eval(new CodeWScope(func, scope));
+        }
+        public Document Eval(CodeWScope cw){
+            Document cmd = new Document().Append("$eval", cw);
+            return SendCommand(cmd);
+        }
+
         public Document SendCommand(string str){
             Document cmd = new Document().Append(str,1.0);
             return this.SendCommand(cmd);
         }
-        
+
         public Document SendCommand(Document cmd){
             Document result = this.command.FindOne(cmd);
             double ok = (double)result["ok"];
@@ -105,7 +115,9 @@ namespace MongoDB.Driver
             }
             return result;
         }
-        
+
+
+
         internal static string Hash(string text){
             MD5 md5 = MD5.Create();
             byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(text));

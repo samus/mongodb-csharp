@@ -252,6 +252,7 @@ namespace MongoDB.Driver.Bson
         }
         
         protected BsonDataType TranslateToBsonType(Object val){
+            if(val == null)return BsonDataType.Null;
             Type t = val.GetType();
             //special case enums
             if(val is Enum){
