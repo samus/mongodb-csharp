@@ -20,6 +20,7 @@ Current Features
 - Authentication (Does not reauthorize on auto reconnect yet).
 - Database Commands
 - Basic Linq support
+- GridFS support
 
 Missing Features
 ================
@@ -28,7 +29,6 @@ Missing Features
 - Exceptions (In progress)
 - hint, explain, $where
 - database profiling: set/get profiling level, get profiling info
-- GridFS support (In progress)
 - Many unit tests
 
 Installation
@@ -51,6 +51,10 @@ At the simplest query the database like this:
  query["field1"] = 10;
  Document result = db["tests"]["reads"].FindOne(query);
  db.Disconnect();
+
+Getting Help
+===========
+The Google Group mongodb-csharp at (http://http://groups.google.com/group/mongodb-csharp) is the best place to go.
 
 Contributors
 ============
