@@ -8,7 +8,12 @@ namespace MongoDB.Driver
     public class TestCollection
     {
         Mongo db = new Mongo();
-        
+        [Test]
+        public void TestJSWhere(){
+            Document query = new Document().Append("$where", new CodeWScope("return lt4()",new Document()));
+            Assert.AreEqual(4, db["tests"]["reads"].Count(query));
+            
+        }
         [Test]
         public void TestFindOne(){
             Document query = new Document();

@@ -26,6 +26,16 @@ namespace MongoDB.Driver
                 return metaData;
             }
         }
+        
+        private DatabaseJS js;
+        public DatabaseJS JS {
+            get {
+                if(js == null){
+                    js = new DatabaseJS(this);
+                }
+                return js;
+            }
+        }        
 
         public Database(Connection conn, String name){
             this.connection = conn;
