@@ -56,6 +56,8 @@ namespace MongoDB.Driver.Bson
         
         public void WriteValue(BsonDataType dt, Object obj){
             switch (dt){
+                case BsonDataType.MinKey:
+                case BsonDataType.MaxKey:
                 case BsonDataType.Null:
                     return;
                 case BsonDataType.Boolean:
@@ -127,6 +129,8 @@ namespace MongoDB.Driver.Bson
                     writer.Write(b.Bytes);                    
                     return;
                 }
+                default:
+                    throw new NotImplementedException(String.Format("Writing {0} types not implemented.",obj.GetType().Name));                
             }
         }
         
@@ -152,6 +156,8 @@ namespace MongoDB.Driver.Bson
         public int CalculateSize(Object val){
             if(val == null) return 0;
             switch (TranslateToBsonType(val)){
+                case BsonDataType.MinKey:
+                case BsonDataType.MaxKey:
                 case BsonDataType.Null:
                     return 0;
                 case BsonDataType.Boolean:
@@ -206,7 +212,7 @@ namespace MongoDB.Driver.Bson
                     return size;
                 }
                 default:
-                    return 0;
+                    throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.",val.GetType().Name));
             }
         }
         
@@ -289,6 +295,10 @@ namespace MongoDB.Driver.Bson
                 ret = BsonDataType.Null;
             }else if(t == typeof(Binary)){
                 ret = BsonDataType.Binary;
+            }else if(t == typeof(MongoMinKey)){
+                ret = BsonDataType.MinKey;
+            }else if(t == typeof(MongoMaxKey)){
+                ret = BsonDataType.MaxKey;
             }else if(val is IEnumerable){
                 ret = BsonDataType.Array;
             }else{

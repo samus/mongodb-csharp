@@ -140,7 +140,9 @@ namespace MongoDB.Driver.Bson
                 .Append("array", new String[]{"a","b","c","d"})
                 .Append("codewscope", new CodeWScope("return 2;", new Document().Append("c",1)))
                 .Append("binary", new Binary(new byte[]{0,1,2,3}))
-                .Append("regex", new MongoRegex("[A-Z]"))                
+                .Append("regex", new MongoRegex("[A-Z]"))
+                .Append("minkey", MongoMinKey.Value)
+                .Append("maxkey", MongoMaxKey.Value)
             ;
             writer.Write(expected);
             writer.Flush();
