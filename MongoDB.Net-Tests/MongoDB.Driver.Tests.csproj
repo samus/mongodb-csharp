@@ -81,6 +81,7 @@
     <Compile Include="TestPairedConnection.cs" />
     <Compile Include="Bson\TestBsonWriter.cs" />
     <Compile Include="TestDatabaseJS.cs" />
+    <Compile Include="TestMapReduce.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">

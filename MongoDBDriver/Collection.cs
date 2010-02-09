@@ -9,6 +9,8 @@ namespace MongoDB.Driver
 {
     public class Collection : IMongoCollection 
     {
+        private static OidGenerator oidGenerator = new OidGenerator();
+        
         public enum UpdateFlags:int
         {
             Upsert = 0,
@@ -40,16 +42,24 @@ namespace MongoDB.Driver
                 return metaData;
             }
         }
+
         
-        private static OidGenerator oidGenerator = new OidGenerator();
-                
         public Collection(string name, Connection conn, string dbName)
         {
             this.name = name;
             this.connection = conn;
             this.dbName = dbName;
         }
-                
+        
+        /// <summary>
+        /// Finds and returns the first document in a query. 
+        /// </summary>
+        /// <param name="spec">
+        /// A <see cref="Document"/> representing the query.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Document"/> from the collection.
+        /// </returns>
         public Document FindOne(Document spec){
             ICursor cur = this.Find(spec, -1, 0, null);
             foreach(Document doc in cur.Documents){
@@ -85,13 +95,24 @@ namespace MongoDB.Driver
             return cur;
         }
         
+        /// <summary>
+        /// Entrypoint into executing a map/reduce query against the collection. 
+        /// </summary>
+        /// <returns>
+        /// A <see cref="MapReduce"/>
+        /// </returns>
+        public MapReduce MapReduce(){
+            Database db = new Database(this.connection, this.dbName);
+            return new MapReduce(db, this.Name);
+        }
+        
         public long Count(){
             return this.Count(new Document());
         }
         
         public long Count(Document spec){
-            Database db = new Database(this.connection, this.dbName);
             try{
+                Database db = new Database(this.connection, this.dbName);
                 Document ret = db.SendCommand(new Document().Append("count",this.Name).Append("query",spec));
                 double n = (double)ret["n"];
                 return Convert.ToInt64(n);

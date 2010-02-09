@@ -61,6 +61,18 @@ namespace MongoDB.Driver{
         }
         
         /// <summary>
+        /// Store a function in the database with an extended attribute called version.
+        /// </summary>
+        /// <remarks>Version attributes are an extension to the spec.  Function names must be unique
+        /// to the database so only one version can be stored at a time.  This is most useful for libraries
+        /// that store function in the database to make sure that the function they are using is the most
+        /// up to date.
+        /// </remarks>
+        public void Add(string name, Code func, float version){
+            Add(new Document().Append("_id", name).Append("value", func).Append("version",version));
+        }
+        
+        /// <summary>
         /// Stores a function in the database.
         /// </summary>
         public void Add (Document item){
