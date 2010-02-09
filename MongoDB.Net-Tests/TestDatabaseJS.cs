@@ -97,6 +97,85 @@ namespace MongoDB.Driver{
             Assert.IsTrue(js.Contains(new Document().Append("_id", name).Append("value", new Code("dfs"))));
         }
         
+        [Test]
+        public void TestCopyTo(){
+            int cnt = 5;
+            Document[] funcs = new Document[cnt];
+            Code func = new Code("function(x,y){return x +y;}");
+            
+            for(int i = 0; i < cnt; i++){
+                string name = "_" + i + "fcopyTo";
+                Document doc = new Document().Append("_id", name).Append("value", func);
+                js[name] = doc;
+            }
+            
+            js.CopyTo(funcs, 1);
+            Assert.IsNull(funcs[0]);
+            Assert.IsNotNull(funcs[1]);
+            Assert.IsNotNull(funcs[4]);
+            Assert.IsTrue(((string)funcs[1]["_id"]).StartsWith("_1")); //as long as no other _ named functions get in.
+        }
+        
+        [Test]
+        public void TestRemoveByName(){
+            String name = "fremoven";
+            AddFunction(name);
+            Assert.IsTrue(js.Contains(name));
+            js.Remove(name);
+            Assert.IsFalse(js.Contains(name));
+        }
+        
+        [Test]
+        public void TestRemoveByDoc(){
+            String name = "fremoved";
+            Document func = new Document().Append("_id", name);
+            AddFunction(name);
+            Assert.IsTrue(js.Contains(name));
+            js.Remove(func);
+            Assert.IsFalse(js.Contains(name));
+        }
+        
+        [Test]
+        public void TestForEach(){
+            string name = "foreach";
+            AddFunction(name);
+            bool found = false;
+            foreach(Document doc in js){
+                if(name.Equals(doc["_id"]))found = true;
+            }
+            Assert.IsTrue(found, "Added function wasn't found during foreach");
+        }
+        
+        [Test]
+        public void TestClear(){
+            AddFunction("clear");
+            Assert.IsTrue(js.Count > 0);
+            js.Clear();
+            Assert.IsTrue(js.Count == 0);
+        }
+
+        [Test]
+        public void TestExec(){
+            js.Add("lt4", new Code("function(doc){return doc.j < 4;}"));
+            int cnt = 0;
+            foreach(Document doc in tests["reads"].Find("lt4(this)").Documents){
+                cnt++;
+            }
+            Assert.AreEqual(3,cnt);
+        }
+        
+        [Test]
+        public void TestExecWithScope(){
+            js.Add("lt", new Code("function(doc){ return doc.j < limit;}"));
+            int cnt = 0;
+            Document scope = new Document().Append("limit", 5);
+            Document query = new Document().Append("$where", new CodeWScope("lt(this)",scope));
+            foreach(Document doc in tests["reads"].Find(query).Documents){
+                cnt++;
+            }
+            Assert.AreEqual(4,cnt);
+        }
+
         
         [TestFixtureSetUp]
         public void Init(){

@@ -70,51 +70,87 @@ namespace MongoDB.Driver{
             js.Insert(item);
         }
         
+        /// <summary>
+        /// Removes every function in the database.
+        /// </summary>
         public void Clear (){
-            throw new System.NotImplementedException();
+            js.Delete(new Document());
         }
         
         public bool Contains (Document item){
             return Contains((string)item["_id"]);
         }
         
+        /// <summary>
+        /// Checks to see if a function named name is stored in the database.
+        /// </summary>
+        /// <param name="name">
+        /// A <see cref="System.String"/>
+        /// </param>
+        /// <returns>
+        /// A <see cref="System.Boolean"/>
+        /// </returns>
         public bool Contains (string name){
             return GetFunction(name) != null;
         }
         
-        
+        /// <summary>
+        /// Copies the functions from the database ordered by _id (name) to the array starting at the index.
+        /// </summary>
+        /// <param name="array">
+        /// A <see cref="Document[]"/> array to coppy to
+        /// </param>
+        /// <param name="arrayIndex">
+        /// A <see cref="System.Int32"/>
+        /// </param>
         public void CopyTo (Document[] array, int arrayIndex){
-            throw new System.NotImplementedException();
-        }
-        
-        
-        public bool Remove (Document item){
-            throw new System.NotImplementedException();
-        }
-        
-        
-        public int Count {
-            get {
-                throw new System.NotImplementedException();
+            Document query = new Document().Append("$orderby", new Document().Append("_id", 1));
+            int idx = arrayIndex;
+            foreach(Document doc in js.Find(query,array.Length - 1,arrayIndex).Documents){
+                array[idx] = doc;
+                idx++;
             }
         }
         
+        public void Update(Document item){
+            throw new System.NotImplementedException();
+        }
+        
+        public bool Remove (Document item){
+            return Remove((string)item["_id"]);
+        }
+        
+        public bool Remove (string name){
+            js.Delete(new Document().Append("_id", name));
+            return true;
+        }
+        
+        public int Count {
+            get {
+                long cnt = js.Count();
+                if(cnt > int.MaxValue) return int.MaxValue; //lots of functions.
+                return (int)cnt;
+            }
+        }
         
         public bool IsReadOnly {
             get {
-                throw new System.NotImplementedException();
+                return false;
             }
         }
         
         #region IEnumerable<Document> implementation
         public IEnumerator<Document> GetEnumerator (){
-            throw new System.NotImplementedException();
+            foreach(Document doc in js.FindAll().Documents){
+                yield return doc;
+            }
+            yield break;
         }
         
         #endregion
         #region IEnumerable implementation
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator (){
-            throw new System.NotImplementedException();
+            return GetEnumerator();
         }
         
         #endregion
