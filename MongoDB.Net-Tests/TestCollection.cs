@@ -8,7 +8,7 @@ namespace MongoDB.Driver
     public class TestCollection
     {
         Mongo db = new Mongo();
-        
+
         [Test]
         public void TestFindOne(){
             Document query = new Document();

@@ -83,6 +83,7 @@
     <Compile Include="TestOidGenerator.cs" />
     <Compile Include="TestPairedConnection.cs" />
     <Compile Include="Bson\TestBsonWriter.cs" />
+    <Compile Include="TestDatabaseJS.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

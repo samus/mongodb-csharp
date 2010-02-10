@@ -72,6 +72,10 @@ namespace MongoDB.Driver.Bson
             case BsonDataType.Null:
             case BsonDataType.Undefined:
                 return MongoDBNull.Value;
+            case BsonDataType.MinKey:
+                return MongoMinKey.Value;
+            case BsonDataType.MaxKey:
+                return MongoMaxKey.Value;
             case BsonDataType.Boolean:
                 position++;
                 return reader.ReadBoolean ();

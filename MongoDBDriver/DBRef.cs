@@ -4,12 +4,18 @@ using System;
 namespace MongoDB.Driver
 {
     /// <summary>
-    /// Native type that maps to a database reference.
+    /// Native type that maps to a database reference.  Use Database.FollowReference(DBRef) to retrieve the document
+    /// that it refers to.
     /// </summary>
+    /// <remarks>DBRefs are just a specification for a specially formatted Document.  At this time the database
+    /// does no special handling of them. Any referential integrity must be maintained by the application 
+    /// not the database.
+    /// </remarks>
     public class DBRef
     {
         public const string RefName = "$ref";
         public const string IdName = "$id";
+        public const string MetaName = "metadata";
         
         private Document doc;
         
@@ -34,6 +40,20 @@ namespace MongoDB.Driver
             }
         }
         
+        private Document metadata;
+        /// <summary>
+        /// An extension to the spec that allows storing of arbitrary data about a reference.  
+        /// </summary>
+        /// <remarks>This is a non-standard feature.
+        /// </remarks>
+        public Document MetaData {
+            get{return metadata; }
+            set{
+                metadata = value;
+                doc["metadata"] = value;
+            }
+        }
+                
         public DBRef(){
             doc = new Document();
         }
@@ -43,6 +63,7 @@ namespace MongoDB.Driver
             collectionName = (String)doc[DBRef.RefName];
             id = doc[DBRef.IdName];
             this.doc = doc;
+            if(doc.Contains("metadata")) this.MetaData = (Document)doc["metadata"];
         }
         
         public DBRef(string collectionName, object id){

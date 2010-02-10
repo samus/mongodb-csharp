@@ -189,7 +189,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestToStringForDocWithSingleOidField() {
             var doc = new Document().Append("foo", new Oid("4ac7ee91f693066f1c96b649"));
-            Assert.AreEqual(@"{ ""foo"": ObjectId(""4ac7ee91f693066f1c96b649"") }", doc.ToString());
+            Assert.AreEqual(@"{ ""foo"": 4ac7ee91f693066f1c96b649 }", doc.ToString());
         }
         [Test]
         public void TestToStringForDocWithMultipleFields() {

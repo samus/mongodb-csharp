@@ -37,6 +37,20 @@ namespace MongoDB.GridFS
             //TODO Assert chunk data is the same too.
         }
         
+        [Test]
+        public void TestModeCreateNew(){
+            Object id;
+            string filename = "createnew.txt";
+            GridFile gf = new GridFile(db["tests"],"gfcreate");
+            using(GridFileStream gfs = gf.Create(filename, FileMode.CreateNew)){
+                id = gfs.GridFileInfo.Id;
+                TextWriter tw = new StreamWriter(gfs);
+                tw.WriteLine("test");
+                tw.Close();
+            }
+            Assert.AreEqual(1, CountChunks("gfcreate", id));
+        }
+        
         [TestFixtureSetUp]
         public void Init(){
             db.Connect();
@@ -51,6 +65,7 @@ namespace MongoDB.GridFS
         protected void CleanDB(){
             //Any collections that we might want to delete before the tests run should be done here.
             DropGridFileSystem("gfcopy");
+            DropGridFileSystem("gfcreate");
             DropGridFileSystem("fs");
         }
         
@@ -61,5 +76,10 @@ namespace MongoDB.GridFS
             }catch(MongoCommandException){}//if it fails it is because the collection isn't there to start with.
             
         }
+
+        protected long CountChunks(string filesystem, Object fileid){
+            return db["tests"][filesystem + ".chunks"].Count(new Document().Append("files_id", fileid));
+        }        
+        
     }
 }

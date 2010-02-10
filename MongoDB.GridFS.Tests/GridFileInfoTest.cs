@@ -40,6 +40,20 @@ namespace MongoDB.GridFS
         }
         
         [Test]
+        public void TestModeCreateNew(){
+            Object id;
+            string filename = "createnew.txt";
+            GridFileInfo gfi = new GridFileInfo(db["tests"],"gfcreate", filename);
+            using(GridFileStream gfs = gfi.Create(FileMode.CreateNew)){
+                id = gfs.GridFileInfo.Id;
+                TextWriter tw = new StreamWriter(gfs);
+                tw.WriteLine("test");
+                tw.Close();
+            }
+            Assert.AreEqual(1, CountChunks("gfcreate", id));
+        }
+        
+        [Test]
         public void TestDelete(){
             String filename = "gfi-delete.txt";
             GridFile gf = new GridFile(db["tests"],"gfdelete");
@@ -122,5 +136,9 @@ namespace MongoDB.GridFS
             }catch(MongoCommandException){}//if it fails it is because the collection isn't there to start with.
             
         }
+        
+        protected long CountChunks(string filesystem, Object fileid){
+            return db["tests"][filesystem + ".chunks"].Count(new Document().Append("files_id", fileid));
+        }        
     }
 }
