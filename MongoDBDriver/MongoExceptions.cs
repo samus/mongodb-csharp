@@ -45,5 +45,21 @@ namespace MongoDB.Driver
             this.error = error;
             this.command = command;
         }
+        public MongoCommandException(string message, Document error, Document command, Exception e):base(message,e){
+            this.error = error;
+            this.command = command;
+        }        
+    }
+    
+    public class MongoMapReduceException : MongoCommandException
+    {
+        private MapReduce.MapReduceResult mrr;
+        public MapReduce.MapReduceResult MapReduceResult{
+            get{return mrr;}
+        }
+        
+        public MongoMapReduceException(MongoCommandException mce, MapReduce mr):base(mce.Message,mce.Error, mce.Command){
+            mrr = new MapReduce.MapReduceResult(mce.Error);
+        }
     }
 }

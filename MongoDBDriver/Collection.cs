@@ -11,11 +11,7 @@ namespace MongoDB.Driver
     {
         private static OidGenerator oidGenerator = new OidGenerator();
         
-        public enum UpdateFlags:int
-        {
-            Upsert = 0,
-            MultiUpdate = 1
-        }
+
         
         private Connection connection;
         
@@ -105,6 +101,11 @@ namespace MongoDB.Driver
             Database db = new Database(this.connection, this.dbName);
             return new MapReduce(db, this.Name);
         }
+        
+        public MapReduceBuilder MapReduceBuilder(){
+            return new MapReduceBuilder(this.MapReduce());
+        }
+            
         
         public long Count(){
             return this.Count(new Document());

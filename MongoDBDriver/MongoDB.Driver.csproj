@@ -108,6 +108,7 @@
     <Compile Include="DatabaseJS.cs" />
     <Compile Include="MongoMinMaxKey.cs" />
     <Compile Include="MapReduce.cs" />
+    <Compile Include="MapReduceBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

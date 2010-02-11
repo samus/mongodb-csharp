@@ -32,12 +32,14 @@ namespace MongoDB.Driver
         }
         
         [Test()]
-        public void TestCreateMapReduceWithStringFunctions(){
-            MapReduce mr = mrcol.MapReduce().Map(mapfunction).Reduce(reducefunction);
-            
-            Assert.IsNotNull(mr.Mapfunction);
-            Assert.IsNotNull(mr.ReduceFunction);    
+        public void TestExecuteSimple(){
+            MapReduce mr = mrcol.MapReduce();
+            mr.Map = new Code(mapfunction);
+            mr.Reduce = new Code(reducefunction);
+            mr.Execute();
+            Assert.IsNotNull(mr.Result);
         }
+
     
         [TestFixtureSetUp]
         public void Init(){
