@@ -103,7 +103,7 @@ namespace MongoDB.Driver.Bson
             Assert.IsTrue(doc.Contains("_id"));
             Assert.IsTrue(doc.Contains("a"));
             Assert.IsTrue(doc.Contains("b"));
-            Assert.AreEqual("4a753ad8fac16ea58b290351", ((Oid)doc["_id"]).ToString());
+            Assert.AreEqual("\"4a753ad8fac16ea58b290351\"", ((Oid)doc["_id"]).ToString());
             Assert.AreEqual(1, Convert.ToInt32(doc["a"]));
             Assert.AreEqual("test", (String)doc["b"]);
         }
