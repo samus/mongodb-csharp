@@ -43,7 +43,7 @@ namespace MongoDB.Driver{
         }
         
         public override string ToString() {
-            return BitConverter.ToString(value).Replace("-","").ToLower();
+            return String.Format("\"{0}\"",BitConverter.ToString(value).Replace("-","").ToLower());
         }
         
         protected void ValidateHex(string val){

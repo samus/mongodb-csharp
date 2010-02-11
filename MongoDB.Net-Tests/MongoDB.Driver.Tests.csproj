@@ -84,6 +84,8 @@
     <Compile Include="TestPairedConnection.cs" />
     <Compile Include="Bson\TestBsonWriter.cs" />
     <Compile Include="TestDatabaseJS.cs" />
+    <Compile Include="TestMapReduce.cs" />
+    <Compile Include="TestMapReduceBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
