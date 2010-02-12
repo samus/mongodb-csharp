@@ -1,20 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
-
-using MongoDB.Driver.Bson;
 using MongoDB.Driver.IO;
 
 namespace MongoDB.Driver
 {
-    public enum ConnectionState{
-        Closed = 0,
-        Opened = 1,
-    }
-    
     /// <summary>
     /// Description of Connection.
     /// </summary>
