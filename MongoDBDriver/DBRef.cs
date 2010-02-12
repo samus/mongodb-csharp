@@ -1,4 +1,3 @@
-
 using System;
 
 namespace MongoDB.Driver
@@ -78,6 +77,12 @@ namespace MongoDB.Driver
                 return comp.Id.Equals(this.Id) && comp.CollectionName.Equals(this.CollectionName);
             }
             return base.Equals(obj);
+        }
+
+        public override int GetHashCode(){
+            unchecked{
+                return ((this.collectionName != null ? this.collectionName.GetHashCode() : 0) * 397) ^ (this.id != null ? this.id.GetHashCode() : 0);
+            }
         }
 
         /// <summary>
