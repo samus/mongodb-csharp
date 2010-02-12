@@ -1,6 +1,4 @@
 
-using System;
-
 namespace MongoDB.Driver.Bson
 {
     public enum BsonDataType:sbyte
@@ -36,13 +34,4 @@ namespace MongoDB.Driver.Bson
         Long     = 18,  //int64      64 bit integer 
         MinKey = -1, //VOID     //Special type that compares lower than all other types.
         MaxKey = 127 //VOID     //Special type that compares higher than all other types.
-    }
-
-    public interface BsonType{
-        Int32 Size{get;}
-        Byte TypeNum{get;}      
-        int Read(BsonReader reader);
-        void Write(BsonWriter writer);
-        Object ToNative();
-    }
-}
+    }}
