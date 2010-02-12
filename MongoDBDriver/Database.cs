@@ -94,12 +94,12 @@ namespace MongoDB.Driver
             this.SendCommand("logout");
         }
 
-        public Document Eval(string func){
-            return Eval(func, new Document());
+        public Document Eval(string javascript){
+            return Eval(javascript, new Document());
         }
 
-        public Document Eval(string func, Document scope){
-            return Eval(new CodeWScope(func, scope));
+        public Document Eval(string javascript, Document scope){
+            return Eval(new CodeWScope(javascript, scope));
         }
 
         public Document Eval(CodeWScope cw){
