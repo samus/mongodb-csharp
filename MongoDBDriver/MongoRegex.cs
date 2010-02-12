@@ -1,10 +1,5 @@
-
-using System;
-
 namespace MongoDB.Driver
 {
-    
-    
     public class MongoRegex
     {   
         
