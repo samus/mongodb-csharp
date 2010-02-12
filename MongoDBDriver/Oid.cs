@@ -36,10 +36,14 @@ namespace MongoDB.Driver{
         
         public override bool Equals(object obj){
             if(obj.GetType() == typeof(Oid)){
-                string hex = ((Oid)obj).ToString();
+                string hex = obj.ToString();
                 return this.ToString().Equals(hex);
             }
             return false;
+        }
+
+        public override int GetHashCode(){
+            return ToString().GetHashCode();
         }
         
         public override string ToString() {
