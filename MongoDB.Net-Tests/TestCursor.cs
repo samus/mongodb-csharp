@@ -12,11 +12,6 @@ namespace MongoDB.Driver
     {
         Mongo db = new Mongo();
         
-        [TestFixtureSetUp]
-        public void Setup(){
-            db.Connect();
-        }
-        
         [Test]
         public void TestCanReadSmall()
         {
@@ -77,6 +72,73 @@ namespace MongoDB.Driver
             }
             Assert.IsTrue(reads > 0, "No documents were returned.");
             Assert.AreEqual(5, reads);
+        }
+        
+        [Test]
+        public void TestSort(){
+            IMongoCollection sorts = db["tests"]["sorts"];
+            int[] randoms = new int[]{4,6,8,9,1,3,2,5,7,0};
+            foreach(int x in randoms){
+                sorts.Insert(new Document().Append("x", randoms[x]));
+            }
+            Assert.AreEqual(randoms.Length, sorts.Count());
+            
+            int exp = 0;
+            foreach(Document doc in sorts.FindAll().Sort("x", IndexOrder.Ascending).Documents){
+                Assert.AreEqual(exp, Convert.ToInt32(doc["x"]));
+                exp++;
+            }
+            
+            exp = 9;
+            foreach(Document doc in sorts.FindAll().Sort("x", IndexOrder.Descending).Documents){
+                Assert.AreEqual(exp, Convert.ToInt32(doc["x"]));
+                exp--;
+            }            
+        }
+        
+        [Test]
+        public void TestExplain(){
+            Document exp = db["tests"]["reads"].FindAll().Limit(5).Skip(5).Sort("x").Explain();
+            Assert.IsTrue(exp.Contains("cursor"));
+            Assert.IsTrue(exp.Contains("n"));
+            Assert.IsTrue(exp.Contains("nscanned"));
+        }
+        
+        [Test]
+        public void TestHint(){
+            IMongoCollection reads = db["tests"]["reads"];
+            Document hint = new Document().Append("x",IndexOrder.Ascending);
+            
+            Document exp = reads.FindAll().Hint(hint).Explain();
+            Assert.IsTrue(exp.Contains("$err"), "No error found");
+
+            reads.MetaData.CreateIndex("hintindex",hint,false);
+            exp = reads.FindAll().Hint(hint).Explain();
+            
+            Assert.IsTrue(exp.Contains("cursor"));
+            Assert.IsTrue(exp.Contains("n"));
+            Assert.IsTrue(exp.Contains("nscanned"));            
+        }
+        
+        [TestFixtureSetUp]
+        public void Init(){
+            db.Connect();
+            cleanDB();
+        }
+
+        [TestFixtureTearDown]
+        public void Dispose(){
+            db.Disconnect();
+        }
+        
+        protected void cleanDB(){
+            try{
+                db["tests"].MetaData.DropCollection("sorts");
+            }catch(Exception){}
+            try{
+                db["tests"]["reads"].MetaData.DropIndex("hintindex");
+            }catch(Exception){}
+                   
         }
     }
 }

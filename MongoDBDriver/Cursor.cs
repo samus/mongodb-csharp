@@ -49,6 +49,56 @@ namespace MongoDB.Driver
             return this;
         }
         
+        private QueryOptions options;
+        public ICursor Options(QueryOptions options){
+            TryModify();
+            this.options = options;
+            return this;
+        }
+        
+        #region "Spec Options"
+        private Document specOpts = new Document();
+        
+        public ICursor Sort(string field){
+            return this.Sort(field, IndexOrder.Ascending);
+        }
+        
+        public ICursor Sort(string field, IndexOrder order){
+            return this.Sort(new Document().Append(field, order));
+        }
+        
+        public ICursor Sort(Document fields){
+            TryModify();
+            AddOrRemoveSpecOpt("$orderby", fields);
+            return this;
+        }
+        
+        public ICursor Hint(Document index){
+            TryModify();
+            AddOrRemoveSpecOpt("$hint", index);
+            return this;
+        }
+
+        public ICursor Snapshot(Document index){
+            TryModify();
+            AddOrRemoveSpecOpt("$snapshot", index);
+            return this;
+        }
+        
+        public Document Explain(){
+            TryModify();
+            specOpts["$explain"] = true;
+            
+            IEnumerable<Document> docs = this.Documents;
+            using((IDisposable)docs){
+                foreach(Document doc in docs){
+                    return doc;
+                }
+            }
+            throw new InvalidOperationException("Explain failed.");
+        }
+
+        #endregion
         
         private bool modifiable = true;
         public bool Modifiable{
@@ -105,9 +155,11 @@ namespace MongoDB.Driver
         private void RetrieveData(){
             QueryMessage query = new QueryMessage();
             query.FullCollectionName = this.FullCollectionName;
-            query.Query = this.spec;
+            query.Query = BuildSpec();
             query.NumberToReturn = this.limit;
             query.NumberToSkip = this.skip;
+            query.Options = options;
+            
             if(this.fields != null){
                 query.ReturnFieldSelector = this.fields;
             }
@@ -148,5 +200,22 @@ namespace MongoDB.Driver
             if(this.modifiable) return;
             throw new InvalidOperationException("Cannot modify a cursor that has already returned documents.");
         }
+
+        private void AddOrRemoveSpecOpt(string key, Document doc){
+            if(doc == null){
+                specOpts.Remove(key);
+            }else{
+                specOpts[key] = doc;
+            }
+        }
+        
+        private Document BuildSpec(){
+            if(this.specOpts.Count == 0) return this.spec;
+            Document doc = new Document();
+            this.specOpts.CopyTo(doc);
+            doc["$query"] = this.spec;
+            return doc;
+        }
+              
     }
 }

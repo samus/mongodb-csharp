@@ -19,12 +19,7 @@ namespace MongoDB.Driver.IO
         //    int32     numberToReturn;         // number of documents to return in the first OP_REPLY
         //    BSON      query ;                 // query object.  See below for details.
         //  [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
-        public enum QueryOptions:int{
-            None = 0,
-            TailableCursor = 2,
-            SlaveOK = 4,
-            NoCursorTimeout = 16
-        }
+
         
 #region "Properties"
         private QueryOptions options;
