@@ -68,8 +68,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCanLimit(){
-            ICursor c = db["tests"]["reads"].FindAll();
-            c.Limit = 5;
+            ICursor c = db["tests"]["reads"].FindAll().Limit(5);
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
