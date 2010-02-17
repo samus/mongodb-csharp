@@ -15,6 +15,8 @@ namespace MongoDB.Driver
         
         public CodeWScope(){}
 
+        public CodeWScope(String code):this(code, new Document()){}
+        
         public CodeWScope(String code, Document scope){
             this.Value = code;
             this.Scope = scope;

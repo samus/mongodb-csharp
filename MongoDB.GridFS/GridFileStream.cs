@@ -108,6 +108,10 @@ namespace MongoDB.GridFS
                 }else{
                     readCount = buffAvailable;
                 }
+                if(readCount + position > highestPosWritten){
+                    //adjust readcount so that we don't read past the end of file.
+                    readCount = readCount - (int)(readCount + position - highestPosWritten);
+                }
                 Array.Copy(buffer,buffPosition,array,offset,readCount);
                 buffPosition += readCount;
                 bytesLeftToRead -= readCount;
