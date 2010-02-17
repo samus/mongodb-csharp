@@ -7,7 +7,7 @@ namespace MongoDB.Driver
     [TestFixture]
     public class TestCollection
     {
-        Mongo db = new Mongo();
+        Mongo db = new Mongo("192.168.1.102", 27017);
 
         [Test]
         public void TestFindOne(){
@@ -263,6 +263,7 @@ namespace MongoDB.Driver
             
             updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam"));
             updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam2"));
+            updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam3"));
             
             Document selector = new Document().Append("Last", "Cordr");
             ICursor results = updates.Find(selector);
@@ -272,11 +273,15 @@ namespace MongoDB.Driver
                 found = true;
             }
             Assert.IsTrue(found,"Should have found docs inserted for TestUpdateMany");
+            Assert.AreEqual(3, updates.Count(selector), "Didn't find all Documents inserted for TestUpdateMany with Selector");
             
+            //Document updateData = new Document().Append("$set", new Document().Append("Last", "Corder2"));
             Document updateData = new Document().Append("Last", "Corder2");
             updates.UpdateAll(updateData, selector);
             
             selector["Last"] = "Corder2";
+            Assert.AreEqual(3, updates.Count(selector), "Not all Cordr documents were updated");
+            
             results = updates.Find(selector);
             found = false;
             foreach(Document doc in results.Documents){

@@ -6,8 +6,8 @@ namespace MongoDB.Driver
 {
     public enum UpdateFlags:int
     {
-        Upsert = 0,
-        MultiUpdate = 1
+        Upsert = 1,
+        MultiUpdate = 2
     }    
     public interface IMongoCollection
     {

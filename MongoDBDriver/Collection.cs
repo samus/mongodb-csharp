@@ -216,7 +216,7 @@ namespace MongoDB.Driver
                 Document s = new Document().Append("$set", doc);
                 doc = s;
             }
-            this.Update(doc, selector, UpdateFlags.MultiUpdate);
+            this.Update(doc, selector, UpdateFlags.MultiUpdate);           
         }
     }
 }
