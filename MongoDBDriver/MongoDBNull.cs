@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace MongoDB.Driver{
+﻿namespace MongoDB.Driver{
     /// <summary>
     /// Placeholder type for database nulls.
     /// </summary>
