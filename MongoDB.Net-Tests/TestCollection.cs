@@ -7,7 +7,7 @@ namespace MongoDB.Driver
     [TestFixture]
     public class TestCollection
     {
-        Mongo db = new Mongo("192.168.1.102", 27017);
+        Mongo db = new Mongo();
 
         [Test]
         public void TestFindOne(){

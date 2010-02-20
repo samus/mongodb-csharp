@@ -83,6 +83,7 @@
     <Compile Include="TestDatabaseJS.cs" />
     <Compile Include="TestMapReduce.cs" />
     <Compile Include="TestMapReduceBuilder.cs" />
+    <Compile Include="TestConcurrency.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
