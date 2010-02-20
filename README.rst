@@ -21,13 +21,15 @@ Current Features
 - Database Commands
 - Basic Linq support
 - GridFS support
+- Map Reduce helpers.
+- hint, explain, $where
 
 Missing Features
 ================
 - Auto reconnect options
-- Connection pooling (maybe not implemented)
+- Connection pooling (In progress)
 - Exceptions (In progress)
-- hint, explain, $where
+- Safemode (Scheduled)
 - database profiling: set/get profiling level, get profiling info
 - Many unit tests
 
@@ -53,7 +55,7 @@ At the simplest query the database like this:
  db.Disconnect();
 
 Getting Help
-===========
+============
 The Google Group mongodb-csharp at (http://http://groups.google.com/group/mongodb-csharp) is the best place to go.
 
 Contributors
