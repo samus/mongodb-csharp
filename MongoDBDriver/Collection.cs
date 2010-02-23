@@ -15,7 +15,6 @@ namespace MongoDB.Driver
 
         
         private Connection connection;
-        private Database db;
         
         private string name;        
         public string Name {
@@ -41,13 +40,19 @@ namespace MongoDB.Driver
             }
         }
 
-        
+        private Database db;
+        private Database Db{
+            get{
+                if(db == null)
+                    db = new Database(this.connection, this.dbName);
+                return db;
+            }
+        }
         public Collection(string name, Connection conn, string dbName)
         {
             this.name = name;
             this.connection = conn;
             this.dbName = dbName;
-            this.db = new Database(this.connection, this.dbName);
         }
         
         /// <summary>
@@ -101,7 +106,7 @@ namespace MongoDB.Driver
         /// A <see cref="MapReduce"/>
         /// </returns>
         public MapReduce MapReduce(){
-            return new MapReduce(db, this.Name);
+            return new MapReduce(this.Db, this.Name);
         }
         
         public MapReduceBuilder MapReduceBuilder(){
@@ -125,7 +130,7 @@ namespace MongoDB.Driver
         public long Count(Document spec){
             try{
                 //Database db = new Database(this.connection, this.dbName);
-                Document ret = db.SendCommand(new Document().Append("count",this.Name).Append("query",spec));
+                Document ret = this.Db.SendCommand(new Document().Append("count",this.Name).Append("query",spec));
                 double n = (double)ret["n"];
                 return Convert.ToInt64(n);
             }catch(MongoCommandException){
@@ -150,7 +155,7 @@ namespace MongoDB.Driver
         }
         
         public void Insert (IEnumerable<Document> docs, bool safemode){
-            if(safemode)db.ResetError();
+            if(safemode)this.Db.ResetError();
             this.Insert(docs);
             CheckPreviousError(safemode);
         }
@@ -258,10 +263,6 @@ namespace MongoDB.Driver
             this.Update(doc,selector,(UpdateFlags)flags);
         }
         
-        
-        public void UpdateAll (Document doc, Document selector, bool safemode){
-            throw new System.NotImplementedException();
-        }
         /// <summary>
         /// Runs a multiple update query against the database.  It will wrap any 
         /// doc with $set if the passed in doc doesn't contain any '$' ops.
@@ -284,16 +285,22 @@ namespace MongoDB.Driver
             this.Update(doc, selector, UpdateFlags.MultiUpdate);           
         }
         
+        
+        public void UpdateAll (Document doc, Document selector, bool safemode)
+        {
+            throw new System.NotImplementedException();
+        }
+        
 
         private void CheckError(bool safemode){
             if(safemode){
-                Document err = db.GetLastError();
+                Document err = this.Db.GetLastError();
                 if(ErrorTranslator.IsError(err)) throw ErrorTranslator.Translate(err);
             }
         }
         private void CheckPreviousError(bool safemode){
             if(safemode){
-                Document err = db.GetPreviousError();
+                Document err = this.Db.GetPreviousError();
                 if(ErrorTranslator.IsError(err)) throw ErrorTranslator.Translate(err);
             }
         }
