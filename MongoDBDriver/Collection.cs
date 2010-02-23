@@ -4,6 +4,7 @@ using System.IO;
 
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.IO;
+using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver
 {
@@ -14,6 +15,7 @@ namespace MongoDB.Driver
 
         
         private Connection connection;
+        private Database db;
         
         private string name;        
         public string Name {
@@ -45,6 +47,7 @@ namespace MongoDB.Driver
             this.name = name;
             this.connection = conn;
             this.dbName = dbName;
+            this.db = new Database(this.connection, this.dbName);
         }
         
         /// <summary>
@@ -98,7 +101,6 @@ namespace MongoDB.Driver
         /// A <see cref="MapReduce"/>
         /// </returns>
         public MapReduce MapReduce(){
-            Database db = new Database(this.connection, this.dbName);
             return new MapReduce(db, this.Name);
         }
         
@@ -107,28 +109,52 @@ namespace MongoDB.Driver
         }
             
         
+        /// <summary>
+        ///Count all items in the collection. 
+        /// </summary>
         public long Count(){
             return this.Count(new Document());
         }
         
+        /// <summary>
+        /// Count all items in a collection that match the query spec. 
+        /// </summary>
+        /// <remarks>
+        /// It will return 0 if the collection doesn't exist yet.
+        /// </remarks>
         public long Count(Document spec){
             try{
-                Database db = new Database(this.connection, this.dbName);
+                //Database db = new Database(this.connection, this.dbName);
                 Document ret = db.SendCommand(new Document().Append("count",this.Name).Append("query",spec));
                 double n = (double)ret["n"];
                 return Convert.ToInt64(n);
             }catch(MongoCommandException){
-                //FIXME This is an exception condition when the namespace is missing. -1 might be better here but the console returns 0.
+                //FIXME This is an exception condition when the namespace is missing. 
+                //-1 might be better here but the console returns 0.
                 return 0;
             }
             
         }
         
+        /// <summary>
+        /// Inserts the Document into the collection. 
+        /// </summary>
+        public void Insert (Document doc, bool safemode){
+            Insert(doc);
+            CheckError(safemode);
+        }
+
         public void Insert(Document doc){
             Document[] docs = new Document[]{doc,};
             this.Insert(docs);
         }
         
+        public void Insert (IEnumerable<Document> docs, bool safemode){
+            if(safemode)db.ResetError();
+            this.Insert(docs);
+            CheckPreviousError(safemode);
+        }
+
         public void Insert(IEnumerable<Document> docs){
             InsertMessage im = new InsertMessage();
             im.FullCollectionName = this.FullName;
@@ -148,6 +174,21 @@ namespace MongoDB.Driver
             }   
         }
         
+        /// <summary>
+        /// Deletes documents from the collection according to the spec.
+        /// </summary>
+        /// <remarks>An empty document will match all documents in the collection and effectively truncate it.
+        /// </remarks>
+        public void Delete (Document selector, bool safemode){
+            Delete(selector);
+            CheckError(safemode);
+        }
+        
+        /// <summary>
+        /// Deletes documents from the collection according to the spec.
+        /// </summary>
+        /// <remarks>An empty document will match all documents in the collection and effectively truncate it.
+        /// </remarks>
         public void Delete(Document selector){
             DeleteMessage dm = new DeleteMessage();
             dm.FullCollectionName = this.FullName;
@@ -157,6 +198,12 @@ namespace MongoDB.Driver
             }catch(IOException ioe){
                 throw new MongoCommException("Could not delete document, communication failure", this.connection,ioe);
             }
+        }
+        
+        
+        public void Update (Document doc, bool safemode){
+            Update(doc);
+            CheckError(safemode);
         }
         
         public void Update(Document doc){
@@ -174,8 +221,17 @@ namespace MongoDB.Driver
             this.Update(doc, selector, upsert);
         }
         
+        public void Update (Document doc, Document selector, bool safemode){
+            Update(doc, selector,0,safemode);
+        }
+        
         public void Update(Document doc, Document selector){
             this.Update(doc, selector, 0);
+        }
+        
+        public void Update (Document doc, Document selector, UpdateFlags flags, bool safemode){
+            Update(doc,selector,flags);
+            CheckError(safemode);
         }
         
         public void Update(Document doc, Document selector, UpdateFlags flags){
@@ -190,6 +246,11 @@ namespace MongoDB.Driver
                 throw new MongoCommException("Could not update document, communication failure", this.connection,ioe);
             }           
             
+        }
+        
+        public void Update (Document doc, Document selector, int flags, bool safemode){
+            Update(doc,selector,flags);
+            CheckError(safemode);
         }
         
         public void Update(Document doc, Document selector, int flags){
@@ -217,6 +278,26 @@ namespace MongoDB.Driver
                 doc = s;
             }
             this.Update(doc, selector, UpdateFlags.MultiUpdate);           
+        }
+        
+        
+        public void UpdateAll (Document doc, Document selector, bool safemode)
+        {
+            throw new System.NotImplementedException();
+        }
+        
+
+        private void CheckError(bool safemode){
+            if(safemode){
+                Document err = db.GetLastError();
+                if(ErrorTranslator.IsError(err)) throw ErrorTranslator.Translate(err);
+            }
+        }
+        private void CheckPreviousError(bool safemode){
+            if(safemode){
+                Document err = db.GetPreviousError();
+                if(ErrorTranslator.IsError(err)) throw ErrorTranslator.Translate(err);
+            }
         }
     }
 }

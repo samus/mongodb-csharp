@@ -84,6 +84,8 @@
     <Compile Include="TestMapReduce.cs" />
     <Compile Include="TestMapReduceBuilder.cs" />
     <Compile Include="TestConcurrency.cs" />
+    <Compile Include="TestCollectionSafeMode.cs" />
+    <Compile Include="MongoTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
