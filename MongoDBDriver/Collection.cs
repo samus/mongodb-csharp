@@ -258,6 +258,10 @@ namespace MongoDB.Driver
             this.Update(doc,selector,(UpdateFlags)flags);
         }
         
+        
+        public void UpdateAll (Document doc, Document selector, bool safemode){
+            throw new System.NotImplementedException();
+        }
         /// <summary>
         /// Runs a multiple update query against the database.  It will wrap any 
         /// doc with $set if the passed in doc doesn't contain any '$' ops.
@@ -278,12 +282,6 @@ namespace MongoDB.Driver
                 doc = s;
             }
             this.Update(doc, selector, UpdateFlags.MultiUpdate);           
-        }
-        
-        
-        public void UpdateAll (Document doc, Document selector, bool safemode)
-        {
-            throw new System.NotImplementedException();
         }
         
 

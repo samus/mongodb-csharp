@@ -49,7 +49,6 @@ namespace MongoDB.Driver.Util
                     return new MongoOperationException(msg, error);
                 }                
             }
-            return null;
         }
         
     }

@@ -1,4 +1,4 @@
-/*using System;
+using System;
 
 using NUnit.Framework;
 
@@ -6,16 +6,9 @@ using NUnit.Framework;
 namespace MongoDB.Driver
 {
     [TestFixture]
-    public class TestCollectionSafeMode
+    public class TestCollectionSafeMode : MongoTestBase
     {
-                public Mongo Mongo{get;set;}
-        public Database DB{
-            get{
-                return this.Mongo["tests"];
-            }
-        }
-        public string TestCollections {
-        //public override string TestCollections {            
+        public override string TestCollections {            
             get {
                 return "safeinsert, safeupdate, safedelete";
             }
@@ -43,16 +36,5 @@ namespace MongoDB.Driver
             }
             Assert.IsTrue(thrown);
         }
-        
-        [TestFixtureSetUp]
-        public void Init(){
-            //base.Init();
-        }
-        
-        [TestFixtureTearDown]
-        public void Dispose(){
-            //base.Dispose();
-        }
     }
 }
-*/

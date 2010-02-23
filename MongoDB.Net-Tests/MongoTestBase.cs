@@ -1,4 +1,3 @@
-/*
 using System;
 using NUnit.Framework;
 
@@ -19,8 +18,8 @@ namespace MongoDB.Driver
         /// </summary>
         public abstract string TestCollections{get;}
         
-        
-        
+
+        [TestFixtureSetUp]
         public virtual void Init(){
             this.Mongo = new Mongo();
             this.Mongo.Connect();
@@ -28,6 +27,7 @@ namespace MongoDB.Driver
         }
         
         
+        [TestFixtureTearDown]
         public virtual void Dispose(){
             this.Mongo.Disconnect();
         }
@@ -40,4 +40,3 @@ namespace MongoDB.Driver
         }
     }
 }
- */
