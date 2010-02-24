@@ -36,7 +36,7 @@ namespace MongoDB.Driver.Util
                     return new MongoDuplicateKeyException(msg, error);
                 }
                 case "11001":{
-                    return new MongoDuplicateKeyException(msg, error);
+                    return new MongoDuplicateKeyUpdateException(msg, error);
                 }
                 //General exceptions, just pass the message back on.
                 case "10003":
