@@ -79,9 +79,9 @@ namespace MongoDB.GridFS
         public void TestFileExists(){
             string filename = "gfi-exists.txt";
             GridFileInfo gfi = new GridFileInfo(db["tests"], "gfexists", filename);
-            Assert.IsFalse(gfi.Exists());
+            Assert.IsFalse(gfi.Exists);
             GridFileStream gfs = gfi.Create();
-            Assert.IsTrue(gfi.Exists());
+            Assert.IsTrue(gfi.Exists);
         }
         
         [Test]
@@ -136,6 +136,7 @@ namespace MongoDB.GridFS
             DropGridFileSystem("gfdelete");
             DropGridFileSystem("gfmove");
             DropGridFileSystem("gfopen");
+            DropGridFileSystem("gfexists");
         }
         
         protected void DropGridFileSystem(string filesystem){

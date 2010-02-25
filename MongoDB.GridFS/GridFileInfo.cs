@@ -189,8 +189,10 @@ namespace MongoDB.GridFS
             this.gridFile.Move(this.FileName, newFileName);
         }
         
-        public Boolean Exists(){
-            return this.gridFile.Exists(this.FileName);
+        public Boolean Exists{
+            get{
+                return this.gridFile.Exists(this.FileName);
+            }
         }
         
         public void Truncate(){
