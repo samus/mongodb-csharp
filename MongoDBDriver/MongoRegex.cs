@@ -2,7 +2,6 @@ namespace MongoDB.Driver
 {
     public class MongoRegex
     {   
-        
         private string expression;
         public string Expression {
             get {return expression;}
@@ -23,7 +22,5 @@ namespace MongoDB.Driver
             this.Expression = expression;
             this.Options = options;
         }
-        
-        
     }
 }

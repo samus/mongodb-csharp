@@ -3,10 +3,6 @@
  * Date: 7/7/2009
  */
 using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-
 
 namespace MongoDB.Driver
 {
@@ -78,6 +74,5 @@ namespace MongoDB.Driver
         public void Dispose (){
             this.Disconnect();
         }
-
     }
 }

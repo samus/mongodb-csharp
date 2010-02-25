@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace MongoDB.Driver
 {
-    public enum IndexOrder:int{
-        Descending = -1,
-        Ascending = 1
-    }
-    
     /// <summary>
     /// Lazily loaded meta data on the collection.
     /// </summary>

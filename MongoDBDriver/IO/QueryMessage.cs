@@ -1,8 +1,4 @@
 using System;
-using System.IO;
-using System.Text;
-
-
 using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO
@@ -19,7 +15,6 @@ namespace MongoDB.Driver.IO
         //    int32     numberToReturn;         // number of documents to return in the first OP_REPLY
         //    BSON      query ;                 // query object.  See below for details.
         //  [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
-
         
 #region "Properties"
         private QueryOptions options;

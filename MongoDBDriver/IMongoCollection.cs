@@ -1,14 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MongoDB.Driver
 {
-    public enum UpdateFlags:int
-    {
-        Upsert = 1,
-        MultiUpdate = 2
-    }    
     public interface IMongoCollection
     {
         string Name { get; }

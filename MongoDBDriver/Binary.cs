@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace MongoDB.Driver
 {
 	public class Binary{
@@ -32,8 +28,5 @@ namespace MongoDB.Driver
             this.Bytes = value;
             this.Subtype = TypeCode.General;         
         }
-
-      
-
     }
 }

@@ -6,8 +6,7 @@ namespace MongoDB.Driver
     /// Administration of metadata for a database.
     /// </summary>
     public class DatabaseMetaData
-    {
-        
+    {        
         private Connection connection;  
         private string name;
         private Database db;
