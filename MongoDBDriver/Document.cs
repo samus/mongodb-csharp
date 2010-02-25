@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace MongoDB.Driver {
@@ -174,18 +175,19 @@ namespace MongoDB.Driver {
                     SerializeType(v, json);
                 }
                 json.Append(" ]");
-            } else if (value is Document ||
+            } else if(value is DateTime) {
+                json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
+            } else if(value is IFormattable) {
+                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
+            } else if(value is Document ||
                 value is Oid ||
                 value is int ||
-                value is Int32 ||
                 value is long ||
                 value is float ||
-                value is double) {
+                value is double) { 
                 json.Append(value);
-            } else if (value is DateTime) {
-                json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
             } else {
-                json.AppendFormat(@"""{0}""", value);
+                json.AppendFormat(@"""{0}""", value); 
             }
             return;
         }
