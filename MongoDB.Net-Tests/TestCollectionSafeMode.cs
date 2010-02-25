@@ -10,7 +10,7 @@ namespace MongoDB.Driver
     {
         public override string TestCollections {            
             get {
-                return "safeinsert, safeupdate, safedelete";
+                return "safeinsert, safeupdate, safedelete, safemupdate";
             }
         }
         
@@ -39,7 +39,6 @@ namespace MongoDB.Driver
             }catch(MongoDuplicateKeyUpdateException){
                 thrown = true;
             }catch(MongoDuplicateKeyException mdk){
-                Console.WriteLine(mdk.Error);
                 Assert.Fail("MongoDuplicateKeyException thown instead of MongoDuplicateKeyUpdateException");
             }catch(Exception e){
                 
@@ -48,6 +47,26 @@ namespace MongoDB.Driver
             Assert.IsTrue(thrown);
         }
         
+        [Test]
+        public void TestMultiUpdate(){
+            IMongoCollection col = InitCollection("safemupdate");
+            Document newy = new Document(){{"y", 2}};
+            col.UpdateAll(newy, new Document(){{"y",1}},true);
+            Assert.AreEqual(5, col.Count(newy));
+            
+            bool thrown = false;
+            try{
+                col.UpdateAll(new Document(){{"x",1}}, new Document(){{"y",2}},true);
+            }catch(MongoDuplicateKeyUpdateException){
+                thrown = true;
+            }catch(MongoDuplicateKeyException mdk){
+                Assert.Fail("MongoDuplicateKeyException thown instead of MongoDuplicateKeyUpdateException");
+            }catch(Exception e){
+                
+                Assert.Fail(String.Format("Wrong exception thrown: {0}", e.GetType().Name));
+            }
+            Assert.IsTrue(thrown, "Exception not thrown.");            
+        }
         
         protected IMongoCollection InitCollection(string name){
             IMongoCollection col = DB[name];

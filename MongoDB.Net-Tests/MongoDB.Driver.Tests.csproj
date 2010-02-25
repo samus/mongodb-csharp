@@ -86,6 +86,7 @@
     <Compile Include="TestConcurrency.cs" />
     <Compile Include="TestCollectionSafeMode.cs" />
     <Compile Include="MongoTestBase.cs" />
+    <Compile Include="TestCollectionMetaData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">

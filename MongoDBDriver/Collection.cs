@@ -211,6 +211,14 @@ namespace MongoDB.Driver
             CheckError(safemode);
         }
         
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>
+        /// <remarks>
+        /// _id will be used in the document to create a selector.  If it isn't in
+        /// the document then it is assumed that the document is new and an upsert is sent to the database
+        /// instead.
+        /// </remarks>
         public void Update(Document doc){
             //Try to generate a selector using _id for an existing document.
             //otherwise just set the upsert flag to 1 to insert and send onward.
@@ -230,6 +238,9 @@ namespace MongoDB.Driver
             Update(doc, selector,0,safemode);
         }
         
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>        
         public void Update(Document doc, Document selector){
             this.Update(doc, selector, 0);
         }
@@ -239,6 +250,17 @@ namespace MongoDB.Driver
             CheckError(safemode);
         }
         
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>
+        /// <param name="doc">The <see cref="Document"/> to update with
+        /// </param>
+        /// <param name="selector">
+        /// The query spec to find the document to update.
+        /// </param>
+        /// <param name="flags">
+        /// <see cref="UpdateFlags"/>
+        /// </param>
         public void Update(Document doc, Document selector, UpdateFlags flags){
             UpdateMessage um = new UpdateMessage();
             um.FullCollectionName = this.FullName;
@@ -286,9 +308,10 @@ namespace MongoDB.Driver
         }
         
         
-        public void UpdateAll (Document doc, Document selector, bool safemode)
-        {
-            throw new System.NotImplementedException();
+        public void UpdateAll (Document doc, Document selector, bool safemode){
+            if(safemode)this.Db.ResetError();
+            this.UpdateAll(doc, selector);
+            CheckPreviousError(safemode);
         }
         
 

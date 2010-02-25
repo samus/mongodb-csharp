@@ -242,6 +242,7 @@ namespace MongoDB.Driver
             doc["Last"] = "Brewer";
             
             updates.Insert(doc);
+            
             Document selector = new Document().Append("Last", "Brewer");
             doc = updates.FindOne(selector);
             Assert.IsNotNull(doc);
@@ -253,7 +254,7 @@ namespace MongoDB.Driver
             
             Document result = updates.FindOne(selector);
             Assert.IsNotNull(result);
-            Assert.AreEqual("Matt", result["First"]);           
+            Assert.AreEqual("Matt", result["First"]);
             
         }       
         

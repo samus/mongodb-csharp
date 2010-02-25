@@ -91,6 +91,7 @@ namespace MongoDB.GridFS
             SetFileDataDefaults(filename);
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
+        
         private void SetFileDataDefaults(string filename){
             this.FileName = filename;
             this.ChunkSize = DEFAULT_CHUNKSIZE;
@@ -98,6 +99,7 @@ namespace MongoDB.GridFS
             this.UploadDate = DateTime.UtcNow;
             this.Length = 0;
         }
+        
         #region Create
         /// <summary>
         /// Creates the file named FileName and returns the GridFileStream
@@ -131,6 +133,7 @@ namespace MongoDB.GridFS
         }
         #endregion
         
+        #region Open
         /// <summary>
         /// Creates a read-only GridFileStream to an existing file. 
         /// </summary>
@@ -175,7 +178,11 @@ namespace MongoDB.GridFS
             }
             throw new NotImplementedException("Mode not implemented.");
         }
+        #endregion
         
+        /// <summary>
+        /// Permanently removes a file from the database. 
+        /// </summary>
         public void Delete(){
             if(this.Id != null){
                 this.gridFile.Delete(this.Id);
@@ -184,17 +191,26 @@ namespace MongoDB.GridFS
             }
         }
         
-        
+        /// <summary>
+        /// Renames a file. 
+        /// </summary>
         public void MoveTo(String newFileName){
             this.gridFile.Move(this.FileName, newFileName);
+            this.FileName = newFileName;
         }
         
+        /// <summary>
+        /// Gets a value indicating whether the file exists.
+        /// </summary>
         public Boolean Exists{
             get{
                 return this.gridFile.Exists(this.FileName);
             }
         }
         
+        /// <summary>
+        /// Deletes all data in a file and sets the length to 0.
+        /// </summary>
         public void Truncate(){
             if(filedata.Contains("_id") == false) return;
             this.gridFile.Chunks.Delete(new Document().Append("files_id", filedata["_id"]));
@@ -206,7 +222,29 @@ namespace MongoDB.GridFS
             Document doc = this.db.SendCommand(new Document().Append("filemd5", this.Id).Append("root",this.bucket));
             return (String)doc["md5"];
         }
-
+        
+        /// <summary>
+        /// Updates the aliases, contentType, metadata and uploadDate in the database.
+        /// </summary>
+        /// <remarks> To rename a file use the MoveTo method.
+        /// </remarks>
+        public void UpdateInfo(){
+            Document info = new Document(){{"uploadDate", this.UploadDate},
+                                            {"aliases", this.Aliases}, 
+                                            {"metadata", this.Metadata},
+                                            {"contentType", this.ContentType}};
+            this.gridFile.Files.Update(new Document(){{"$set",info}}, new Document(){{"_id", this.Id}});
+        }
+        
+        /// <summary>
+        /// Reloads the file information from the database. 
+        /// </summary>
+        /// <remarks>The data in the database will not reflect any changes done through an open stream until it is closed.
+        /// </remarks>
+        public void Refresh(){
+            LoadFileData();
+        }
+        
         private void LoadFileData(){
             Document doc = this.gridFile.Files.FindOne(new Document().Append("filename",this.FileName));
             if(doc != null){
