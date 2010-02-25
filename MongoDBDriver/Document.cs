@@ -82,12 +82,10 @@ namespace MongoDB.Driver {
             orderedKeys.Remove(key);
         }
 
-        /// <summary>
-        /// TODO Fix any accidental reordering issues.
-        /// </summary>
-        /// <param name="dest"></param>
         public void CopyTo(Document dest) {
             foreach (String key in orderedKeys) {
+                if(dest.Contains(key))
+                    dest.Remove(key);
                 dest[key] = this[key];
             }
         }

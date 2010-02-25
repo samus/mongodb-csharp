@@ -88,17 +88,17 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCopyToCopiesAndPreservesKeyOrderToExistingDoc(){
-            Document d = new Document();
+            Document src = new Document();
             Document dest = new Document();
             dest["two"] = 200;
-            d["one"] = 1;
-            d.Add("two", 2);
-            d["three"] = 3;
-            d.CopyTo(dest);
-            int cnt = 1;
+            src["one"] = 1;
+            src.Add("two", 2);
+            src["three"] = 3;
+            src.CopyTo(dest);
+            int count = 1;
             foreach(String key in dest.Keys){
-                Assert.AreEqual(cnt, d[key], "Order wasn't reset on CopyTo");
-                cnt++;
+                Assert.AreEqual(count, src[key], "Order wasn't reset on CopyTo");
+                count++;
             }           
         }
 
