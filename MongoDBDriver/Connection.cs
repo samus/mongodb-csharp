@@ -120,6 +120,7 @@ namespace MongoDB.Driver
         
         public virtual void Open(){
             tcpclnt = new TcpClient();
+            tcpclnt.NoDelay = true;
             tcpclnt.Connect(this.Host, this.Port);
             this.state = ConnectionState.Opened;
         }
