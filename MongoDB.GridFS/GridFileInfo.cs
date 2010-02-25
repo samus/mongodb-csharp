@@ -184,8 +184,13 @@ namespace MongoDB.GridFS
             }
         }
         
+        
         public void MoveTo(String newFileName){
             this.gridFile.Move(this.FileName, newFileName);
+        }
+        
+        public Boolean Exists(){
+            return this.gridFile.Exists(this.FileName);
         }
         
         public void Truncate(){

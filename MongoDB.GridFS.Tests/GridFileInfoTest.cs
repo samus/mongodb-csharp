@@ -74,7 +74,16 @@ namespace MongoDB.GridFS
             Assert.IsFalse(gf.Exists(filename), "File should have been moved.");
             Assert.IsTrue(gf.Exists(filename2), "File wasn't");
         }
-
+        
+        [Test]
+        public void TestFileExists(){
+            string filename = "gfi-exists.txt";
+            GridFileInfo gfi = new GridFileInfo(db["tests"], "gfexists", filename);
+            Assert.IsFalse(gfi.Exists());
+            GridFileStream gfs = gfi.Create();
+            Assert.IsTrue(gfi.Exists());
+        }
+        
         [Test]
         public void TestOpenNonExistentFails(){
             string filename = "gfi-opennothere.txt";
