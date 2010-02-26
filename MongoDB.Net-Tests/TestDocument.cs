@@ -72,6 +72,19 @@ namespace MongoDB.Driver
         }
         
         [Test]
+        public void TestClearRemovesAll(){
+            Document d = new Document();
+            d["one"] = 1;
+            d.Add("two", 2);
+            d["three"] = 3;
+            Assert.AreEqual(3,d.Count);
+            d.Clear();
+            Assert.AreEqual(0, d.Count);
+            Assert.IsNull(d["one"]);
+            Assert.IsFalse(d.Contains("one"));
+        }
+        
+        [Test]
         public void TestCopyToCopiesAndPreservesKeyOrderToEmptyDoc(){
             Document d = new Document();
             Document dest = new Document();
@@ -87,19 +100,15 @@ namespace MongoDB.Driver
         }
         
         [Test]
-        public void TestCopyToCopiesAndPreservesKeyOrderToExistingDoc(){
-            Document src = new Document();
+        public void TestCopyToCopiesAndOverwritesKeys(){
+            Document d = new Document();
             Document dest = new Document();
             dest["two"] = 200;
-            src["one"] = 1;
-            src.Add("two", 2);
-            src["three"] = 3;
-            src.CopyTo(dest);
-            int count = 1;
-            foreach(String key in dest.Keys){
-                Assert.AreEqual(count, src[key], "Order wasn't reset on CopyTo");
-                count++;
-            }           
+            d["one"] = 1;
+            d.Add("two", 2);
+            d["three"] = 3;
+            d.CopyTo(dest);
+            Assert.AreEqual(2, dest["two"]);
         }
 
         [Test]

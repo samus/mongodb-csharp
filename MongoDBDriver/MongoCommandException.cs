@@ -2,6 +2,9 @@
 
 namespace MongoDB.Driver
 {
+    /// <summary>
+    /// Raised when a command returns a failure message. 
+    /// </summary>
     public class MongoCommandException : MongoException
     {
         private Document error;

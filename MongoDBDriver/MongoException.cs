@@ -8,5 +8,6 @@ namespace MongoDB.Driver
     public class MongoException : Exception
     {
         public MongoException(string message, Exception inner):base(message,inner){}
+        public MongoException(string message):base(message){}
     }
 }

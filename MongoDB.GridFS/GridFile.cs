@@ -115,15 +115,25 @@ namespace MongoDB.GridFS
 
         
         #region Delete
+        
+        /// <summary>
+        /// Permanently removes a file from the database. 
+        /// </summary>
         public void Delete(Object id){
             files.Delete(new Document().Append("_id",id));
             chunks.Delete(new Document().Append("files_id",id));
         }
         
+        /// <summary>
+        /// Permanently removes a file from the database. 
+        /// </summary>        
         public void Delete(String filename){
             files.Delete(new Document().Append("filename",filename));
         }
         
+        /// <summary>
+        /// Permanently removes all files from the database that match the query. 
+        /// </summary>
         public void Delete(Document query ){
             foreach(Document doc in ListFiles(query).Documents){
                 Delete((Oid)doc["_id"]);
@@ -131,11 +141,16 @@ namespace MongoDB.GridFS
         }
         #endregion
         
-        #region Exists        
+        #region Exists
+        /// <summary>
+        /// Gets a value indicating whether the file exists.
+        /// </summary>
         public Boolean Exists(string name){
             return this.files.FindOne(new Document().Append("filename",name)) != null;
         }
-
+        /// <summary>
+        /// Gets a value indicating whether the file exists.
+        /// </summary>
         public Boolean Exists(Object id){
             return this.files.FindOne(new Document().Append("_id",id)) != null;
         }

@@ -12,11 +12,8 @@ namespace MongoDB.Driver {
     /// <summary>
     /// Description of Document.
     /// </summary>
-    public class Document : System.Collections.DictionaryBase {
+    public class Document : DictionaryBase {
         private List<String> orderedKeys = new List<String>();
-        public Document() {
-        }
-
         public Object this[String key] {
             get {
                 return Dictionary[key];
@@ -82,6 +79,15 @@ namespace MongoDB.Driver {
             orderedKeys.Remove(key);
         }
 
+        public void Clear(){
+            Dictionary.Clear();
+            orderedKeys.Clear();
+        }
+        
+        /// <summary>
+        /// TODO Fix any accidental reordering issues.
+        /// </summary>
+        /// <param name="dest"></param>
         public void CopyTo(Document dest) {
             foreach (String key in orderedKeys) {
                 if(dest.Contains(key))
@@ -185,7 +191,7 @@ namespace MongoDB.Driver {
                 value is double) { 
                 json.Append(value);
             } else {
-                json.AppendFormat(@"""{0}""", value); 
+                json.AppendFormat(@"""{0}""", value);
             }
             return;
         }

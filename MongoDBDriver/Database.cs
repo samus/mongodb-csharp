@@ -62,12 +62,46 @@ namespace MongoDB.Driver
             return col;
         }
 
+        /// <summary>
+        /// Gets the document that a reference is pointing to.
+        /// </summary>
         public Document FollowReference(DBRef reference){
             if(reference == null) throw new ArgumentNullException("reference cannot be null");
             Document query = new Document().Append("_id", reference.Id);
             return this[reference.CollectionName].FindOne(query);
         }
-
+        
+        /// <summary>
+        /// Most operations do not have a return code in order to save the client from having to wait for results.
+        /// GetLastError can be called to retrieve the return code if clients want one. 
+        /// </summary>
+        public Document GetLastError(){
+            return SendCommand("getlasterror");
+        }
+        
+        /// <summary>
+        /// Retrieves the last error and forces the database to fsync all files before returning. 
+        /// </summary>
+        /// <remarks>Server version 1.3+</remarks>
+        public Document GetLastErrorAndFSync(){
+            return SendCommand(new Document(){{"getlasterror", 1.0},{"fsync", true}});
+        }
+        
+        /// <summary>
+        /// Call after sending a bulk operation to the database. 
+        /// </summary>
+        /// <returns>
+        public Document GetPreviousError(){
+            return SendCommand("getpreverror");
+        }
+        
+        /// <summary>
+        /// Resets last error.  This is good to call before a bulk operation.
+        /// </summary>
+        public void ResetError(){
+            SendCommand("reseterror");   
+        }
+        
         public bool Authenticate(string username, string password){
             Document nonceResult = this.SendCommand("getnonce");
             String nonce = (String)nonceResult["nonce"];
@@ -107,8 +141,8 @@ namespace MongoDB.Driver
             return SendCommand(cmd);
         }
 
-        public Document SendCommand(string javascript){
-            Document cmd = new Document().Append(javascript,1.0);
+        public Document SendCommand(string command){
+            Document cmd = new Document().Append(command,1.0);
             return this.SendCommand(cmd);
         }
 
@@ -126,8 +160,6 @@ namespace MongoDB.Driver
             }
             return result;
         }
-
-
 
         internal static string Hash(string text){
             MD5 md5 = MD5.Create();

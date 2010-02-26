@@ -23,13 +23,13 @@ Current Features
 - GridFS support
 - Map Reduce helpers.
 - hint, explain, $where
+- Safemode
+- Exceptions
 
 Missing Features
 ================
 - Auto reconnect options
 - Connection pooling (In progress)
-- Exceptions (In progress)
-- Safemode (Scheduled)
 - database profiling: set/get profiling level, get profiling info
 - Many unit tests
 
@@ -63,7 +63,6 @@ Contributors
 - Sam Corder (samus)
 - Seth Edwards (Sedward)
 - Arne Classen (Sdether)
+- Steve Wagner (lanwin)
 - Andrew Kempe
 - Sergey Bartunov (sbos)
-
-

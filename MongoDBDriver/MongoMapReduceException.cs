@@ -1,5 +1,8 @@
-﻿namespace MongoDB.Driver
+namespace MongoDB.Driver 
 {
+    /// <summary>
+    /// Raised when a map reduce call fails. 
+    /// </summary>
     public class MongoMapReduceException : MongoCommandException
     {
         private MapReduce.MapReduceResult mrr;
