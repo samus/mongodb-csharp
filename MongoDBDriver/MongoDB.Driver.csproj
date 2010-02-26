@@ -110,6 +110,7 @@
     <Compile Include="MapReduce.cs" />
     <Compile Include="MapReduceBuilder.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
+    <Compile Include="Util\JsonUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

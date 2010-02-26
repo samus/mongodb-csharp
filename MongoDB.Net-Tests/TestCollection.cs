@@ -8,6 +8,7 @@ namespace MongoDB.Driver
     public class TestCollection
     {
         Mongo db = new Mongo();
+        private string pound = "\u00a3";
 
         [Test]
         public void TestFindOne(){
@@ -145,10 +146,10 @@ namespace MongoDB.Driver
         [Test]
         public void TestPoundSymbolInsert(){
             IMongoCollection inserts = db["tests"]["inserts"];
-            Document indoc = new Document().Append("x","1234£56").Append("y",1);;
+            Document indoc = new Document().Append("x","1234" + pound + "56").Append("y",1);;
             inserts.Insert(indoc);
 
-            Document result = inserts.FindOne(new Document().Append("x","1234£56"));
+            Document result = inserts.FindOne(new Document().Append("x","1234" + pound + "56"));
             Assert.IsNotNull(result);
             Assert.AreEqual(1,result["y"]);            
         }

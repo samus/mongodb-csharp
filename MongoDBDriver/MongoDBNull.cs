@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Driver{
+namespace MongoDB.Driver{
     /// <summary>
     /// Placeholder type for database nulls.
     /// </summary>
@@ -12,5 +12,10 @@
         protected MongoDBNull(){
             
         }
+        
+        public override string ToString (){
+            return "null";
+        }
+
     }
 }
