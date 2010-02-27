@@ -37,16 +37,9 @@ namespace MongoDB.Driver
         /// Gets the servers.
         /// </summary>
         /// <value>The servers.</value>
-        public IEnumerable<MongoServerEndPoint> Servers
+        public MongoServerEndPoint[] Servers
         {
-            get
-            {
-                if(_servers.Count == 0)
-                    yield return MongoServerEndPoint.Default;
-
-                foreach(var server in _servers)
-                    yield return server;
-            }
+            get{return _servers.Count == 0 ? new[] {MongoServerEndPoint.Default} : _servers.ToArray();}
         }
 
         /// <summary>
@@ -129,8 +122,8 @@ namespace MongoDB.Driver
         /// <param name="endPoint">The end point.</param>
         public void AddServer(MongoServerEndPoint endPoint)
         {
-            if(_servers.Count == 1)
-                throw new InvalidOperationException("Currently is only server supported.");
+            if(endPoint == null)
+                throw new ArgumentNullException("endPoint");
 
             _servers.Add(endPoint);
         }

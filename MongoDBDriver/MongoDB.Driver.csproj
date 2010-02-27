@@ -100,6 +100,7 @@
     <Compile Include="Cursor.cs" />
     <Compile Include="MongoCommandException.cs" />
     <Compile Include="MongoCommException.cs" />
+    <Compile Include="MongoConnectionFactory.cs" />
     <Compile Include="MongoConnectionStringBuilder.cs" />
     <Compile Include="MongoDBNull.cs" />
     <Compile Include="MongoDuplicateKeyException.cs" />
