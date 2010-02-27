@@ -4,7 +4,8 @@
 *.mdb
 *.pdb
 *.pidb
-*.vcproj.*.user
+*.vcproj
+*.user
 *.ncb
 *.aps
 *.suo
