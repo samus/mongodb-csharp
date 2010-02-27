@@ -79,32 +79,6 @@ namespace MongoDB.Driver.Bson
             
             Assert.AreEqual(now.Hour,then.Hour, "Date did not round trip right.");
 
-        }
-
-        [Test]
-        public void TestGUID() {
-            MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
-
-            Guid guid = Guid.NewGuid();
-
-            Document source = new Document();
-            source.Append("uuid", guid);
-
-            /*Binary b = new Binary(guid.ToByteArray());
-            b.Subtype = Binary.TypeCode.Uuid;
-            source.Append("uuid", b);*/
-
-            writer.Write(source);
-            writer.Flush();
-            ms.Seek(0, SeekOrigin.Begin);
-
-            BsonReader reader = new BsonReader(ms);
-            Document copy = reader.Read();
-
-            Guid read = (Guid)copy["uuid"];
-
-            Assert.AreEqual(guid, read, "UUID did not round trip right.");
-        }
+        }        
     }
 }
