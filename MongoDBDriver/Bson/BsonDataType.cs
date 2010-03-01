@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Driver.Bson
+namespace MongoDB.Driver.Bson
 {
     public enum BsonDataType:sbyte
     {

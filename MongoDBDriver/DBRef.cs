@@ -18,7 +18,10 @@ namespace MongoDB.Driver
         
         private Document doc;
         
-        private string collectionName;      
+        private string collectionName;
+        /// <summary>
+        /// The name of the collection the referenced document is in. 
+        /// </summary>
         public string CollectionName {
             get { return collectionName; }
             set {
@@ -57,6 +60,9 @@ namespace MongoDB.Driver
             doc = new Document();
         }
         
+        /// <summary>
+        /// Constructs a DBRef from a document that matches the DBref specification.
+        /// </summary>
         public DBRef(Document doc){
             if(IsDocumentDBRef(doc) == false) throw new ArgumentException("Document is not a valid DBRef");
             collectionName = (String)doc[DBRef.RefName];
@@ -84,6 +90,11 @@ namespace MongoDB.Driver
                 return ((this.collectionName != null ? this.collectionName.GetHashCode() : 0) * 397) ^ (this.id != null ? this.id.GetHashCode() : 0);
             }
         }
+        
+        public override string ToString (){
+            return doc.ToString();
+        }
+
 
         /// <summary>
         /// Deprecated.  Use the new DBRef(Document) constructor instead.

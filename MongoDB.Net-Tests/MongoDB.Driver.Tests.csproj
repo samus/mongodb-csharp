@@ -88,6 +88,8 @@
     <Compile Include="TestCollectionSafeMode.cs" />
     <Compile Include="MongoTestBase.cs" />
     <Compile Include="TestCollectionMetaData.cs" />
+    <Compile Include="Util\TestJsonEscaper.cs" />
+    <Compile Include="TestBinary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
@@ -115,5 +117,8 @@
     <EmbeddedResource Include="test-data\tests.binary.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Util\" />
   </ItemGroup>
 </Project>

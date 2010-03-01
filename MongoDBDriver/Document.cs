@@ -1,7 +1,3 @@
-/*
- * User: scorder
- * Date: 7/8/2009
- */
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -143,57 +139,7 @@ namespace MongoDB.Driver {
         }
 
         public override string ToString() {
-            var json = new StringBuilder();
-            json.Append("{ ");
-            bool first = true;
-            foreach (String key in orderedKeys) {
-                if (first) {
-                    first = false;
-                } else {
-                    json.Append(", ");
-                }
-                json.AppendFormat(@"""{0}"": ", key);
-                SerializeType(this[key], json);
-            }
-            json.Append(" }");
-            return json.ToString();
-        }
-
-        private void SerializeType(object value, StringBuilder json) {
-            if (value == null) {
-                json.Append("null");
-                return;
-            }
-            var t = value.GetType();
-            if (value is bool) {
-                json.Append(((bool)value) ? "true" : "false");
-            } else if (t.IsArray) {
-                json.Append("[ ");
-                bool first = true;
-                foreach (var v in (Array)value) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        json.Append(", ");
-                    }
-                    SerializeType(v, json);
-                }
-                json.Append(" ]");
-            } else if(value is DateTime) {
-                json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
-            } else if(value is IFormattable) {
-                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
-            } else if(value is Document ||
-                value is Oid ||
-                value is int ||
-                value is long ||
-                value is float ||
-                value is double) { 
-                json.Append(value);
-            } else {
-                json.AppendFormat(@"""{0}""", value);
-            }
-            return;
+            return JsonUtils.Serialize(this);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Driver
+namespace MongoDB.Driver
 {
     /// <summary>
     /// Class representing the MinKey Bson type.  It will always compare lower than any other type.
@@ -12,5 +12,9 @@
             }
         }
         protected MongoMinKey (){}
+        
+        public override string ToString (){
+            return "{ \"$minkey\" : 1 }";
+        }
     }
 }

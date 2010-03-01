@@ -19,6 +19,7 @@
 */bin/*
 */obj/*
 */test-results/*
+/test-results/
 
 /_UpgradeReport_Files/*
 

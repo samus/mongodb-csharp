@@ -1,10 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace MongoDB.Driver
 {
 	public class Binary{
 		public enum TypeCode:byte{
 			Unknown = 0,
 			General = 2,
-			Uuid = 3,
+			// Uuid is now replaced by Guid
+            //Uuid = 3,
 			Md5 = 5,
 			UserDefined = 80
 		}
@@ -28,5 +33,8 @@ namespace MongoDB.Driver
             this.Bytes = value;
             this.Subtype = TypeCode.General;         
         }
+
+      
+
     }
 }

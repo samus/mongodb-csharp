@@ -4,11 +4,7 @@ namespace MongoDB.Driver
 {
     public class CodeWScope : Code
     {
-        private Document scope;
-        public Document Scope {
-            get {return scope;}
-            set {scope = value;}
-        }
+        public Document Scope {get;set;}
         
         public CodeWScope(){}
 
@@ -18,8 +14,5 @@ namespace MongoDB.Driver
             this.Value = code;
             this.Scope = scope;
         }
-        public override string ToString() {
-            return string.Format(@"CodeWScope(""{0}, {1}"")", this.Value, this.scope);
-        }        
     }
 }

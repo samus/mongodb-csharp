@@ -52,12 +52,13 @@ namespace MongoDB.Driver
             connection = new PairedConnection(leftHost,leftPort,rightHost,rightPort,slaveOk);
         }
         
-        public Database getDB(String name){
+        public Database GetDatabase(String name){
             return new Database(connection, name);
         }
+
         public Database this[ String name ]  {
             get{
-                return this.getDB(name);
+                return this.GetDatabase(name);
             }
         }       
         
