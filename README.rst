@@ -55,8 +55,7 @@ At the simplest query the database like this:
  db.Disconnect();
 
 Getting Help
-============
-The Google Group mongodb-csharp at (http://http://groups.google.com/group/mongodb-csharp) is the best place to go.
+The Google Group mongodb-csharp at (http://groups.google.com/group/mongodb-csharp) is the best place to go.
 
 Contributors
 ============
