@@ -4,7 +4,8 @@
 *.mdb
 *.pdb
 *.pidb
-*.vcproj.*.user
+*.vcproj
+*.user
 *.ncb
 *.aps
 *.suo
@@ -13,6 +14,7 @@
 *.usertasks
 *.orig
 *.cache
+*.ReSharper
 
 */bin/*
 */obj/*

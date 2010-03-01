@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO

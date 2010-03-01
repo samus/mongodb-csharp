@@ -1,10 +1,5 @@
-
-using System;
-
 namespace MongoDB.Driver
 {
-    
-    
     public class Code
     {
         private string value;       

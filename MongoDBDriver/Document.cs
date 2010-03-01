@@ -5,17 +5,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace MongoDB.Driver {
     /// <summary>
     /// Description of Document.
     /// </summary>
-    public class Document : System.Collections.DictionaryBase {
+    public class Document : DictionaryBase {
         private List<String> orderedKeys = new List<String>();
-        public Document() {
-        }
-
         public Object this[String key] {
             get {
                 return Dictionary[key];
@@ -92,6 +90,8 @@ namespace MongoDB.Driver {
         /// <param name="dest"></param>
         public void CopyTo(Document dest) {
             foreach (String key in orderedKeys) {
+                if(dest.Contains(key))
+                    dest.Remove(key);
                 dest[key] = this[key];
             }
         }
@@ -179,16 +179,17 @@ namespace MongoDB.Driver {
                     SerializeType(v, json);
                 }
                 json.Append(" ]");
-            } else if (value is Document ||
+            } else if(value is DateTime) {
+                json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
+            } else if(value is IFormattable) {
+                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
+            } else if(value is Document ||
                 value is Oid ||
                 value is int ||
-                value is Int32 ||
                 value is long ||
                 value is float ||
-                value is double) {
+                value is double) { 
                 json.Append(value);
-            } else if (value is DateTime) {
-                json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
             } else {
                 json.AppendFormat(@"""{0}""", value);
             }

@@ -71,24 +71,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\BsonType.cs" />
+    <Compile Include="Bson\BsonDataType.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Bson\Types.cs" />
+    <Compile Include="Bson\BsonType.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
     <Compile Include="DatabaseMetaData.cs" />
     <Compile Include="DBRef.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="ICursor.cs" />
     <Compile Include="IMongoCollection.cs" />
+    <Compile Include="IndexOrder.cs" />
     <Compile Include="IO\GetMoreMessage.cs" />
     <Compile Include="IO\InsertMessage.cs" />
     <Compile Include="IO\KillCursorsMessage.cs" />
     <Compile Include="IO\Message.cs" />
     <Compile Include="IO\MessageHeader.cs" />
+    <Compile Include="IO\OpCode.cs" />
     <Compile Include="IO\QueryMessage.cs" />
     <Compile Include="IO\RequestMessage.cs" />
     <Compile Include="Mongo.cs" />
@@ -96,8 +99,19 @@
     <Compile Include="IO\ReplyMessage.cs" />
     <Compile Include="Bson\BsonReader.cs" />
     <Compile Include="Cursor.cs" />
+    <Compile Include="MongoCommandException.cs" />
+    <Compile Include="MongoCommException.cs" />
+    <Compile Include="MongoConnectionFactory.cs" />
+    <Compile Include="MongoConnectionStringBuilder.cs" />
     <Compile Include="MongoDBNull.cs" />
-    <Compile Include="MongoExceptions.cs" />
+    <Compile Include="MongoDuplicateKeyException.cs" />
+    <Compile Include="MongoDuplicateKeyUpdateException.cs" />
+    <Compile Include="MongoException.cs" />
+    <Compile Include="MongoMapReduceException.cs" />
+    <Compile Include="MongoMaxKey.cs" />
+    <Compile Include="MongoMinKey.cs" />
+    <Compile Include="MongoOperationException.cs" />
+    <Compile Include="MongoServerEndPoint.cs" />
     <Compile Include="Oid.cs" />
     <Compile Include="IO\DeleteMessage.cs" />
     <Compile Include="IO\UpdateMessage.cs" />
@@ -108,9 +122,10 @@
     <Compile Include="CodeWScope.cs" />
     <Compile Include="Binary.cs" />
     <Compile Include="DatabaseJS.cs" />
-    <Compile Include="MongoMinMaxKey.cs" />
     <Compile Include="MapReduce.cs" />
     <Compile Include="MapReduceBuilder.cs" />
+    <Compile Include="QueryOptions.cs" />
+    <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -131,7 +146,4 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
 </Project>

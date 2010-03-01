@@ -75,6 +75,5 @@ namespace MongoDB.Driver
         public void Dispose (){
             this.Disconnect();
         }
-
     }
 }

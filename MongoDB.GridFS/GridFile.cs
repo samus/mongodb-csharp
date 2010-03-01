@@ -1,8 +1,5 @@
 using System;
-using System.Text;
 using System.IO;
-using System.Collections.Generic;
-
 using MongoDB.Driver;
 
 namespace MongoDB.GridFS
