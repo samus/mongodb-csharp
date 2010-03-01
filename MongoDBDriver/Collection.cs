@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
-using MongoDB.Driver.Bson;
 using MongoDB.Driver.IO;
 using MongoDB.Driver.Util;
 
@@ -11,8 +9,6 @@ namespace MongoDB.Driver
     public class Collection : IMongoCollection 
     {
         private static OidGenerator oidGenerator = new OidGenerator();
-        
-
         
         private Connection connection;
         

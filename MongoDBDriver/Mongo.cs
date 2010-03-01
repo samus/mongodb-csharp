@@ -3,10 +3,6 @@
  * Date: 7/7/2009
  */
 using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-
 
 namespace MongoDB.Driver
 {
@@ -56,12 +52,13 @@ namespace MongoDB.Driver
             connection = new PairedConnection(leftHost,leftPort,rightHost,rightPort,slaveOk);
         }
         
-        public Database getDB(String name){
+        public Database GetDatabase(String name){
             return new Database(connection, name);
         }
+
         public Database this[ String name ]  {
             get{
-                return this.getDB(name);
+                return this.GetDatabase(name);
             }
         }       
         
@@ -78,6 +75,5 @@ namespace MongoDB.Driver
         public void Dispose (){
             this.Disconnect();
         }
-
     }
 }

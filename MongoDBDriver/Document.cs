@@ -1,21 +1,15 @@
-/*
- * User: scorder
- * Date: 7/8/2009
- */
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace MongoDB.Driver {
     /// <summary>
     /// Description of Document.
     /// </summary>
-    public class Document : System.Collections.DictionaryBase {
+    public class Document : DictionaryBase {
         private List<String> orderedKeys = new List<String>();
-        public Document() {
-        }
-
         public Object this[String key] {
             get {
                 return Dictionary[key];
@@ -92,6 +86,8 @@ namespace MongoDB.Driver {
         /// <param name="dest"></param>
         public void CopyTo(Document dest) {
             foreach (String key in orderedKeys) {
+                if(dest.Contains(key))
+                    dest.Remove(key);
                 dest[key] = this[key];
             }
         }

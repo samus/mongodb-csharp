@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver
 {
-
     /// <summary>
     /// A fluent interface for executing a Map/Reduce call against a collection.
     /// </summary>

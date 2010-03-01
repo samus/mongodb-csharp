@@ -74,6 +74,5 @@ namespace MongoDB.Driver
             Process proc = Process.GetCurrentProcess();
             return proc.Id;            
         }
-
     }
 }

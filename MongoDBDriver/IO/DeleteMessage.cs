@@ -1,15 +1,9 @@
 /*
  * User: scorder
- */
-using System;
-using System.IO;
-
-using MongoDB.Driver.Bson;
+ */using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO
 {
-    
-    
     public class DeleteMessage : RequestMessage
     {
         //struct {

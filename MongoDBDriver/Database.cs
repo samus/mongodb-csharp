@@ -90,7 +90,6 @@ namespace MongoDB.Driver
         /// <summary>
         /// Call after sending a bulk operation to the database. 
         /// </summary>
-        /// <returns>
         public Document GetPreviousError(){
             return SendCommand("getpreverror");
         }

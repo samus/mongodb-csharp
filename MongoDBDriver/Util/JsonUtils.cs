@@ -56,6 +56,8 @@ namespace MongoDB.Driver
                 json.Append(value);
             } else if (value is DateTime) {
                 json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
+            } else if(value is IFormattable) {
+                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
             } else {
                 json.AppendFormat(@"""{0}""", Escape(value.ToString()));
             }
