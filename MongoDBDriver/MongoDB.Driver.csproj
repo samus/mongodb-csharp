@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -78,7 +78,6 @@
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Bson\BsonType.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
     <Compile Include="DatabaseMetaData.cs" />
     <Compile Include="DBRef.cs" />
@@ -101,7 +100,6 @@
     <Compile Include="Cursor.cs" />
     <Compile Include="MongoCommandException.cs" />
     <Compile Include="MongoCommException.cs" />
-    <Compile Include="MongoConnectionFactory.cs" />
     <Compile Include="MongoConnectionStringBuilder.cs" />
     <Compile Include="MongoDBNull.cs" />
     <Compile Include="MongoDuplicateKeyException.cs" />
