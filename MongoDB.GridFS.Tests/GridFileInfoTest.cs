@@ -73,8 +73,18 @@ namespace MongoDB.GridFS
             gfi.MoveTo(filename2);
             Assert.IsFalse(gf.Exists(filename), "File should have been moved.");
             Assert.IsTrue(gf.Exists(filename2), "File wasn't");
+            Assert.AreEqual(filename2, gfi.FileName, "Filename wasn't set in GridFileInfo");
         }
-
+        
+        [Test]
+        public void TestFileExists(){
+            string filename = "gfi-exists.txt";
+            GridFileInfo gfi = new GridFileInfo(db["tests"], "gfexists", filename);
+            Assert.IsFalse(gfi.Exists);
+            GridFileStream gfs = gfi.Create();
+            Assert.IsTrue(gfi.Exists);
+        }
+        
         [Test]
         public void TestOpenNonExistentFails(){
             string filename = "gfi-opennothere.txt";
@@ -109,7 +119,32 @@ namespace MongoDB.GridFS
             }
             Assert.IsTrue(thrown, "NotSupportedException not thrown");
         }
-
+        
+        [Test]
+        public void TestUpdateInfo(){
+            string filename = "gfi-meta.txt";
+            string fs = "gfinfo";
+            
+            Object id;
+            GridFileInfo gfi = new GridFileInfo(db["tests"],fs, filename);
+            using(GridFileStream gfs = gfi.Create(FileMode.CreateNew)){
+                id = gfs.GridFileInfo.Id;
+                gfi.ContentType = "text/sam";
+                Assert.AreEqual(gfi.ContentType, gfs.GridFileInfo.ContentType, "gridfileinfos don't point to the same object");
+                TextWriter tw = new StreamWriter(gfs);
+                tw.WriteLine("test");
+                tw.Close();
+            }
+            gfi.Aliases = new String[]{"file1"};
+            GridFileInfo gfi2 = new GridFileInfo(db["tests"],fs, filename);
+            Assert.IsTrue(gfi2.Exists, "Couldn't find " + filename);
+            Assert.AreEqual("text/sam", gfi2.ContentType);
+            Assert.AreNotEqual(gfi2.Aliases, gfi.Aliases);
+            gfi.UpdateInfo();
+            gfi2.Refresh();
+            Assert.AreEqual(gfi2.Aliases, gfi.Aliases);
+        }
+        
         [TestFixtureSetUp]
         public void Init(){
             db.Connect();
@@ -127,6 +162,8 @@ namespace MongoDB.GridFS
             DropGridFileSystem("gfdelete");
             DropGridFileSystem("gfmove");
             DropGridFileSystem("gfopen");
+            DropGridFileSystem("gfexists");
+            DropGridFileSystem("gfinfo");
         }
         
         protected void DropGridFileSystem(string filesystem){

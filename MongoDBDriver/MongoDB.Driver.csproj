@@ -111,6 +111,7 @@
     <Compile Include="MongoMinMaxKey.cs" />
     <Compile Include="MapReduce.cs" />
     <Compile Include="MapReduceBuilder.cs" />
+    <Compile Include="Util\ErrorTranslator.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -130,4 +131,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Util\" />
+  </ItemGroup>
 </Project>

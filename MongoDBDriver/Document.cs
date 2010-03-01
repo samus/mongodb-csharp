@@ -81,6 +81,11 @@ namespace MongoDB.Driver {
             orderedKeys.Remove(key);
         }
 
+        public void Clear(){
+            Dictionary.Clear();
+            orderedKeys.Clear();
+        }
+        
         /// <summary>
         /// TODO Fix any accidental reordering issues.
         /// </summary>

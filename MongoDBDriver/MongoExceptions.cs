@@ -8,6 +8,7 @@ namespace MongoDB.Driver
     public class MongoException : Exception
     {
         public MongoException(string message, Exception inner):base(message,inner){}
+        public MongoException(string message):base(message){}
     }
     
     public class MongoCommException : MongoException
@@ -29,6 +30,42 @@ namespace MongoDB.Driver
         }       
     }
     
+    public class MongoOperationException : MongoException
+    {
+        private Document error;
+        public Document Error {
+            get {return error;}
+        }
+        public MongoOperationException(string message, Document error):this(message, error,null){}
+        public MongoOperationException(string message, Document error, Exception e):base(message,e){
+            this.error = error;
+        }        
+    }
+    /// <summary>
+    /// Raised when an action causes a unique constraint violation in an index. 
+    /// </summary>
+    public class MongoDuplicateKeyException : MongoOperationException
+    {
+        public MongoDuplicateKeyException(string message, Document error):base(message, error,null){}
+        public MongoDuplicateKeyException(string message, Document error, Exception e):base(message, error,e){}
+    }
+    
+    /// <summary>
+    /// Raised when an update action causes a unique constraint violation in an index.
+    /// </summary>
+    /// <remarks>
+    /// It is only another class because Mongo makes a distinction and it may be helpful.
+    /// </remarks>
+    public class MongoDuplicateKeyUpdateException : MongoDuplicateKeyException
+    {
+        public MongoDuplicateKeyUpdateException(string message, Document error)
+                :base(message,error){}
+        public MongoDuplicateKeyUpdateException(string message, Document error, Exception e):base(message, error,e){} 
+    }
+    
+    /// <summary>
+    /// Raised when a command returns a failure message. 
+    /// </summary>
     public class MongoCommandException : MongoException
     {
         private Document error;
@@ -51,6 +88,9 @@ namespace MongoDB.Driver
         }        
     }
     
+    /// <summary>
+    /// Raised when a map reduce call fails. 
+    /// </summary>
     public class MongoMapReduceException : MongoCommandException
     {
         private MapReduce.MapReduceResult mrr;

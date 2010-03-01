@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using NUnit.Framework;
@@ -72,7 +72,7 @@ namespace MongoDB.Driver
         
         protected void initDB(){
             db["tests"]["$cmd"].FindOne(new Document().Append("drop","indextests"));
-            Collection its = db["tests"]["indextests"];
+            IMongoCollection its = db["tests"]["indextests"];
             Document doc = new Document();
             its.Insert(createDoc("S","A","Anderson","OH"));
             its.Insert(createDoc("T","B","Delhi","OH"));

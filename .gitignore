@@ -14,28 +14,10 @@
 *.orig
 *.cache
 
-test-results/*.xml
-MongoDB.Net-Tests/bin/*
-MongoDB.Net-Tests/test-results/MongoDB.Driver.Tests.csproj.test-cache
-MongoDB.Linq.Tests/test-results/MongoDB.Linq.Tests.csproj.test-cache
+*/bin/*
+*/obj/*
+*/test-results/*
 
-*.suo
 /_UpgradeReport_Files/*
-obj/*
-MongoDB.Linq/obj/*
-MongoDB.Linq.Tests/bin/*
-MongoDB.Linq.Tests/obj/*
-MongoDB.Linq.Tests/test-results/*
-
-MongoDB.Driver.Benchmark/bin/*
-MongoDB.Driver.Benchmark/ProfilingSessions/*
-MongoDB.Driver.Benchmark/obj/*
-
-
-/MongoDB.GridFS/bin/*
-/MongoDB.GridFS/obj/*
-/MongoDB.GridFS.Tests/bin/*
-/MongoDB.GridFS.Tests/obj/*
-/MongoDB.GridFS.Tests/test-results/*
 
 /redist/*.zip
