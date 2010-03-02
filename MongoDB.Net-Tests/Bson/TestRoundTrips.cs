@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 using MongoDB.Driver.Bson;
@@ -13,18 +13,10 @@ namespace MongoDB.Driver.Bson
 
         [Test]
         public void TestDBRef(){
-            MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
-
             Document source = new Document();
             source.Append("x",1).Append("ref",new DBRef("refs","ref1"));
 
-            writer.Write(source);
-            writer.Flush();
-            ms.Seek(0,SeekOrigin.Begin);
-
-            BsonReader reader = new BsonReader(ms);
-            Document copy = reader.Read();
+            Document copy = WriteAndRead(source);
 
             Assert.IsTrue(copy.Contains("ref"));
             Assert.IsTrue(copy["ref"].GetType() == typeof(DBRef));
@@ -39,18 +31,11 @@ namespace MongoDB.Driver.Bson
         [Test]
         public void TestDateLocal(){
             DateTime now = DateTime.Now;
-            MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
 
             Document source = new Document();
             source.Append("d",now);
 
-            writer.Write(source);
-            writer.Flush();
-            ms.Seek(0,SeekOrigin.Begin);
-            
-            BsonReader reader = new BsonReader(ms);
-            Document copy = reader.Read();
+            Document copy = WriteAndRead(source);
             
             DateTime then = (DateTime)copy["d"];           
             then = then.ToLocalTime();
@@ -62,19 +47,11 @@ namespace MongoDB.Driver.Bson
         [Test]
         public void TestDateUTC(){
             DateTime now = DateTime.UtcNow;
-            MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
-
+            
             Document source = new Document();
             source.Append("d",now);
-
-            writer.Write(source);
-            writer.Flush();
-            ms.Seek(0,SeekOrigin.Begin);
             
-            BsonReader reader = new BsonReader(ms);
-            Document copy = reader.Read();
-            
+            Document copy = WriteAndRead(source);           
             DateTime then = (DateTime)copy["d"];           
             
             Assert.AreEqual(now.Hour,then.Hour, "Date did not round trip right.");
@@ -82,30 +59,59 @@ namespace MongoDB.Driver.Bson
         }
 
         [Test]
-        public void TestGUID()
-        {
-            MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
-
-            Guid guid = Guid.NewGuid();
+        public void TestGUID(){
+            Guid expected = Guid.NewGuid();
 
             Document source = new Document();
-            source.Append("uuid", guid);
+            source.Append("uuid", expected);
 
-            /*Binary b = new Binary(guid.ToByteArray());
-            b.Subtype = Binary.TypeCode.Uuid;
-            source.Append("uuid", b);*/
+            Guid read = (Guid)(WriteAndRead(source)["uuid"]);
+
+            Assert.AreEqual(expected, read, "UUID did not round trip right.");
+        }
+        
+        [Test]
+        public void TestMultiDimensionalArray(){
+            int[][] arr = new int[3][];
+            for(int a = 0; a < arr.Length; a++){
+                int x = a + 1;
+                arr[a] = new int[]{x * 1, x * 2, x * 3};
+            }
+            
+            Document expected = new Document(){{"arr", arr}};
+            Document read = WriteAndRead(expected);
+               
+            Assert.AreEqual(expected.ToString(), read.ToString());
+        }
+        
+        [Test]
+        public void TestMixedArrayContents(){
+            Object[] arr = new Object[]{new string[]{"one", "two"},
+                                        new string[]{"three", "four"}, 
+                                        new Document(){{"id", "six"}}};
+            Document expected = new Document(){{"arr", arr}};
+            Document read = WriteAndRead(expected);
+            
+            string json = @"{ ""arr"": [ [ ""one"", ""two"" ], [ ""three"", ""four"" ], { ""id"": ""six"" } ] }";
+            Assert.AreEqual(json, expected.ToString());
+            
+            Assert.IsTrue(read["arr"] is Object[], "Mixed array wasn't returned as Object[]");
+            
+            Assert.AreEqual(json, read.ToString());
+            
+            
+        }
+        
+        protected Document WriteAndRead(Document source){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
 
             writer.Write(source);
             writer.Flush();
             ms.Seek(0, SeekOrigin.Begin);
 
             BsonReader reader = new BsonReader(ms);
-            Document copy = reader.Read();
-
-            Guid read = (Guid)copy["uuid"];
-
-            Assert.AreEqual(guid, read, "UUID did not round trip right.");
-        }
+            return reader.Read();
+        }   
     }
 }
