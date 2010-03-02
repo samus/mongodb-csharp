@@ -10,7 +10,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestToString(){
-            //TODO: Write the test.
+            Binary b = new Binary();
         }
     }
 }

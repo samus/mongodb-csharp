@@ -120,5 +120,45 @@ namespace MongoDB.Driver.Util
             Assert.AreEqual(@"{ ""foo"": [ { ""a"": 1 }, { ""b"": 2 }, { ""c"": 3 } ] }", JsonUtils.Serialize(doc));
         }
         
+        [Test]
+        public void TestSerializeDocWithBinary(){
+            var doc = new Document(){{"b", new Binary(){Bytes = new byte[]{0,1,2,3,4}, 
+                                                            Subtype = Binary.TypeCode.General}}};
+            Assert.AreEqual(@"{ ""b"": { ""$binary"": ""AAECAwQ="", ""$type"" : 2 } }", 
+                            JsonUtils.Serialize(doc));
+        }
+        
+        [Test]
+        public void TestSerializeDocWithGUID(){
+            var doc = new Document(){{"guid", new Guid("936da01f-9abd-4d9d-80c7-02af85c822a8")}};
+            Assert.AreEqual(@"{ ""guid"": { ""$uid"": ""936da01f-9abd-4d9d-80c7-02af85c822a8"" } }", 
+                            JsonUtils.Serialize(doc));
+        }
+        
+        [Test]
+        public void TestSerializeDocWithDBRef(){
+            var ostr = "000102030405060708090001";
+            var doc = new Document(){{"d", new DBRef("smallreads", new Oid(ostr))}};
+            Assert.AreEqual(String.Format(@"{{ ""d"": {{ ""$ref"": ""smallreads"", ""$id"": ""{0}"" }} }}", ostr), 
+                            JsonUtils.Serialize(doc));
+        }
+        
+        [Test]
+        public void TestSerializeDocWithMinMax(){
+            var doc = new Document(){{"mn", MongoMinKey.Value}, {"mx", MongoMaxKey.Value}};
+            Assert.AreEqual(@"{ ""mn"": { ""$minkey"": 1 }, ""mx"": { ""$maxkey"": 1 } }", 
+                            JsonUtils.Serialize(doc));
+        }
+        
+        [Test]
+        public void TestSerializeDocWithCode(){
+            var c = new Code("function add(x, y){\n" +
+                             "  return x + y;\n" +
+                             "}\n");
+            var doc = new Document(){{"c", c}};
+            Assert.AreEqual(@"{ ""c"": { $code : ""function add(x, y){\n  return x + y;\n}\n"" } }",
+                            JsonUtils.Serialize(doc));
+        }
+            
     }
 }

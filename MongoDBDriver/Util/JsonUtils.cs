@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+
 
 namespace MongoDB.Driver
 {
@@ -48,6 +50,12 @@ namespace MongoDB.Driver
                 json.Append(" ]");
             } else if (value is Document ||
                 value is Oid ||
+                value is Binary ||
+                value is DBRef ||
+                value is MongoMinKey ||
+                value is MongoMaxKey ||
+                value is Code ||
+                value is CodeWScope ||
                 value is int ||
                 value is Int32 ||
                 value is long ||
@@ -56,7 +64,11 @@ namespace MongoDB.Driver
                 json.Append(value);
             } else if (value is DateTime) {
                 json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
-            } else {
+            } else if (value is Guid) {
+                json.Append(String.Format(@"{{ ""$uid"": ""{0}"" }}",value.ToString()));
+            } else if (value is IFormattable) {
+                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
+            } else {                
                 json.AppendFormat(@"""{0}""", Escape(value.ToString()));
             }
             return;

@@ -87,8 +87,8 @@
     <Compile Include="TestCollectionSafeMode.cs" />
     <Compile Include="MongoTestBase.cs" />
     <Compile Include="TestCollectionMetaData.cs" />
-    <Compile Include="Util\TestJsonEscaper.cs" />
     <Compile Include="TestBinary.cs" />
+    <Compile Include="Util\TestJsonUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">

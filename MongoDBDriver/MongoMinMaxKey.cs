@@ -14,7 +14,7 @@ namespace MongoDB.Driver
         protected MongoMinKey (){}
         
         public override string ToString (){
-            return "{ \"$minkey\" : 1 }";
+            return "{ \"$minkey\": 1 }";
         }
 
     }
@@ -33,7 +33,7 @@ namespace MongoDB.Driver
         protected MongoMaxKey (){}
         
         public override string ToString (){
-            return "{ \"$maxkey\" : 1 }";
+            return "{ \"$maxkey\": 1 }";
         }        
     }    
 }
