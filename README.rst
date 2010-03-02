@@ -64,5 +64,6 @@ Contributors
 - Seth Edwards (Sedward)
 - Arne Classen (Sdether)
 - Steve Wagner (lanwin)
+- Andrew Rondeau (GWBasic)
 - Andrew Kempe
 - Sergey Bartunov (sbos)
