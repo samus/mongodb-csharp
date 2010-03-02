@@ -82,6 +82,13 @@ namespace MongoDB.Driver
         public Document GetPreviousError(){
             return SendCommand("getpreverror");
         }
+
+        /// <summary>
+        /// Gets the sister database on the same Mongo connection with the given name.
+        /// </summary>
+        public Database GetSisterDatabase(string sisterDbName){
+            return new Database(connection, sisterDbName);
+        }
         
         /// <summary>
         /// Resets last error.  This is good to call before a bulk operation.
