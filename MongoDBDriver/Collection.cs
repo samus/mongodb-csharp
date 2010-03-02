@@ -212,6 +212,17 @@ namespace MongoDB.Driver
         }
         
         /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <remarks>
+        /// The document will contain the _id that is saved to the database.  This is really just an alias
+        /// to Update(Document) to maintain consistency between drivers.
+        /// </remarks>
+        public void Save(Document doc){
+            Update(doc);
+        }
+        
+        /// <summary>
         /// Updates a document with the data in doc as found by the selector.
         /// </summary>
         /// <remarks>
