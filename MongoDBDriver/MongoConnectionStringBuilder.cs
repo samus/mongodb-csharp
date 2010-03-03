@@ -8,6 +8,10 @@ namespace MongoDB.Driver
     [Serializable]
     public class MongoConnectionStringBuilder
     {
+        public const int DefaultMaximumPoolSize = 100;
+        public const int DefaultMinimumPoolSize = 0;
+        public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.MaxValue;
+
         private static readonly Regex PairRegex = new Regex(@"^\s*(.*)\s*=\s*(.*)\s*$");
         private static readonly Regex ServerRegex = new Regex(@"\s*([^:]+)(?::(\d+))?\s*$");
 
@@ -21,6 +25,9 @@ namespace MongoDB.Driver
         /// </summary>
         public MongoConnectionStringBuilder()
         {
+            ConnectionLifetime = TimeSpan.MaxValue;
+            MaximumPoolSize = DefaultMaximumPoolSize;
+            MinimumPoolSize = DefaultMinimumPoolSize;
         }
 
         /// <summary>
@@ -31,6 +38,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name = "connectionString">The connection string.</param>
         public MongoConnectionStringBuilder(string connectionString)
+            : this()
         {
             Parse(connectionString);
         }
@@ -55,6 +63,25 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value>The username.</value>
         public string Username { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets the maximum size of the connection pool.
+        /// </summary>
+        /// <value>The maximum size of the pool.</value>
+        public int MaximumPoolSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of the minimum connection pool.
+        /// </summary>
+        /// <value>The size of the minimal pool.</value>
+        public int MinimumPoolSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the connection lifetime in connection pool.
+        /// </summary>
+        /// <value>The connection lifetime.</value>
+        public TimeSpan ConnectionLifetime { get; set; }
 
         /// <summary>
         ///   Parses the specified connection string.
@@ -88,6 +115,45 @@ namespace MongoDB.Driver
                     case "Passwort":
                     {
                         Password = value;
+                        break;
+                    }
+                    case "MaximumPoolSize":
+                    case "Max Pool Size":
+                    {
+                        try
+                        {
+                            MaximumPoolSize = int.Parse(value);
+                        }
+                        catch(FormatException exception)
+                        {
+                            throw new FormatException("Invalid number for MaximumPoolSize in connection string", exception);
+                        }
+                        break;
+                    }
+                    case "MinimumPoolSize":
+                    case "Min Pool Size":
+                    {
+                        try
+                        {
+                            MinimumPoolSize = int.Parse(value);
+                        }
+                        catch(FormatException exception)
+                        {
+                            throw new FormatException("Invalid number for MinimumPoolSize in connection string", exception);
+                        }
+                        break;
+                    }
+                    case "ConnectionLifetime":
+                    case "Connection Lifetime":
+                    {
+                        try
+                        {
+                            ConnectionLifetime = TimeSpan.FromSeconds(int.Parse(value));
+                        }
+                        catch(FormatException exception)
+                        {
+                            throw new FormatException("Invalid number for ConnectionLifetime in connection string", exception);
+                        }
                         break;
                     }
                     case "Server":
@@ -192,9 +258,31 @@ namespace MongoDB.Driver
                     if(server.Port != MongoServerEndPoint.DefaultPort)
                         builder.AppendFormat(":{0}", server.Port);
 
-                    builder.Append(';');
+                    builder.Append(',');
                 }
 
+                // remove last ,
+                builder.Remove(builder.Length - 1, 1);
+
+                builder.Append(';');
+            }
+
+            if(MaximumPoolSize != DefaultMaximumPoolSize)
+            {
+                builder.AppendFormat("MaximumPoolSize={0}", MaximumPoolSize);
+                builder.Append(';');
+            }
+
+            if(MinimumPoolSize != DefaultMinimumPoolSize)
+            {
+                builder.AppendFormat("MinimumPoolSize={0}", MinimumPoolSize);
+                builder.Append(';');
+            }
+
+            if(ConnectionLifetime != DefaultConnectionLifeTime)
+            {
+                builder.AppendFormat("ConnectionLifetime={0}", Convert.ToInt32(ConnectionLifetime.TotalSeconds));
+                builder.Append(';');
             }
 
             // remove last ;
