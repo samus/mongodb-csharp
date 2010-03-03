@@ -16,7 +16,8 @@ namespace MongoDB.Driver
         /// <summary>
         ///   Initializes a new instance of the
         ///   <see cref = "MongoConnectionStringBuilder" />
-        ///   class.
+        ///   class. Uses the default server connection when
+        ///   no server is added.
         /// </summary>
         public MongoConnectionStringBuilder()
         {
@@ -25,7 +26,8 @@ namespace MongoDB.Driver
         /// <summary>
         ///   Initializes a new instance of the
         ///   <see cref = "MongoConnectionStringBuilder" />
-        ///   class.
+        ///   class. Uses the default server connection when
+        ///   no server is added.
         /// </summary>
         /// <param name = "connectionString">The connection string.</param>
         public MongoConnectionStringBuilder(string connectionString)
