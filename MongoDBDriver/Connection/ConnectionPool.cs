@@ -68,6 +68,8 @@ namespace MongoDB.Driver.Connection
             CheckFreeConnectionsAlive();
 
             DisposeInvalidConnections();
+
+            EnsureMinimalPoolSize();
         }
 
         /// <summary>

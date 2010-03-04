@@ -16,11 +16,27 @@ namespace MongoDB.Driver
         }
 
         [Test]
-        public void TestMinimalPoolSizeIsEnsured()
+        public void TestMinimalPoolSizeIsEnsuredAtStartup()
         {
             var builder = new MongoConnectionStringBuilder {MinimumPoolSize = 3};
             using(var pool = new ConnectionPool(builder.ToString()))
                 Assert.AreEqual(3, pool.PoolSize);
+        }
+
+        [Test]
+        public void TestMinimalPoolSizeIsEnsuredAtRuntime()
+        {
+            var builder = new MongoConnectionStringBuilder { MinimumPoolSize = 3, ConnectionLifetime = TimeSpan.FromMilliseconds(200)};
+            using(var pool = new ConnectionPool(builder.ToString()))
+            {
+                Assert.AreEqual(3, pool.PoolSize);
+
+                Thread.Sleep(500); // ensure connection lifetime reached
+
+                pool.Cleanup();
+
+                Assert.AreEqual(3, pool.PoolSize);
+            }
         }
 
         [Test]

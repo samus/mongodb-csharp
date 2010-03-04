@@ -290,7 +290,8 @@ namespace MongoDB.Driver
             }
 
             // remove last ;
-            builder.Remove(builder.Length - 1, 1);
+            if(builder.Length > 0)
+                builder.Remove(builder.Length - 1, 1);
 
             return builder.ToString();
         }
