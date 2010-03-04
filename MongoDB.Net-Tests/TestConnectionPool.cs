@@ -130,5 +130,29 @@ namespace MongoDB.Driver
                 Assert.AreEqual(0, pool.PoolSize);
             }
         }
+
+        [Test]
+        public void TestCleanup()
+        {
+            var builder = new MongoConnectionStringBuilder
+            {
+                ConnectionLifetime = TimeSpan.FromMilliseconds(100)
+            };
+            using(var pool = new ConnectionPool(builder))
+            {
+                var connection1 = pool.BorrowConnection();
+                var connection2 = pool.BorrowConnection();
+                var connection3 = pool.BorrowConnection();
+                pool.ReturnConnection(connection1);
+                pool.ReturnConnection(connection2);
+                pool.ReturnConnection(connection3);
+
+                Thread.Sleep(300); // ensure lifetime reached
+
+                pool.Cleanup();
+
+                Assert.AreEqual(0,pool.PoolSize);
+            }
+        }
     }
 }
