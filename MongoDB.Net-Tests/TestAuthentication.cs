@@ -2,13 +2,7 @@
  *  User: Sedward
  */
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
-using System.Security.Cryptography;
-using System.Text;
-using MongoDB.Driver;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.IO;
 
 namespace MongoDB.Driver
 {
