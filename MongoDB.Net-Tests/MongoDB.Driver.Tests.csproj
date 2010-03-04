@@ -63,8 +63,8 @@
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
-    <Compile Include="Connection\TestConnectionFactory.cs" />
-    <Compile Include="Connection\TestConnectionPool.cs" />
+    <Compile Include="Connections\TestConnectionFactory.cs" />
+    <Compile Include="Connections\TestConnectionPool.cs" />
     <Compile Include="TestConnectionStringBuilder.cs" />
     <Compile Include="TestCursor.cs" />
     <Compile Include="TestDatabase.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="TestDBRef.cs" />
     <Compile Include="TestDocument.cs" />
     <Compile Include="TestMongo.cs" />
-    <Compile Include="Connection\TestConnection.cs" />
+    <Compile Include="Connections\TestConnection.cs" />
     <Compile Include="IO\TestMsgMessage.cs" />
     <Compile Include="TestB.cs" />
     <None Include="test-data\tests.charreads.txt" />

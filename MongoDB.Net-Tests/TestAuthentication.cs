@@ -2,7 +2,7 @@
  *  User: Sedward
  */
 using System;
-using MongoDB.Driver.Connection;
+using MongoDB.Driver.Connections;
 using NUnit.Framework;
 
 namespace MongoDB.Driver

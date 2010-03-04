@@ -3,7 +3,7 @@
  * Date: 7/7/2009
  */
 using System;
-using MongoDB.Driver.Connection;
+using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
@@ -12,7 +12,7 @@ namespace MongoDB.Driver
     /// </summary>
     public class Mongo : IDisposable
     {
-        private Connection.Connection connection;
+        private Connection connection;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mongo"/> class.

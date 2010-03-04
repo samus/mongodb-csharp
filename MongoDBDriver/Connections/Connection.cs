@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using MongoDB.Driver.IO;
 
-namespace MongoDB.Driver.Connection
+namespace MongoDB.Driver.Connections
 {
     /// <summary>
     /// Description of Connection.
@@ -30,7 +30,7 @@ namespace MongoDB.Driver.Connection
         /// </summary>
         ~Connection()
         {
-            // make sure the connection returns to pool if the use forget it.
+            // make sure the connection returns to pool if the user forget it.
             Dispose();    
         }
 

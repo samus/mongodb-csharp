@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
     public class Database
     {
-        private Connection.Connection connection;
+        private Connection connection;
         private IMongoCollection command;
 
-        public Database(Connection.Connection conn, String name){
+        public Database(Connection conn, String name){
             this.connection = conn;
             this.name = name;
             this.command = this["$cmd"];

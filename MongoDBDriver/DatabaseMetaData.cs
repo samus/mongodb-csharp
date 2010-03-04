@@ -1,4 +1,5 @@
 using System;
+using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
@@ -7,11 +8,11 @@ namespace MongoDB.Driver
     /// </summary>
     public class DatabaseMetaData
     {        
-        private Connection.Connection connection;  
+        private Connection connection;  
         private string name;
         private Database db;
         
-        public DatabaseMetaData(string name, Connection.Connection conn){
+        public DatabaseMetaData(string name, Connection conn){
             this.connection = conn;
             this.name = name;
             this.db = new Database(conn, name);

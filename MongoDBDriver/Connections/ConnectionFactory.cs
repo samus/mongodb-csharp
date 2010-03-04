@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MongoDB.Driver.Connection
+namespace MongoDB.Driver.Connections
 {
     public static class ConnectionFactory
     {

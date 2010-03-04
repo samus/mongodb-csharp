@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MongoDB.Driver.Connections;
 using MongoDB.Driver.IO;
 
 namespace MongoDB.Driver
 {
 	public class Cursor : ICursor {
-        private Connection.Connection connection;
+        private Connection connection;
         
         private long id = -1;
         public long Id{
@@ -104,12 +105,12 @@ namespace MongoDB.Driver
         
         private ReplyMessage reply;
         
-        public Cursor(Connection.Connection conn, string fullCollectionName){
+        public Cursor(Connection conn, string fullCollectionName){
             this.connection = conn;
             this.fullCollectionName = fullCollectionName;
         }
         
-        public Cursor(Connection.Connection conn, String fullCollectionName, Document spec, int limit, int skip, Document fields):
+        public Cursor(Connection conn, String fullCollectionName, Document spec, int limit, int skip, Document fields):
                 this(conn,fullCollectionName){
             if(spec == null)spec = new Document();
             this.spec = spec;

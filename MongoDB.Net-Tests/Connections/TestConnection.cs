@@ -3,7 +3,7 @@ using System.IO;
 using NUnit.Framework;
 using MongoDB.Driver.IO;
 
-namespace MongoDB.Driver.Connection
+namespace MongoDB.Driver.Connections
 {
     [TestFixture()]
     public class TestConnection
@@ -11,7 +11,7 @@ namespace MongoDB.Driver.Connection
         [Test]
         public void TestSendQueryMessage(){
             //Connection conn = new Connection("10.141.153.2");
-            Connection conn = ConnectionFactory.GetConnection(string.Empty);
+            Connections.Connection conn = ConnectionFactory.GetConnection(string.Empty);
             conn.Open();
             
             QueryMessage qmsg = generateQueryMessage();
@@ -22,7 +22,7 @@ namespace MongoDB.Driver.Connection
         
         [Test]
         public void TestReconnectOnce(){
-            Connection conn = ConnectionFactory.GetConnection(string.Empty);
+            Connections.Connection conn = ConnectionFactory.GetConnection(string.Empty);
             conn.Open();
                         
             WriteBadMessage(conn);
@@ -40,7 +40,7 @@ namespace MongoDB.Driver.Connection
             }
         }
         
-        protected void WriteBadMessage(Connection conn){
+        protected void WriteBadMessage(Connections.Connection conn){
             //Write a bad message to the socket to force mongo to shut down our connection.
             BinaryWriter writer = new BinaryWriter(conn.GetStream());
             System.Text.UTF8Encoding  encoding=new System.Text.UTF8Encoding(); 

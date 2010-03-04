@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 using MongoDB.Driver;
-using MongoDB.Driver.Connection;
+using MongoDB.Driver.Connections;
 
 namespace MongoDB.Linq.Tests {
     public static class AppSettingsFactory {

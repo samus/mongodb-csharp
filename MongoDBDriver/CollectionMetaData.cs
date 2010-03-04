@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
@@ -12,7 +13,7 @@ namespace MongoDB.Driver
         private string name;
         private Database db;
         
-        public CollectionMetaData(string dbName, string name, Connection.Connection conn){
+        public CollectionMetaData(string dbName, string name, Connection conn){
             this.fullName = dbName + "." + name;
             this.name = name;
             this.db = new Database(conn, dbName);

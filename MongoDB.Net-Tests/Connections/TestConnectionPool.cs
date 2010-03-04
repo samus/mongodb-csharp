@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Connection
+namespace MongoDB.Driver.Connections
 {
     [TestFixture]
     public class TestConnectionPool

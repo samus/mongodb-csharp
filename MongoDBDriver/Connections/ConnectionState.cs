@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Driver.Connection
+﻿namespace MongoDB.Driver.Connections
 {
     public enum ConnectionState{
         Closed = 0,
