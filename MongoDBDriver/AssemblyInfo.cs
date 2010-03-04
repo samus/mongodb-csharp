@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 
 
@@ -29,6 +30,8 @@ using System.Security.Permissions;
 
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
 [assembly: CLSCompliantAttribute(true)]
+
+[assembly: InternalsVisibleTo("MongoDB.Driver.Tests")]
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Bson")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Bson")]
