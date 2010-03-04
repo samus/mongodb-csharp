@@ -16,7 +16,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestSendQueryMessage(){
             //Connection conn = new Connection("10.141.153.2");
-            Connection conn = new Connection();
+            Connection conn = ConnectionFactory.GetConnection(string.Empty);
             conn.Open();
             
             QueryMessage qmsg = generateQueryMessage();
@@ -27,7 +27,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestReconnectOnce(){
-            Connection conn = new Connection();
+            Connection conn = ConnectionFactory.GetConnection(string.Empty);
             conn.Open();
                         
             WriteBadMessage(conn);
@@ -47,7 +47,7 @@ namespace MongoDB.Driver
         
         protected void WriteBadMessage(Connection conn){
             //Write a bad message to the socket to force mongo to shut down our connection.
-            BinaryWriter writer = new BinaryWriter(conn.Tcpclnt.GetStream());
+            BinaryWriter writer = new BinaryWriter(conn.GetStream());
             System.Text.UTF8Encoding  encoding=new System.Text.UTF8Encoding(); 
             Byte[] msg = encoding.GetBytes("Goodbye MongoDB!");
             writer.Write(16 + msg.Length + 1);

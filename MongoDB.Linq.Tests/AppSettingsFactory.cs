@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
+﻿using System.Configuration;
 using MongoDB.Driver;
 
 namespace MongoDB.Linq.Tests {
@@ -11,11 +8,15 @@ namespace MongoDB.Linq.Tests {
         public static int Port { get { return int.Parse(ConfigurationManager.AppSettings["mongo.port"]); } }
 
         public static Mongo CreateMongo() {
-            return new Mongo(Host, Port);
+            var builder = new MongoConnectionStringBuilder();
+            builder.AddServer(Host,Port);
+            return new Mongo(builder.ToString());
         }
 
         public static Connection CreateConnection() {
-            return new Connection(Host, Port);
+            var builder = new MongoConnectionStringBuilder();
+            builder.AddServer(Host, Port);
+            return ConnectionFactory.GetConnection(builder.ToString());
         }
     }
 }

@@ -10,6 +10,12 @@ namespace MongoDB.Driver
         private Connection connection;
         private IMongoCollection command;
 
+        public Database(Connection conn, String name){
+            this.connection = conn;
+            this.name = name;
+            this.command = this["$cmd"];
+        }
+
         private String name;
         public string Name {
             get { return name; }
@@ -24,7 +30,7 @@ namespace MongoDB.Driver
                 return metaData;
             }
         }
-        
+
         private DatabaseJS js;
         public DatabaseJS JS {
             get {
@@ -33,12 +39,6 @@ namespace MongoDB.Driver
                 }
                 return js;
             }
-        }        
-
-        public Database(Connection conn, String name){
-            this.connection = conn;
-            this.name = name;
-            this.command = this["$cmd"];
         }
 
         public List<String> GetCollectionNames(){

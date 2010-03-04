@@ -17,8 +17,7 @@ namespace MongoDB.Driver
         public void TestDefaults()
         {
             Mongo m = new Mongo();
-            Assert.AreEqual("localhost", m.Host);
-            Assert.AreEqual(27017, m.Port);
+            Assert.AreEqual(string.Empty, m.ConnectionString);
         }
         
         [Test()]

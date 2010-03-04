@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Net.Sockets;
 using MongoDB.Driver.IO;
 
 namespace MongoDB.Driver
@@ -9,43 +7,40 @@ namespace MongoDB.Driver
     /// <summary>
     /// Description of Connection.
     /// </summary>
-    public class Connection
-    {       
-        public const string DEFAULTHOST = "localhost";
-        public const int DEFAULTPORT = 27017;
-        
-        protected TcpClient tcpclnt;
-        #if DEBUG
-        public TcpClient Tcpclnt {
-            get { return tcpclnt; }
+    public class Connection : IDisposable
+    {
+        private readonly ConnectionPool _pool;
+        private RawConnection _connection;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Connection"/> class.
+        /// </summary>
+        /// <param name="pool">The pool.</param>
+        public Connection(ConnectionPool pool)
+        {
+            if(pool == null)
+                throw new ArgumentNullException("pool");
+
+            _pool = pool;
         }
-        #endif
-        
-        protected String host;    
-        public string Host {
-            get { return host; }
+
+        /// <summary>
+        /// Releases unmanaged resources and performs other cleanup operations before the
+        /// <see cref="Connection"/> is reclaimed by garbage collection.
+        /// </summary>
+        ~Connection()
+        {
+            // make sure the connection returns to pool if the use forget it.
+            Dispose();    
         }
-        
-        protected int port;       
-        public int Port {
-            get { return port; }
-        }
-                            
-        private ConnectionState state;      
-        public ConnectionState State {
-            get { return state; }
-        }
-        
-        public Connection():this(DEFAULTHOST,DEFAULTPORT){
-        }
-        
-        public Connection(String host):this(host,DEFAULTPORT){
-        }
-        
-        public Connection(String host, int port){
-            this.host = host;
-            this.port = port;
-            this.state = ConnectionState.Closed;
+
+        /// <summary>
+        /// Gets the connection string.
+        /// </summary>
+        /// <value>The connection string.</value>
+        public string ConnectionString
+        {
+            get { return _pool.ConnectionString; }
         }
 
         /// <summary>
@@ -60,13 +55,14 @@ namespace MongoDB.Driver
             }
             try{
                 ReplyMessage reply = new ReplyMessage();
-                lock(tcpclnt){
-                    msg.Write(tcpclnt.GetStream());
-                    reply.Read(tcpclnt.GetStream());
+                lock(_connection)
+                {
+                    msg.Write(_connection.GetStream());
+                    reply.Read(_connection.GetStream());
                 }
                 return reply;
             }catch(IOException){
-                this.Reconnect();
+                ReplaceInvalidConnection();
                 throw;
             }
             
@@ -83,15 +79,26 @@ namespace MongoDB.Driver
                 throw new MongoCommException("Operation cannot be performed on a closed connection.", this);
             }
             try{
-                lock(tcpclnt){
-                    msg.Write(tcpclnt.GetStream()); 
+                lock(_connection)
+                {
+                    msg.Write(_connection.GetStream()); 
                 }
-            }catch(IOException){//Sending doesn't seem to always trigger the detection of a closed socket.
-                this.Reconnect();
+            }catch(IOException){
+                //Sending doesn't seem to always trigger the detection of a closed socket.
+                ReplaceInvalidConnection();
                 throw;
             }
         }
-        
+
+        /// <summary>
+        /// Gets the state.
+        /// </summary>
+        /// <value>The state.</value>
+        public ConnectionState State
+        {
+            get{ return _connection != null ? ConnectionState.Opened : ConnectionState.Closed;}
+        }
+
         /// <summary>
         /// Just sends a simple message string to the database. 
         /// </summary>
@@ -103,22 +110,49 @@ namespace MongoDB.Driver
             msg.Message = message;
             this.SendMessage(msg);
         }
-        
-        public void Reconnect(){
-            Debug.WriteLine("Reconnecting", "Connection");
-            this.Open();
-        }
-        
+
+        /// <summary>
+        /// Opens this instance.
+        /// </summary>
         public virtual void Open(){
-            tcpclnt = new TcpClient();
-            tcpclnt.NoDelay = true;
-            tcpclnt.Connect(this.Host, this.Port);
-            this.state = ConnectionState.Opened;
+            _connection = _pool.BorrowConnection();
         }
-        
+
+        /// <summary>
+        /// Closes this instance.
+        /// </summary>
         public void Close(){
-            tcpclnt.Close();
-            this.state = ConnectionState.Closed;
+            if(_connection == null)
+                return;
+
+            _pool.ReturnConnection(_connection);
+            _connection = null;
+        }
+
+        /// <summary>
+        /// Replaces the invalid connection.
+        /// </summary>
+        private void ReplaceInvalidConnection()
+        {
+            if(_connection == null)
+                return;
+
+            _connection.MarkAsInvalid();
+            _pool.ReturnConnection(_connection);
+            _connection = _pool.BorrowConnection();
+        }
+
+        public Stream GetStream()
+        {
+            return _connection.GetStream();
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Close();
         }
     }
 }

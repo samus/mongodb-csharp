@@ -28,6 +28,7 @@ namespace MongoDB.Driver
             if(connectionString == null)
                 throw new ArgumentNullException("connectionString");
 
+            ConnectionString = connectionString;
             _connectionStringBuilder = new MongoConnectionStringBuilder(connectionString);
 
             if(_connectionStringBuilder.MaximumPoolSize < 1)
@@ -39,6 +40,12 @@ namespace MongoDB.Driver
 
             EnsureMinimalPoolSize();
         }
+
+        /// <summary>
+        /// Gets or sets the connection string.
+        /// </summary>
+        /// <value>The connection string.</value>
+        public string ConnectionString { get; private set; }
 
         /// <summary>
         /// Gets the size of the pool.

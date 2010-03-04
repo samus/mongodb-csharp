@@ -12,68 +12,77 @@ namespace MongoDB.Driver
     public class Mongo : IDisposable
     {
         private Connection connection;
-        
-        private String host;    
-        public string Host {
-            get { return host; }
-            set { host = value; }
-        }
-        
-        private int port;   
-        public int Port {
-            get { return port; }
-            set { port = value; }
-        }
-        
+
         /// <summary>
-        /// Creates the object with the default localhost:27017 parameters. The connection is
-        /// created lazily.
+        /// Initializes a new instance of the <see cref="Mongo"/> class.
         /// </summary>
-        public Mongo():this(Connection.DEFAULTHOST,Connection.DEFAULTPORT)
+        public Mongo():this(string.Empty)
         {
         }
-        
-        public Mongo(String host):this(host,Connection.DEFAULTPORT){
-        }
-        
-        public Mongo(String host, int port){
-            this.Host = host;
-            this.port = port;
-            connection = new Connection(host, port);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mongo"/> class.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        public Mongo(string connectionString)
+        {
+            if(connectionString == null)
+                throw new ArgumentNullException("connectionString");
+
+            connection = ConnectionFactory.GetConnection(connectionString);
         }
 
-        public Mongo(String leftHost, String rightHost):this(leftHost,Connection.DEFAULTPORT,rightHost,Connection.DEFAULTPORT,false){}        
-
-        public Mongo(String leftHost, int leftPort, String rightHost, int rightPort):this(leftHost,leftPort,rightHost,rightPort,false){}
-        
-        public Mongo(String leftHost, int leftPort, String rightHost, int rightPort, bool slaveOk){
-            this.Host = leftHost;
-            this.port = leftPort;
-            connection = new PairedConnection(leftHost,leftPort,rightHost,rightPort,slaveOk);
+        /// <summary>
+        /// Gets the connection string.
+        /// </summary>
+        /// <value>The connection string.</value>
+        public string ConnectionString
+        {
+            get { return connection.ConnectionString; }
         }
-        
+
+        /// <summary>
+        /// Gets the database.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public Database GetDatabase(String name){
             return new Database(connection, name);
         }
 
+        /// <summary>
+        /// Gets the <see cref="MongoDB.Driver.Database"/> with the specified name.
+        /// </summary>
+        /// <value></value>
         public Database this[ String name ]  {
             get{
                 return this.GetDatabase(name);
             }
-        }       
-        
+        }
+
+        /// <summary>
+        /// Connects this instance.
+        /// </summary>
+        /// <returns></returns>
         public Boolean Connect(){
             connection.Open();
             return connection.State == ConnectionState.Opened;
         }
-        
+
+        /// <summary>
+        /// Disconnects this instance.
+        /// </summary>
+        /// <returns></returns>
         public Boolean Disconnect(){
             connection.Close();
             return connection.State == ConnectionState.Closed;
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose (){
-            this.Disconnect();
+            Dispose();
         }
     }
 }

@@ -4,20 +4,44 @@ using System.Threading;
 
 namespace MongoDB.Driver
 {
-    internal static class ConnectionFactory
+    public static class ConnectionFactory
     {
         private static readonly TimeSpan MaintenaceWakeup = TimeSpan.FromSeconds(30);
         private static readonly Timer MaintenanceTimer;
+        private static readonly Dictionary<string,ConnectionPool> Pools = new Dictionary<string, ConnectionPool>();
+        private static readonly object SyncObject = new object();
 
+        /// <summary>
+        /// Initializes the <see cref="ConnectionFactory"/> class.
+        /// </summary>
         static ConnectionFactory()
         {
             MaintenanceTimer = new Timer(o => OnMaintenaceWakeup(), null, MaintenaceWakeup, MaintenaceWakeup);
-
         }
 
+        /// <summary>
+        /// Gets the pool count.
+        /// </summary>
+        /// <value>The pool count.</value>
+        public static int PoolCount
+        {
+            get
+            {
+                lock(SyncObject)
+                    return Pools.Count;
+            }
+        }
+
+        /// <summary>
+        /// Called when [maintenace wakeup].
+        /// </summary>
         private static void OnMaintenaceWakeup()
         {
-            
+            lock(SyncObject)
+            {
+                foreach(var pool in Pools.Values)
+                    pool.Cleanup();
+            }
         }
 
         /// <summary>
@@ -30,23 +54,15 @@ namespace MongoDB.Driver
             if(connectionString == null)
                 throw new ArgumentNullException("connectionString");
 
-            var builder = new MongoConnectionStringBuilder(connectionString);
-
-            var servers = new List<MongoServerEndPoint>(builder.Servers);
-            if(servers.Count == 1)
-            {
-                var server = servers[0];
-                return new Connection(server.Host, server.Port);
-            }
-
-            if(servers.Count == 2)
-            {
-                var leftServer = servers[0];
-                var rightServer = servers[1];
-                return new PairedConnection(leftServer.Host, leftServer.Port, rightServer.Host, rightServer.Port);
-            }
+            ConnectionPool pool;
             
-            throw new InvalidOperationException("Currently are only two servers supported.");
+            lock(SyncObject)
+            {
+                if(!Pools.TryGetValue(connectionString, out pool))
+                    Pools.Add(connectionString, pool = new ConnectionPool(connectionString));
+            }
+
+            return new Connection(pool);
         }
     }
 }

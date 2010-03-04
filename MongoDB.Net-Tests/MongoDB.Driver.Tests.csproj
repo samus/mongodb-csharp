@@ -80,7 +80,6 @@
     <Compile Include="TestMongoExceptions.cs" />
     <Compile Include="TestOid.cs" />
     <Compile Include="TestOidGenerator.cs" />
-    <Compile Include="TestPairedConnection.cs" />
     <Compile Include="Bson\TestBsonWriter.cs" />
     <Compile Include="TestDatabaseJS.cs" />
     <Compile Include="TestMapReduce.cs" />
