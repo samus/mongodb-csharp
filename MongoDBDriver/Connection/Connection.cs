@@ -35,6 +35,25 @@ namespace MongoDB.Driver.Connection
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is authenticated.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is authenticated; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsAuthenticated
+        {
+            get { return _connection.IsAuthenticated; }
+        }
+
+        /// <summary>
+        /// Masks as authenticated.
+        /// </summary>
+        public void MaskAuthenticated()
+        {
+            _connection.MarkAuthenticated();
+        }
+
+        /// <summary>
         /// Gets the connection string.
         /// </summary>
         /// <value>The connection string.</value>

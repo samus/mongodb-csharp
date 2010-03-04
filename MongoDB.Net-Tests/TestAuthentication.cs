@@ -2,6 +2,7 @@
  *  User: Sedward
  */
 using System;
+using MongoDB.Driver.Connection;
 using NUnit.Framework;
 
 namespace MongoDB.Driver
@@ -9,7 +10,8 @@ namespace MongoDB.Driver
     [TestFixture(Description = "Requires start server with --auth")]
 	public class TestAuthentication
 	{
-        const String testDatabase = "testAuth";
+        private const int AuthServerPort = MongoServerEndPoint.DefaultPort + 3;
+        const String testDatabaseName = "testAuth";
 	    const String testuser = "testuser";
         const String testpass = "test1234";
 
@@ -19,28 +21,24 @@ namespace MongoDB.Driver
         [TestFixtureSetUp]
         public void SetUp()
         {
-            using(var mongo = new Mongo())
+            using(var mongo = new Mongo(CreateConnectionStringBuilder().ToString()))
             {
                 mongo.Connect();
 
-                try
-                {
-                    mongo["admin"].MetaData.AddUser(adminuser, adminpass);
-                }
-                catch(MongoException) { }
+                var testDatabase = mongo[testDatabaseName];
+                if(testDatabase.MetaData.FindUser(testuser) == null)
+                    testDatabase.MetaData.AddUser(testuser, testpass);
 
-                try
-                {
-                    mongo[testDatabase].MetaData.AddUser(testuser, testpass);
-                }
-                catch(MongoException){}
+                var adminDatabase = mongo["admin"];
+                if(adminDatabase.MetaData.FindUser(adminuser) == null)
+                    adminDatabase.MetaData.AddUser(adminuser, adminpass);
             }
         }
 
 	    [Test]
         public void TestLoginGoodPassword()
 	    {
-            using(var mongo = ConnectAndAuthenticatedMongo(testuser, testpass, MongoServerEndPoint.DefaultPort))
+            using(var mongo = ConnectAndAuthenticatedMongo(testuser, testpass))
 	            TryInsertData(mongo);
 	    }
 
@@ -48,20 +46,20 @@ namespace MongoDB.Driver
         [ExpectedException(typeof(MongoException))]
         public void TestLoginBadPassword()
         {
-            using(var mongo = ConnectAndAuthenticatedMongo(testuser, "badpassword", MongoServerEndPoint.DefaultPort))
+            using(var mongo = ConnectAndAuthenticatedMongo(testuser, "badpassword"))
                 TryInsertData(mongo);
         }
 
 	    [Test]
         public void TestAuthenticatedInsert(){
-            using(var mongo = ConnectAndAuthenticatedMongo(testuser, testpass,MongoServerEndPoint.DefaultPort))
+            using(var mongo = ConnectAndAuthenticatedMongo(testuser, testpass))
                 TryInsertData(mongo);
         }
 
 	    [Test]
         [ExpectedException(typeof(MongoOperationException))]
         public void TestUnauthenticatedInsert(){
-            using(var mongo = new Mongo())
+            using(var mongo = new Mongo(CreateConnectionStringBuilder().ToString()))
             {
                 mongo.Connect();
 
@@ -69,18 +67,26 @@ namespace MongoDB.Driver
             }
         }
 
-	    private static Mongo ConnectAndAuthenticatedMongo(string username,string password,int port)
+	    private static Mongo ConnectAndAuthenticatedMongo(string username,string password)
         {
-            var builder = new MongoConnectionStringBuilder {Username = username, Password = password};
-            builder.AddServer("localhost",port);
+	        var builder = CreateConnectionStringBuilder();
+            builder.Username = username;
+	        builder.Password = password;
             var mongo = new Mongo(builder.ToString());
 	        mongo.Connect();
 	        return mongo;
         }
 
+        private static MongoConnectionStringBuilder CreateConnectionStringBuilder()
+        {
+            var builder = new MongoConnectionStringBuilder();
+            builder.AddServer("localhost", AuthServerPort);
+            return builder;
+        }
+
 	    private static void TryInsertData(Mongo mongo)
 	    {
-            var collection = mongo[testDatabase]["testCollection"];
+            var collection = mongo[testDatabaseName]["testCollection"];
             collection.Delete(new Document(),true);
             collection.Insert(new Document().Append("value", 84),true);
             
@@ -102,9 +108,12 @@ namespace MongoDB.Driver
              */
             using(var mongo = ConnectAndAuthenticatedMongo(adminuser, adminuser))
             {
-                mongo[testDatabase].MetaData.RemoveUser(testuser);
+                mongo[testDatabaseName].MetaData.RemoveUser(testuser);
                 mongo["admin"].MetaData.RemoveUser(adminuser);
             }
+
+            // clean connections
+            ConnectionFactory.Shutdown();
 	    }
 	}
 }

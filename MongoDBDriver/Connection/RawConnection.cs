@@ -44,14 +44,6 @@ namespace MongoDB.Driver.Connection
         }
 
         /// <summary>
-        /// Marks as invalid.
-        /// </summary>
-        public void MarkAsInvalid()
-        {
-            IsInvalid = true;
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether this instance is invalid.
         /// </summary>
         /// <value>
@@ -81,6 +73,30 @@ namespace MongoDB.Driver.Connection
         /// </summary>
         /// <value>The end point.</value>
         public MongoServerEndPoint EndPoint { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is authenticated.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is authenticated; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsAuthenticated { get; private set; }
+
+        /// <summary>
+        /// Marks as authenticated.
+        /// </summary>
+        public void MarkAuthenticated()
+        {
+            IsAuthenticated = true;
+        }
+
+        /// <summary>
+        /// Marks as invalid.
+        /// </summary>
+        public void MarkAsInvalid()
+        {
+            IsInvalid = true;
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

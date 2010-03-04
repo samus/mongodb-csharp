@@ -157,6 +157,9 @@ namespace MongoDB.Driver
         /// </summary>
         private void AuthenticateIfRequired()
         {
+            if(connection.IsAuthenticated)
+                return;
+
             var builder = new MongoConnectionStringBuilder(connection.ConnectionString);
             
             if(string.IsNullOrEmpty(builder.Username))
@@ -185,6 +188,8 @@ namespace MongoDB.Driver
                 //Todo: use custom exception?
                 throw new MongoException("Authentication faild for " + builder.Username, exception);
             }
+
+            connection.MaskAuthenticated();
         }
 
         /// <summary>
