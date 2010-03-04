@@ -7,6 +7,12 @@ namespace MongoDB.Driver.Connection
     [TestFixture]
     public class TestConnectionPool
     {
+        [TestFixtureSetUp]
+        public void SetUp()
+        {
+            ConnectionFactory.Shutdown();
+        }
+
         [Test]
         public void TestDefaultPoolSizeIsEmpty()
         {
