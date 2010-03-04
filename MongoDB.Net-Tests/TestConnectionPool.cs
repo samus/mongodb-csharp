@@ -10,8 +10,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestDefaultPoolSizeIsEmpty()
         {
-            var builder = new MongoConnectionStringBuilder();
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(string.Empty))
                 Assert.AreEqual(0, pool.PoolSize);
         }
 
@@ -19,7 +18,7 @@ namespace MongoDB.Driver
         public void TestMinimalPoolSizeIsEnsured()
         {
             var builder = new MongoConnectionStringBuilder {MinimumPoolSize = 3};
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(builder.ToString()))
                 Assert.AreEqual(3, pool.PoolSize);
         }
 
@@ -27,7 +26,7 @@ namespace MongoDB.Driver
         public void TestMaximumPoolSizeIsEnsured()
         {
             var builder = new MongoConnectionStringBuilder { MaximumPoolSize = 2 };
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(builder.ToString()))
             {
                 var connection1 = pool.BorrowConnection();
                 Assert.IsNotNull(connection1);
@@ -61,7 +60,7 @@ namespace MongoDB.Driver
             builder.AddServer("localhost");
             builder.AddServer("localhost", 27018);
             builder.AddServer("localhost", 27019);
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(builder.ToString()))
             {
                 var connection1 = pool.BorrowConnection();
                 var connection2 = pool.BorrowConnection();
@@ -80,7 +79,7 @@ namespace MongoDB.Driver
         public void TestBorrowOneConnection()
         {
             var builder = new MongoConnectionStringBuilder();
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(builder.ToString()))
             {
                 var connection = pool.BorrowConnection();
                 Assert.IsNotNull(connection);
@@ -91,8 +90,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestReturnConnection()
         {
-            var builder = new MongoConnectionStringBuilder();
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(string.Empty))
             {
                 var connection1 = pool.BorrowConnection();
                 pool.ReturnConnection(connection1);
@@ -105,8 +103,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestInvalidConnectionsArentReturndToPool()
         {
-            var builder = new MongoConnectionStringBuilder();
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(string.Empty))
             {
                 var connection = pool.BorrowConnection();
                 connection.MarkAsInvalid();
@@ -122,7 +119,7 @@ namespace MongoDB.Driver
             {
                 ConnectionLifetime = TimeSpan.FromMilliseconds(100)
             };
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(builder.ToString()))
             {
                 var connection = pool.BorrowConnection();
                 Thread.Sleep(200); // wait for lifetime reached
@@ -138,7 +135,7 @@ namespace MongoDB.Driver
             {
                 ConnectionLifetime = TimeSpan.FromMilliseconds(100)
             };
-            using(var pool = new ConnectionPool(builder))
+            using(var pool = new ConnectionPool(builder.ToString()))
             {
                 var connection1 = pool.BorrowConnection();
                 var connection2 = pool.BorrowConnection();

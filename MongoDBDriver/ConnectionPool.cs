@@ -18,23 +18,24 @@ namespace MongoDB.Driver
         private int _endPointPointer;
 
         /// <summary>
-        ///   Initializes a new instance of the
-        ///   <see cref = "ConnectionPool" />
-        ///   class.
+        /// Initializes a new instance of the
+        /// <see cref="ConnectionPool"/>
+        /// class.
         /// </summary>
-        /// <param name = "connectionStringBuilder">The connection string builder.</param>
-        public ConnectionPool(MongoConnectionStringBuilder connectionStringBuilder)
+        /// <param name="connectionString">The connection string.</param>
+        public ConnectionPool(string connectionString)
         {
-            if(connectionStringBuilder == null)
-                throw new ArgumentNullException("connectionStringBuilder");
-            if(connectionStringBuilder.MaximumPoolSize < 1)
-                throw new ArgumentException("MaximumPoolSize have to be greater or equal then 1");
-            if(connectionStringBuilder.MinimumPoolSize < 0)
-                throw new ArgumentException("MinimumPoolSize have to be greater or equal then 0");
-            if(connectionStringBuilder.ConnectionLifetime.TotalSeconds<0)
-                throw new ArgumentException("ConnectionLifetime have to be greater or equal then 0");
+            if(connectionString == null)
+                throw new ArgumentNullException("connectionString");
 
-            _connectionStringBuilder = connectionStringBuilder;
+            _connectionStringBuilder = new MongoConnectionStringBuilder(connectionString);
+
+            if(_connectionStringBuilder.MaximumPoolSize < 1)
+                throw new ArgumentException("MaximumPoolSize have to be greater or equal then 1");
+            if(_connectionStringBuilder.MinimumPoolSize < 0)
+                throw new ArgumentException("MinimumPoolSize have to be greater or equal then 0");
+            if(_connectionStringBuilder.ConnectionLifetime.TotalSeconds < 0)
+                throw new ArgumentException("ConnectionLifetime have to be greater or equal then 0");
 
             EnsureMinimalPoolSize();
         }
