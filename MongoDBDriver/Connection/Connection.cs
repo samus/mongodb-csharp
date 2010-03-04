@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using MongoDB.Driver.IO;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.Connection
 {
     /// <summary>
     /// Description of Connection.

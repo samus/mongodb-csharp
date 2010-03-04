@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.Connection
 {
     /// <summary>
     ///   Connection pool implementation based on this document:

@@ -7,10 +7,10 @@ namespace MongoDB.Driver
 {
     public class Database
     {
-        private Connection connection;
+        private Connection.Connection connection;
         private IMongoCollection command;
 
-        public Database(Connection conn, String name){
+        public Database(Connection.Connection conn, String name){
             this.connection = conn;
             this.name = name;
             this.command = this["$cmd"];

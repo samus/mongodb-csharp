@@ -73,10 +73,10 @@
     <Compile Include="Bson\BsonDataType.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="CollectionMetaData.cs" />
-    <Compile Include="Connection.cs" />
-    <Compile Include="ConnectionFactory.cs" />
-    <Compile Include="ConnectionPool.cs" />
-    <Compile Include="ConnectionState.cs" />
+    <Compile Include="Connection\Connection.cs" />
+    <Compile Include="Connection\ConnectionFactory.cs" />
+    <Compile Include="Connection\ConnectionPool.cs" />
+    <Compile Include="Connection\ConnectionState.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
@@ -123,7 +123,7 @@
     <Compile Include="MapReduce.cs" />
     <Compile Include="MapReduceBuilder.cs" />
     <Compile Include="QueryOptions.cs" />
-    <Compile Include="RawConnection.cs" />
+    <Compile Include="Connection\RawConnection.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
     <Compile Include="Util\JsonUtils.cs" />

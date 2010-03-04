@@ -10,7 +10,7 @@ namespace MongoDB.Driver
     {
         private static OidGenerator oidGenerator = new OidGenerator();
         
-        private Connection connection;
+        private Connection.Connection connection;
         
         private string name;        
         public string Name {
@@ -44,7 +44,7 @@ namespace MongoDB.Driver
                 return db;
             }
         }
-        public Collection(string name, Connection conn, string dbName)
+        public Collection(string name, Connection.Connection conn, string dbName)
         {
             this.name = name;
             this.connection = conn;

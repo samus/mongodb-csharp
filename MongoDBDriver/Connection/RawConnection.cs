@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.Connection
 {
     public class RawConnection : IDisposable
     {

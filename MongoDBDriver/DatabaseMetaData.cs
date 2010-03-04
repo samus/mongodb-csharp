@@ -7,11 +7,11 @@ namespace MongoDB.Driver
     /// </summary>
     public class DatabaseMetaData
     {        
-        private Connection connection;  
+        private Connection.Connection connection;  
         private string name;
         private Database db;
         
-        public DatabaseMetaData(string name, Connection conn){
+        public DatabaseMetaData(string name, Connection.Connection conn){
             this.connection = conn;
             this.name = name;
             this.db = new Database(conn, name);

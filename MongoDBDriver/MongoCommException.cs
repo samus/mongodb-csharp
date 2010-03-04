@@ -18,7 +18,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="connection">The connection.</param>
-        public MongoCommException(string message, Connection connection):this(message,connection,null){}
+        public MongoCommException(string message, Connection.Connection connection):this(message,connection,null){}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCommException"/> class.
@@ -26,7 +26,7 @@ namespace MongoDB.Driver
         /// <param name="message">The message.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="inner">The inner.</param>
-        public MongoCommException(string message, Connection connection, Exception inner):base(message,inner){
+        public MongoCommException(string message, Connection.Connection connection, Exception inner):base(message,inner){
             ConnectionString = connection.ConnectionString;
         }       
     }
