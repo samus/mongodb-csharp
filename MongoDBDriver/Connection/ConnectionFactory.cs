@@ -7,7 +7,7 @@ namespace MongoDB.Driver.Connection
     public static class ConnectionFactory
     {
         private static readonly TimeSpan MaintenaceWakeup = TimeSpan.FromSeconds(30);
-        private static readonly Timer MaintenanceTimer;
+        private static readonly Timer MaintenanceTimer = new Timer(o => OnMaintenaceWakeup());
         private static readonly Dictionary<string,ConnectionPool> Pools = new Dictionary<string, ConnectionPool>();
         private static readonly object SyncObject = new object();
 
@@ -16,7 +16,7 @@ namespace MongoDB.Driver.Connection
         /// </summary>
         static ConnectionFactory()
         {
-            MaintenanceTimer = new Timer(o => OnMaintenaceWakeup(), null, MaintenaceWakeup, MaintenaceWakeup);
+            MaintenanceTimer.Change(MaintenaceWakeup, MaintenaceWakeup);
         }
 
         /// <summary>
