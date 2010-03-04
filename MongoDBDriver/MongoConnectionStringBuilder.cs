@@ -150,7 +150,7 @@ namespace MongoDB.Driver
                     {
                         try
                         {
-                            var seconds = int.Parse(value);
+                            var seconds = double.Parse(value);
 
                             ConnectionLifetime = seconds>0 ? TimeSpan.FromSeconds(seconds) : DefaultConnectionLifeTime;
                         }
@@ -285,7 +285,7 @@ namespace MongoDB.Driver
 
             if(ConnectionLifetime != DefaultConnectionLifeTime)
             {
-                builder.AppendFormat("ConnectionLifetime={0}", Convert.ToInt32(ConnectionLifetime.TotalSeconds));
+                builder.AppendFormat("ConnectionLifetime={0}", ConnectionLifetime.TotalSeconds);
                 builder.Append(';');
             }
 
