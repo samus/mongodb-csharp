@@ -40,7 +40,9 @@ namespace MongoDB.Driver
         public MongoConnectionStringBuilder(string connectionString)
             : this()
         {
-            Parse(connectionString);
+
+            if(!string.IsNullOrEmpty(connectionString))
+                Parse(connectionString);
         }
 
         /// <summary>
