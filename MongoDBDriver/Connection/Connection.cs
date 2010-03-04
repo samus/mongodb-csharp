@@ -114,7 +114,7 @@ namespace MongoDB.Driver.Connection
         /// <summary>
         /// Opens this instance.
         /// </summary>
-        public virtual void Open(){
+        public void Open(){
             _connection = _pool.BorrowConnection();
         }
 
