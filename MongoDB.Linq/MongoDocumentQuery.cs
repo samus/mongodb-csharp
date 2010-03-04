@@ -9,11 +9,9 @@ namespace MongoDB.Linq {
     /// fake data and are only used to extract parameter information from expressions.
     /// </summary>
     public class MongoDocumentQuery {
-        private readonly Document document;
         private readonly string key;
 
         public MongoDocumentQuery(Document document, string key) {
-            this.document = document;
             this.key = key;
         }
 
@@ -26,15 +24,11 @@ namespace MongoDB.Linq {
             return false;
         }
 
-        #region operator overloads for cast-less expressions
-        #region string overloads
         public static bool operator ==(MongoDocumentQuery a, string b) { return false; }
         public static bool operator !=(MongoDocumentQuery a, string b) { return false; }
         public static bool operator ==(string a, MongoDocumentQuery b) { return false; }
         public static bool operator !=(string a, MongoDocumentQuery b) { return false; }
-        #endregion
 
-        #region int overloads
         public static bool operator >(MongoDocumentQuery a, int b) { return false; }
         public static bool operator >=(MongoDocumentQuery a, int b) { return false; }
         public static bool operator <(MongoDocumentQuery a, int b) { return false; }
@@ -47,9 +41,7 @@ namespace MongoDB.Linq {
         public static bool operator <=(int a, MongoDocumentQuery b) { return false; }
         public static bool operator ==(int a, MongoDocumentQuery b) { return false; }
         public static bool operator !=(int a, MongoDocumentQuery b) { return false; }
-        #endregion
 
-        #region double overloads
         public static bool operator >(MongoDocumentQuery a, double b) { return false; }
         public static bool operator >=(MongoDocumentQuery a, double b) { return false; }
         public static bool operator <(MongoDocumentQuery a, double b) { return false; }
@@ -62,9 +54,7 @@ namespace MongoDB.Linq {
         public static bool operator <=(double a, MongoDocumentQuery b) { return false; }
         public static bool operator ==(double a, MongoDocumentQuery b) { return false; }
         public static bool operator !=(double a, MongoDocumentQuery b) { return false; }
-        #endregion
 
-        #region DateTime overloads
         public static bool operator >(MongoDocumentQuery a, DateTime b) { return false; }
         public static bool operator >=(MongoDocumentQuery a, DateTime b) { return false; }
         public static bool operator <(MongoDocumentQuery a, DateTime b) { return false; }
@@ -77,7 +67,30 @@ namespace MongoDB.Linq {
         public static bool operator <=(DateTime a, MongoDocumentQuery b) { return false; }
         public static bool operator ==(DateTime a, MongoDocumentQuery b) { return false; }
         public static bool operator !=(DateTime a, MongoDocumentQuery b) { return false; }
-        #endregion
-        #endregion
+
+        public bool Equals(MongoDocumentQuery other)
+        {
+            if(ReferenceEquals(null, other))
+                return false;
+            if(ReferenceEquals(this, other))
+                return true;
+            return Equals(other.key, key);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(ReferenceEquals(null, obj))
+                return false;
+            if(ReferenceEquals(this, obj))
+                return true;
+            if(obj.GetType() != typeof(MongoDocumentQuery))
+                return false;
+            return Equals((MongoDocumentQuery)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (key != null ? key.GetHashCode() : 0);
+        }
     }
 }
