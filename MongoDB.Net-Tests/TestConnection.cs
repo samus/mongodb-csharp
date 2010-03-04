@@ -1,12 +1,9 @@
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using MongoDB.Driver.Connection;
 using NUnit.Framework;
 
 using MongoDB.Driver.IO;
-using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver
 {
