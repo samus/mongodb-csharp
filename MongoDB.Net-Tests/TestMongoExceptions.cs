@@ -1,7 +1,4 @@
-﻿
-
-using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace MongoDB.Driver
 {
@@ -12,7 +9,7 @@ namespace MongoDB.Driver
         public void TestThrow(){
             try{
                 
-            }catch(MongoCommException mce){
+            }catch(MongoCommException){
                 //Assert.AreEqual("localhost", mce.ConnectionString);
             }
         }

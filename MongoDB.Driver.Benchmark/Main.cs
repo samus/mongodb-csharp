@@ -122,7 +122,7 @@ namespace MongoDB.Driver.Benchmark
                     Document idx = new Document().Append("x", IndexOrder.Ascending);
                     db[col].MetaData.CreateIndex(idx,false);
                 }
-            }catch(MongoCommandException mce){
+            }catch(MongoCommandException){
                 //swallow for now.
             }
         }

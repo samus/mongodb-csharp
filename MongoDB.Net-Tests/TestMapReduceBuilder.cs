@@ -82,7 +82,6 @@ namespace MongoDB.Driver
                 Assert.IsNotNull(mr.Result);
                 Assert.IsTrue(mr.Result.Ok);
                 tempcollname = tests.Name + "." + mr.Result.CollectionName;
-                bool found = false;
                 Assert.IsTrue(tests.GetCollectionNames().Contains(tempcollname));
             }
             Assert.IsFalse(tests.GetCollectionNames().Contains(tempcollname));
