@@ -10,7 +10,7 @@ namespace MongoDB.Driver
     {
         public const int DefaultMaximumPoolSize = 100;
         public const int DefaultMinimumPoolSize = 0;
-        public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.MaxValue;
+        public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.Zero;
 
         private static readonly Regex PairRegex = new Regex(@"^\s*(.*)\s*=\s*(.*)\s*$");
         private static readonly Regex ServerRegex = new Regex(@"\s*([^:]+)(?::(\d+))?\s*$");
@@ -25,7 +25,7 @@ namespace MongoDB.Driver
         /// </summary>
         public MongoConnectionStringBuilder()
         {
-            ConnectionLifetime = TimeSpan.MaxValue;
+            ConnectionLifetime = DefaultConnectionLifeTime;
             MaximumPoolSize = DefaultMaximumPoolSize;
             MinimumPoolSize = DefaultMinimumPoolSize;
         }
@@ -148,7 +148,9 @@ namespace MongoDB.Driver
                     {
                         try
                         {
-                            ConnectionLifetime = TimeSpan.FromSeconds(int.Parse(value));
+                            var seconds = int.Parse(value);
+
+                            ConnectionLifetime = seconds>0 ? TimeSpan.FromSeconds(seconds) : DefaultConnectionLifeTime;
                         }
                         catch(FormatException exception)
                         {
