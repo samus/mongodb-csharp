@@ -63,6 +63,7 @@
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
+    <Compile Include="TestConnectionFactory.cs" />
     <Compile Include="TestConnectionPool.cs" />
     <Compile Include="TestConnectionStringBuilder.cs" />
     <Compile Include="TestCursor.cs" />

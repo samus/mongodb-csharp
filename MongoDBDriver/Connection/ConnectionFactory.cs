@@ -6,7 +6,7 @@ namespace MongoDB.Driver.Connection
 {
     public static class ConnectionFactory
     {
-        private static readonly TimeSpan MaintenaceWakeup = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan MaintenaceWakeup = TimeSpan.FromSeconds(10);
         private static readonly Timer MaintenanceTimer = new Timer(o => OnMaintenaceWakeup());
         private static readonly Dictionary<string,ConnectionPool> Pools = new Dictionary<string, ConnectionPool>();
         private static readonly object SyncObject = new object();
@@ -33,14 +33,16 @@ namespace MongoDB.Driver.Connection
         }
 
         /// <summary>
-        /// Called when [maintenace wakeup].
+        /// Shutdowns this instance.
         /// </summary>
-        private static void OnMaintenaceWakeup()
+        public static void Shutdown()
         {
             lock(SyncObject)
             {
                 foreach(var pool in Pools.Values)
-                    pool.Cleanup();
+                    pool.Dispose();
+                
+                Pools.Clear();
             }
         }
 
@@ -63,6 +65,18 @@ namespace MongoDB.Driver.Connection
             }
 
             return new Connection(pool);
+        }
+
+        /// <summary>
+        /// Called when [maintenace wakeup].
+        /// </summary>
+        private static void OnMaintenaceWakeup()
+        {
+            lock(SyncObject)
+            {
+                foreach(var pool in Pools.Values)
+                    pool.Cleanup();
+            }
         }
     }
 }
