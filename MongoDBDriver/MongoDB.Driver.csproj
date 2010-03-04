@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -70,11 +70,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bson\BsonType.cs" />
     <Compile Include="Bson\BsonDataType.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connection.cs" />
+    <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="ConnectionPool.cs" />
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="AssemblyInfo.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="MapReduce.cs" />
     <Compile Include="MapReduceBuilder.cs" />
     <Compile Include="QueryOptions.cs" />
+    <Compile Include="RawConnection.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
     <Compile Include="Util\JsonUtils.cs" />

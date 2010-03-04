@@ -63,6 +63,7 @@
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
+    <Compile Include="TestConnectionPool.cs" />
     <Compile Include="TestConnectionStringBuilder.cs" />
     <Compile Include="TestCursor.cs" />
     <Compile Include="TestDatabase.cs" />
@@ -117,8 +118,5 @@
     <EmbeddedResource Include="test-data\tests.binary.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\" />
   </ItemGroup>
 </Project>

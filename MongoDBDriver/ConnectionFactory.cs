@@ -1,10 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace MongoDB.Driver
 {
     internal static class ConnectionFactory
     {
+        private static readonly TimeSpan MaintenaceWakeup = TimeSpan.FromSeconds(30);
+        private static readonly Timer MaintenanceTimer;
+
+        static ConnectionFactory()
+        {
+            MaintenanceTimer = new Timer(o => OnMaintenaceWakeup(), null, MaintenaceWakeup, MaintenaceWakeup);
+
+        }
+
+        private static void OnMaintenaceWakeup()
+        {
+            
+        }
+
         /// <summary>
         /// Gets the connection.
         /// </summary>
