@@ -135,6 +135,18 @@ namespace MongoDB.Driver.Connection
         }
 
         [Test]
+        public void TestDisconnectedConnectionsArentReturndToPool()
+        {
+            using(var pool = new ConnectionPool(string.Empty))
+            {
+                var connection = pool.BorrowConnection();
+                connection.Dispose();
+                pool.ReturnConnection(connection);
+                Assert.AreEqual(0, pool.PoolSize);
+            }
+        }
+
+        [Test]
         public void TestIfConnectionLifetimeIsReachedItDosenotReturndToPool()
         {
             var builder = new MongoConnectionStringBuilder
