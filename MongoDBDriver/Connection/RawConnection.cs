@@ -67,7 +67,7 @@ namespace MongoDB.Driver.Connection
         /// </value>
         public bool IsConnected
         {
-            get { return _client.Connected; }
+            get { return _client.Client != null && _client.Connected; }
         }
 
         /// <summary>
