@@ -10,6 +10,7 @@ namespace MongoDB.Driver
     {
         public const int DefaultMaximumPoolSize = 5;
         public const int DefaultMinimumPoolSize = 1;
+        public static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(15);
         public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.Zero;
 
         private static readonly Regex PairRegex = new Regex ("^\\s*(.*)\\s*=\\s*(.*)\\s*$");
@@ -25,6 +26,7 @@ namespace MongoDB.Driver
         /// </summary>
         public MongoConnectionStringBuilder (){
             ConnectionLifetime = DefaultConnectionLifeTime;
+            ConnectionTimeout = DefaultConnectionTimeout;
             MaximumPoolSize = DefaultMaximumPoolSize;
             MinimumPoolSize = DefaultMinimumPoolSize;
         }
@@ -80,6 +82,12 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value>The connection lifetime.</value>
         public TimeSpan ConnectionLifetime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the connection timeout.
+        /// </summary>
+        /// <value>The connection timeout.</value>
+        public TimeSpan ConnectionTimeout { get; set; }
 
         /// <summary>
         ///   Parses the specified connection string.
@@ -141,6 +149,17 @@ namespace MongoDB.Driver
                             ConnectionLifetime = seconds > 0 ? TimeSpan.FromSeconds (seconds) : DefaultConnectionLifeTime;
                         } catch (FormatException exception) {
                             throw new FormatException ("Invalid number for ConnectionLifetime in connection string", exception);
+                        }
+                        break;
+                    }
+                    case "ConnectionTimeout":
+                    case "ConnectTimeout":                    {
+                        try {
+                            var seconds = double.Parse(value);
+
+                            ConnectionTimeout = seconds > 0 ? TimeSpan.FromSeconds(seconds) : DefaultConnectionTimeout;
+                        } catch(FormatException exception) {
+                            throw new FormatException("Invalid number for ConnectionTimeout in connection string", exception);
                         }
                         break;
                     }
@@ -254,7 +273,12 @@ namespace MongoDB.Driver
                 builder.AppendFormat ("MinimumPoolSize={0}", MinimumPoolSize);
                 builder.Append (';');
             }
-            
+
+            if (ConnectionTimeout != DefaultConnectionTimeout) {
+                builder.AppendFormat("ConnectionTimeout={0}", ConnectionTimeout.TotalSeconds);
+                builder.Append(';');
+            }
+
             if (ConnectionLifetime != DefaultConnectionLifeTime) {
                 builder.AppendFormat ("ConnectionLifetime={0}", ConnectionLifetime.TotalSeconds);
                 builder.Append (';');
