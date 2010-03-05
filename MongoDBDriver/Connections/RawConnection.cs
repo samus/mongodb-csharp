@@ -3,6 +3,10 @@ using System.Net.Sockets;
 
 namespace MongoDB.Driver.Connections
 {
+    /// <summary>
+    /// Represents a raw connection on the wire which is managed by the 
+    /// connection pool.
+    /// </summary>
     public class RawConnection : IDisposable
     {
         private readonly TcpClient _client = new TcpClient();

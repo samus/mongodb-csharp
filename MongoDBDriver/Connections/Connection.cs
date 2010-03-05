@@ -5,7 +5,12 @@ using MongoDB.Driver.IO;
 namespace MongoDB.Driver.Connections
 {
     /// <summary>
-    /// Description of Connection.
+    /// Connection is a managment unit which uses a RawConnection from connection pool
+    /// to comunicate with the server. 
+    /// <remarks>
+    /// If an connection error occure, the RawConnection is transparently replaced 
+    /// by a new fresh connection.
+    /// </remarks>
     /// </summary>
     public class Connection : IDisposable
     {
