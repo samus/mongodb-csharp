@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver.Connections;
 using MongoDB.Driver.IO;
-using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver
 {
