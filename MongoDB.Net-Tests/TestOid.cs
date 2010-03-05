@@ -47,7 +47,7 @@ namespace MongoDB.Driver
             bool thrown = false;
             try{
                 new Oid("4a7067c30a57000000008ecb");
-            }catch(ArgumentException ae){
+            }catch(ArgumentException){
                 thrown = true;
             }
             Assert.IsFalse(thrown,"ID should be fine.");                        

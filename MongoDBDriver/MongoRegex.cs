@@ -2,7 +2,6 @@ namespace MongoDB.Driver
 {
     public class MongoRegex
     {   
-        
         /// <summary>
         /// A valid regex string including the enclosing / characters.
         /// </summary>
@@ -24,8 +23,7 @@ namespace MongoDB.Driver
             this.Options = options;
         }
         
-        public override string ToString ()
-        {
+        public override string ToString (){
             return string.Format("{0}{1}", Expression, Options);
         }
     }

@@ -54,8 +54,7 @@ namespace MongoDB.Driver
             List<String> names = mongo["tests"].GetCollectionNames();
             Assert.IsNotNull(names,"No collection names returned");
             Assert.IsTrue(names.Count > 0);
-            Assert.IsTrue(names.Contains("tests.reads"));
-            
+            Assert.IsTrue(names.Contains("tests.inserts"));
         }
         
         [Test]

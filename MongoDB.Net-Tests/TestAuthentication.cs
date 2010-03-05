@@ -2,89 +2,102 @@
  *  User: Sedward
  */
 using System;
-using System.Collections.Generic;
+using MongoDB.Driver.Connections;
 using NUnit.Framework;
-using System.Security.Cryptography;
-using System.Text;
-using MongoDB.Driver;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.IO;
 
 namespace MongoDB.Driver
 {
-	[TestFixture]
+    [TestFixture(Description = "Requires start server with --auth")]
 	public class TestAuthentication
 	{
-        Mongo mongo = new Mongo();
-        
-        Database db;
-        String testuser = "testuser";
-        String testpass = "test1234";
-        
-        Database admindb;
-        String adminuser = "adminuser";
-        String adminpass = "admin1234";
-        
-	    [Test]
-        public void TestLoginGoodPassword(){
-            bool ok = Authenticate();
-            Assert.IsTrue(ok);
-            db.Logout();
-        }
+        private const int AuthServerPort = MongoServerEndPoint.DefaultPort + 3;
+        const String testDatabaseName = "testAuth";
+	    const String testuser = "testuser";
+        const String testpass = "test1234";
 
-        [Test]
-        public void TestLoginBadPassword(){
-            bool ok = db.Authenticate("testuser", "badpassword");
-            Assert.IsFalse(ok);
-        }
+        const String adminuser = "adminuser";
+        const String adminpass = "admin1234";
 
-        [Test]
-        public void TestAdminLogin(){
-            bool ok = admindb.Authenticate(adminuser, adminpass);
-            Assert.IsTrue(ok);
-            admindb.Logout();
-        }
-
-        [Test]
-        public void TestAuthenticatedInsert(){
-            bool ok = Authenticate();
-            IMongoCollection tests = db["inserts"];
-            if (ok){
-                tests.Insert(new Document().Append("value", 34));
-            }
-            Document valA = tests.FindOne(new Document().Append("value", 34));
-            Assert.AreEqual(34, valA["value"]);
-            db.Logout();
-        }
-
-        [Test]
-        public void TestUnauthenticatedInsert(){
-            try{
-                db.Logout();
-            }catch(MongoException){
-                //We don't care.  Just wanted to make sure we weren't logged in
-            }
-            IMongoCollection tests = db["inserts"];
-            tests.Insert(new Document().Append("value", 84));
-            Document valA = tests.FindOne(new Document().Append("value", 84));
-            Assert.AreNotEqual(84, valA["value"]);
-        }
-        
         [TestFixtureSetUp]
-        public void TestSetUp(){
-            mongo.Connect();
-            db = mongo["TestAuth"];
-            admindb = mongo["admin"];
+        public void SetUp()
+        {
+            using(var mongo = new Mongo(CreateConnectionStringBuilder().ToString()))
+            {
+                mongo.Connect();
 
-            admindb.MetaData.AddUser(adminuser, adminpass);
-            admindb.Authenticate(adminuser, adminpass);
-            db.MetaData.AddUser(testuser, testpass);
-            admindb.Logout();
+                var testDatabase = mongo[testDatabaseName];
+                if(testDatabase.MetaData.FindUser(testuser) == null)
+                    testDatabase.MetaData.AddUser(testuser, testpass);
+
+                var adminDatabase = mongo["admin"];
+                if(adminDatabase.MetaData.FindUser(adminuser) == null)
+                    adminDatabase.MetaData.AddUser(adminuser, adminpass);
+            }
         }
 
-        [TestFixtureTearDown]
-        public void TestTearDown(){
-            /*
+	    [Test]
+        public void TestLoginGoodPassword()
+	    {
+            using(var mongo = ConnectAndAuthenticatedMongo(testuser, testpass))
+	            TryInsertData(mongo);
+	    }
+
+	    [Test]
+        [ExpectedException(typeof(MongoException))]
+        public void TestLoginBadPassword()
+        {
+            using(var mongo = ConnectAndAuthenticatedMongo(testuser, "badpassword"))
+                TryInsertData(mongo);
+        }
+
+	    [Test]
+        public void TestAuthenticatedInsert(){
+            using(var mongo = ConnectAndAuthenticatedMongo(testuser, testpass))
+                TryInsertData(mongo);
+        }
+
+	    [Test]
+        [ExpectedException(typeof(MongoOperationException))]
+        public void TestUnauthenticatedInsert(){
+            using(var mongo = new Mongo(CreateConnectionStringBuilder().ToString()))
+            {
+                mongo.Connect();
+
+                TryInsertData(mongo);
+            }
+        }
+
+	    private static Mongo ConnectAndAuthenticatedMongo(string username,string password)
+        {
+	        var builder = CreateConnectionStringBuilder();
+            builder.Username = username;
+	        builder.Password = password;
+            var mongo = new Mongo(builder.ToString());
+	        mongo.Connect();
+	        return mongo;
+        }
+
+        private static MongoConnectionStringBuilder CreateConnectionStringBuilder()
+        {
+            var builder = new MongoConnectionStringBuilder();
+            builder.AddServer("localhost", AuthServerPort);
+            return builder;
+        }
+
+	    private static void TryInsertData(Mongo mongo)
+	    {
+            var collection = mongo[testDatabaseName]["testCollection"];
+            collection.Delete(new Document(),true);
+            collection.Insert(new Document().Append("value", 84),true);
+            
+            var value = collection.FindOne(new Document().Append("value", 84));
+            
+            Assert.AreEqual(84, value["value"]);
+        }
+
+	    [TestFixtureTearDown]
+	    public void TestTearDown(){
+	        /*
              * In case clean up fails open a Mongo shell and execute the following commands
              * use admin
              * db.auth("adminuser", "admin1234");
@@ -93,18 +106,14 @@ namespace MongoDB.Driver
              * db.system.users.find(); //should not see adminuser or any other.
              * Tests should now run.
              */
-            Authenticate();
-            admindb.Authenticate(adminuser, adminpass);
-            
-            db.MetaData.DropCollection("inserts");
-            
-            db.MetaData.RemoveUser(testuser);
-            admindb.MetaData.RemoveUser(adminuser);
-        }
+            using(var mongo = ConnectAndAuthenticatedMongo(adminuser, adminuser))
+            {
+                mongo[testDatabaseName].MetaData.RemoveUser(testuser);
+                mongo["admin"].MetaData.RemoveUser(adminuser);
+            }
 
-        protected bool Authenticate(){
-            return db.Authenticate(testuser,testpass);
-        }
-    }
+            // clean connections
+            ConnectionFactory.Shutdown();
+	    }
+	}
 }
-//error: {"$err" : "unauthorized"} incorporate sometime.

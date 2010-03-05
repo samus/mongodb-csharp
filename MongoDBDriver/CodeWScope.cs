@@ -1,10 +1,7 @@
-
 using System;
 
 namespace MongoDB.Driver
 {
-    
-    
     public class CodeWScope : Code
     {
         public Document Scope {get;set;}

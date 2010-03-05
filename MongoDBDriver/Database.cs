@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
@@ -9,6 +10,12 @@ namespace MongoDB.Driver
     {
         private Connection connection;
         private IMongoCollection command;
+
+        public Database(Connection conn, String name){
+            this.connection = conn;
+            this.name = name;
+            this.command = this["$cmd"];
+        }
 
         private String name;
         public string Name {
@@ -24,7 +31,7 @@ namespace MongoDB.Driver
                 return metaData;
             }
         }
-        
+
         private DatabaseJS js;
         public DatabaseJS JS {
             get {
@@ -33,12 +40,6 @@ namespace MongoDB.Driver
                 }
                 return js;
             }
-        }        
-
-        public Database(Connection conn, String name){
-            this.connection = conn;
-            this.name = name;
-            this.command = this["$cmd"];
         }
 
         public List<String> GetCollectionNames(){
@@ -66,7 +67,8 @@ namespace MongoDB.Driver
         /// Gets the document that a reference is pointing to.
         /// </summary>
         public Document FollowReference(DBRef reference){
-            if(reference == null) throw new ArgumentNullException("reference cannot be null");
+            if(reference == null)
+                throw new ArgumentNullException("reference", "cannot be null");
             Document query = new Document().Append("_id", reference.Id);
             return this[reference.CollectionName].FindOne(query);
         }
@@ -84,13 +86,12 @@ namespace MongoDB.Driver
         /// </summary>
         /// <remarks>Server version 1.3+</remarks>
         public Document GetLastErrorAndFSync(){
-            return SendCommand(new Document(){{"getlasterror", 1.0},{"fsync", true}});
+            return SendCommand(new Document {{"getlasterror", 1.0},{"fsync", true}});
         }
         
         /// <summary>
         /// Call after sending a bulk operation to the database. 
         /// </summary>
-        /// <returns>
         public Document GetPreviousError(){
             return SendCommand("getpreverror");
         }
@@ -100,32 +101,6 @@ namespace MongoDB.Driver
         /// </summary>
         public void ResetError(){
             SendCommand("reseterror");   
-        }
-        
-        public bool Authenticate(string username, string password){
-            Document nonceResult = this.SendCommand("getnonce");
-            String nonce = (String)nonceResult["nonce"];
-            
-            if (nonce == null){
-                throw new MongoException("Error retrieving nonce", null);
-            }
-            
-            string pwd = Database.Hash(username + ":mongo:" + password);
-            Document auth = new Document();
-            auth.Add("authenticate", 1.0);
-            auth.Add("user", username);
-            auth.Add("nonce", nonce);
-            auth.Add("key", Database.Hash(nonce + username + pwd));
-            try{
-                this.SendCommand(auth);
-                return true;
-            }catch(MongoCommandException){
-                return false;
-            }
-        }
-
-        public void Logout(){
-            this.SendCommand("logout");
         }
 
         public Document Eval(string javascript){
@@ -142,25 +117,87 @@ namespace MongoDB.Driver
         }
 
         public Document SendCommand(string command){
-            Document cmd = new Document().Append(command,1.0);
-            return this.SendCommand(cmd);
+            AuthenticateIfRequired();
+            return SendCommandCore(command);
         }
 
-        public Document SendCommand(Document cmd){
+        public Document SendCommand(Document cmd)
+        {
+            AuthenticateIfRequired();
+            return SendCommandCore(cmd);
+        }
+
+        private Document SendCommandCore(string command)
+        {
+            var cmd = new Document().Append(command,1.0);
+            return SendCommandCore(cmd);
+        }
+
+        private Document SendCommandCore(Document cmd)
+        {
             Document result = this.command.FindOne(cmd);
             double ok = (double)result["ok"];
-            if (ok != 1.0){
-                string msg;
-                if(result.Contains("msg")){
+            if(ok != 1.0)
+            {
+                var msg = string.Empty;
+                if(result.Contains("msg"))
+                {
                     msg = (string)result["msg"];
-                }else{
-                    msg = string.Empty;
                 }
-                throw new MongoCommandException(msg,result,cmd);
+                else if(result.Contains("errmsg"))
+                {
+                    msg = (string)result["errmsg"];
+                }
+                throw new MongoCommandException(msg, result, cmd);
             }
             return result;
         }
 
+        /// <summary>
+        /// Authenticates the on first request.
+        /// </summary>
+        private void AuthenticateIfRequired()
+        {
+            if(connection.IsAuthenticated)
+                return;
+
+            var builder = new MongoConnectionStringBuilder(connection.ConnectionString);
+            
+            if(string.IsNullOrEmpty(builder.Username))
+                return;
+
+            var nonceResult = SendCommandCore("getnonce");
+            var nonce = (String)nonceResult["nonce"];
+
+            if(nonce == null)
+                throw new MongoException("Error retrieving nonce", null);
+
+            var pwd = Hash(builder.Username + ":mongo:" + builder.Password);
+            var auth = new Document
+            {
+                {"authenticate", 1.0},
+                {"user", builder.Username},
+                {"nonce", nonce},
+                {"key", Hash(nonce + builder.Username + pwd)}
+            };
+            try
+            {
+                SendCommandCore(auth);
+            }
+            catch(MongoCommandException exception)
+            {
+                //Todo: use custom exception?
+                throw new MongoException("Authentication faild for " + builder.Username, exception);
+            }
+
+            connection.MaskAuthenticated();
+        }
+
+        /// <summary>
+        /// Hashes the specified text.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
         internal static string Hash(string text){
             MD5 md5 = MD5.Create();
             byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(text));

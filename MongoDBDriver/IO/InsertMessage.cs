@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.IO;
-
 using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO
@@ -33,6 +28,7 @@ namespace MongoDB.Driver.IO
         public InsertMessage(){
             this.Header = new MessageHeader(OpCode.Insert);
         }
+
         protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,0);
             writer.WriteString(this.FullCollectionName);

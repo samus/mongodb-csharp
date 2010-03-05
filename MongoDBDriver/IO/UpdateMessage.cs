@@ -1,14 +1,7 @@
-using System;
-using System.IO;
-
-using MongoDB.Driver;
 using MongoDB.Driver.Bson;
-
 
 namespace MongoDB.Driver.IO
 {
-    
-    
     public class UpdateMessage : RequestMessage
     {
         //struct {

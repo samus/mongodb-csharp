@@ -1,4 +1,5 @@
 using System;
+using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
@@ -6,8 +7,7 @@ namespace MongoDB.Driver
     /// Administration of metadata for a database.
     /// </summary>
     public class DatabaseMetaData
-    {
-        
+    {        
         private Connection connection;  
         private string name;
         private Database db;

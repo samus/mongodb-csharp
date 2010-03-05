@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
-using MongoDB.Driver.Bson;
+using MongoDB.Driver.Connections;
 using MongoDB.Driver.IO;
 
 namespace MongoDB.Driver
 {
-    
 	public class Cursor : ICursor {
         private Connection connection;
         

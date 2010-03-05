@@ -21,8 +21,8 @@ namespace MongoDB.Driver
             IMongoCollection col = InitCollection("safeinsert");
             bool thrown = false;
             try{
-                col.Insert(new Document(){{"x",1},{"y",2}},true);
-            }catch(MongoDuplicateKeyException mdk){
+                col.Insert(new Document {{"x",1},{"y",2}},true);
+            }catch(MongoDuplicateKeyException){
                 thrown = true;
             }catch(Exception e){
                 Assert.Fail(String.Format("Wrong exception thrown: {0}", e.GetType().Name));
@@ -35,10 +35,10 @@ namespace MongoDB.Driver
             IMongoCollection col = InitCollection("safeupdate");
             bool thrown = false;
             try{
-                col.Update(new Document(){{"x", 1}}, new Document(){{"x",2}},true);
+                col.Update(new Document {{"x", 1}}, new Document{{"x",2}},true);
             }catch(MongoDuplicateKeyUpdateException){
                 thrown = true;
-            }catch(MongoDuplicateKeyException mdk){
+            }catch(MongoDuplicateKeyException){
                 Assert.Fail("MongoDuplicateKeyException thown instead of MongoDuplicateKeyUpdateException");
             }catch(Exception e){
                 
@@ -56,10 +56,10 @@ namespace MongoDB.Driver
             
             bool thrown = false;
             try{
-                col.UpdateAll(new Document(){{"x",1}}, new Document(){{"y",2}},true);
+                col.UpdateAll(new Document{{"x",1}}, new Document{{"y",2}},true);
             }catch(MongoDuplicateKeyUpdateException){
                 thrown = true;
-            }catch(MongoDuplicateKeyException mdk){
+            }catch(MongoDuplicateKeyException){
                 Assert.Fail("MongoDuplicateKeyException thown instead of MongoDuplicateKeyUpdateException");
             }catch(Exception e){
                 
@@ -70,9 +70,9 @@ namespace MongoDB.Driver
         
         protected IMongoCollection InitCollection(string name){
             IMongoCollection col = DB[name];
-            col.MetaData.CreateIndex(new Document(){{"x", IndexOrder.Ascending}}, true);
+            col.MetaData.CreateIndex(new Document{{"x", IndexOrder.Ascending}}, true);
             for(int x = 0; x < 5; x++){
-                col.Insert(new Document(){{"x", x}, {"y", 1}});
+                col.Insert(new Document{{"x", x}, {"y", 1}});
             }
             return col;
         }

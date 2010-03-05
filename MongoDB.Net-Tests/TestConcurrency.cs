@@ -158,7 +158,7 @@ namespace MongoDB.Driver
                     Document doc = new Document(){{"x",x},{"identifier", this.Identifier}};
                     this.Collection.Insert(doc);
                     this.Count++;
-                }catch(Exception e){
+                }catch(Exception){
                     break;
                 }
             }
@@ -181,7 +181,7 @@ namespace MongoDB.Driver
                         }
                     }
                     this.Count++;
-                }catch(Exception e){
+                }catch(Exception){
                     break;
                 }
             }

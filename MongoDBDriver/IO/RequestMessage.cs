@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using System.IO;
 
 using MongoDB.Driver.Bson;
@@ -11,10 +9,6 @@ namespace MongoDB.Driver.IO
     /// </summary>
     public abstract class RequestMessage : Message
     {
-        
-        public RequestMessage()
-        {}
-        
         public void Write (Stream stream){
             MessageHeader header = this.Header;
             BufferedStream bstream = new BufferedStream(stream);
@@ -35,6 +29,5 @@ namespace MongoDB.Driver.IO
         protected abstract void WriteBody(BsonWriter writer);
         
         protected abstract int CalculateBodySize(BsonWriter writer);
-
     }
 }
