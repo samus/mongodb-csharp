@@ -76,6 +76,18 @@ namespace MongoDB.Driver.Connections
         }
 
         [Test]
+        [ExpectedException(typeof(MongoException))]
+        public void TestExceptionIfMaximumPoolSizeAndConnectionTimeoutAreReached()
+        {
+            var builder = new MongoConnectionStringBuilder { MaximumPoolSize = 1, ConnectionTimeout = TimeSpan.FromMilliseconds(500)};
+            using(var pool = new ConnectionPool(builder.ToString()))
+            {
+                pool.BorrowConnection();
+                pool.BorrowConnection();
+            }
+        }
+
+        [Test]
         public void TestServerCirculationWorks()
         {
             var builder = new MongoConnectionStringBuilder();
