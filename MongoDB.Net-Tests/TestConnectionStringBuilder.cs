@@ -29,7 +29,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestConnectionStringParsing (){
-            var builder = new MongoConnectionStringBuilder ("Username=testuser;Passwort=testpassword;Server=testserver:555;ConnectionLifetime=50;MaximumPoolSize=101;MinimumPoolSize=202");
+            var builder = new MongoConnectionStringBuilder ("Username=testuser;Password=testpassword;Server=testserver:555;ConnectionLifetime=50;MaximumPoolSize=101;MinimumPoolSize=202");
             Assert.AreEqual ("testuser", builder.Username);
             Assert.AreEqual ("testpassword", builder.Password);
             Assert.AreEqual (101, builder.MaximumPoolSize);
@@ -44,7 +44,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestConnectionStringParsingServerWithoutPort (){
-            var builder = new MongoConnectionStringBuilder ("Username=testuser;Passwort=testpassword;Server=testserver");
+            var builder = new MongoConnectionStringBuilder ("Username=testuser;Password=testpassword;Server=testserver");
             Assert.AreEqual ("testuser", builder.Username);
             Assert.AreEqual ("testpassword", builder.Password);
             

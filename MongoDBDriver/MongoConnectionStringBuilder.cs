@@ -8,14 +8,14 @@ namespace MongoDB.Driver
     [Serializable]
     public class MongoConnectionStringBuilder
     {
-        public const int DefaultMaximumPoolSize = 100;
-        public const int DefaultMinimumPoolSize = 0;
+        public const int DefaultMaximumPoolSize = 5;
+        public const int DefaultMinimumPoolSize = 1;
         public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.Zero;
 
-        private static readonly Regex PairRegex = new Regex(@"^\s*(.*)\s*=\s*(.*)\s*$");
-        private static readonly Regex ServerRegex = new Regex(@"\s*([^:]+)(?::(\d+))?\s*$");
+        private static readonly Regex PairRegex = new Regex ("^\\s*(.*)\\s*=\\s*(.*)\\s*$");
+        private static readonly Regex ServerRegex = new Regex ("\\s*([^:]+)(?::(\\d+))?\\s*$");
 
-        private readonly List<MongoServerEndPoint> _servers = new List<MongoServerEndPoint>();
+        private readonly List<MongoServerEndPoint> _servers = new List<MongoServerEndPoint> ();
 
         /// <summary>
         ///   Initializes a new instance of the
@@ -23,8 +23,7 @@ namespace MongoDB.Driver
         ///   class. Uses the default server connection when
         ///   no server is added.
         /// </summary>
-        public MongoConnectionStringBuilder()
-        {
+        public MongoConnectionStringBuilder (){
             ConnectionLifetime = DefaultConnectionLifeTime;
             MaximumPoolSize = DefaultMaximumPoolSize;
             MinimumPoolSize = DefaultMinimumPoolSize;
@@ -37,21 +36,18 @@ namespace MongoDB.Driver
         ///   no server is added.
         /// </summary>
         /// <param name = "connectionString">The connection string.</param>
-        public MongoConnectionStringBuilder(string connectionString)
-            : this()
-        {
-
-            if(!string.IsNullOrEmpty(connectionString))
-                Parse(connectionString);
+        public MongoConnectionStringBuilder (string connectionString) : this(){
+            
+            if (!string.IsNullOrEmpty (connectionString))
+                Parse (connectionString);
         }
 
         /// <summary>
         /// Gets the servers.
         /// </summary>
         /// <value>The servers.</value>
-        public MongoServerEndPoint[] Servers
-        {
-            get{return _servers.Count == 0 ? new[] {MongoServerEndPoint.Default} : _servers.ToArray();}
+        public MongoServerEndPoint[] Servers {
+            get { return _servers.Count == 0 ? new[] { MongoServerEndPoint.Default } : _servers.ToArray (); }
         }
 
         /// <summary>
@@ -89,24 +85,21 @@ namespace MongoDB.Driver
         ///   Parses the specified connection string.
         /// </summary>
         /// <param name = "connectionString">The connection string.</param>
-        private void Parse(string connectionString)
-        {
-            if(connectionString == null)
-                throw new ArgumentNullException("connectionString");
-
-            var segments = connectionString.Split(';');
-
-            foreach(var segment in segments)
-            {
-                var pairMatch = PairRegex.Match(segment);
-                if(!pairMatch.Success)
-                    throw new FormatException(string.Format("Invalid connection string on: {0}", pairMatch.Value));
-
+        private void Parse (string connectionString){
+            if (connectionString == null)
+                throw new ArgumentNullException ("connectionString");
+            
+            var segments = connectionString.Split (';');
+            
+            foreach (var segment in segments) {
+                var pairMatch = PairRegex.Match (segment);
+                if (!pairMatch.Success)
+                    throw new FormatException (string.Format ("Invalid connection string on: {0}", pairMatch.Value));
+                
                 var key = pairMatch.Groups[1].Value;
                 var value = pairMatch.Groups[2].Value;
-
-                switch(key)
-                {
+                
+                switch (key) {
                     case "Username":
                     case "User Id":
                     case "User":
@@ -114,7 +107,7 @@ namespace MongoDB.Driver
                         Username = value;
                         break;
                     }
-                    case "Passwort":
+                    case "Password":
                     {
                         Password = value;
                         break;
@@ -122,68 +115,58 @@ namespace MongoDB.Driver
                     case "MaximumPoolSize":
                     case "Max Pool Size":
                     {
-                        try
-                        {
-                            MaximumPoolSize = int.Parse(value);
-                        }
-                        catch(FormatException exception)
-                        {
-                            throw new FormatException("Invalid number for MaximumPoolSize in connection string", exception);
+                        try {
+                            MaximumPoolSize = int.Parse (value);
+                        } catch (FormatException exception) {
+                            throw new FormatException ("Invalid number for MaximumPoolSize in connection string", exception);
                         }
                         break;
                     }
                     case "MinimumPoolSize":
                     case "Min Pool Size":
                     {
-                        try
-                        {
-                            MinimumPoolSize = int.Parse(value);
-                        }
-                        catch(FormatException exception)
-                        {
-                            throw new FormatException("Invalid number for MinimumPoolSize in connection string", exception);
+                        try {
+                            MinimumPoolSize = int.Parse (value);
+                        } catch (FormatException exception) {
+                            throw new FormatException ("Invalid number for MinimumPoolSize in connection string", exception);
                         }
                         break;
                     }
                     case "ConnectionLifetime":
                     case "Connection Lifetime":
                     {
-                        try
-                        {
-                            var seconds = double.Parse(value);
-
-                            ConnectionLifetime = seconds>0 ? TimeSpan.FromSeconds(seconds) : DefaultConnectionLifeTime;
-                        }
-                        catch(FormatException exception)
-                        {
-                            throw new FormatException("Invalid number for ConnectionLifetime in connection string", exception);
+                        try {
+                            var seconds = double.Parse (value);
+                            
+                            ConnectionLifetime = seconds > 0 ? TimeSpan.FromSeconds (seconds) : DefaultConnectionLifeTime;
+                        } catch (FormatException exception) {
+                            throw new FormatException ("Invalid number for ConnectionLifetime in connection string", exception);
                         }
                         break;
                     }
                     case "Server":
                     case "Servers":
                     {
-                        var servers = value.Split(',');
-
-                        foreach(var server in servers)
-                        {
-                            var serverMatch = ServerRegex.Match(server);
-                            if(!serverMatch.Success)
-                                throw new FormatException(string.Format("Invalid server in connection string: {0}", serverMatch.Value));
-
+                        var servers = value.Split (',');
+                        
+                        foreach (var server in servers) {
+                            var serverMatch = ServerRegex.Match (server);
+                            if (!serverMatch.Success)
+                                throw new FormatException (string.Format ("Invalid server in connection string: {0}", serverMatch.Value));
+                            
                             var serverHost = serverMatch.Groups[1].Value;
-
+                            
                             int port;
-                            if(int.TryParse(serverMatch.Groups[2].Value,out port))
-                                AddServer(serverHost,port);
+                            if (int.TryParse (serverMatch.Groups[2].Value, out port))
+                                AddServer (serverHost, port);
                             else
-                                AddServer(serverHost);
+                                AddServer (serverHost);
                         }
-
+                        
                         break;
                     }
                     default:
-                        throw new FormatException(string.Format("Unknown connection string option: {0}", key));
+                        throw new FormatException (string.Format ("Unknown connection string option: {0}", key));
                 }
             }
         }
@@ -192,29 +175,26 @@ namespace MongoDB.Driver
         /// Adds the server.
         /// </summary>
         /// <param name="endPoint">The end point.</param>
-        public void AddServer(MongoServerEndPoint endPoint)
-        {
-            if(endPoint == null)
-                throw new ArgumentNullException("endPoint");
-
-            _servers.Add(endPoint);
+        public void AddServer (MongoServerEndPoint endPoint){
+            if (endPoint == null)
+                throw new ArgumentNullException ("endPoint");
+            
+            _servers.Add (endPoint);
         }
 
         /// <summary>
         /// Clears the servers.
         /// </summary>
-        public void ClearServers()
-        {
-            _servers.Clear();
+        public void ClearServers (){
+            _servers.Clear ();
         }
 
         /// <summary>
         /// Adds the server with the given host and default port.
         /// </summary>
         /// <param name="host">The host.</param>
-        public void AddServer(string host)
-        {
-            AddServer(new MongoServerEndPoint(host));
+        public void AddServer (string host){
+            AddServer (new MongoServerEndPoint (host));
         }
 
         /// <summary>
@@ -222,9 +202,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="host">The host.</param>
         /// <param name="port">The port.</param>
-        public void AddServer(string host, int port)
-        {
-            AddServer(new MongoServerEndPoint(host,port));
+        public void AddServer (string host, int port){
+            AddServer (new MongoServerEndPoint (host, port));
         }
 
         /// <summary>
@@ -235,65 +214,57 @@ namespace MongoDB.Driver
         /// <returns>A
         ///   <see cref = "System.String" />
         ///   that represents this instance.</returns>
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
-
-            if(!string.IsNullOrEmpty(Username))
-            {
-                builder.AppendFormat("Username={0}", Username);
-                builder.Append(';');
+        public override string ToString (){
+            var builder = new StringBuilder ();
+            
+            if (!string.IsNullOrEmpty (Username)) {
+                builder.AppendFormat ("Username={0}", Username);
+                builder.Append (';');
             }
             
-            if(!string.IsNullOrEmpty(Password))
-            {
-                builder.AppendFormat("Passwort={0}", Password);
-                builder.Append(';');
+            if (!string.IsNullOrEmpty (Password)) {
+                builder.AppendFormat ("Password={0}", Password);
+                builder.Append (';');
             }
-
-            if(_servers.Count>0)
-            {
-                builder.Append("Server=");
-
-                foreach(var server in _servers)
-                {
-                    builder.Append(server.Host);
-
-                    if(server.Port != MongoServerEndPoint.DefaultPort)
-                        builder.AppendFormat(":{0}", server.Port);
-
-                    builder.Append(',');
+            
+            if (_servers.Count > 0) {
+                builder.Append ("Server=");
+                
+                foreach (var server in _servers) {
+                    builder.Append (server.Host);
+                    
+                    if (server.Port != MongoServerEndPoint.DefaultPort)
+                        builder.AppendFormat (":{0}", server.Port);
+                    
+                    builder.Append (',');
                 }
-
+                
                 // remove last ,
-                builder.Remove(builder.Length - 1, 1);
-
-                builder.Append(';');
+                builder.Remove (builder.Length - 1, 1);
+                
+                builder.Append (';');
             }
-
-            if(MaximumPoolSize != DefaultMaximumPoolSize)
-            {
-                builder.AppendFormat("MaximumPoolSize={0}", MaximumPoolSize);
-                builder.Append(';');
+            
+            if (MaximumPoolSize != DefaultMaximumPoolSize) {
+                builder.AppendFormat ("MaximumPoolSize={0}", MaximumPoolSize);
+                builder.Append (';');
             }
-
-            if(MinimumPoolSize != DefaultMinimumPoolSize)
-            {
-                builder.AppendFormat("MinimumPoolSize={0}", MinimumPoolSize);
-                builder.Append(';');
+            
+            if (MinimumPoolSize != DefaultMinimumPoolSize) {
+                builder.AppendFormat ("MinimumPoolSize={0}", MinimumPoolSize);
+                builder.Append (';');
             }
-
-            if(ConnectionLifetime != DefaultConnectionLifeTime)
-            {
-                builder.AppendFormat("ConnectionLifetime={0}", ConnectionLifetime.TotalSeconds);
-                builder.Append(';');
+            
+            if (ConnectionLifetime != DefaultConnectionLifeTime) {
+                builder.AppendFormat ("ConnectionLifetime={0}", ConnectionLifetime.TotalSeconds);
+                builder.Append (';');
             }
-
+            
             // remove last ;
-            if(builder.Length > 0)
-                builder.Remove(builder.Length - 1, 1);
-
-            return builder.ToString();
+            if (builder.Length > 0)
+                builder.Remove (builder.Length - 1, 1);
+            
+            return builder.ToString ();
         }
     }
 }

@@ -31,12 +31,18 @@ namespace MongoDB.Driver.Connections
             ConnectionString = connectionString;
             _connectionStringBuilder = new MongoConnectionStringBuilder(connectionString);
 
-            if(_connectionStringBuilder.MaximumPoolSize < 1)
+            if(_connectionStringBuilder.MaximumPoolSize < 1){
                 throw new ArgumentException("MaximumPoolSize have to be greater or equal then 1");
-            if(_connectionStringBuilder.MinimumPoolSize < 0)
+            }
+            if(_connectionStringBuilder.MinimumPoolSize < 0){
                 throw new ArgumentException("MinimumPoolSize have to be greater or equal then 0");
-            if(_connectionStringBuilder.ConnectionLifetime.TotalSeconds < 0)
+            }
+            if(_connectionStringBuilder.MinimumPoolSize > _connectionStringBuilder.MaximumPoolSize){
+                throw new ArgumentException("MinimumPoolSize must be smaller than MaximumPoolSize");
+            }
+            if(_connectionStringBuilder.ConnectionLifetime.TotalSeconds < 0){
                 throw new ArgumentException("ConnectionLifetime have to be greater or equal then 0");
+            }
 
             EnsureMinimalPoolSize();
         }
