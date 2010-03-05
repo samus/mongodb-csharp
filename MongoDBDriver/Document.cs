@@ -139,7 +139,7 @@ namespace MongoDB.Driver {
         }
 
         public override string ToString() {
-            return JsonUtils.Serialize(this);
+            return JsonFormatter.Serialize(this);
         }
     }
 }

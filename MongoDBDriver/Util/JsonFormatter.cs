@@ -8,7 +8,7 @@ namespace MongoDB.Driver
     /// <summary>
     /// Lightweight routines to handle basic json serializing.
     /// </summary>
-    public class JsonUtils
+    public class JsonFormatter
     {   
         public static string Serialize(Document doc){
             var json = new StringBuilder();
