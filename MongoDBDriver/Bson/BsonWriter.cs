@@ -3,8 +3,6 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-using MongoDB.Driver;
-
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
