@@ -9,11 +9,16 @@ namespace MongoDB.Driver
     /// Lightweight routines to handle basic json serializing.
     /// </summary>
     public class JsonFormatter
-    {   
+    {
+        /// <summary>
+        /// Serializes the specified doc.
+        /// </summary>
+        /// <param name="doc">The doc.</param>
+        /// <returns></returns>
         public static string Serialize(Document doc){
             var json = new StringBuilder();
             json.Append("{ ");
-            bool first = true;
+            var first = true;
             foreach (String key in doc.Keys) {
                 if (first) {
                     first = false;
@@ -26,7 +31,12 @@ namespace MongoDB.Driver
             json.Append(" }");
             return json.ToString();
         }
-        
+
+        /// <summary>
+        /// Serializes the type.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="json">The json.</param>
         private static void SerializeType(object value, StringBuilder json) {
             if (value == null) {
                 json.Append("null");
@@ -37,7 +47,7 @@ namespace MongoDB.Driver
                 json.Append(((bool)value) ? "true" : "false");
             } else if (t.IsArray) {
                 json.Append("[ ");
-                bool first = true;
+                var first = true;
                 foreach (var v in (Array)value) {
                     if (first) {
                         first = false;
@@ -77,47 +87,47 @@ namespace MongoDB.Driver
         /// Escapes any characters that are special to javascript.
         /// </summary>
         public static string Escape(string text){
-            StringBuilder sb = new StringBuilder();
+            var builder = new StringBuilder();
             foreach(char c in text){
                 switch(c){
                     case '\b':
-                        sb.Append(@"\b");
+                        builder.Append(@"\b");
                         break;
                     case '\f':
-                        sb.Append(@"\f");
+                        builder.Append(@"\f");
                         break;
                     case '\n':
-                        sb.Append(@"\n");
+                        builder.Append(@"\n");
                         break;
                     case '\r':
-                        sb.Append(@"\r");
+                        builder.Append(@"\r");
                         break;
                     case '\t':
-                        sb.Append(@"\t");
+                        builder.Append(@"\t");
                         break;
                     case '\v':
-                        sb.Append(@"\v");
+                        builder.Append(@"\v");
                         break;
                     case '\'':
-                        sb.Append(@"\'");
+                        builder.Append(@"\'");
                         break;
                     case '"':
-                        sb.Append("\\\"");
+                        builder.Append("\\\"");
                         break;
                     case '\\':
-                        sb.Append(@"\\");
+                        builder.Append(@"\\");
                         break;
                     default:
                         if(c <= '\u001f'){
-                            sb.Append("\\u");
-                            sb.Append(((int)c).ToString("x4"));
+                            builder.Append("\\u");
+                            builder.Append(((int)c).ToString("x4"));
                         }else{
-                            sb.Append(c);
+                            builder.Append(c);
                         }
                         break;
                 }
             }
-            return sb.ToString();
+            return builder.ToString();
         }
     }
 }
