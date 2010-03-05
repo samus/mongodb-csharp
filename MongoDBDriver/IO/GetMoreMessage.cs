@@ -14,7 +14,7 @@ namespace MongoDB.Driver.IO
     ///          int64     cursorID;               // cursorID from the OP_REPLY
     ///      }
     /// </remarks>
-    public class GetMoreMessage : RequestMessage
+    public class GetMoreMessage : RequestMessageBase
     {
         public long CursorID { get; set; }
 

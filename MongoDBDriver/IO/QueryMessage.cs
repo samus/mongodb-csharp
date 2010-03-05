@@ -15,7 +15,7 @@ namespace MongoDB.Driver.IO
     ///    BSON      query ;                 // query object.  See below for details.
     ///  [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
     /// </remarks>
-    public class QueryMessage : RequestMessage
+    public class QueryMessage : RequestMessageBase
     {
         public QueryOptions Options { get; set; }
 

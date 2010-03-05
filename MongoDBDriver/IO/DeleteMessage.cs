@@ -4,7 +4,7 @@
 
 namespace MongoDB.Driver.IO
 {
-    public class DeleteMessage : RequestMessage
+    public class DeleteMessage : RequestMessageBase
     {
         //struct {
         //    MsgHeader header;                 // standard message header

@@ -11,7 +11,7 @@ namespace MongoDB.Driver.IO
     ///          cstring   message;   // message for the database
     ///      }
     /// </remarks>
-    public class MsgMessage : RequestMessage
+    public class MsgMessage : RequestMessageBase
     {
         public string Message { get; set; }
 

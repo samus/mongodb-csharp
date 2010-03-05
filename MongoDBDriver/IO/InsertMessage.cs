@@ -11,7 +11,7 @@ namespace MongoDB.Driver.IO
     ///      cstring   fullCollectionName; // "dbname.collectionname"
     ///      BSON[]    documents;          // one or more documents to insert into the collection
     /// </remarks>
-    public class InsertMessage : RequestMessage
+    public class InsertMessage : RequestMessageBase
     {
         public string FullCollectionName { get; set; }
 

@@ -13,7 +13,7 @@ namespace MongoDB.Driver.IO
     ///          int64[]   cursorIDs;                // array of cursorIDs to close
     ///      }
     /// </remarks>
-    public class KillCursorsMessage:RequestMessage
+    public class KillCursorsMessage:RequestMessageBase
     {
         public long[] CursorIDs { get; set; }
 

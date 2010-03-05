@@ -15,7 +15,7 @@ namespace MongoDB.Driver.IO
     ///       BSON      document;           // the document data to update with or insert
     ///  }
     /// </remarks>
-    public class UpdateMessage : RequestMessage
+    public class UpdateMessage : RequestMessageBase
     {
         public string FullCollectionName { get; set; }
 

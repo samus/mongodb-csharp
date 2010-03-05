@@ -89,11 +89,11 @@
     <Compile Include="IO\GetMoreMessage.cs" />
     <Compile Include="IO\InsertMessage.cs" />
     <Compile Include="IO\KillCursorsMessage.cs" />
-    <Compile Include="IO\Message.cs" />
+    <Compile Include="IO\MessageBase.cs" />
     <Compile Include="IO\MessageHeader.cs" />
     <Compile Include="IO\OpCode.cs" />
     <Compile Include="IO\QueryMessage.cs" />
-    <Compile Include="IO\RequestMessage.cs" />
+    <Compile Include="IO\RequestMessageBase.cs" />
     <Compile Include="Mongo.cs" />
     <Compile Include="IO\MsgMessage.cs" />
     <Compile Include="IO\ReplyMessage.cs" />

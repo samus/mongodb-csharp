@@ -4,7 +4,7 @@ using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO
 {
-    public class ReplyMessage:Message
+    public class ReplyMessage:MessageBase
     {
         // normally zero, non-zero on query failure     
         public int ResponseFlag { get; set; }

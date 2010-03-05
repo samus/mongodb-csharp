@@ -7,7 +7,7 @@ namespace MongoDB.Driver.IO
     /// <summary>
     /// Description of Message.
     /// </summary>
-    public abstract class RequestMessage : Message
+    public abstract class RequestMessageBase : MessageBase
     {
         public void Write (Stream stream){
             MessageHeader header = this.Header;
