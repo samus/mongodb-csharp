@@ -2,18 +2,19 @@ using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    ///      struct {
+    ///          MsgHeader header;    // standard message header
+    ///          cstring   message;   // message for the database
+    ///      }
+    /// </remarks>
     public class MsgMessage : RequestMessage
     {
-//      struct {
-//          MsgHeader header;    // standard message header
-//          cstring   message;   // message for the database
-//      }
-        private string message;
-        public string Message {
-            get {return message;}
-            set {message = value;}
-        }       
-        
+        public string Message { get; set; }
+
         public MsgMessage(){
             this.Header = new MessageHeader(OpCode.Msg);
         }

@@ -6,56 +6,28 @@ namespace MongoDB.Driver.IO
     /// <summary>
     /// Description of QueryMessage.
     /// </summary>
+    /// <remarks>
+    ///    MsgHeader header;                 // standard message header
+    ///    int32     opts;                   // query options.  See QueryOptions for values
+    ///    cstring   fullCollectionName;     // "dbname.collectionname"
+    ///    int32     numberToSkip;           // number of documents to skip when returning results
+    ///    int32     numberToReturn;         // number of documents to return in the first OP_REPLY
+    ///    BSON      query ;                 // query object.  See below for details.
+    ///  [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
+    /// </remarks>
     public class QueryMessage : RequestMessage
     {
-        //    MsgHeader header;                 // standard message header
-        //    int32     opts;                   // query options.  See QueryOptions for values
-        //    cstring   fullCollectionName;     // "dbname.collectionname"
-        //    int32     numberToSkip;           // number of documents to skip when returning results
-        //    int32     numberToReturn;         // number of documents to return in the first OP_REPLY
-        //    BSON      query ;                 // query object.  See below for details.
-        //  [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
-        
-#region "Properties"
-        private QueryOptions options;
-        public QueryOptions Options {
-            get { return options; }
-            set { options = value; }
-        }
-        
-        private string fullCollectionName;      
-        public string FullCollectionName {
-            get { return fullCollectionName; }
-            set { fullCollectionName = value; }
-        }
-        
-        private Int32 numberToSkip;
-        public int NumberToSkip {
-            get { return numberToSkip; }
-            set { numberToSkip = value; }
-        }
-        
-        private Int32 numberToReturn;
-        public int NumberToReturn {
-            get { return numberToReturn; }
-            set { numberToReturn = value; }
-        }
-        
-        private Document query;
-        public Document Query {
-            get { return query; }
-            set { query = value; }
-        }
+        public QueryOptions Options { get; set; }
 
-        private Document returnFieldSelector;       
-        public Document ReturnFieldSelector {
-            get { return returnFieldSelector; }
-            set { returnFieldSelector = value; }
-        }
-        
-#endregion
-        
-#region "Ctors"
+        public string FullCollectionName { get; set; }
+
+        public int NumberToSkip { get; set; }
+
+        public int NumberToReturn { get; set; }
+
+        public Document Query { get; set; }
+
+        public Document ReturnFieldSelector { get; set; }
         
         public QueryMessage(){
             this.Header = new MessageHeader(OpCode.Query);
@@ -75,11 +47,10 @@ namespace MongoDB.Driver.IO
             this.Query = query;
             this.FullCollectionName = fullCollectionName;
             this.NumberToReturn = numberToReturn;
-            this.NumberToSkip = NumberToSkip;
+            this.NumberToSkip = numberToSkip;
             this.ReturnFieldSelector = returnFieldSelector;
         }
-#endregion
-        
+
         protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,(int)this.Options);
             writer.WriteString(this.FullCollectionName);

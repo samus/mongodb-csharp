@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver.Bson;
@@ -7,37 +6,20 @@ namespace MongoDB.Driver.IO
 {
     public class ReplyMessage:Message
     {
-        Int32 responseFlag; // normally zero, non-zero on query failure     
-        public int ResponseFlag {
-            get { return responseFlag; }
-            set { responseFlag = value; }
-        }
-        
-        Int64 cursorID; // id of the cursor created for this query response 
-        public long CursorID {
-            get { return cursorID; }
-            set { cursorID = value; }
-        }
-        Int32 startingFrom; // indicates where in the cursor this reply is starting     
-        public int StartingFrom {
-            get { return startingFrom; }
-            set { startingFrom = value; }
-        }
-        
-        Int32 numberReturned; // number of documents in the reply       
-        public int NumberReturned {
-            get { return numberReturned; }
-            set { numberReturned = value; }
-        }
-        
-        Document[] documents;       
-        public Document[] Documents {
-            get { return documents; }
-            set { documents = value; }
-        }
+        // normally zero, non-zero on query failure     
+        public int ResponseFlag { get; set; }
 
-        public ReplyMessage(){
-        }           
+        // id of the cursor created for this query response 
+        public long CursorID { get; set; }
+
+        // indicates where in the cursor this reply is starting     
+        public int StartingFrom { get; set; }
+
+        // number of documents in the reply       
+        public int NumberReturned { get; set; }
+
+        public Document[] Documents { get; set; }
+
         public void Read(Stream stream){
             stream = new BufferedStream(stream, 256);
             BinaryReader reader = new BinaryReader(stream);

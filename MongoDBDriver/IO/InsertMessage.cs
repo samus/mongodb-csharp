@@ -5,26 +5,18 @@ namespace MongoDB.Driver.IO
     /// <summary>
     /// Description of InsertMessage.
     /// </summary>
+    /// <remarks>
+    ///      MsgHeader header;             // standard message header
+    ///      int32     ZERO;               // 0 - reserved for future use
+    ///      cstring   fullCollectionName; // "dbname.collectionname"
+    ///      BSON[]    documents;          // one or more documents to insert into the collection
+    /// </remarks>
     public class InsertMessage : RequestMessage
     {
+        public string FullCollectionName { get; set; }
 
-//      MsgHeader header;             // standard message header
-//      int32     ZERO;               // 0 - reserved for future use
-//      cstring   fullCollectionName; // "dbname.collectionname"
-//      BSON[]    documents;          // one or more documents to insert into the collection
+        public Document[] Documents { get; set; }
 
-        private string fullCollectionName;
-        public string FullCollectionName {
-            get { return fullCollectionName; }
-            set { fullCollectionName = value; }
-        }
-        
-        private Document[] documents;
-        public Document[] Documents {
-            get { return documents; }
-            set { documents = value; }
-        }
-        
         public InsertMessage(){
             this.Header = new MessageHeader(OpCode.Insert);
         }

@@ -13,18 +13,10 @@ namespace MongoDB.Driver.IO
         //    int32     ZERO;                   // 0 - reserved for future use
         //    BSON      selector;               // query object.  See below for details.
         //}
-        private string fullCollectionName;  
-        public string FullCollectionName {
-            get { return fullCollectionName; }
-            set { fullCollectionName = value; }
-        }
-        
-        private Document selector;      
-        public Document Selector {
-            get { return selector; }
-            set { selector = value; }
-        }
-        
+        public string FullCollectionName { get; set; }
+
+        public Document Selector { get; set; }
+
         public DeleteMessage(){
             this.Header = new MessageHeader(OpCode.Delete);
         }
@@ -39,7 +31,7 @@ namespace MongoDB.Driver.IO
         protected override int CalculateBodySize(BsonWriter writer){
             int size = 8; //first int32, second int32 
             size += writer.CalculateSize(this.FullCollectionName,false);
-            size += writer.CalculateSize(selector);
+            size += writer.CalculateSize(Selector);
             return size;
         }
     }
