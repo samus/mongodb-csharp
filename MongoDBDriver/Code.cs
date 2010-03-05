@@ -1,7 +1,3 @@
-using System;
-
-using MongoDB.Driver.Util;
-
 namespace MongoDB.Driver
 {
     public class Code
