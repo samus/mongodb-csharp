@@ -32,12 +32,10 @@ namespace MongoDB.Driver.Connections
         }
         
         [Test]
-        public void TestGetInvalidConnection (){
-            bool thrown = false;
+        public void TestExceptionWhenMinimumPoolSizeIsGreaterThenMaximumPoolSize (){
             try{
                 ConnectionFactory.GetConnection("MinimumPoolSize=50; MaximumPoolSize=10");
             }catch(ArgumentException){
-                thrown = true;
             }catch(Exception){
                 Assert.Fail("Wrong exception thrown");
             }
