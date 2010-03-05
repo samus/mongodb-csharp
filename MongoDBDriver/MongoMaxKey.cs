@@ -5,17 +5,32 @@ namespace MongoDB.Driver
     /// </summary>
     public class MongoMaxKey
     {
-        static MongoMaxKey val = new MongoMaxKey();        
-        public static MongoMaxKey Value {
-            get{
-                return val;
-            }
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public static MongoMaxKey Value { get; private set; }
+
+        /// <summary>
+        /// Initializes the <see cref="MongoMaxKey"/> class.
+        /// </summary>
+        static MongoMaxKey(){
+            Value = new MongoMaxKey();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoMaxKey"/> class.
+        /// </summary>
         protected MongoMaxKey (){}
-  
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString (){
             return "{ \"$maxkey\" : 1 }";
-        }
-      
+        }      
     }
 }

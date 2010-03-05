@@ -1,6 +1,6 @@
 ﻿namespace MongoDB.Driver
 {
-    public enum QueryOptions:int{
+    public enum QueryOptions {
         None = 0,
         TailableCursor = 2,
         SlaveOK = 4,

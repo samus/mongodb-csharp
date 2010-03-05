@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace MongoDB.Driver {
     /// <summary>
@@ -10,6 +8,7 @@ namespace MongoDB.Driver {
     /// </summary>
     public class Document : DictionaryBase {
         private List<String> orderedKeys = new List<String>();
+        
         public Object this[String key] {
             get {
                 return Dictionary[key];

@@ -5,14 +5,30 @@ namespace MongoDB.Driver
     /// </summary>
     public class MongoMinKey
     {
-        static MongoMinKey val = new MongoMinKey();        
-        public static MongoMinKey Value {
-            get{
-                return val;
-            }
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public static MongoMinKey Value { get; private set; }
+
+        /// <summary>
+        /// Initializes the <see cref="MongoMinKey"/> class.
+        /// </summary>
+        static MongoMinKey(){
+            Value = new MongoMinKey();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoMinKey"/> class.
+        /// </summary>
         protected MongoMinKey (){}
-        
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString (){
             return "{ \"$minkey\" : 1 }";
         }

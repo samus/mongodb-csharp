@@ -13,16 +13,34 @@ namespace MongoDB.Driver
         /// any nonconforming options will be dropped when converting to this representation
         /// </summary>        
         public string Options {get;set;}
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoRegex"/> class.
+        /// </summary>
         public MongoRegex(){}
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoRegex"/> class.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
         public MongoRegex(string expression):this(expression,string.Empty){}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoRegex"/> class.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="options">The options.</param>
         public MongoRegex(string expression, string options){
             this.Expression = expression;
             this.Options = options;
         }
-        
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString (){
             return string.Format("{0}{1}", Expression, Options);
         }

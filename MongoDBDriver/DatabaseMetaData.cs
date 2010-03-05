@@ -48,12 +48,11 @@ namespace MongoDB.Driver
             IMongoCollection users = db["system.users"];
             string pwd = Database.Hash(username + ":mongo:" + password);
             Document user = new Document().Append("user", username).Append("pwd", pwd);
+            
             if (FindUser(username) != null){
                 throw new MongoException("A user with the name " + username + " already exists in this database.", null);
             }
-            else{
-               users.Insert(user);
-            }
+            users.Insert(user);
         }
 
         public void RemoveUser(string username){
