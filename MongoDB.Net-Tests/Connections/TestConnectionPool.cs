@@ -167,6 +167,7 @@ namespace MongoDB.Driver.Connections
         {
             var builder = new MongoConnectionStringBuilder
             {
+                MinimumPoolSize = 0,
                 ConnectionLifetime = TimeSpan.FromMilliseconds(100)
             };
             using(var pool = new ConnectionPool(builder.ToString()))
