@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -102,7 +102,6 @@
     <Compile Include="MongoCommandException.cs" />
     <Compile Include="MongoCommException.cs" />
     <Compile Include="MongoConnectionStringBuilder.cs" />
-    <Compile Include="MongoDBNull.cs" />
     <Compile Include="MongoDuplicateKeyException.cs" />
     <Compile Include="MongoDuplicateKeyUpdateException.cs" />
     <Compile Include="MongoException.cs" />
@@ -146,7 +145,4 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
 </Project>

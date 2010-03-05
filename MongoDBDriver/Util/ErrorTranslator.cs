@@ -1,3 +1,5 @@
+using System;
+
 namespace MongoDB.Driver.Util
 {
     /// <summary>
@@ -12,7 +14,7 @@ namespace MongoDB.Driver.Util
         }
         
         public static bool IsError(Document doc){
-            if(doc.Contains("err") && doc["err"] != MongoDBNull.Value) return true;
+            if(doc.Contains("err") && doc["err"] != DBNull.Value)return true;
             return false;
         }
         

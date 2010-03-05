@@ -71,7 +71,7 @@ namespace MongoDB.Driver.Bson
             switch ((BsonDataType)typeNum) {
             case BsonDataType.Null:
             case BsonDataType.Undefined:
-                return MongoDBNull.Value;
+                return DBNull.Value;
             case BsonDataType.MinKey:
                 return MongoMinKey.Value;
             case BsonDataType.MaxKey:
