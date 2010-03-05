@@ -212,7 +212,7 @@ namespace MongoDB.Driver.Connections
         private RawConnection CreateRawConnection()
         {
             var endPoint = GetNextEndPoint();
-            return new RawConnection(endPoint);
+            return new RawConnection(endPoint,_connectionStringBuilder.ConnectionTimeout);
         }
 
         /// <summary>
