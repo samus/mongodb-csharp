@@ -47,26 +47,26 @@ namespace MongoDB.Driver
                     SerializeType(v, json);
                 }
                 json.Append(" ]");
-            } else if (value is Document ||
+            } else if(value is int ||
+                value is long || 
+                value is float || 
+                value is double ) {
+                // Format numbers allways culture invariant
+                // Example: Without this in Germany 10.3 is outputed as 10,3
+                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
+            } else if(value is Document ||
                 value is Oid ||
                 value is Binary ||
                 value is DBRef ||
                 value is MongoMinKey ||
                 value is MongoMaxKey ||
                 value is Code ||
-                value is CodeWScope ||
-                value is int ||
-                value is Int32 ||
-                value is long ||
-                value is float ||
-                value is double) {
+                value is CodeWScope) {
                 json.Append(value);
             } else if (value is DateTime) {
                 json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
             } else if (value is Guid) {
-                json.Append(String.Format(@"{{ ""$uid"": ""{0}"" }}",value.ToString()));
-            } else if (value is IFormattable) {
-                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
+                json.Append(String.Format(@"{{ ""$uid"": ""{0}"" }}",value));
             } else {                
                 json.AppendFormat(@"""{0}""", Escape(value.ToString()));
             }

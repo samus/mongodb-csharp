@@ -1,5 +1,7 @@
 
 using System;
+using System.Globalization;
+using System.Threading;
 using NUnit.Framework;
 
 namespace MongoDB.Driver.Util
@@ -80,6 +82,17 @@ namespace MongoDB.Driver.Util
         public void TestSerializeDocWithSingleDoubleField() {
             var doc = new Document().Append("foo", 10.1);
             Assert.AreEqual(@"{ ""foo"": 10.1 }", JsonUtils.Serialize(doc));
+        }
+
+        [Test]
+        public void TestSerializeCultureInvariantNumbers() {
+            var cultureBackup = Thread.CurrentThread.CurrentCulture;
+
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+            var doc = new Document().Append("foo", 10.1);
+            Assert.AreEqual(@"{ ""foo"": 10.1 }", JsonUtils.Serialize(doc));
+            
+            Thread.CurrentThread.CurrentCulture = cultureBackup;
         }
 
         [Test]
