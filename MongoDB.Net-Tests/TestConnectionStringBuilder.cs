@@ -60,7 +60,7 @@ namespace MongoDB.Driver
             builder.AddServer ("testserver1", 555);
             builder.AddServer ("testserver2");
             
-            Assert.AreEqual ("Username=testusername;Passwort=testpassword;Server=testserver1:555,testserver2;MaximumPoolSize=101;MinimumPoolSize=202;ConnectionLifetime=50", builder.ToString ());
+            Assert.AreEqual ("Username=testusername;Password=testpassword;Server=testserver1:555,testserver2;MaximumPoolSize=101;MinimumPoolSize=202;ConnectionLifetime=50", builder.ToString ());
         }
 
         [Test]
