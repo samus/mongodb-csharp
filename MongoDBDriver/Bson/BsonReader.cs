@@ -12,8 +12,6 @@ namespace MongoDB.Driver.Bson
     /// </summary>
     public class BsonReader
     {
-        private static DateTime epoch = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         private Stream stream;
         private BinaryReader reader;        private int position = 0;
 
@@ -86,7 +84,7 @@ namespace MongoDB.Driver.Bson
             case BsonDataType.Date:
                 position += 8;
                 long millis = reader.ReadInt64 ();
-                return epoch.AddMilliseconds (millis);
+                return BsonInfo.Epoch.AddMilliseconds(millis);
             case BsonDataType.Oid:
                 position += 12;
                 return new Oid (reader.ReadBytes (12));

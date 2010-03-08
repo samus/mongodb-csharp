@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver{
 
@@ -21,7 +22,7 @@ namespace MongoDB.Driver{
                 Array.Copy(this.Value,time,4);
                 Array.Reverse(time);
                 int seconds = BitConverter.ToInt32(time,0);
-                return OidGenerator.epoch.AddSeconds(seconds);
+                return BsonInfo.Epoch.AddSeconds(seconds);
             }
         }
 
