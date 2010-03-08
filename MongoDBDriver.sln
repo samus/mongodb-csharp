@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.GridFS.Tests", "Mon
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{BDD3F69B-EC79-4976-B5DD-7F5B058512C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple", "Simple\Simple.csproj", "{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple", "examples\Simple\Simple.csproj", "{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
