@@ -181,11 +181,11 @@ namespace MongoDB.Driver.Bson
                     Type t = val.GetType();
                     if(t == typeof(Document)){
                         return CalculateSize((Document)val);
-                    }else if(t == typeof(DBRef)){
-                        return CalculateSize((Document)((DBRef)val));
-                    }else{
-                        throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented yet.",t.Name));
                     }
+                    if(t == typeof(DBRef)){
+                        return CalculateSize((Document)((DBRef)val));
+                    }
+                    throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented yet.",t.Name));
                 }
                 case BsonDataType.Array:
                     return CalculateSize((IEnumerable)val);                    
