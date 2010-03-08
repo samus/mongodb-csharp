@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MongoDB.Driver
 {
@@ -16,13 +14,13 @@ namespace MongoDB.Driver
 
         public byte[] Bytes{get;set;}
  
-        public Binary.TypeCode Subtype{get;set;}
+        public TypeCode Subtype{get;set;}
 
         public Binary() { }
 
         public Binary(byte[] value){
-            this.Bytes = value;
-            this.Subtype = TypeCode.General;         
+            Bytes = value;
+            Subtype = TypeCode.General;         
         }
 
         public override string ToString (){

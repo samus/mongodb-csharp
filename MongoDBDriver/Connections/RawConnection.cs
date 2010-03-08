@@ -3,6 +3,10 @@ using System.Net.Sockets;
 
 namespace MongoDB.Driver.Connections
 {
+    /// <summary>
+    /// Represents a raw connection on the wire which is managed by the 
+    /// connection pool.
+    /// </summary>
     public class RawConnection : IDisposable
     {
         private readonly TcpClient _client = new TcpClient();
@@ -12,7 +16,8 @@ namespace MongoDB.Driver.Connections
         /// Initializes a new instance of the <see cref="RawConnection"/> class.
         /// </summary>
         /// <param name="endPoint">The end point.</param>
-        public RawConnection(MongoServerEndPoint endPoint)
+        /// <param name="connectionTimeout">The connection timeout.</param>
+        public RawConnection(MongoServerEndPoint endPoint,TimeSpan connectionTimeout)
         {
             if(endPoint == null)
                 throw new ArgumentNullException("endPoint");
@@ -21,6 +26,8 @@ namespace MongoDB.Driver.Connections
             CreationTime = DateTime.Now;
             
             _client.NoDelay = true;
+            _client.ReceiveTimeout = (int)connectionTimeout.TotalMilliseconds;
+            _client.SendTimeout = (int)connectionTimeout.TotalMilliseconds;
             _client.Connect(EndPoint.Host, EndPoint.Port);
         }
 

@@ -2,40 +2,29 @@ using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO
 {
-    public class UpdateMessage : RequestMessage
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    ///  struct {
+    ///       MsgHeader header;             // standard message header
+    ///       int32     ZERO;               // 0 - reserved for future use
+    ///       cstring   fullCollectionName; // "dbname.collectionname"
+    ///       int32     flags;              // value 0 for upsert 1 for multiupdate operation
+    ///       BSON      selector;           // the query to select the document
+    ///       BSON      document;           // the document data to update with or insert
+    ///  }
+    /// </remarks>
+    public class UpdateMessage : RequestMessageBase
     {
-        //struct {
-        //    MsgHeader header;             // standard message header
-        //    int32     ZERO;               // 0 - reserved for future use
-        //    cstring   fullCollectionName; // "dbname.collectionname"
-        //    int32     flags;              // value 0 for upsert 1 for multiupdate operation
-        //    BSON      selector;           // the query to select the document
-        //    BSON      document;           // the document data to update with or insert
-        //}
-        private string fullCollectionName;  
-        public string FullCollectionName {
-            get { return fullCollectionName; }
-            set { fullCollectionName = value; }
-        }
-        
-        private Document selector;      
-        public Document Selector {
-            get { return selector; }
-            set { selector = value; }
-        }
+        public string FullCollectionName { get; set; }
 
-        private Document document;      
-        public Document Document {
-            get { return document; }
-            set { document = value; }
-        }
-        
-        private int flags;
-        public int Flags{
-            get { return flags; }
-            set { flags = value; }
-        }
-        
+        public Document Selector { get; set; }
+
+        public Document Document { get; set; }
+
+        public int Flags { get; set; }
+
         public UpdateMessage(){
             this.Header = new MessageHeader(OpCode.Update);
         }
@@ -44,7 +33,7 @@ namespace MongoDB.Driver.IO
             writer.WriteValue(BsonDataType.Integer,0);
             writer.WriteString(this.FullCollectionName);
             writer.WriteValue(BsonDataType.Integer,this.Flags);
-            writer.Write(selector);
+            writer.Write(Selector);
             writer.Write(Document);
         }
         

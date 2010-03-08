@@ -1,7 +1,6 @@
 ﻿namespace MongoDB.Driver
 {
-    public enum UpdateFlags:int
-    {
+    public enum UpdateFlags {
         Upsert = 1,
         MultiUpdate = 2
     }

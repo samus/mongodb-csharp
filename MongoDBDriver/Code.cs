@@ -1,7 +1,3 @@
-using System;
-
-using MongoDB.Driver.Util;
-
 namespace MongoDB.Driver
 {
     public class Code
@@ -15,7 +11,7 @@ namespace MongoDB.Driver
         }
         
         public override string ToString() {
-            return string.Format(@"{{ $code : ""{0}"" }}", JsonUtils.Escape(Value));
+            return string.Format(@"{{ $code : ""{0}"" }}", JsonFormatter.Escape(Value));
         }        
     }
 }

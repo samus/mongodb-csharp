@@ -16,8 +16,15 @@ namespace MongoDB.Driver
         public const string IdName = "$id";
         public const string MetaName = "metadata";
         
-        private Document doc;
-        
+        private Document document;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DBRef"/> class.
+        /// </summary>
+        public DBRef(){
+            document = new Document();
+        }
+
         private string collectionName;
         /// <summary>
         /// The name of the collection the referenced document is in. 
@@ -26,11 +33,11 @@ namespace MongoDB.Driver
             get { return collectionName; }
             set {
                 collectionName = value; 
-                doc[DBRef.RefName] = value;
+                document[RefName] = value;
             }
         }
-        
-        private object id;      
+
+        private object id;
         /// <summary>
         /// Object value of the id.  It isn't an Oid because document ids are not required to be oids.
         /// </summary>
@@ -38,10 +45,10 @@ namespace MongoDB.Driver
             get { return id; }
             set {
                 id = value; 
-                doc[DBRef.IdName] = value;
+                document[IdName] = value;
             }
         }
-        
+
         private Document metadata;
         /// <summary>
         /// An extension to the spec that allows storing of arbitrary data about a reference.  
@@ -52,27 +59,23 @@ namespace MongoDB.Driver
             get{return metadata; }
             set{
                 metadata = value;
-                doc["metadata"] = value;
+                document[MetaName] = value;
             }
         }
-                
-        public DBRef(){
-            doc = new Document();
-        }
-        
+
         /// <summary>
         /// Constructs a DBRef from a document that matches the DBref specification.
         /// </summary>
-        public DBRef(Document doc){
-            if(IsDocumentDBRef(doc) == false) throw new ArgumentException("Document is not a valid DBRef");
-            collectionName = (String)doc[DBRef.RefName];
-            id = doc[DBRef.IdName];
-            this.doc = doc;
-            if(doc.Contains("metadata")) this.MetaData = (Document)doc["metadata"];
+        public DBRef(Document document){
+            if(IsDocumentDBRef(document) == false) throw new ArgumentException("Document is not a valid DBRef");
+            collectionName = (String)document[RefName];
+            id = document[IdName];
+            this.document = document;
+            if(document.Contains("metadata")) this.MetaData = (Document)document["metadata"];
         }
         
         public DBRef(string collectionName, object id){
-            doc = new Document();
+            document = new Document();
             this.CollectionName = collectionName;
             this.Id = id;
         }       
@@ -92,7 +95,7 @@ namespace MongoDB.Driver
         }
         
         public override string ToString (){
-            return doc.ToString();
+            return document.ToString();
         }
 
 
@@ -104,11 +107,11 @@ namespace MongoDB.Driver
         }
         
         public static bool IsDocumentDBRef(Document doc){
-            return doc != null && doc.Contains(DBRef.RefName) && doc.Contains(DBRef.IdName);
+            return doc != null && doc.Contains(RefName) && doc.Contains(IdName);
         }
         
         public static explicit operator Document(DBRef d){
-            return d.doc;
+            return d.document;
         }        
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.IO
@@ -6,34 +5,23 @@ namespace MongoDB.Driver.IO
     /// <summary>
     /// Description of GetMoreMessage.
     /// </summary>
-    public class GetMoreMessage : RequestMessage
+    /// <remarks>
+    ///      struct {
+    ///          MsgHeader header;                 // standard message header
+    ///          int32     ZERO;                   // 0 - reserved for future use
+    ///          cstring   fullCollectionName;     // "dbname.collectionname"
+    ///          int32     numberToReturn;         // number of documents to return
+    ///          int64     cursorID;               // cursorID from the OP_REPLY
+    ///      }
+    /// </remarks>
+    public class GetMoreMessage : RequestMessageBase
     {
-//      struct {
-//          MsgHeader header;                 // standard message header
-//          int32     ZERO;                   // 0 - reserved for future use
-//          cstring   fullCollectionName;     // "dbname.collectionname"
-//          int32     numberToReturn;         // number of documents to return
-//          int64     cursorID;               // cursorID from the OP_REPLY
-//      }
-#region "Properties"
-        private long cursorID;  
-        public long CursorID {
-            get { return cursorID; }
-            set { cursorID = value; }
-        }
-        
-        private string fullCollectionName;      
-        public string FullCollectionName {
-            get { return fullCollectionName; }
-            set { fullCollectionName = value; }
-        }
-        
-        private Int32 numberToReturn;
-        public int NumberToReturn {
-            get { return numberToReturn; }
-            set { numberToReturn = value; }
-        }
-#endregion
+        public long CursorID { get; set; }
+
+        public string FullCollectionName { get; set; }
+
+        public int NumberToReturn { get; set; }
+
         public GetMoreMessage(string fullCollectionName, long cursorID)
             :this(fullCollectionName, cursorID, 0){
         }

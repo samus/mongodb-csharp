@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -89,27 +89,26 @@
     <Compile Include="IO\GetMoreMessage.cs" />
     <Compile Include="IO\InsertMessage.cs" />
     <Compile Include="IO\KillCursorsMessage.cs" />
-    <Compile Include="IO\Message.cs" />
+    <Compile Include="IO\MessageBase.cs" />
     <Compile Include="IO\MessageHeader.cs" />
     <Compile Include="IO\OpCode.cs" />
     <Compile Include="IO\QueryMessage.cs" />
-    <Compile Include="IO\RequestMessage.cs" />
+    <Compile Include="IO\RequestMessageBase.cs" />
     <Compile Include="Mongo.cs" />
     <Compile Include="IO\MsgMessage.cs" />
     <Compile Include="IO\ReplyMessage.cs" />
     <Compile Include="Bson\BsonReader.cs" />
     <Compile Include="Cursor.cs" />
-    <Compile Include="MongoCommandException.cs" />
-    <Compile Include="MongoCommException.cs" />
+    <Compile Include="Exceptions\MongoCommandException.cs" />
+    <Compile Include="Exceptions\MongoCommException.cs" />
     <Compile Include="MongoConnectionStringBuilder.cs" />
-    <Compile Include="MongoDBNull.cs" />
-    <Compile Include="MongoDuplicateKeyException.cs" />
-    <Compile Include="MongoDuplicateKeyUpdateException.cs" />
-    <Compile Include="MongoException.cs" />
-    <Compile Include="MongoMapReduceException.cs" />
+    <Compile Include="Exceptions\MongoDuplicateKeyException.cs" />
+    <Compile Include="Exceptions\MongoDuplicateKeyUpdateException.cs" />
+    <Compile Include="Exceptions\MongoException.cs" />
+    <Compile Include="Exceptions\MongoMapReduceException.cs" />
     <Compile Include="MongoMaxKey.cs" />
     <Compile Include="MongoMinKey.cs" />
-    <Compile Include="MongoOperationException.cs" />
+    <Compile Include="Exceptions\MongoOperationException.cs" />
     <Compile Include="MongoServerEndPoint.cs" />
     <Compile Include="Oid.cs" />
     <Compile Include="IO\DeleteMessage.cs" />
@@ -126,7 +125,7 @@
     <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
-    <Compile Include="Util\JsonUtils.cs" />
+    <Compile Include="Util\JsonFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -146,7 +145,4 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
 </Project>

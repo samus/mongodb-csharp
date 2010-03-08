@@ -31,7 +31,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestFindNulls(){
-            Document query = new Document().Append("n",MongoDBNull.Value);
+            Document query = new Document().Append("n",DBNull.Value);
             long numnulls = db["tests"]["smallreads"].Count(query);
             Assert.AreEqual(4,numnulls);
         }

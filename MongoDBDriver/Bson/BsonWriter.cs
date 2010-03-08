@@ -3,8 +3,6 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-using MongoDB.Driver;
-
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
@@ -303,7 +301,7 @@ namespace MongoDB.Driver.Bson
                 ret = BsonDataType.Code;
             }else if(t == typeof(CodeWScope)){
                 ret = BsonDataType.CodeWScope;
-            }else if(t == typeof(MongoDBNull)){
+            }else if(t == typeof(DBNull)){ 
                 ret = BsonDataType.Null;
             }else if(t == typeof(Binary)){
                 ret = BsonDataType.Binary;

@@ -150,22 +150,16 @@ namespace MongoDB.Driver{
                 return false;
             }
         }
-        
-        #region IEnumerable<Document> implementation
+
         public IEnumerator<Document> GetEnumerator (){
             foreach(Document doc in js.FindAll().Documents){
                 yield return doc;
             }
             yield break;
         }
-        
-        #endregion
-        #region IEnumerable implementation
+
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator (){
             return GetEnumerator();
         }
-        
-        #endregion
-        
     }
 }

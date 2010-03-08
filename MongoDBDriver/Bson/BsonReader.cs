@@ -2,8 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 
-using MongoDB.Driver;
-
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
@@ -14,15 +12,12 @@ namespace MongoDB.Driver.Bson
         private static DateTime epoch = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         private Stream stream;
-        private BinaryReader reader;
-        private Encoding encoding = Encoding.UTF8;
-        private int position = 0;
+        private BinaryReader reader;        private int position = 0;
 
         private byte[] _byteBuffer;
         private char[] _charBuffer;
 
         private const int MaxCharBytesSize = 128;
-
 
         public BsonReader (Stream stream)
         {
@@ -71,7 +66,7 @@ namespace MongoDB.Driver.Bson
             switch ((BsonDataType)typeNum) {
             case BsonDataType.Null:
             case BsonDataType.Undefined:
-                return MongoDBNull.Value;
+                return DBNull.Value;
             case BsonDataType.MinKey:
                 return MongoMinKey.Value;
             case BsonDataType.MaxKey:
@@ -264,12 +259,12 @@ namespace MongoDB.Driver.Bson
         }
 
         private Object ConvertToArray (Document doc){
-            Type arrayType = null;
             Array ret = null;
             int idx = 0;
             foreach (String key in doc.Keys) {
                 if (ret == null) {
                     int length = doc.Keys.Count;
+                    Type arrayType;
                     if(ElementsSameType(doc)){
                         arrayType = doc[key].GetType();
                     }else{

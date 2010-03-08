@@ -10,30 +10,18 @@ namespace MongoDB.Driver.IO
     /// </summary>
     public class MessageHeader
     {
-        private Int32 messageLength;  // total size of the message, including the 4 bytes of length 
-        public int MessageLength {
-            get { return messageLength; }
-            set { messageLength = value; }
-        }
-        
-        private Int32 requestId;      // client or database-generated identifier for this message
-        public int RequestId {
-            get { return requestId; }
-            set { requestId = value; }
-        }
-        
-        private Int32 responseTo;     // requestID from the original request (used in reponses from db)     
-        public int ResponseTo {
-            get { return responseTo; }
-            set { responseTo = value; }
-        }
-        
-        private OpCode opCode;         // request type - see table below    
+        // total size of the message, including the 4 bytes of length 
+        public int MessageLength { get; set; }
+
+        // client or database-generated identifier for this message
+        public int RequestId { get; set; }
+
+        // requestID from the original request (used in reponses from db)     
+        public int ResponseTo { get; set; }
+
+        // request type - see table below    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1706:ShortAcronymsShouldBeUppercase", MessageId = "Member")]
-        public OpCode OpCode {
-            get { return opCode; }
-            set { opCode = value; }
-        }
+        public OpCode OpCode { get; set; }
         
         public MessageHeader(OpCode opCode)
         {
@@ -42,7 +30,7 @@ namespace MongoDB.Driver.IO
         }
         
         public override String ToString(){
-            return "length:" + this.messageLength + " requestId:" + this.requestId + " responseTo:" + this.responseTo + " opCode:" + this.opCode;
+            return "length:" + this.MessageLength + " requestId:" + this.RequestId + " responseTo:" + this.ResponseTo + " opCode:" + this.OpCode;
         }
         
     }

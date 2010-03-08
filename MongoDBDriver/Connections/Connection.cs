@@ -5,7 +5,12 @@ using MongoDB.Driver.IO;
 namespace MongoDB.Driver.Connections
 {
     /// <summary>
-    /// Description of Connection.
+    /// Connection is a managment unit which uses a RawConnection from connection pool
+    /// to comunicate with the server. 
+    /// <remarks>
+    /// If an connection error occure, the RawConnection is transparently replaced 
+    /// by a new fresh connection.
+    /// </remarks>
     /// </summary>
     public class Connection : IDisposable
     {
@@ -63,7 +68,7 @@ namespace MongoDB.Driver.Connections
         /// <param name="msg"></param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public ReplyMessage SendTwoWayMessage (RequestMessage msg){
+        public ReplyMessage SendTwoWayMessage (RequestMessageBase msg){
             if (this.State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }
@@ -87,7 +92,7 @@ namespace MongoDB.Driver.Connections
         /// <param name="msg"></param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>        
-        public void SendMessage (RequestMessage msg){
+        public void SendMessage (RequestMessageBase msg){
             if (this.State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }

@@ -20,6 +20,7 @@ namespace MongoDB.Driver
             Assert.AreEqual (builder.MaximumPoolSize, MongoConnectionStringBuilder.DefaultMaximumPoolSize);
             Assert.AreEqual (builder.MinimumPoolSize, MongoConnectionStringBuilder.DefaultMinimumPoolSize);
             Assert.AreEqual (builder.ConnectionLifetime, MongoConnectionStringBuilder.DefaultConnectionLifeTime);
+            Assert.AreEqual (builder.ConnectionTimeout, MongoConnectionStringBuilder.DefaultConnectionTimeout);
             
             var servers = new List<MongoServerEndPoint> (builder.Servers);
             Assert.AreEqual (1, servers.Count);
@@ -56,11 +57,11 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestToStringOutput (){
-            var builder = new MongoConnectionStringBuilder { Password = "testpassword", Username = "testusername", ConnectionLifetime = TimeSpan.FromSeconds (50), MaximumPoolSize = 101, MinimumPoolSize = 202 };
+            var builder = new MongoConnectionStringBuilder { Password = "testpassword", Username = "testusername", ConnectionLifetime = TimeSpan.FromSeconds (50), MaximumPoolSize = 101, MinimumPoolSize = 202, ConnectionTimeout = TimeSpan.FromSeconds(60)};
             builder.AddServer ("testserver1", 555);
             builder.AddServer ("testserver2");
             
-            Assert.AreEqual ("Username=testusername;Passwort=testpassword;Server=testserver1:555,testserver2;MaximumPoolSize=101;MinimumPoolSize=202;ConnectionLifetime=50", builder.ToString ());
+            Assert.AreEqual ("Username=testusername;Password=testpassword;Server=testserver1:555,testserver2;MaximumPoolSize=101;MinimumPoolSize=202;ConnectionTimeout=60;ConnectionLifetime=50", builder.ToString ());
         }
 
         [Test]

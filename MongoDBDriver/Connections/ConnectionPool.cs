@@ -154,7 +154,10 @@ namespace MongoDB.Driver.Connections
 
                 if(PoolSize >= _connectionStringBuilder.MaximumPoolSize)
                 {
-                    Monitor.Wait(_syncObject);
+                    if(!Monitor.Wait(_syncObject,_connectionStringBuilder.ConnectionTimeout))
+                        //Todo: custom exception?
+                        throw new MongoException("Timeout expired. The timeout period elapsed prior to obtaining a connection from pool. This may have occured because all pooled connections were in use and max poolsize was reached.");
+
                     return BorrowConnection();
                 }
             }
@@ -212,7 +215,7 @@ namespace MongoDB.Driver.Connections
         private RawConnection CreateRawConnection()
         {
             var endPoint = GetNextEndPoint();
-            return new RawConnection(endPoint);
+            return new RawConnection(endPoint,_connectionStringBuilder.ConnectionTimeout);
         }
 
         /// <summary>

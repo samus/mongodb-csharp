@@ -8,12 +8,17 @@ namespace MongoDB.Driver
     /// <summary>
     /// Lightweight routines to handle basic json serializing.
     /// </summary>
-    public class JsonUtils
-    {   
+    public class JsonFormatter
+    {
+        /// <summary>
+        /// Serializes the specified doc.
+        /// </summary>
+        /// <param name="doc">The doc.</param>
+        /// <returns></returns>
         public static string Serialize(Document doc){
             var json = new StringBuilder();
             json.Append("{ ");
-            bool first = true;
+            var first = true;
             foreach (String key in doc.Keys) {
                 if (first) {
                     first = false;
@@ -26,7 +31,12 @@ namespace MongoDB.Driver
             json.Append(" }");
             return json.ToString();
         }
-        
+
+        /// <summary>
+        /// Serializes the type.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="json">The json.</param>
         private static void SerializeType(object value, StringBuilder json) {
             if (value == null) {
                 json.Append("null");
@@ -37,7 +47,7 @@ namespace MongoDB.Driver
                 json.Append(((bool)value) ? "true" : "false");
             } else if (t.IsArray) {
                 json.Append("[ ");
-                bool first = true;
+                var first = true;
                 foreach (var v in (Array)value) {
                     if (first) {
                         first = false;
@@ -47,26 +57,26 @@ namespace MongoDB.Driver
                     SerializeType(v, json);
                 }
                 json.Append(" ]");
-            } else if (value is Document ||
+            } else if(value is int ||
+                value is long || 
+                value is float || 
+                value is double ) {
+                // Format numbers allways culture invariant
+                // Example: Without this in Germany 10.3 is outputed as 10,3
+                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
+            } else if(value is Document ||
                 value is Oid ||
                 value is Binary ||
                 value is DBRef ||
                 value is MongoMinKey ||
                 value is MongoMaxKey ||
                 value is Code ||
-                value is CodeWScope ||
-                value is int ||
-                value is Int32 ||
-                value is long ||
-                value is float ||
-                value is double) {
+                value is CodeWScope) {
                 json.Append(value);
             } else if (value is DateTime) {
                 json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
             } else if (value is Guid) {
-                json.Append(String.Format(@"{{ ""$uid"": ""{0}"" }}",value.ToString()));
-            } else if (value is IFormattable) {
-                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
+                json.Append(String.Format(@"{{ ""$uid"": ""{0}"" }}",value));
             } else {                
                 json.AppendFormat(@"""{0}""", Escape(value.ToString()));
             }
@@ -77,47 +87,47 @@ namespace MongoDB.Driver
         /// Escapes any characters that are special to javascript.
         /// </summary>
         public static string Escape(string text){
-            StringBuilder sb = new StringBuilder();
+            var builder = new StringBuilder();
             foreach(char c in text){
                 switch(c){
                     case '\b':
-                        sb.Append(@"\b");
+                        builder.Append(@"\b");
                         break;
                     case '\f':
-                        sb.Append(@"\f");
+                        builder.Append(@"\f");
                         break;
                     case '\n':
-                        sb.Append(@"\n");
+                        builder.Append(@"\n");
                         break;
                     case '\r':
-                        sb.Append(@"\r");
+                        builder.Append(@"\r");
                         break;
                     case '\t':
-                        sb.Append(@"\t");
+                        builder.Append(@"\t");
                         break;
                     case '\v':
-                        sb.Append(@"\v");
+                        builder.Append(@"\v");
                         break;
                     case '\'':
-                        sb.Append(@"\'");
+                        builder.Append(@"\'");
                         break;
                     case '"':
-                        sb.Append("\\\"");
+                        builder.Append("\\\"");
                         break;
                     case '\\':
-                        sb.Append(@"\\");
+                        builder.Append(@"\\");
                         break;
                     default:
                         if(c <= '\u001f'){
-                            sb.Append("\\u");
-                            sb.Append(((int)c).ToString("x4"));
+                            builder.Append("\\u");
+                            builder.Append(((int)c).ToString("x4"));
                         }else{
-                            sb.Append(c);
+                            builder.Append(c);
                         }
                         break;
                 }
             }
-            return sb.ToString();
+            return builder.ToString();
         }
     }
 }

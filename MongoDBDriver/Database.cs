@@ -13,33 +13,20 @@ namespace MongoDB.Driver
 
         public Database(Connection conn, String name){
             this.connection = conn;
-            this.name = name;
+            this.Name = name;
             this.command = this["$cmd"];
         }
 
-        private String name;
-        public string Name {
-            get { return name; }
-        }
+        public string Name { get; private set; }
 
         private DatabaseMetaData metaData;
         public DatabaseMetaData MetaData {
-            get {
-                if(metaData == null){
-                    metaData = new DatabaseMetaData(this.Name,this.connection);
-                }
-                return metaData;
-            }
+            get { return metaData ?? (metaData = new DatabaseMetaData(this.Name, this.connection)); }
         }
 
         private DatabaseJS js;
         public DatabaseJS JS {
-            get {
-                if(js == null){
-                    js = new DatabaseJS(this);
-                }
-                return js;
-            }
+            get { return js ?? (js = new DatabaseJS(this)); }
         }
 
         public List<String> GetCollectionNames(){
