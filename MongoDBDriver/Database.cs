@@ -11,6 +11,12 @@ namespace MongoDB.Driver
         private Connection connection;
         private IMongoCollection command;
 
+        public Database(string connectionString, String name){
+            this.connection = ConnectionFactory.GetConnection(connectionString);
+            this.Name = name;
+            this.command = this["$cmd"];
+        }
+
         public Database(Connection conn, String name){
             this.connection = conn;
             this.Name = name;
