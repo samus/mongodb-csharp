@@ -8,8 +8,8 @@ namespace MongoDB.Driver
     [Serializable]
     public class MongoConnectionStringBuilder
     {
-        public const int DefaultMaximumPoolSize = 5;
-        public const int DefaultMinimumPoolSize = 1;
+        public const int DefaultMaximumPoolSize = 100;
+        public const int DefaultMinimumPoolSize = 0;
         public static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(15);
         public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.Zero;
 
