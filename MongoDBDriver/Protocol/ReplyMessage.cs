@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver.Bson;
 
-namespace MongoDB.Driver.IO
+namespace MongoDB.Driver.Protocol
 {
     public class ReplyMessage:MessageBase
     {

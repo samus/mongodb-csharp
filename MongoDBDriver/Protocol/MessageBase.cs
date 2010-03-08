@@ -1,4 +1,4 @@
-namespace MongoDB.Driver.IO
+namespace MongoDB.Driver.Protocol
 {
     /// <summary>
     /// Base class for all raw messages

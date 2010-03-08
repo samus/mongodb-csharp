@@ -1,18 +1,24 @@
 /*
  * User: scorder
- */using MongoDB.Driver.Bson;
+ */
+using MongoDB.Driver.Bson;
 
-namespace MongoDB.Driver.IO
+namespace MongoDB.Driver.Protocol
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    ///  struct {
+    ///      MsgHeader header;                 // standard message header
+    ///      int32     ZERO;                   // 0 - reserved for future use
+    ///      cstring   fullCollectionName;     // "dbname.collectionname"
+    ///      int32     ZERO;                   // 0 - reserved for future use
+    ///      BSON      selector;               // query object.  See below for details.
+    ///  }
+    /// </remarks>
     public class DeleteMessage : RequestMessageBase
     {
-        //struct {
-        //    MsgHeader header;                 // standard message header
-        //    int32     ZERO;                   // 0 - reserved for future use
-        //    cstring   fullCollectionName;     // "dbname.collectionname"
-        //    int32     ZERO;                   // 0 - reserved for future use
-        //    BSON      selector;               // query object.  See below for details.
-        //}
         public string FullCollectionName { get; set; }
 
         public Document Selector { get; set; }

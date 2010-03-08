@@ -4,7 +4,7 @@
  */
 using System;
 
-namespace MongoDB.Driver.IO
+namespace MongoDB.Driver.Protocol
 {    /// <summary>
     /// In general, each Message consists of a standard message header followed by request-specific data.
     /// </summary>

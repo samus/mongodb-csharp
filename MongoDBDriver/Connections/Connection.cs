@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using MongoDB.Driver.IO;
+using MongoDB.Driver.Protocol;
 
 namespace MongoDB.Driver.Connections
 {

@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Driver.IO
+﻿namespace MongoDB.Driver.Protocol
 {
     public enum OpCode{
         Reply = 1, //Reply to a client request. responseTo is set
