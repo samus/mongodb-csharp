@@ -8,12 +8,22 @@ using MongoDB.Driver;
 namespace MongoDB.GridFS
 {
     [TestFixture]
-    public class GridFileStreamTest
+    public class GridFileStreamTest : GridTestBase
     {
-        Mongo db = new Mongo();
         GridFile fs;
 
         String filesystem = "gfstream";
+        public override string TestFileSystems {
+            get {
+                return filesystem;
+            }
+        }
+        
+        public override void OnInit (){
+            fs = new GridFile(DB, filesystem);
+        }
+
+        
 
         [Test]
         public void TestWrite(){
@@ -25,7 +35,7 @@ namespace MongoDB.GridFS
             }
             gfs.Close();
 
-            Assert.AreEqual(1, CountChunks(id));
+            Assert.AreEqual(1, CountChunks(filesystem,id));
             Document chunk = GrabChunk(id, 0);
             Binary bin = (Binary)chunk["data"];
             Assert.AreEqual(127, bin.Bytes[127]);
@@ -42,7 +52,7 @@ namespace MongoDB.GridFS
             }
             gfs.Close();
 
-            Assert.AreEqual(1, CountChunks(id));
+            Assert.AreEqual(1, CountChunks(filesystem,id));
         }
 
         [Test]
@@ -56,7 +66,7 @@ namespace MongoDB.GridFS
             gfs.Write(buff,0,buff.Length);
             Assert.AreEqual(buff.Length, gfs.Position);
             gfs.Close();
-            Assert.AreEqual(chunks, CountChunks(id));
+            Assert.AreEqual(chunks, CountChunks(filesystem,id));
         }
 
         [Test]
@@ -99,7 +109,7 @@ namespace MongoDB.GridFS
             int size = chunks * chunksize;
             
             Object id = CreateDummyFile(filename, size, chunksize, offset);
-            Assert.AreEqual(2, CountChunks(id));
+            Assert.AreEqual(2, CountChunks(filesystem,id));
             
             GridFileStream gfs = fs.OpenRead(filename);
             byte[] buff = new Byte[4];
@@ -134,7 +144,7 @@ namespace MongoDB.GridFS
             }
             gfs.Close();
 
-            Assert.AreEqual(1, CountChunks(id));
+            Assert.AreEqual(1, CountChunks(filesystem,id));
             Document chunk = GrabChunk(id, 0);
             Binary b = (Binary)chunk["data"];
             Assert.AreEqual(2, b.Bytes[chunksize-1]);
@@ -179,7 +189,7 @@ namespace MongoDB.GridFS
             }
             Assert.AreEqual(buffsize, gfs.Position, "Position is incorrect");
             gfs.Close();
-            Assert.AreEqual(chunks - 1, CountChunks(id));
+            Assert.AreEqual(chunks - 1, CountChunks(filesystem,id));
             Document chunk = GrabChunk(id, 0);
             Binary b = (Binary)chunk["data"];
             Assert.AreEqual(2, b.Bytes[buffsize-1]);
@@ -238,10 +248,10 @@ namespace MongoDB.GridFS
             gfs.SetLength(length);
             gfs.WriteByte(2);
             gfs.Close();
-            GridFileInfo gfi = new GridFileInfo(db["tests"],filesystem,filename);
+            GridFileInfo gfi = new GridFileInfo(DB,filesystem,filename);
 
             Assert.AreEqual(length + 1, gfi.Length);
-            Assert.AreEqual(6, CountChunks(id));
+            Assert.AreEqual(6, CountChunks(filesystem,id));
 
         }
 
@@ -308,41 +318,12 @@ namespace MongoDB.GridFS
         #endregion
 
 
-        [TestFixtureSetUp]
-        public void Init(){
-            db.Connect();
-            fs = new GridFile(db["tests"], filesystem);
-            CleanDB(); //Run here instead of at the end so that the db can be examined after a run.
-        }
-
-        [TestFixtureTearDown]
-        public void Dispose(){
-            db.Disconnect();
-        }
-
-        protected void CleanDB(){
-            //Any collections that we might want to delete before the tests run should be done here.
-            DropGridFileSystem(filesystem);
-        }
-
-        protected void DropGridFileSystem(string filesystem){
-            try{
-                db["tests"].MetaData.DropCollection(filesystem + ".files");
-                db["tests"].MetaData.DropCollection(filesystem + ".chunks");
-            }catch(MongoCommandException){}//if it fails it is because the collection isn't there to start with.
-
-        }
-
-        protected long CountChunks(Object fileid){
-            return db["tests"][filesystem + ".chunks"].Count(new Document().Append("files_id", fileid));
-        }
-
         protected Document GrabChunk(Object fileid, int chunk){
-            return db["tests"][filesystem + ".chunks"].FindOne(new Document().Append("files_id", fileid).Append("n", chunk));
+            return DB[filesystem + ".chunks"].FindOne(new Document().Append("files_id", fileid).Append("n", chunk));
         }
         
         protected Object CreateDummyFile(string filename, int size, int chunksize, int initialOffset){
-            GridFileInfo gfi = new GridFileInfo(db["tests"], "gfstream", filename);
+            GridFileInfo gfi = new GridFileInfo(DB, "gfstream", filename);
             gfi.ChunkSize = chunksize;            
             GridFileStream gfs = gfi.Create();
             Object id = gfs.GridFileInfo.Id;

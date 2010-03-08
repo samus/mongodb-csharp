@@ -1,5 +1,5 @@
-
 using System;
+using System.Configuration;
 
 using NUnit.Framework;
 
@@ -7,28 +7,26 @@ using MongoDB.Driver;
     
 namespace MongoDB.Driver
 {
-    
-    
     [TestFixture()]
     public class TestMongo
     {
-        
+        string connectionString = ConfigurationManager.AppSettings["tests"];       
         [Test()]
         public void TestDefaults()
         {
-            Mongo m = new Mongo();
+            Mongo m = new Mongo(); //Connection string not needed since connect not called and it would screw up the test.
             Assert.AreEqual(string.Empty, m.ConnectionString);
         }
         
         [Test()]
         public void TestExplicitConnection(){
-            Mongo m = new Mongo();
+            Mongo m = new Mongo(connectionString);
             Assert.IsTrue(m.Connect());
         }
         
         [Test()]
         public void TestThatConnectMustBeCalled(){
-            Mongo m = new Mongo();
+            Mongo m = new Mongo(connectionString);
             bool thrown = false;
             try{
                 Database db = m["admin"];
