@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace MongoDB.Driver.Bson
@@ -241,9 +244,9 @@ namespace MongoDB.Driver.Bson
             }
         }
 
-        private bool ElementsSameType (Document doc){
+        private Type GetTypeForIEnumerable (Document doc){
             if (doc.Keys.Count < 1)
-                return false;
+                return typeof(Object);
             Type comp = null;
             foreach (String key in doc.Keys) {
                 Object obj = doc[key];
@@ -252,30 +255,29 @@ namespace MongoDB.Driver.Bson
                     comp = test;
                 } else {
                     if (comp != test)
-                        return false;
+                        return typeof(Object);
                 }
             }
-            return true;
+            return comp;
         }
 
-        private Object ConvertToArray (Document doc){
-            Array ret = null;
+        private IEnumerable ConvertToArray (Document doc){
+            Type genericListType = typeof(List<>);
+            Type arrayType = GetTypeForIEnumerable(doc);
+            Type listType = genericListType.MakeGenericType(arrayType);
+            
+            Object ret = Activator.CreateInstance(listType);
+            BindingFlags FlagsAttribute = BindingFlags.Instance | 
+                                          BindingFlags.InvokeMethod | 
+                                          BindingFlags.Public;
+            
             int idx = 0;
             foreach (String key in doc.Keys) {
-                if (ret == null) {
-                    int length = doc.Keys.Count;
-                    Type arrayType;
-                    if(ElementsSameType(doc)){
-                        arrayType = doc[key].GetType();
-                    }else{
-                        arrayType = typeof(Object);
-                    }
-                    ret = Array.CreateInstance (arrayType, length);
-                }
-                ret.SetValue (doc[key], idx);
-                idx++;
+                //ret.Add((T)doc[key]);
+                listType.InvokeMember("Add", FlagsAttribute, null, ret, new Object[]{doc[key]});
+                //idx++;
             }
-            return ret;
+            return (IEnumerable)ret;
         }
     }
 }
