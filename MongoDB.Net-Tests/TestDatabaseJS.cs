@@ -7,15 +7,28 @@ namespace MongoDB.Driver{
 
 
     [TestFixture()]
-    public class TestDatabaseJS
+    public class TestDatabaseJS : MongoTestBase
     {
-        Mongo db = new Mongo();
-        Database tests;
         DatabaseJS js;
+        public override string TestCollections {
+            get {
+                return "jsreads";
+            }
+        }
+        
+        public override void OnInit (){
+            DB["system.js"].Delete(new Document());
+            js = DB.JS;
+            
+            IMongoCollection jsreads = DB["jsreads"];
+            for(int j = 1; j < 10; j++){
+                jsreads.Insert(new Document(){{"j", j}});
+            }
+        }        
         
         [Test()]
         public void TestCanGetDatabaseJSObject(){
-            Assert.IsNotNull(tests.JS);
+            Assert.IsNotNull(DB.JS);
         }
         
         [Test()]
@@ -158,7 +171,7 @@ namespace MongoDB.Driver{
         public void TestExec(){
             js.Add("lt4", new Code("function(doc){return doc.j < 4;}"));
             int cnt = 0;
-            foreach(Document doc in tests["reads"].Find("lt4(this)").Documents){
+            foreach(Document doc in DB["reads"].Find("lt4(this)").Documents){
                 cnt++;
             }
             Assert.AreEqual(3,cnt);
@@ -170,34 +183,15 @@ namespace MongoDB.Driver{
             int cnt = 0;
             Document scope = new Document().Append("limit", 5);
             Document query = new Document().Append("$where", new CodeWScope("lt(this)",scope));
-            foreach(Document doc in tests["reads"].Find(query).Documents){
+            foreach(Document doc in DB["jsreads"].Find(query).Documents){
                 cnt++;
             }
             Assert.AreEqual(4,cnt);
         }
-
-        
-        [TestFixtureSetUp]
-        public void Init(){
-            db.Connect();
-            initDB();
-            tests = db["tests"];
-            js = tests.JS;
-        }
-        
-        [TestFixtureTearDown]
-        public void Dispose(){
-            db.Disconnect();
-        }
-        
-        protected void initDB(){
-            //drop any previously created collections.
-            db["tests"]["system.js"].Delete(new Document());
-        }        
         
         protected void AddFunction(string name){
             Code func = new Code("function(x,y){return x + y;}");
-            tests["system.js"].Insert(new Document().Append("_id", name).Append("value", func));
+            DB["system.js"].Insert(new Document().Append("_id", name).Append("value", func));
         }
     }
 }

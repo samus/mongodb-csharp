@@ -169,7 +169,7 @@ namespace MongoDB.Driver.Util
                              "  return x + y;\n" +
                              "}\n");
             var doc = new Document(){{"c", c}};
-            Assert.AreEqual(@"{ ""c"": { $code : ""function add(x, y){\n  return x + y;\n}\n"" } }",
+            Assert.AreEqual(@"{ ""c"": { ""$code"": ""function add(x, y){\n  return x + y;\n}\n"" } }",
                             JsonFormatter.Serialize(doc));
         }
             

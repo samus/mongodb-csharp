@@ -8,20 +8,33 @@ namespace MongoDB.Driver
 {
     
     [TestFixture()]
-    public class TestConcurrency
+    public class TestConcurrency :MongoTestBase
     {
         /*
          * Having all of these tests enabled will slow the test suite down a lot.  In the future it may be better
          * to have them ifdef'ed so that the long running tests can be executed by just setting a compile flag.
          */
         Mongo db = new Mongo();
+        public override string TestCollections {
+            get {
+                return "threadinserts,threadreadinserts,threadsmallreads";
+            }
+        }
         
+        public override void OnInit (){
+            Collection col = (Collection)DB["threadsmallreads"];
+            for(int j = 0; j < 4; j++){
+                col.Insert(new Document(){{"x", 4},{"j", j}});
+            }
+        }
+
+
         //[Test]
         public void TestMultiThreadedWrites (){
             Mongo db = new Mongo();
             db.Connect();
             
-            IMongoCollection col = db["tests"]["threadinserts"];
+            IMongoCollection col = DB["threadinserts"];
             
             List<string> identifiers = new List<string>{"A", "B", "C", "D"};
             List<Thread> threads = new List<Thread>();
@@ -48,12 +61,13 @@ namespace MongoDB.Driver
             Mongo db = new Mongo();
             db.Connect();               
             
-            List<string> colnames = new List<string>{"smallreads", "smallreads", "smallreads", "smallreads"};
+            List<string> colnames = new List<string>{"threadsmallreads", "threadsmallreads",
+                                                    "threadsmallreads", "threadsmallreads"};
             List<Thread> threads = new List<Thread>();
             List<Reader> readers = new List<Reader>();
             int iterations = 50;
             foreach(string colname in colnames){
-                Reader r = new Reader{Iterations = iterations, Collection = db["tests"][colname]};
+                Reader r = new Reader{Iterations = iterations, Collection = DB[colname]};
                 readers.Add(r);
                 ThreadStart ts = new ThreadStart(r.DoReads);
                 Thread thread = new Thread(ts);                
@@ -63,7 +77,7 @@ namespace MongoDB.Driver
             
             try{
                 //Connection still alive?
-                db["tests"]["smallreads"].Count();
+                DB["smallreads"].Count();
             }catch(Exception e){
                 Assert.Fail(e.Message);
             }
@@ -77,10 +91,11 @@ namespace MongoDB.Driver
             Mongo db = new Mongo();
             db.Connect();
             
-            IMongoCollection col = db["tests"]["threadreadinserts"];
+            IMongoCollection col = DB["threadreadinserts"];
             
             List<string> identifiers = new List<string>{"A", "B", "C", "D"};
-            List<string> colnames = new List<string>{"smallreads", "smallreads", "smallreads", "smallreads"};
+            List<string> colnames = new List<string>{"threadsmallreads", "threadsmallreads",
+                                                    "threadsmallreads", "threadsmallreads"};
             List<Thread> threads = new List<Thread>();
             List<Reader> readers = new List<Reader>();
             int writeiterations = 100;
@@ -92,7 +107,7 @@ namespace MongoDB.Driver
                 threads.Add(thread);
             }            
             foreach(string colname in colnames){
-                Reader r = new Reader{Iterations = readiterations, Collection = db["tests"][colname]};
+                Reader r = new Reader{Iterations = readiterations, Collection = DB[colname]};
                 readers.Add(r);
                 ThreadStart ts = new ThreadStart(r.DoReads);
                 Thread thread = new Thread(ts);                
@@ -109,19 +124,7 @@ namespace MongoDB.Driver
                 Assert.AreEqual(readiterations, r.Count, "A reader did not read everytime.");
             }
         }
-        
-        [TestFixtureSetUp]
-        public void Init(){
-            db.Connect();
-            cleanDB();
-        }
-        
-        [TestFixtureTearDown]
-        public void Dispose(){
-            //cleanDB();
-            db.Disconnect();
-        }
-        
+                
         protected void RunAndWait(List<Thread> threads){
            foreach(Thread t in threads){
                 t.Start();
@@ -137,13 +140,7 @@ namespace MongoDB.Driver
                     }
                 }                   
             }            
-        }
-        
-        protected void cleanDB(){
-            db["tests"]["$cmd"].FindOne(new Document().Append("drop","threadinserts"));
-            db["tests"]["$cmd"].FindOne(new Document().Append("drop","threadreadinserts"));
-        }
-        
+        }       
     }
     
     public class Inserter{

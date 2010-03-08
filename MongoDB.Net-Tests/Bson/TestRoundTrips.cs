@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 using MongoDB.Driver.Bson;
@@ -95,11 +96,37 @@ namespace MongoDB.Driver.Bson
             string json = @"{ ""arr"": [ [ ""one"", ""two"" ], [ ""three"", ""four"" ], { ""id"": ""six"" } ] }";
             Assert.AreEqual(json, expected.ToString());
             
-            Assert.IsTrue(read["arr"] is Object[], "Mixed array wasn't returned as Object[]");
+            Assert.IsTrue(read["arr"] is IEnumerable<Object>, "Mixed array wasn't returned as IEnumerable<Object>");
+            
+            Assert.AreEqual(json, read.ToString());
+        }
+        
+        [Test]
+        public void TestSingleContentTypeArray(){
+            string[] arr = new string[]{"one", "two", "three", "four"};
+
+            Document expected = new Document(){{"arr", arr}};
+            Document read = WriteAndRead(expected);
+            
+            string json = @"{ ""arr"": [ ""one"", ""two"", ""three"", ""four"" ] }";
+            Assert.AreEqual(json, expected.ToString());
+            
+            Assert.IsTrue(read["arr"] is IEnumerable<string>, "Array wasn't returned as IEnumerable<string>");
             
             Assert.AreEqual(json, read.ToString());
             
+        }
+        
+        [Test]
+        public void TestEmptyArray(){
+            Object[] arr = new Object[0];
+            Document expected = new Document(){{"arr", arr}};
+            Document read = WriteAndRead(expected);
             
+            string json = @"{ ""arr"": [  ] }";
+            Assert.AreEqual(json, expected.ToString());            
+            Assert.IsTrue(read["arr"] is IEnumerable<Object>, "Empty array wasn't returned as IEnumerable<Object>");
+            Assert.AreEqual(json, read.ToString());
         }
         
         protected Document WriteAndRead(Document source){

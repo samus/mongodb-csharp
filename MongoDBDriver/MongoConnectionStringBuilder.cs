@@ -13,6 +13,7 @@ namespace MongoDB.Driver
         public const bool DefaultPooled = true;
         public static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(15);
         public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.Zero;
+
         private static readonly Regex PairRegex = new Regex ("^\\s*(.*)\\s*=\\s*(.*)\\s*$");
         private static readonly Regex ServerRegex = new Regex ("\\s*([^:]+)(?::(\\d+))?\\s*$");
 
@@ -28,7 +29,8 @@ namespace MongoDB.Driver
             ConnectionLifetime = DefaultConnectionLifeTime;
             ConnectionTimeout = DefaultConnectionTimeout;
             MaximumPoolSize = DefaultMaximumPoolSize;
-            MinimumPoolSize = DefaultMinimumPoolSize;            Pooled = DefaultPooled;
+            MinimumPoolSize = DefaultMinimumPoolSize;
+            Pooled = DefaultPooled;
         }
 
         /// <summary>
@@ -168,7 +170,8 @@ namespace MongoDB.Driver
                         break;
                     }
                     case "ConnectionTimeout":
-                    case "ConnectTimeout":                    {
+                    case "ConnectTimeout":
+                    {
                         try {
                             var seconds = double.Parse(value);
 

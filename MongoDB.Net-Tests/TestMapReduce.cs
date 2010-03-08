@@ -5,11 +5,9 @@ using NUnit.Framework;
 namespace MongoDB.Driver
 {
     [TestFixture()]        
-    public class TestMapReduce
+    public class TestMapReduce : MongoTestBase
     {
-        Mongo db = new Mongo();
-        Database tests;
-        Collection mrcol;
+        IMongoCollection mrcol;
         string mapfunction = "function(){\n" +
                             "   this.tags.forEach(\n" +
                             "       function(z){\n" +
@@ -23,6 +21,21 @@ namespace MongoDB.Driver
                                 "    return { count : total };\n" +
                                 "};";
 
+        public override string TestCollections {
+            get {
+                return "mr";
+            }
+        }
+        
+        public override void OnInit (){
+            mrcol = DB["mr"];
+            mrcol.Insert(new Document().Append("_id", 1).Append("tags", new String[]{"dog", "cat"}));
+            mrcol.Insert(new Document().Append("_id", 2).Append("tags", new String[]{"dog"}));
+            mrcol.Insert(new Document().Append("_id", 3).Append("tags", new String[]{"mouse", "cat", "dog"}));
+            mrcol.Insert(new Document().Append("_id", 4).Append("tags", new String[]{}));
+
+        }
+        
 
         [Test()]
         public void TestGetMapReduceObject(){
@@ -39,34 +52,7 @@ namespace MongoDB.Driver
             mr.Execute();
             Assert.IsNotNull(mr.Result);
         }
-
-    
-        [TestFixtureSetUp]
-        public void Init(){
-            db.Connect();
-            tests = db["tests"];
-            mrcol = (Collection)tests["mr"];
-            
-            CleanDB();
-            SetupCollection();
-        }
         
-        [TestFixtureTearDown]
-        public void Dispose(){
-            //cleanDB();
-            db.Disconnect();
-        }
-        
-        protected void CleanDB(){
-            db["tests"]["$cmd"].FindOne(new Document().Append("drop","mr"));
-        }
-        
-        protected void SetupCollection(){
-            mrcol.Insert(new Document().Append("_id", 1).Append("tags", new String[]{"dog", "cat"}));
-            mrcol.Insert(new Document().Append("_id", 2).Append("tags", new String[]{"dog"}));
-            mrcol.Insert(new Document().Append("_id", 3).Append("tags", new String[]{"mouse", "cat", "dog"}));
-            mrcol.Insert(new Document().Append("_id", 4).Append("tags", new String[]{}));
-        }
     }
 
 }

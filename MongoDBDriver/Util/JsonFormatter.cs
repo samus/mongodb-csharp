@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Globalization;
 using System.Text;
 
@@ -45,25 +46,6 @@ namespace MongoDB.Driver
             var t = value.GetType();
             if (value is bool) {
                 json.Append(((bool)value) ? "true" : "false");
-            } else if (t.IsArray) {
-                json.Append("[ ");
-                var first = true;
-                foreach (var v in (Array)value) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        json.Append(", ");
-                    }
-                    SerializeType(v, json);
-                }
-                json.Append(" ]");
-            } else if(value is int ||
-                value is long || 
-                value is float || 
-                value is double ) {
-                // Format numbers allways culture invariant
-                // Example: Without this in Germany 10.3 is outputed as 10,3
-                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
             } else if(value is Document ||
                 value is Oid ||
                 value is Binary ||
@@ -72,12 +54,33 @@ namespace MongoDB.Driver
                 value is MongoMaxKey ||
                 value is Code ||
                 value is CodeWScope) {
-                json.Append(value);
+                json.Append(value);                
+            } else if(value is int ||
+                value is long || 
+                value is float || 
+                value is double ) {
+                // Format numbers allways culture invariant
+                // Example: Without this in Germany 10.3 is outputed as 10,3
+                json.Append(((IFormattable)value).ToString("G", CultureInfo.InvariantCulture));
+            } else if(value is string){
+                json.AppendFormat(@"""{0}""", Escape((string)value));
             } else if (value is DateTime) {
                 json.AppendFormat(@"""{0}""", ((DateTime)value).ToUniversalTime().ToString("o"));
             } else if (value is Guid) {
                 json.Append(String.Format(@"{{ ""$uid"": ""{0}"" }}",value));
-            } else {                
+            } else if (value is IEnumerable) {
+                json.Append("[ ");
+                var first = true;
+                foreach (var v in (IEnumerable)value) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        json.Append(", ");
+                    }
+                    SerializeType(v, json);
+                }
+                json.Append(" ]");                
+            } else {
                 json.AppendFormat(@"""{0}""", Escape(value.ToString()));
             }
             return;

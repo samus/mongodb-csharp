@@ -8,14 +8,21 @@ using MongoDB.Driver;
 namespace MongoDB.GridFS
 {
     [TestFixture]
-    public class GridFileInfoTest
+    public class GridFileInfoTest : GridTestBase
     {
-        Mongo db = new Mongo();
+
+        public override string TestFileSystems {
+            get {
+                return "gfcreate,gfdelete,gfmove,gfopen,gfexists,gfinfo";
+            }
+        }
+        
+        
         [Test]
         public void TestCreateNonExisting(){
             String filename = "newfile.txt";
-            GridFile gf = new GridFile(db["tests"],"gfcreate");
-            GridFileInfo gfi = new GridFileInfo(db["tests"],"gfcreate", filename);
+            GridFile gf = new GridFile(DB,"gfcreate");
+            GridFileInfo gfi = new GridFileInfo(DB,"gfcreate", filename);
             
             Assert.AreEqual(filename, gfi.FileName);
             GridFileStream gfs = gfi.Create();
@@ -26,12 +33,14 @@ namespace MongoDB.GridFS
         [Test]
         public void TestCreateExisting(){
             String filename = "existing.txt";
-            GridFile gf = new GridFile(db["tests"],"gfcreate");
-            GridFileInfo gfi = new GridFileInfo(db["tests"],"gfcreate", filename);
+            GridFile gf = new GridFile(DB,"gfcreate");
+            GridFileInfo gfi = new GridFileInfo(DB,"gfcreate", filename);
             GridFileStream gfs = gfi.Create();
+            gfs.Close();
+            
             bool thrown = false;
             try{
-                gfi = new GridFileInfo(db["tests"],"create", filename);
+                gfi = new GridFileInfo(DB,"gfcreate", filename);
                 gfi.Create();
             }catch(IOException){
                 thrown = true;
@@ -43,7 +52,7 @@ namespace MongoDB.GridFS
         public void TestModeCreateNew(){
             Object id;
             string filename = "createnew.txt";
-            GridFileInfo gfi = new GridFileInfo(db["tests"],"gfcreate", filename);
+            GridFileInfo gfi = new GridFileInfo(DB,"gfcreate", filename);
             using(GridFileStream gfs = gfi.Create(FileMode.CreateNew)){
                 id = gfs.GridFileInfo.Id;
                 TextWriter tw = new StreamWriter(gfs);
@@ -56,8 +65,8 @@ namespace MongoDB.GridFS
         [Test]
         public void TestDelete(){
             String filename = "gfi-delete.txt";
-            GridFile gf = new GridFile(db["tests"],"gfdelete");
-            GridFileInfo gfi = new GridFileInfo(db["tests"],"gfdelete", filename);
+            GridFile gf = new GridFile(DB,"gfdelete");
+            GridFileInfo gfi = new GridFileInfo(DB,"gfdelete", filename);
             GridFileStream gfs = gfi.Create();  //TODO Expand Test to make sure that chunks for the file got deleted too.
             gfi.Delete();
             Assert.IsFalse(gf.Exists(filename), "File should have been deleted.");
@@ -67,8 +76,8 @@ namespace MongoDB.GridFS
         public void TestMoveTo(){
             String filename = "gfi-move.txt";
             String filename2 = "gfi-move.txt2";
-            GridFile gf = new GridFile(db["tests"],"gfmove");
-            GridFileInfo gfi = new GridFileInfo(db["tests"],"gfmove", filename);
+            GridFile gf = new GridFile(DB,"gfmove");
+            GridFileInfo gfi = new GridFileInfo(DB,"gfmove", filename);
             gfi.Create();
             gfi.MoveTo(filename2);
             Assert.IsFalse(gf.Exists(filename), "File should have been moved.");
@@ -79,7 +88,7 @@ namespace MongoDB.GridFS
         [Test]
         public void TestFileExists(){
             string filename = "gfi-exists.txt";
-            GridFileInfo gfi = new GridFileInfo(db["tests"], "gfexists", filename);
+            GridFileInfo gfi = new GridFileInfo(DB, "gfexists", filename);
             Assert.IsFalse(gfi.Exists);
             GridFileStream gfs = gfi.Create();
             Assert.IsTrue(gfi.Exists);
@@ -88,8 +97,8 @@ namespace MongoDB.GridFS
         [Test]
         public void TestOpenNonExistentFails(){
             string filename = "gfi-opennothere.txt";
-            GridFile gf = new GridFile(db["tests"], "gfopen");
-            GridFileInfo gfi = new GridFileInfo(db["tests"], "gfopen", filename);
+            GridFile gf = new GridFile(DB, "gfopen");
+            GridFileInfo gfi = new GridFileInfo(DB, "gfopen", filename);
             bool thrown = false;
             try{
                 GridFileStream gfs = gfi.OpenRead();
@@ -103,7 +112,7 @@ namespace MongoDB.GridFS
         [Test]
         public void TestOpenReadOnly(){
             string filename = "gfi-open.txt";
-            GridFile gf = new GridFile(db["tests"], "gfopen");
+            GridFile gf = new GridFile(DB, "gfopen");
             GridFileStream gfs = gf.Create(filename);
             gfs.Close();
 
@@ -126,7 +135,7 @@ namespace MongoDB.GridFS
             string fs = "gfinfo";
             
             Object id;
-            GridFileInfo gfi = new GridFileInfo(db["tests"],fs, filename);
+            GridFileInfo gfi = new GridFileInfo(DB,fs, filename);
             using(GridFileStream gfs = gfi.Create(FileMode.CreateNew)){
                 id = gfs.GridFileInfo.Id;
                 gfi.ContentType = "text/sam";
@@ -136,46 +145,13 @@ namespace MongoDB.GridFS
                 tw.Close();
             }
             gfi.Aliases = new String[]{"file1"};
-            GridFileInfo gfi2 = new GridFileInfo(db["tests"],fs, filename);
+            GridFileInfo gfi2 = new GridFileInfo(DB,fs, filename);
             Assert.IsTrue(gfi2.Exists, "Couldn't find " + filename);
             Assert.AreEqual("text/sam", gfi2.ContentType);
             Assert.AreNotEqual(gfi2.Aliases, gfi.Aliases);
             gfi.UpdateInfo();
             gfi2.Refresh();
             Assert.AreEqual(gfi2.Aliases, gfi.Aliases);
-        }
-        
-        [TestFixtureSetUp]
-        public void Init(){
-            db.Connect();
-            CleanDB(); //Run here instead of at the end so that the db can be examined after a run.
-        }
-        
-        [TestFixtureTearDown]
-        public void Dispose(){
-            db.Disconnect();
-        }
-        
-        protected void CleanDB(){
-            //Any collections that we might want to delete before the tests run should be done here.
-            DropGridFileSystem("gfcreate");
-            DropGridFileSystem("gfdelete");
-            DropGridFileSystem("gfmove");
-            DropGridFileSystem("gfopen");
-            DropGridFileSystem("gfexists");
-            DropGridFileSystem("gfinfo");
-        }
-        
-        protected void DropGridFileSystem(string filesystem){
-            try{
-                db["tests"].MetaData.DropCollection(filesystem + ".files");
-                db["tests"].MetaData.DropCollection(filesystem + ".chunks");
-            }catch(MongoCommandException){}//if it fails it is because the collection isn't there to start with.
-            
-        }
-        
-        protected long CountChunks(string filesystem, Object fileid){
-            return db["tests"][filesystem + ".chunks"].Count(new Document().Append("files_id", fileid));
         }        
     }
 }

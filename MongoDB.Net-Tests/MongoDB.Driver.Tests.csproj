@@ -55,6 +55,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\redist\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\TestBsonBinary.cs" />
@@ -78,7 +79,6 @@
     <None Include="test-data\tests.charreads.txt" />
     <None Include="test-data\tests.reads.txt" />
     <None Include="test-data\tests.smallreads.txt" />
-    <Compile Include="TestMongoExceptions.cs" />
     <Compile Include="TestOid.cs" />
     <Compile Include="TestOidGenerator.cs" />
     <Compile Include="Bson\TestBsonWriter.cs" />
@@ -91,6 +91,9 @@
     <Compile Include="TestCollectionMetaData.cs" />
     <Compile Include="TestBinary.cs" />
     <Compile Include="Util\TestJsonUtils.cs" />
+    <None Include="MongoDB.Driver.Tests.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">

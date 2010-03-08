@@ -8,14 +8,33 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver
 {
     [TestFixture]
-    public class TestCursor
+    public class TestCursor : MongoTestBase
     {
-        Mongo db = new Mongo();
+        public override string TestCollections {
+            get {
+                return "sorts,hintindex,smallreads,reads";
+            }
+        }
         
+        public override void OnInit (){
+            //smallreads
+            IMongoCollection smallreads = DB["smallreads"];
+            for(int j = 1; j < 5; j++){
+                smallreads.Insert(new Document(){{"x", 4},{"j", j}});
+            }
+            smallreads.Insert(new Document(){{"x", 4}, {"j", 5}, {"n", 1}});
+            
+            IMongoCollection reads = DB["reads"];
+            for(int j = 1; j < 10000; j++){
+                reads.Insert(new Document(){{"x", 4},{"h", "hi"},{"j", j}});
+            }
+        }
+
+           
         [Test]
         public void TestCanReadSmall()
         {
-            ICursor c = db["tests"]["smallreads"].FindAll();
+            ICursor c = DB["smallreads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
@@ -28,7 +47,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCanReadMore(){
-            ICursor c = db["tests"]["reads"].FindAll();
+            ICursor c = DB["reads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
@@ -51,7 +70,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCanReadAndKillCursor()
         {
-            ICursor c = db["tests"]["reads"].FindAll();
+            ICursor c = DB["reads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             foreach(Document doc in c.Documents){
@@ -63,7 +82,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCanLimit(){
-            ICursor c = db["tests"]["reads"].FindAll().Limit(5);
+            ICursor c = DB["reads"].FindAll().Limit(5);
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
@@ -76,7 +95,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestSort(){
-            IMongoCollection sorts = db["tests"]["sorts"];
+            IMongoCollection sorts = DB["sorts"];
             int[] randoms = new int[]{4,6,8,9,1,3,2,5,7,0};
             foreach(int x in randoms){
                 sorts.Insert(new Document().Append("x", randoms[x]));
@@ -98,7 +117,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestExplain(){
-            Document exp = db["tests"]["reads"].FindAll().Limit(5).Skip(5).Sort("x").Explain();
+            Document exp = DB["reads"].FindAll().Limit(5).Skip(5).Sort("x").Explain();
             Assert.IsTrue(exp.Contains("cursor"));
             Assert.IsTrue(exp.Contains("n"));
             Assert.IsTrue(exp.Contains("nscanned"));
@@ -106,7 +125,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestHint(){
-            IMongoCollection reads = db["tests"]["reads"];
+            IMongoCollection reads = DB["reads"];
             Document hint = new Document().Append("x",IndexOrder.Ascending);
             
             Document exp = reads.FindAll().Hint(hint).Explain();
@@ -118,27 +137,6 @@ namespace MongoDB.Driver
             Assert.IsTrue(exp.Contains("cursor"));
             Assert.IsTrue(exp.Contains("n"));
             Assert.IsTrue(exp.Contains("nscanned"));            
-        }
-        
-        [TestFixtureSetUp]
-        public void Init(){
-            db.Connect();
-            cleanDB();
-        }
-
-        [TestFixtureTearDown]
-        public void Dispose(){
-            db.Disconnect();
-        }
-        
-        protected void cleanDB(){
-            try{
-                db["tests"].MetaData.DropCollection("sorts");
-            }catch(Exception){}
-            try{
-                db["tests"]["reads"].MetaData.DropIndex("hintindex");
-            }catch(Exception){}
-                   
         }
     }
 }

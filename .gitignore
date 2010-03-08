@@ -21,6 +21,9 @@
 */test-results/*
 /test-results/
 
+/examples/*/bin/*
+/examples/*/test-results/*
+
 /_UpgradeReport_Files/*
 
 /redist/*.zip

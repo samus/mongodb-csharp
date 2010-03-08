@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0C293FE9-F670-4FEF-A60F-20F8C978B1CD}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AssemblyName>MongoDB.GridFS.Tests</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <RootNamespace>MongoDB.GridFS.Tests</RootNamespace>
+    <ProjectGuid>{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Simple</RootNamespace>
+    <AssemblyName>Simple</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -19,7 +19,6 @@
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -27,39 +26,25 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\redist\nunit.framework.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="GridFileInfoTest.cs" />
-    <Compile Include="GridFileStreamTest.cs" />
-    <Compile Include="GridFileTest.cs" />
-    <Compile Include="GridTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
+    <ProjectReference Include="..\..\MongoDBDriver\MongoDB.Driver.csproj">
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
       <Name>MongoDB.Driver</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MongoDB.GridFS\MongoDB.GridFS.csproj">
-      <Project>{B42DBBF9-0A1F-4749-9787-013BF8D8F435}</Project>
-      <Name>MongoDB.GridFS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MongoDB.Net-Tests\MongoDB.Driver.Tests.csproj">
-      <Project>{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}</Project>
-      <Name>MongoDB.Driver.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="MongoDB.GridFS.Tests.dll.config">
+    <None Include="Simple.exe.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

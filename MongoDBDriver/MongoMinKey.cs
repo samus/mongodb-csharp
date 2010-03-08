@@ -30,7 +30,7 @@ namespace MongoDB.Driver
         /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
         public override string ToString (){
-            return "{ \"$minkey\" : 1 }";
+            return "{ \"$minkey\": 1 }";
         }
     }
 }
