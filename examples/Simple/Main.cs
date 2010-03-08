@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 
 using MongoDB.Driver;
 
@@ -14,7 +15,7 @@ namespace Simple
     /// </summary>
     class MainClass
     {
-        Mongo mongo = new Mongo();
+        Mongo mongo;
         Database simple;
         IMongoCollection categories;
         
@@ -29,6 +30,9 @@ namespace Simple
         /// Setup the collection and insert some data into it.
         /// </summary>
         public void Setup(){
+            string connstr = ConfigurationManager.AppSettings["simple"];
+            if(String.IsNullOrEmpty(connstr)) throw new ArgumentNullException("Connection string not found.");            
+            mongo = new Mongo(connstr);
             mongo.Connect();
             simple = mongo["simple"];
             categories = simple["categories"];
