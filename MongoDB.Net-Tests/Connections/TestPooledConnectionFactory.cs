@@ -54,7 +54,7 @@ namespace MongoDB.Driver.Connections
                 Assert.IsNotNull(connection1);
                 Assert.IsNotNull(pool.Open());
 
-                Connection connection3 = null;
+                RawConnection connection3 = null;
                 var thread = new Thread(o =>
                 {
                     connection3 = pool.Open();
@@ -140,7 +140,7 @@ namespace MongoDB.Driver.Connections
             using(var pool = new PooledConnectionFactory(string.Empty))
             {
                 var connection = pool.Open();
-                connection.MarkInvalid();
+                connection.MarkAsInvalid();
                 pool.Close(connection);
                 Assert.AreEqual(0,pool.PoolSize);
             }

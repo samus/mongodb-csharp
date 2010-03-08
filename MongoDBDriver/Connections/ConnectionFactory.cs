@@ -8,7 +8,7 @@ namespace MongoDB.Driver.Connections
     {
         private static readonly TimeSpan MaintenaceWakeup = TimeSpan.FromSeconds(10);
         private static readonly Timer MaintenanceTimer = new Timer(o => OnMaintenaceWakeup());
-        private static readonly Dictionary<string,ConnectionPool> Pools = new Dictionary<string, ConnectionPool>();
+        private static readonly Dictionary<string, IConnectionFactory> Factorys = new Dictionary<string, IConnectionFactory>();
         private static readonly object SyncObject = new object();
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace MongoDB.Driver.Connections
             get
             {
                 lock(SyncObject)
-                    return Pools.Count;
+                    return Factorys.Count;
             }
         }
 
@@ -39,10 +39,10 @@ namespace MongoDB.Driver.Connections
         {
             lock(SyncObject)
             {
-                foreach(var pool in Pools.Values)
+                foreach(var pool in Factorys.Values)
                     pool.Dispose();
                 
-                Pools.Clear();
+                Factorys.Clear();
             }
         }
 
@@ -56,15 +56,29 @@ namespace MongoDB.Driver.Connections
             if(connectionString == null)
                 throw new ArgumentNullException("connectionString");
 
-            ConnectionPool pool;
+            IConnectionFactory pool;
             
             lock(SyncObject)
             {
-                if(!Pools.TryGetValue(connectionString, out pool))
-                    Pools.Add(connectionString, pool = new ConnectionPool(connectionString));
+                if(!Factorys.TryGetValue(connectionString, out pool))
+                    Factorys.Add(connectionString, pool = CreateFactory(connectionString));
             }
 
             return new Connection(pool);
+        }
+
+        /// <summary>
+        /// Creates the factory.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        /// <returns></returns>
+        private static IConnectionFactory CreateFactory(string connectionString){
+            var builder = new MongoConnectionStringBuilder(connectionString);
+            
+            if(builder.Pooled)
+                return new PooledConnectionFactory(connectionString);
+            
+            return new SimpleConnectionFactory(connectionString);
         }
 
         /// <summary>
@@ -74,7 +88,7 @@ namespace MongoDB.Driver.Connections
         {
             lock(SyncObject)
             {
-                foreach(var pool in Pools.Values)
+                foreach(var pool in Factorys.Values)
                     pool.Cleanup();
             }
         }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -75,8 +75,11 @@
     <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connections\Connection.cs" />
     <Compile Include="Connections\ConnectionFactory.cs" />
-    <Compile Include="Connections\ConnectionPool.cs" />
+    <Compile Include="Connections\ConnectionFactoryBase.cs" />
+    <Compile Include="Connections\PooledConnectionFactory.cs" />
     <Compile Include="Connections\ConnectionState.cs" />
+    <Compile Include="Connections\IConnectionFactory.cs" />
+    <Compile Include="Connections\SimpleConnectionFactory.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bson\BsonWriter.cs" />

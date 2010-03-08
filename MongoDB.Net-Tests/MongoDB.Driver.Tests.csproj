@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -60,12 +60,13 @@
   <ItemGroup>
     <Compile Include="Bson\TestBsonBinary.cs" />
     <Compile Include="Bson\TestRoundTrips.cs" />
+    <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
     <Compile Include="TestAuthentication.cs" />
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
     <Compile Include="Connections\TestConnectionFactory.cs" />
-    <Compile Include="Connections\TestConnectionPool.cs" />
+    <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="TestConnectionStringBuilder.cs" />
     <Compile Include="TestCursor.cs" />
     <Compile Include="TestDatabase.cs" />
