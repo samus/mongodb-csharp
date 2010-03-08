@@ -25,11 +25,11 @@ Current Features
 - hint, explain, $where
 - Safemode
 - Exceptions
+- Connection Pooling
 
 Missing Features
 ================
 - Auto reconnect options
-- Connection pooling (In progress)
 - database profiling: set/get profiling level, get profiling info
 - Many unit tests
 
@@ -65,5 +65,6 @@ Contributors
 - Arne Classen (Sdether)
 - Steve Wagner (lanwin)
 - Andrew Rondeau (GWBasic)
+- Doug Mayer (dougtmayer)
 - Andrew Kempe
 - Sergey Bartunov (sbos)
