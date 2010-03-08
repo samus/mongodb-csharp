@@ -1,0 +1,10 @@
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\bin\Debug\Simple.Contracts.dll
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\bin\Debug\Simple.Contracts.pdb
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\bin\Debug\Simple.exe.config
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\bin\Debug\Simple.exe
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\bin\Debug\Simple.pdb
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\bin\Debug\MongoDB.Driver.dll
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\bin\Debug\MongoDB.Driver.pdb
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\obj\Debug\Simple.exe
+C:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\examples\Simple\obj\Debug\Simple.pdb
