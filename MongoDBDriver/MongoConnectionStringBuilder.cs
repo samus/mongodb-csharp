@@ -10,9 +10,9 @@ namespace MongoDB.Driver
     {
         public const int DefaultMaximumPoolSize = 100;
         public const int DefaultMinimumPoolSize = 0;
+        public const bool DefaultPooled = true;
         public static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(15);
         public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.Zero;
-
         private static readonly Regex PairRegex = new Regex ("^\\s*(.*)\\s*=\\s*(.*)\\s*$");
         private static readonly Regex ServerRegex = new Regex ("\\s*([^:]+)(?::(\\d+))?\\s*$");
 
@@ -28,7 +28,7 @@ namespace MongoDB.Driver
             ConnectionLifetime = DefaultConnectionLifeTime;
             ConnectionTimeout = DefaultConnectionTimeout;
             MaximumPoolSize = DefaultMaximumPoolSize;
-            MinimumPoolSize = DefaultMinimumPoolSize;
+            MinimumPoolSize = DefaultMinimumPoolSize;            Pooled = DefaultPooled;
         }
 
         /// <summary>
@@ -90,6 +90,12 @@ namespace MongoDB.Driver
         public TimeSpan ConnectionTimeout { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether connection is pooled.
+        /// </summary>
+        /// <value><c>true</c> if pooled; otherwise, <c>false</c>.</value>
+        public bool Pooled { get; set; }
+
+        /// <summary>
         ///   Parses the specified connection string.
         /// </summary>
         /// <param name = "connectionString">The connection string.</param>
@@ -118,6 +124,15 @@ namespace MongoDB.Driver
                     case "Password":
                     {
                         Password = value;
+                        break;
+                    }
+                    case "Pooled":
+                    {
+                        try {
+                            Pooled = bool.Parse(value);
+                        } catch(FormatException exception) {
+                            throw new FormatException("Invalid string for Pooled in connection string", exception);
+                        }
                         break;
                     }
                     case "MaximumPoolSize":
@@ -263,7 +278,12 @@ namespace MongoDB.Driver
                 
                 builder.Append (';');
             }
-            
+
+            if(Pooled!=true){
+                builder.AppendFormat("Pooled={0}", Pooled);
+                builder.Append(';');
+            }
+
             if (MaximumPoolSize != DefaultMaximumPoolSize) {
                 builder.AppendFormat ("MaximumPoolSize={0}", MaximumPoolSize);
                 builder.Append (';');
