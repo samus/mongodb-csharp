@@ -1,10 +1,6 @@
-/*
- * User: scorder
- * Date: 7/8/2009
- */
-
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 
@@ -152,7 +148,7 @@ namespace MongoDB.Driver
             Document d2 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "bar")));
             AreNotEqual(d1, d2);
         }
-
+        
         private void AreEqual(Document d1, Document d2) {
             if (!d1.Equals(d2)) {
                 Assert.Fail(string.Format("Documents don't match\r\nExpected: {0}\r\nActual:   {1}", d1, d2));
