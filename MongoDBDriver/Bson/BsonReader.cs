@@ -151,13 +151,12 @@ namespace MongoDB.Driver.Bson
 
             StringBuilder builder = null;
 
-            var totalBytesRead = 0;
             do{
                 var byteCount = 0;
-                byte b;
+                byte b;                
                 while(byteCount < MaxCharBytesSize && (b = reader.ReadByte()) > 0)
                     _byteBuffer[byteCount++] = b;
-                totalBytesRead += byteCount;
+
                 Position += byteCount;
 
                 var length = Encoding.UTF8.GetChars(_byteBuffer, 0, byteCount, _charBuffer, 0);
@@ -172,21 +171,22 @@ namespace MongoDB.Driver.Bson
 
                 builder.Append(_charBuffer, 0, length);
 
-                if(byteCount < MaxCharBytesSize){
-                    Position++;
-                    return builder.ToString();
-                }
+                if(byteCount >= MaxCharBytesSize)
+                    continue;
+                
+                Position++;
+                return builder.ToString();
             }
             while(true);
         }
 
         public string ReadLengthString(){
             var length = reader.ReadInt32();
-            var s = GetString(length - 1);
+            var str = GetString(length - 1);
             reader.ReadByte();
 
             Position += (4 + 1);
-            return s;
+            return str;
         }
 
         private string GetString(int length){
