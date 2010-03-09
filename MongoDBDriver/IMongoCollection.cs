@@ -13,6 +13,7 @@ namespace MongoDB.Driver
         ICursor FindAll ();
         ICursor Find (String @where);
         ICursor Find (Document spec);
+        //ICursor Find (Document spec, Document fields);
         ICursor Find (Document spec, int limit, int skip);
         ICursor Find (Document spec, int limit, int skip, Document fields);
         MapReduce MapReduce ();
