@@ -72,6 +72,8 @@
   <ItemGroup>
     <Compile Include="Bson\BsonDataType.cs" />
     <Compile Include="Bson\BsonInfo.cs" />
+    <Compile Include="Bson\DocumentBuilder.cs" />
+    <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connections\Connection.cs" />

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -16,8 +14,14 @@ namespace MongoDB.Driver.Bson
         private char[] _charBuffer;
         private readonly BinaryReader reader;
         private readonly Stream stream;
+        private readonly IBsonObjectBuilder _builder;
 
-        public BsonReader(Stream stream){
+        public BsonReader(Stream stream)
+            :this(stream,new DocumentBuilder()){
+        }
+
+        public BsonReader(Stream stream,IBsonObjectBuilder builder){
+            _builder = builder;
             Position = 0;
             this.stream = stream;
             reader = new BinaryReader(this.stream);
@@ -27,31 +31,42 @@ namespace MongoDB.Driver.Bson
 
         public Document Read(){
             Position = 0;
-            var doc = ReadDocument();
+            var doc = (Document)ReadObject();
             return doc;
         }
 
-        public Document ReadDocument(){
+        public object ReadObject(){
+            var instance = _builder.BeginObject();
+            ReadElements(instance);
+            return _builder.EndObject(instance);
+        }
+
+        public object ReadArray(){
+            var instance = _builder.BeginArray();
+            ReadElements(instance);
+            return _builder.EndArray(instance);
+        }
+
+        public void ReadElements(object instance){
             var startPosition = Position;
-            var document = new Document();
             var size = reader.ReadInt32();
             Position += 4;
             while((Position - startPosition) + 1 < size)
-                ReadElement(document);
+                ReadElement(instance);
             Position++;
             if(reader.ReadByte() != 0)
                 throw new InvalidDataException("Document not null terminated");
             if(size != Position - startPosition)
                 throw new InvalidDataException(string.Format("Should have read {0} bytes from stream but only read {1}", size, (Position - startPosition)));
-            return document;
         }
 
-        public void ReadElement(Document doc){
-            var typeNum = (sbyte)reader.ReadByte();
+        public void ReadElement(object instance){
             Position++;
+            var typeNum = (sbyte)reader.ReadByte();
             var key = ReadString();
+            _builder.BeginProperty(instance, key);
             var element = ReadElementType(typeNum);
-            doc.Add(key, element);
+            _builder.EndProperty(instance, element);
         }
 
         public Object ReadElementType(sbyte typeNum){
@@ -86,15 +101,10 @@ namespace MongoDB.Driver.Bson
                     return ReadLengthString();
                 }
                 case BsonDataType.Obj:{
-                    var doc = ReadDocument();
-                    if(DBRef.IsDocumentDBRef(doc))
-                        return DBRef.FromDocument(doc);
-                    return doc;
+                    return ReadObject();
                 }
-
                 case BsonDataType.Array:{
-                    var doc = ReadDocument();
-                    return ConvertToArray(doc);
+                    return ReadArray();
                 }
                 case BsonDataType.Regex:{
                     return new MongoRegex{
@@ -111,7 +121,7 @@ namespace MongoDB.Driver.Bson
                     Position += 4;
 
                     var val = ReadLengthString();
-                    var scope = ReadDocument();
+                    var scope = (Document)ReadObject();
                     if(size != Position - startpos)
                         throw new InvalidDataException(string.Format("Should have read {0} bytes from stream but read {1} in CodeWScope",
                             size,
@@ -227,34 +237,6 @@ namespace MongoDB.Driver.Bson
                 var charBufferSize = Encoding.UTF8.GetMaxCharCount(MaxCharBytesSize);
                 _charBuffer = new char[charBufferSize];
             }
-        }
-
-        private Type GetTypeForIEnumerable(Document doc){
-            if(doc.Keys.Count < 1)
-                return typeof(Object);
-            Type comp = null;
-            foreach(String key in doc.Keys){
-                var obj = doc[key];
-                var test = obj.GetType();
-                if(comp == null)
-                    comp = test;
-                else if(comp != test)
-                    return typeof(Object);
-            }
-            return comp;
-        }
-
-        private IEnumerable ConvertToArray(Document doc){
-            var genericListType = typeof(List<>);
-            var arrayType = GetTypeForIEnumerable(doc);
-            var listType = genericListType.MakeGenericType(arrayType);
-
-            var list = (IList)Activator.CreateInstance(listType);
-
-            foreach(String key in doc.Keys)
-                list.Add(doc[key]);
-
-            return list;
         }
     }
 }
