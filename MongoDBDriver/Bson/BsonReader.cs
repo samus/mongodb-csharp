@@ -32,19 +32,18 @@ namespace MongoDB.Driver.Bson
         }
 
         public Document ReadDocument(){
-            var startpos = Position;
-            var doc = new Document();
+            var startPosition = Position;
+            var document = new Document();
             var size = reader.ReadInt32();
             Position += 4;
-            while((Position - startpos) + 1 < size)
-                ReadElement(doc);
-            var eoo = reader.ReadByte();
+            while((Position - startPosition) + 1 < size)
+                ReadElement(document);
             Position++;
-            if(eoo != 0)
+            if(reader.ReadByte() != 0)
                 throw new InvalidDataException("Document not null terminated");
-            if(size != Position - startpos)
-                throw new InvalidDataException(string.Format("Should have read {0} bytes from stream but only read {1}", size, (Position - startpos)));
-            return doc;
+            if(size != Position - startPosition)
+                throw new InvalidDataException(string.Format("Should have read {0} bytes from stream but only read {1}", size, (Position - startPosition)));
+            return document;
         }
 
         public void ReadElement(Document doc){
