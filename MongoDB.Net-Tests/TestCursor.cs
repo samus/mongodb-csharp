@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 using NUnit.Framework;
 
 using MongoDB.Driver;
@@ -138,5 +140,32 @@ namespace MongoDB.Driver
             Assert.IsTrue(exp.Contains("n"));
             Assert.IsTrue(exp.Contains("nscanned"));            
         }
+        
+        [Test]
+        public void TestSearchWithNonDocument(){
+            IMongoCollection reads = DB["reads"];
+            Dictionary<string, object> fake =  new Dictionary<string, object>(){{"j", 5}};
+            using(ICursor cur = reads.FindAll().Spec(fake)){
+                try{
+                    foreach(Document d in cur.Documents){
+                        d["returned"] = 1; //just do nothing with it.
+                    }
+                }catch(Exception e){
+                    Assert.Fail("Cursor couldn't execute. " + e.Message);
+                }
+            }
+        }
+        
     }
+    
+//    internal class FakeDoc : IEnumerable<KeyValuePair<string, object>>{
+//        
+//        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator (){
+//            return this.GetEnumerator();
+//        }
+//        
+//        public IEnumerator<KeyValuePair<string, object>> GetEnumerator (){
+//            
+//        }
+//    }
 }
