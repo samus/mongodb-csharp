@@ -10,7 +10,6 @@ namespace MongoDB.Driver.Bson
     /// </summary>
     public class BsonWriter
     {
-        private static DateTime epoch = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
         private Stream stream;
         private BinaryWriter writer;
         private Encoding encoding = Encoding.UTF8;
@@ -69,7 +68,7 @@ namespace MongoDB.Driver.Bson
                     return;                    
                 case BsonDataType.Date:
                     DateTime d = (DateTime)obj;
-                    TimeSpan diff = d.ToUniversalTime() - epoch;
+                    TimeSpan diff = d.ToUniversalTime() - BsonInfo.Epoch;
                     double time = Math.Floor(diff.TotalMilliseconds);
                     writer.Write((long)time);
                     return;
@@ -181,11 +180,11 @@ namespace MongoDB.Driver.Bson
                     Type t = val.GetType();
                     if(t == typeof(Document)){
                         return CalculateSize((Document)val);
-                    }else if(t == typeof(DBRef)){
-                        return CalculateSize((Document)((DBRef)val));
-                    }else{
-                        throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented yet.",t.Name));
                     }
+                    if(t == typeof(DBRef)){
+                        return CalculateSize((Document)((DBRef)val));
+                    }
+                    throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented yet.",t.Name));
                 }
                 case BsonDataType.Array:
                     return CalculateSize((IEnumerable)val);                    
@@ -208,18 +207,15 @@ namespace MongoDB.Driver.Bson
                 case BsonDataType.Binary:{
                     if (val is Guid)
                         return 21;
-                    else
+                    Binary b = (Binary)val;
+                    int size = 4; //size int
+                    size += 1; //subtype
+                    if (b.Subtype == Binary.TypeCode.General)
                     {
-                        Binary b = (Binary)val;
-                        int size = 4; //size int
-                        size += 1; //subtype
-                        if (b.Subtype == Binary.TypeCode.General)
-                        {
-                            size += 4; //embedded size int
-                        }
-                        size += b.Bytes.Length;
-                        return size;
+                        size += 4; //embedded size int
                     }
+                    size += b.Bytes.Length;
+                    return size;
                 }
                 default:
                     throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.",val.GetType().Name));

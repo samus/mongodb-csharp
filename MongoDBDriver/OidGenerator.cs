@@ -3,13 +3,12 @@ using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver
 {
     public class OidGenerator
     {
-        internal static DateTime epoch = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
-        
         private int inc;
         private object inclock =  new object();
         private byte[] machineHash;
@@ -58,7 +57,7 @@ namespace MongoDB.Driver
         private int GenerateTime(){
             DateTime now = DateTime.UtcNow;
             //DateTime nowtime = new DateTime(epoch.Year, epoch.Month, epoch.Day, now.Hour, now.Minute, now.Second, now.Millisecond);
-            TimeSpan diff = now - epoch;
+            TimeSpan diff = now - BsonInfo.Epoch;
             return Convert.ToInt32(Math.Floor(diff.TotalSeconds));            
         }
 

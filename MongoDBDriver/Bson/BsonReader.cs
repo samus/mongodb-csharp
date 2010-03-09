@@ -12,8 +12,6 @@ namespace MongoDB.Driver.Bson
     /// </summary>
     public class BsonReader
     {
-        private static DateTime epoch = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         private Stream stream;
         private BinaryReader reader;        private int position = 0;
 
@@ -49,10 +47,10 @@ namespace MongoDB.Driver.Bson
             }
             byte eoo = reader.ReadByte ();
             position++;
-            if (eoo != (byte)0)
-                throw new System.IO.InvalidDataException ("Document not null terminated");
+            if (eoo != 0)
+                throw new InvalidDataException ("Document not null terminated");
             if (size != position - startpos) {
-                throw new System.IO.InvalidDataException (string.Format ("Should have read {0} bytes from stream but only read {1}", size, (position - startpos)));
+                throw new InvalidDataException (string.Format ("Should have read {0} bytes from stream but only read {1}", size, (position - startpos)));
             }
             return doc;
         }
@@ -86,7 +84,7 @@ namespace MongoDB.Driver.Bson
             case BsonDataType.Date:
                 position += 8;
                 long millis = reader.ReadInt64 ();
-                return epoch.AddMilliseconds (millis);
+                return BsonInfo.Epoch.AddMilliseconds(millis);
             case BsonDataType.Oid:
                 position += 12;
                 return new Oid (reader.ReadBytes (12));
@@ -262,22 +260,17 @@ namespace MongoDB.Driver.Bson
         }
 
         private IEnumerable ConvertToArray (Document doc){
-            Type genericListType = typeof(List<>);
-            Type arrayType = GetTypeForIEnumerable(doc);
-            Type listType = genericListType.MakeGenericType(arrayType);
+            var genericListType = typeof(List<>);
+            var arrayType = GetTypeForIEnumerable(doc);
+            var listType = genericListType.MakeGenericType(arrayType);
+
+            var list = (IList)Activator.CreateInstance(listType);
             
-            Object ret = Activator.CreateInstance(listType);
-            BindingFlags FlagsAttribute = BindingFlags.Instance | 
-                                          BindingFlags.InvokeMethod | 
-                                          BindingFlags.Public;
-            
-            int idx = 0;
             foreach (String key in doc.Keys) {
-                //ret.Add((T)doc[key]);
-                listType.InvokeMember("Add", FlagsAttribute, null, ret, new Object[]{doc[key]});
-                //idx++;
+                list.Add(doc[key]);
             }
-            return (IEnumerable)ret;
+
+            return list;
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver.Connections;
-using MongoDB.Driver.IO;
+using MongoDB.Driver.Protocol;
 
 namespace MongoDB.Driver
 {

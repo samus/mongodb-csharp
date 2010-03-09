@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using MongoDB.Driver.IO;
+using MongoDB.Driver.Protocol;
 
 namespace MongoDB.Driver.Connections
 {
@@ -14,18 +14,19 @@ namespace MongoDB.Driver.Connections
     /// </summary>
     public class Connection : IDisposable
     {
-        private readonly ConnectionPool _pool;
+        private readonly IConnectionFactory _factory;
         private RawConnection _connection;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Connection"/> class.
         /// </summary>
-        /// <param name="pool">The pool.</param>
-        public Connection (ConnectionPool pool){
-            if (pool == null)
-                throw new ArgumentNullException ("pool");
+        /// <param name="factory">The pool.</param>
+        public Connection(IConnectionFactory factory)
+        {
+            if (factory == null)
+                throw new ArgumentNullException ("factory");
             
-            _pool = pool;
+            _factory = factory;
         }
 
         /// <summary>
@@ -59,7 +60,7 @@ namespace MongoDB.Driver.Connections
         /// </summary>
         /// <value>The connection string.</value>
         public string ConnectionString {
-            get { return _pool.ConnectionString; }
+            get { return _factory.ConnectionString; }
         }
 
         /// <summary>
@@ -131,7 +132,7 @@ namespace MongoDB.Driver.Connections
         /// Opens this instance.
         /// </summary>
         public void Open (){
-            _connection = _pool.BorrowConnection ();
+            _connection = _factory.Open();
         }
 
         /// <summary>
@@ -140,8 +141,8 @@ namespace MongoDB.Driver.Connections
         public void Close (){
             if (_connection == null)
                 return;
-            
-            _pool.ReturnConnection (_connection);
+
+            _factory.Close(_connection);
             _connection = null;
         }
 
@@ -153,8 +154,8 @@ namespace MongoDB.Driver.Connections
                 return;
             
             _connection.MarkAsInvalid ();
-            _pool.ReturnConnection (_connection);
-            _connection = _pool.BorrowConnection ();
+            _factory.Close (_connection);
+            _connection = _factory.Open();
         }
 
         public Stream GetStream (){

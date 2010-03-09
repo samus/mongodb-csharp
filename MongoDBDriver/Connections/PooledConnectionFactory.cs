@@ -8,14 +8,12 @@ namespace MongoDB.Driver.Connections
     ///   Connection pool implementation based on this document:
     ///   http://msdn.microsoft.com/en-us/library/8xx3tyca%28VS.100%29.aspx
     /// </summary>
-    public class PooledConnectionFactory : IConnectionFactory
+    public class PooledConnectionFactory : ConnectionFactoryBase
     {
-        private readonly MongoConnectionStringBuilder _connectionStringBuilder;
         private readonly object _syncObject = new object();
-        private readonly Queue<Connection> _freeConnections = new Queue<Connection>();
-        private readonly List<Connection> _usedConnections = new List<Connection>();
-        private readonly List<Connection> _invalidConnections = new List<Connection>();
-        private int _endPointPointer;
+        private readonly Queue<RawConnection> _freeConnections = new Queue<RawConnection>();
+        private readonly List<RawConnection> _usedConnections = new List<RawConnection>();
+        private readonly List<RawConnection> _invalidConnections = new List<RawConnection>();
 
         /// <summary>
         /// Initializes a new instance of the
@@ -24,34 +22,23 @@ namespace MongoDB.Driver.Connections
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         public PooledConnectionFactory(string connectionString)
+            :base(connectionString)
         {
-            if(connectionString == null)
-                throw new ArgumentNullException("connectionString");
-
-            ConnectionString = connectionString;
-            _connectionStringBuilder = new MongoConnectionStringBuilder(connectionString);
-
-            if(_connectionStringBuilder.MaximumPoolSize < 1){
+            if(Builder.MaximumPoolSize < 1){
                 throw new ArgumentException("MaximumPoolSize have to be greater or equal then 1");
             }
-            if(_connectionStringBuilder.MinimumPoolSize < 0){
+            if(Builder.MinimumPoolSize < 0){
                 throw new ArgumentException("MinimumPoolSize have to be greater or equal then 0");
             }
-            if(_connectionStringBuilder.MinimumPoolSize > _connectionStringBuilder.MaximumPoolSize){
+            if(Builder.MinimumPoolSize > Builder.MaximumPoolSize){
                 throw new ArgumentException("MinimumPoolSize must be smaller than MaximumPoolSize");
             }
-            if(_connectionStringBuilder.ConnectionLifetime.TotalSeconds < 0){
+            if(Builder.ConnectionLifetime.TotalSeconds < 0){
                 throw new ArgumentException("ConnectionLifetime have to be greater or equal then 0");
             }
 
             EnsureMinimalPoolSize();
         }
-
-        /// <summary>
-        /// Gets or sets the connection string.
-        /// </summary>
-        /// <value>The connection string.</value>
-        public string ConnectionString { get; private set; }
 
         /// <summary>
         /// Gets the size of the pool.
@@ -69,7 +56,7 @@ namespace MongoDB.Driver.Connections
         /// <summary>
         /// Cleanups the connections.
         /// </summary>
-        public void Cleanup()
+        public override void Cleanup()
         {
             CheckFreeConnectionsAlive();
 
@@ -101,7 +88,7 @@ namespace MongoDB.Driver.Connections
         /// </summary>
         private void DisposeInvalidConnections()
         {
-            Connection[] invalidConnections;
+            RawConnection[] invalidConnections;
 
             lock(_syncObject)
             {
@@ -120,13 +107,13 @@ namespace MongoDB.Driver.Connections
         /// <returns>
         /// 	<c>true</c> if the specified connection is alive; otherwise, <c>false</c>.
         /// </returns>
-        private bool IsAlive(Connection connection)
+        private bool IsAlive(RawConnection connection)
         {
             if(connection == null)
                 throw new ArgumentNullException("connection");
 
-            if(_connectionStringBuilder.ConnectionLifetime!=TimeSpan.Zero)
-                if(connection.CreationTime.Add(_connectionStringBuilder.ConnectionLifetime) < DateTime.Now)
+            if(Builder.ConnectionLifetime!=TimeSpan.Zero)
+                if(connection.CreationTime.Add(Builder.ConnectionLifetime) < DateTime.Now)
                     return false;
 
             if(!connection.IsConnected)
@@ -136,11 +123,12 @@ namespace MongoDB.Driver.Connections
         }
 
         /// <summary>
-        /// Burrows a connection from pool.
+        ///   Borrows the connection.
         /// </summary>
         /// <returns></returns>
-        public Connection Open(){
-            Connection connection;
+        public override RawConnection Open()
+        {
+            RawConnection connection;
 
             lock(_syncObject)
             {
@@ -151,9 +139,9 @@ namespace MongoDB.Driver.Connections
                     return connection;
                 }
 
-                if(PoolSize >= _connectionStringBuilder.MaximumPoolSize)
+                if(PoolSize >= Builder.MaximumPoolSize)
                 {
-                    if(!Monitor.Wait(_syncObject,_connectionStringBuilder.ConnectionTimeout))
+                    if(!Monitor.Wait(_syncObject, Builder.ConnectionTimeout))
                         //Todo: custom exception?
                         throw new MongoException("Timeout expired. The timeout period elapsed prior to obtaining a connection from pool. This may have occured because all pooled connections were in use and max poolsize was reached.");
 
@@ -170,10 +158,11 @@ namespace MongoDB.Driver.Connections
         }
 
         /// <summary>
-        /// Gives the connection back to pool
+        ///   Returns the connection.
         /// </summary>
-        /// <param name="connection">The connection.</param>
-        public void Close(Connection connection){
+        /// <param name = "connection">The connection.</param>
+        public override void Close(RawConnection connection)
+        {
             if(connection == null)
                 throw new ArgumentNullException("connection");
 
@@ -202,44 +191,14 @@ namespace MongoDB.Driver.Connections
         private void EnsureMinimalPoolSize()
         {
             lock(_syncObject)
-                while(PoolSize < _connectionStringBuilder.MinimumPoolSize)
+                while(PoolSize < Builder.MinimumPoolSize)
                     _freeConnections.Enqueue(CreateRawConnection());
-        }
-
-        /// <summary>
-        /// Creates the raw connection.
-        /// </summary>
-        /// <returns></returns>
-        private Connection CreateRawConnection()
-        {
-            var endPoint = GetNextEndPoint();
-            return new Connection(endPoint,_connectionStringBuilder.ConnectionTimeout);
-        }
-
-        /// <summary>
-        ///   Gets the next end point.
-        /// </summary>
-        /// <remarks>
-        ///   Currently is only cyles to the server list.
-        /// </remarks>
-        /// <returns></returns>
-        private MongoServerEndPoint GetNextEndPoint()
-        {
-            var servers = _connectionStringBuilder.Servers;
-            var endPoint = servers[_endPointPointer];
-
-            _endPointPointer++;
-
-            if(_endPointPointer >= servers.Length)
-                _endPointPointer = 0;
-
-            return endPoint;
         }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             lock(_syncObject)
             {

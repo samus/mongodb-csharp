@@ -1,7 +1,7 @@
 
 using System;
 using System.IO;
-
+using MongoDB.Driver.Protocol;
 using NUnit.Framework;
 
 namespace MongoDB.Driver.IO

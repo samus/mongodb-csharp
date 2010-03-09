@@ -154,7 +154,6 @@ namespace MongoDB.Driver.Bson
             Assert.IsNotNull(doc);
         }
         
-        
         private String ConvertDocToHex(Document doc){
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
