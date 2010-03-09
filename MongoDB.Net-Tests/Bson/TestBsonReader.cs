@@ -48,7 +48,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader reader = new BsonReader(ms);
             
-            String str = reader.ReadLenString();
+            String str = reader.ReadLengthString();
             Assert.AreEqual(buf.Length, reader.Position);
             Assert.AreEqual("test", (String)str);
         }
