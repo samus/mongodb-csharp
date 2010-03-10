@@ -142,10 +142,10 @@ namespace MongoDB.Driver.Bson
             _writer.Write(size);
             foreach(String key in document.Keys){
                 var val = document[key];
-                var t = TranslateToBsonType(val);
-                _writer.Write((byte)t);
+                var type = TranslateToBsonType(val);
+                _writer.Write((byte)type);
                 WriteString(key);
-                WriteValue(t, val);
+                WriteValue(type, val);
             }
             _writer.Write((byte)0);
         }
@@ -268,22 +268,22 @@ namespace MongoDB.Driver.Bson
             return CalculateSize((Document)reference);
         }
 
-        public int CalculateSize(Document doc){
+        public int CalculateSize(Document document){
             var size = 4;
-            foreach(String key in doc.Keys){
+            foreach(String key in document.Keys){
                 var elsize = 1; //type
                 elsize += CalculateSize(key, false);
-                elsize += CalculateSize(doc[key]);
+                elsize += CalculateSize(document[key]);
                 size += elsize;
             }
             size += 1; //terminator
             return size;
         }
 
-        public int CalculateSize(IEnumerable arr){
+        public int CalculateSize(IEnumerable enumerable){
             var size = 4; //base size for the object
             var keyname = 0;
-            foreach(var o in arr){
+            foreach(var o in enumerable){
                 var elsize = 1; //type
                 size += CalculateSize(keyname.ToString(), false); //element name
                 size += CalculateSize(o);
@@ -294,16 +294,16 @@ namespace MongoDB.Driver.Bson
             return size;
         }
 
-        public int CalculateSize(String val){
-            return CalculateSize(val, true);
+        public int CalculateSize(String value){
+            return CalculateSize(value, true);
         }
 
-        public int CalculateSize(String val, bool includeLen){
+        public int CalculateSize(String value, bool includeLength){
             var size = 1; //terminator
-            if(includeLen)
+            if(includeLength)
                 size += 4;
-            if(val != null)
-                size += Encoding.UTF8.GetByteCount(val);
+            if(value != null)
+                size += Encoding.UTF8.GetByteCount(value);
             return size;
         }
 
@@ -311,7 +311,7 @@ namespace MongoDB.Driver.Bson
             _writer.Flush();
         }
 
-        protected BsonDataType TranslateToBsonType(Object value){
+        protected BsonDataType TranslateToBsonType(object value){
             if(value == null)
                 return BsonDataType.Null;
 
