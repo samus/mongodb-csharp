@@ -21,15 +21,15 @@ namespace MongoDB.Driver
             public string CollectionName{
                 get{return (string)result["result"];}
             }
-            public long Input{
+            public long InputCount{
                 get{return Convert.ToInt64(counts["input"]);}
             }
             
-            public long Emit{
+            public long EmitCount{
                 get{return Convert.ToInt64(counts["emit"]);}
             }
             
-            public long Output{
+            public long OutputCount{
                 get{return Convert.ToInt64(counts["output"]);}
             }
             

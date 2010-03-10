@@ -69,9 +69,9 @@ namespace MongoDB.Driver
             MapReduce mr = mrb.Map(mapfunction).Reduce(reducefunction).Execute();
             Assert.IsNotNull(mr.Result);
             Assert.IsTrue(mr.Result.Ok);
-            Assert.AreEqual(4, mr.Result.Input);
-            Assert.AreEqual(6, mr.Result.Emit);
-            Assert.AreEqual(3, mr.Result.Output);
+            Assert.AreEqual(4, mr.Result.InputCount);
+            Assert.AreEqual(6, mr.Result.EmitCount);
+            Assert.AreEqual(3, mr.Result.OutputCount);
         }
         
         [Test()]

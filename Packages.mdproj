@@ -7,14 +7,6 @@
     <ProjectGuid>{502F3381-58AA-461B-B9D8-12578A588C61}</ProjectGuid>
     <Packages>
       <Packages>
-        <Package name="Tarball">
-          <Builder TargetDirectory="..\..\..\..\dev\Projects\MongoDBDriver\MongoDBDriver" DefaultConfiguration="Debug" ctype="TarballDeployTarget">
-            <ChildEntries>
-              <SolutionItemReference path="MongoDBDriver\MongoDBDriver.csproj" />
-            </ChildEntries>
-            <RootEntry path="MongoDBDriver.sln" id="MongoDBDriver" />
-          </Builder>
-        </Package>
         <Package name="Zip Debug">
           <Builder targetFile="redist\MongoDBDriver-Debug.zip" platform="Windows" configuration="Debug" ctype="BinariesZipPackageBuilder">
             <ChildEntries>
@@ -29,6 +21,32 @@
               <File>MongoDB.GridFS,ProgramFiles,MongoDB.Driver.dll.mdb</File>
               <File>MongoDB.Driver,ProgramFiles,MongoDB.Driver.dll.mdb</File>
             </ExcludedFiles>
+            <RootEntry path="MongoDBDriver.sln" id=":root:" />
+          </Builder>
+        </Package>
+        <Package name="MSBuild (Visual Studio 2008) Sources">
+          <Builder targetFile="redist\MongoDBDriver-src.tar.gz" format="MonoDevelop.Projects.FileFormat" ctype="SourcesZipPackageBuilder">
+            <ChildEntries>
+              <SolutionItemReference path="MongoDBDriver\MongoDB.Driver.csproj" />
+              <SolutionItemReference path="Packages.mdproj" />
+              <SolutionItemReference path="MongoDBDriverTranslation\MongoDBDriverTranslation.mdproj" />
+              <SolutionItemReference path="MongoDB.Net-Tests\MongoDB.Driver.Tests.csproj" />
+              <SolutionItemReference path="MongoDB.Linq\MongoDB.Linq.csproj" />
+              <SolutionItemReference path="MongoDB.Linq.Tests\MongoDB.Linq.Tests.csproj" />
+              <SolutionItemReference path="MongoDB.Driver.Benchmark\MongoDB.Driver.Benchmark.csproj" />
+              <SolutionItemReference path="MongoDB.GridFS\MongoDB.GridFS.csproj" />
+              <SolutionItemReference path="MongoDB.GridFS.Tests\MongoDB.GridFS.Tests.csproj" />
+            </ChildEntries>
+            <RootEntry path="MongoDBDriver.sln" id=":root:" />
+          </Builder>
+        </Package>
+        <Package name="Zip Release">
+          <Builder targetFile="redist\MongoDBDriver-Release.zip" platform="Windows" configuration="Release" ctype="BinariesZipPackageBuilder">
+            <ChildEntries>
+              <SolutionItemReference path="MongoDBDriver\MongoDB.Driver.csproj" />
+              <SolutionItemReference path="MongoDB.Linq\MongoDB.Linq.csproj" />
+              <SolutionItemReference path="MongoDB.GridFS\MongoDB.GridFS.csproj" />
+            </ChildEntries>
             <RootEntry path="MongoDBDriver.sln" id=":root:" />
           </Builder>
         </Package>

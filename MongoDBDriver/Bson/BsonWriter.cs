@@ -117,16 +117,22 @@ namespace MongoDB.Driver.Bson
                     return;
                 }
                 case BsonDataType.Binary:{
-                    Binary b = (Binary)obj;
-                    if(b.Subtype == Binary.TypeCode.General){
-                        writer.Write(b.Bytes.Length + 4);
-                        writer.Write((byte)b.Subtype);
-                        writer.Write(b.Bytes.Length);
-                    }else{
-                        writer.Write(b.Bytes.Length);
-                        writer.Write((byte)b.Subtype);
+                    if (obj is Guid) {
+                        writer.Write((int)16);
+                        writer.Write((byte)3);
+                        writer.Write(((Guid)obj).ToByteArray());
+                    } else {
+                        Binary b = (Binary)obj;
+                        if(b.Subtype == Binary.TypeCode.General){
+                            writer.Write(b.Bytes.Length + 4);
+                            writer.Write((byte)b.Subtype);
+                            writer.Write(b.Bytes.Length);
+                        }else{
+                            writer.Write(b.Bytes.Length);
+                            writer.Write((byte)b.Subtype);
+                        }
+                        writer.Write(b.Bytes);
                     }
-                    writer.Write(b.Bytes);                    
                     return;
                 }
                 default:
@@ -202,14 +208,20 @@ namespace MongoDB.Driver.Bson
                     return size;
                     }
                 case BsonDataType.Binary:{
-                    Binary b = (Binary)val;
-                    int size = 4; //size int
-                    size += 1; //subtype
-                    if(b.Subtype == Binary.TypeCode.General){
-                        size += 4; //embedded size int
+                    if (val is Guid)
+                        return 21;
+                    else
+                    {
+                        Binary b = (Binary)val;
+                        int size = 4; //size int
+                        size += 1; //subtype
+                        if (b.Subtype == Binary.TypeCode.General)
+                        {
+                            size += 4; //embedded size int
+                        }
+                        size += b.Bytes.Length;
+                        return size;
                     }
-                    size += b.Bytes.Length;
-                    return size;
                 }
                 default:
                     throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.",val.GetType().Name));
@@ -294,6 +306,8 @@ namespace MongoDB.Driver.Bson
             }else if(t == typeof(MongoDBNull)){
                 ret = BsonDataType.Null;
             }else if(t == typeof(Binary)){
+                ret = BsonDataType.Binary;
+            }else if(t == typeof(Guid)){
                 ret = BsonDataType.Binary;
             }else if(t == typeof(MongoMinKey)){
                 ret = BsonDataType.MinKey;

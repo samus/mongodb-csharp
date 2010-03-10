@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -83,6 +83,47 @@ namespace MongoDB.Driver
             Assert.AreEqual(x + y, result["retval"]);                        
         }
        
+        [Test]
+        public void TestGetLastErrorNoError(){
+            db["noerror"].Insert(new Document(){{"a",1},{"b",2}});
+            Document error = db.GetLastError();
+            Assert.AreEqual(MongoDBNull.Value, error["err"]);
+        }
+        
+        [Test]
+        public void TestGetLastError(){
+            IMongoCollection errcol = db["errcol"];
+            errcol.MetaData.CreateIndex(new Document(){{"x", IndexOrder.Ascending}}, true);
+            Document dup = new Document(){{"x",1},{"y",2}};
+            errcol.Insert(dup);
+            Document error = db.GetLastError();
+            Assert.AreEqual(MongoDBNull.Value, error["err"]);
+            
+            errcol.Insert(dup);
+            error = db.GetLastError();
+            
+            Assert.IsFalse(MongoDBNull.Value == error["err"]);
+            
+        }
+        
+        [Test]
+        public void TestGetPrevError(){
+            IMongoCollection col = db["preverror"];
+            col.MetaData.CreateIndex(new Document(){{"x", IndexOrder.Ascending}},true);
+            List<Document> docs = new List<Document>();
+            for(int x = 0; x < 10; x++){
+                docs.Add(new Document(){{"x",x},{"y",2}});
+            }
+            docs.Add(new Document(){{"x",1},{"y",4}}); //the dupe
+            db.ResetError();
+            Assert.AreEqual(MongoDBNull.Value, db.GetLastError()["err"]);
+            
+            col.Insert(docs);
+            Document error = db.GetLastError();
+            
+            Assert.IsFalse(MongoDBNull.Value == error["err"]);
+            Console.WriteLine(error);
+        }
 
         [TestFixtureSetUp]
         public void Init(){
@@ -98,7 +139,9 @@ namespace MongoDB.Driver
         
         protected void cleanDB(){
             mongo["tests"]["$cmd"].FindOne(new Document().Append("drop","refs"));
-
-        }       
+            mongo["tests"]["$cmd"].FindOne(new Document().Append("drop","noerror"));
+            mongo["tests"]["$cmd"].FindOne(new Document().Append("drop","errcol"));
+            mongo["tests"]["$cmd"].FindOne(new Document().Append("drop","preverror"));
+        }
     }
 }

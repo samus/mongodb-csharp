@@ -6,8 +6,8 @@ namespace MongoDB.Driver
 {
     public enum UpdateFlags:int
     {
-        Upsert = 0,
-        MultiUpdate = 1
+        Upsert = 1,
+        MultiUpdate = 2
     }    
     public interface IMongoCollection
     {
@@ -26,12 +26,20 @@ namespace MongoDB.Driver
         long Count ();
         long Count (Document spec);
         void Insert (Document doc);
+        void Insert (Document doc, bool safemode);
         void Insert (IEnumerable<Document> docs);
+        void Insert (IEnumerable<Document> docs, bool safemode);        
         void Delete (Document selector);
+        void Delete (Document selector, bool safemode);
         void Update (Document doc);
         void Update (Document doc, Document selector);
         void Update (Document doc, Document selector, int upsert);
         void Update (Document doc, Document selector, UpdateFlags flags);
+        void Update (Document doc, bool safemode);
+        void Update (Document doc, Document selector, bool safemode);
+        void Update (Document doc, Document selector, int upsert, bool safemode);
+        void Update (Document doc, Document selector, UpdateFlags flags, bool safemode);
         void UpdateAll (Document doc, Document selector);
+        void UpdateAll (Document doc, Document selector, bool safemode);
     }
 }

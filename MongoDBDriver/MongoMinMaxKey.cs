@@ -1,6 +1,3 @@
-
-using System;
-
 namespace MongoDB.Driver
 {
     /// <summary>
@@ -15,6 +12,11 @@ namespace MongoDB.Driver
             }
         }
         protected MongoMinKey (){}
+        
+        public override string ToString (){
+            return "{ \"$minkey\": 1 }";
+        }
+
     }
         
     /// <summary>
@@ -29,5 +31,9 @@ namespace MongoDB.Driver
             }
         }
         protected MongoMaxKey (){}
+        
+        public override string ToString (){
+            return "{ \"$maxkey\": 1 }";
+        }        
     }    
 }

@@ -108,11 +108,7 @@ namespace MongoDB.Driver.Bson
 
             case BsonDataType.Array:{
                 Document doc = this.ReadDocument();
-                if (ElementsSameType (doc)) {
-                    return ConvertToArray (doc);
-                } else {
-                    return doc;
-                }
+                return ConvertToArray (doc);
             }
             case BsonDataType.Regex:{
                 MongoRegex r = new MongoRegex ();
@@ -148,7 +144,15 @@ namespace MongoDB.Driver.Bson
                 }
                 byte[] bytes = reader.ReadBytes (size);
                 position += size;
-                Binary b = new Binary ();
+
+                // From http://en.wikipedia.org/wiki/Universally_Unique_Identifier
+                // The most widespread use of this standard is in Microsoft's Globally Unique Identifiers (GUIDs).
+                if (subtype == 3 && 16 == size)
+                {
+                    return new Guid(bytes);
+                }
+
+                Binary b = new Binary();
                 b.Bytes = bytes;
                 b.Subtype = (Binary.TypeCode)subtype;
                 return b;
@@ -266,7 +270,11 @@ namespace MongoDB.Driver.Bson
             foreach (String key in doc.Keys) {
                 if (ret == null) {
                     int length = doc.Keys.Count;
-                    arrayType = doc[key].GetType ();
+                    if(ElementsSameType(doc)){
+                        arrayType = doc[key].GetType();
+                    }else{
+                        arrayType = typeof(Object);
+                    }
                     ret = Array.CreateInstance (arrayType, length);
                 }
                 ret.SetValue (doc[key], idx);

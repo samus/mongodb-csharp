@@ -8,6 +8,7 @@ namespace MongoDB.Driver
     public class TestCollection
     {
         Mongo db = new Mongo();
+        private string pound = "\u00a3";
 
         [Test]
         public void TestFindOne(){
@@ -145,10 +146,10 @@ namespace MongoDB.Driver
         [Test]
         public void TestPoundSymbolInsert(){
             IMongoCollection inserts = db["tests"]["inserts"];
-            Document indoc = new Document().Append("x","1234£56").Append("y",1);;
+            Document indoc = new Document().Append("x","1234" + pound + "56").Append("y",1);;
             inserts.Insert(indoc);
 
-            Document result = inserts.FindOne(new Document().Append("x","1234£56"));
+            Document result = inserts.FindOne(new Document().Append("x","1234" + pound + "56"));
             Assert.IsNotNull(result);
             Assert.AreEqual(1,result["y"]);            
         }
@@ -242,6 +243,7 @@ namespace MongoDB.Driver
             doc["Last"] = "Brewer";
             
             updates.Insert(doc);
+            
             Document selector = new Document().Append("Last", "Brewer");
             doc = updates.FindOne(selector);
             Assert.IsNotNull(doc);
@@ -253,7 +255,7 @@ namespace MongoDB.Driver
             
             Document result = updates.FindOne(selector);
             Assert.IsNotNull(result);
-            Assert.AreEqual("Matt", result["First"]);           
+            Assert.AreEqual("Matt", result["First"]);
             
         }       
         
@@ -263,6 +265,7 @@ namespace MongoDB.Driver
             
             updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam"));
             updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam2"));
+            updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam3"));
             
             Document selector = new Document().Append("Last", "Cordr");
             ICursor results = updates.Find(selector);
@@ -272,11 +275,15 @@ namespace MongoDB.Driver
                 found = true;
             }
             Assert.IsTrue(found,"Should have found docs inserted for TestUpdateMany");
+            Assert.AreEqual(3, updates.Count(selector), "Didn't find all Documents inserted for TestUpdateMany with Selector");
             
+            //Document updateData = new Document().Append("$set", new Document().Append("Last", "Corder2"));
             Document updateData = new Document().Append("Last", "Corder2");
             updates.UpdateAll(updateData, selector);
             
             selector["Last"] = "Corder2";
+            Assert.AreEqual(3, updates.Count(selector), "Not all Cordr documents were updated");
+            
             results = updates.Find(selector);
             found = false;
             foreach(Document doc in results.Documents){

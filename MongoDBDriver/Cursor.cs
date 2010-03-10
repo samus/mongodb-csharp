@@ -19,38 +19,86 @@ namespace MongoDB.Driver
         private String fullCollectionName;
         public string FullCollectionName {
             get {return fullCollectionName;}
-            set {fullCollectionName = value;}
         }
-        
-        private String collName;
-        public string CollName {
-            get {return collName;}
-            set {collName = value;}
-        }
-        
+
         private Document spec;
-        public Document Spec{
-            get {return spec;}
-            set {spec = value;}
+        public ICursor Spec (Document spec){
+            TryModify();
+            this.spec = spec;
+            return this;
         }
         
         private int limit;
-        public int Limit{
-            get {return limit;}
-            set {limit = value;}
+        public ICursor Limit (int limit){
+            TryModify();
+            this.limit = limit;
+            return this;
         }
         
-        private int skip;
-        public int Skip{
-            get {return skip;}
-            set {skip = value;}
+        private int skip;        
+        public ICursor Skip (int skip){
+            TryModify();
+            this.skip = skip;
+            return this;
+        }
+        
+        private Document fields;        
+        public ICursor Fields (Document fields){
+            TryModify();
+            this.fields = fields;
+            return this;
+        }
+        
+        private QueryOptions options;
+        public ICursor Options(QueryOptions options){
+            TryModify();
+            this.options = options;
+            return this;
+        }
+        
+        #region "Spec Options"
+        private Document specOpts = new Document();
+        
+        public ICursor Sort(string field){
+            return this.Sort(field, IndexOrder.Ascending);
+        }
+        
+        public ICursor Sort(string field, IndexOrder order){
+            return this.Sort(new Document().Append(field, order));
+        }
+        
+        public ICursor Sort(Document fields){
+            TryModify();
+            AddOrRemoveSpecOpt("$orderby", fields);
+            return this;
+        }
+        
+        public ICursor Hint(Document index){
+            TryModify();
+            AddOrRemoveSpecOpt("$hint", index);
+            return this;
         }
 
-        private Document fields;
-        public Document Fields{
-            get {return fields;}
-            set {fields = value;}
+        public ICursor Snapshot(Document index){
+            TryModify();
+            AddOrRemoveSpecOpt("$snapshot", index);
+            return this;
         }
+        
+        public Document Explain(){
+            TryModify();
+            specOpts["$explain"] = true;
+            
+            IEnumerable<Document> docs = this.Documents;
+            using((IDisposable)docs){
+                foreach(Document doc in docs){
+                    return doc;
+                }
+            }
+            throw new InvalidOperationException("Explain failed.");
+        }
+
+        #endregion
         
         private bool modifiable = true;
         public bool Modifiable{
@@ -59,14 +107,18 @@ namespace MongoDB.Driver
         
         private ReplyMessage reply;
         
-        public Cursor(Connection conn, String fullCollectionName, Document spec, int limit, int skip, Document fields){
+        public Cursor(Connection conn, string fullCollectionName){
             this.connection = conn;
-            this.FullCollectionName = fullCollectionName;
+            this.fullCollectionName = fullCollectionName;
+        }
+        
+        public Cursor(Connection conn, String fullCollectionName, Document spec, int limit, int skip, Document fields):
+                this(conn,fullCollectionName){
             if(spec == null)spec = new Document();
-            this.Spec = spec;
-            this.Limit = limit;
-            this.Skip = skip;
-            this.Fields = fields;
+            this.spec = spec;
+            this.limit = limit;
+            this.skip = skip;
+            this.fields = fields;
         }
         
         public IEnumerable<Document> Documents{
@@ -79,7 +131,7 @@ namespace MongoDB.Driver
                 Boolean shouldBreak = false;
                 while(!shouldBreak){
                     foreach(Document doc in docs){
-                        if((this.Limit == 0) || (this.Limit != 0 && docsReturned < this.Limit)){
+                        if((this.limit == 0) || (this.limit != 0 && docsReturned < this.limit)){
                             docsReturned++;
                             yield return doc;
                         }else{
@@ -103,16 +155,18 @@ namespace MongoDB.Driver
         private void RetrieveData(){
             QueryMessage query = new QueryMessage();
             query.FullCollectionName = this.FullCollectionName;
-            query.Query = this.Spec;
-            query.NumberToReturn = this.Limit;
-            query.NumberToSkip = this.Skip;
-            if(this.Fields != null){
-                query.ReturnFieldSelector = this.Fields;
+            query.Query = BuildSpec();
+            query.NumberToReturn = this.limit;
+            query.NumberToSkip = this.skip;
+            query.Options = options;
+            
+            if(this.fields != null){
+                query.ReturnFieldSelector = this.fields;
             }
             try{
                 this.reply = connection.SendTwoWayMessage(query);
                 this.id = this.reply.CursorID;
-                if(this.Limit < 0)this.Limit = this.Limit * -1;
+                if(this.limit < 0)this.limit = this.limit * -1;
             }catch(IOException ioe){
                 throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
             }
@@ -120,7 +174,7 @@ namespace MongoDB.Driver
         }
         
         private void RetrieveMoreData(){
-            GetMoreMessage gmm = new GetMoreMessage(this.FullCollectionName, this.Id, this.Limit);
+            GetMoreMessage gmm = new GetMoreMessage(this.fullCollectionName, this.Id, this.limit);
             try{
                 this.reply = connection.SendTwoWayMessage(gmm);
                 this.id = this.reply.CursorID;
@@ -141,5 +195,27 @@ namespace MongoDB.Driver
                 throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
             }
         }
+        
+        private void TryModify(){
+            if(this.modifiable) return;
+            throw new InvalidOperationException("Cannot modify a cursor that has already returned documents.");
+        }
+
+        private void AddOrRemoveSpecOpt(string key, Document doc){
+            if(doc == null){
+                specOpts.Remove(key);
+            }else{
+                specOpts[key] = doc;
+            }
+        }
+        
+        private Document BuildSpec(){
+            if(this.specOpts.Count == 0) return this.spec;
+            Document doc = new Document();
+            this.specOpts.CopyTo(doc);
+            doc["$query"] = this.spec;
+            return doc;
+        }
+              
     }
 }

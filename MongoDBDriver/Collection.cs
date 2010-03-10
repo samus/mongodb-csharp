@@ -4,6 +4,7 @@ using System.IO;
 
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.IO;
+using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver
 {
@@ -39,7 +40,14 @@ namespace MongoDB.Driver
             }
         }
 
-        
+        private Database db;
+        private Database Db{
+            get{
+                if(db == null)
+                    db = new Database(this.connection, this.dbName);
+                return db;
+            }
+        }
         public Collection(string name, Connection conn, string dbName)
         {
             this.name = name;
@@ -98,8 +106,7 @@ namespace MongoDB.Driver
         /// A <see cref="MapReduce"/>
         /// </returns>
         public MapReduce MapReduce(){
-            Database db = new Database(this.connection, this.dbName);
-            return new MapReduce(db, this.Name);
+            return new MapReduce(this.Db, this.Name);
         }
         
         public MapReduceBuilder MapReduceBuilder(){
@@ -107,28 +114,52 @@ namespace MongoDB.Driver
         }
             
         
+        /// <summary>
+        ///Count all items in the collection. 
+        /// </summary>
         public long Count(){
             return this.Count(new Document());
         }
         
+        /// <summary>
+        /// Count all items in a collection that match the query spec. 
+        /// </summary>
+        /// <remarks>
+        /// It will return 0 if the collection doesn't exist yet.
+        /// </remarks>
         public long Count(Document spec){
             try{
-                Database db = new Database(this.connection, this.dbName);
-                Document ret = db.SendCommand(new Document().Append("count",this.Name).Append("query",spec));
+                //Database db = new Database(this.connection, this.dbName);
+                Document ret = this.Db.SendCommand(new Document().Append("count",this.Name).Append("query",spec));
                 double n = (double)ret["n"];
                 return Convert.ToInt64(n);
             }catch(MongoCommandException){
-                //FIXME This is an exception condition when the namespace is missing. -1 might be better here but the console returns 0.
+                //FIXME This is an exception condition when the namespace is missing. 
+                //-1 might be better here but the console returns 0.
                 return 0;
             }
             
         }
         
+        /// <summary>
+        /// Inserts the Document into the collection. 
+        /// </summary>
+        public void Insert (Document doc, bool safemode){
+            Insert(doc);
+            CheckError(safemode);
+        }
+
         public void Insert(Document doc){
             Document[] docs = new Document[]{doc,};
             this.Insert(docs);
         }
         
+        public void Insert (IEnumerable<Document> docs, bool safemode){
+            if(safemode)this.Db.ResetError();
+            this.Insert(docs);
+            CheckPreviousError(safemode);
+        }
+
         public void Insert(IEnumerable<Document> docs){
             InsertMessage im = new InsertMessage();
             im.FullCollectionName = this.FullName;
@@ -148,6 +179,21 @@ namespace MongoDB.Driver
             }   
         }
         
+        /// <summary>
+        /// Deletes documents from the collection according to the spec.
+        /// </summary>
+        /// <remarks>An empty document will match all documents in the collection and effectively truncate it.
+        /// </remarks>
+        public void Delete (Document selector, bool safemode){
+            Delete(selector);
+            CheckError(safemode);
+        }
+        
+        /// <summary>
+        /// Deletes documents from the collection according to the spec.
+        /// </summary>
+        /// <remarks>An empty document will match all documents in the collection and effectively truncate it.
+        /// </remarks>
         public void Delete(Document selector){
             DeleteMessage dm = new DeleteMessage();
             dm.FullCollectionName = this.FullName;
@@ -159,6 +205,31 @@ namespace MongoDB.Driver
             }
         }
         
+        
+        public void Update (Document doc, bool safemode){
+            Update(doc);
+            CheckError(safemode);
+        }
+        
+        /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <remarks>
+        /// The document will contain the _id that is saved to the database.  This is really just an alias
+        /// to Update(Document) to maintain consistency between drivers.
+        /// </remarks>
+        public void Save(Document doc){
+            Update(doc);
+        }
+        
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>
+        /// <remarks>
+        /// _id will be used in the document to create a selector.  If it isn't in
+        /// the document then it is assumed that the document is new and an upsert is sent to the database
+        /// instead.
+        /// </remarks>
         public void Update(Document doc){
             //Try to generate a selector using _id for an existing document.
             //otherwise just set the upsert flag to 1 to insert and send onward.
@@ -174,10 +245,33 @@ namespace MongoDB.Driver
             this.Update(doc, selector, upsert);
         }
         
+        public void Update (Document doc, Document selector, bool safemode){
+            Update(doc, selector,0,safemode);
+        }
+        
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>        
         public void Update(Document doc, Document selector){
             this.Update(doc, selector, 0);
         }
         
+        public void Update (Document doc, Document selector, UpdateFlags flags, bool safemode){
+            Update(doc,selector,flags);
+            CheckError(safemode);
+        }
+        
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>
+        /// <param name="doc">The <see cref="Document"/> to update with
+        /// </param>
+        /// <param name="selector">
+        /// The query spec to find the document to update.
+        /// </param>
+        /// <param name="flags">
+        /// <see cref="UpdateFlags"/>
+        /// </param>
         public void Update(Document doc, Document selector, UpdateFlags flags){
             UpdateMessage um = new UpdateMessage();
             um.FullCollectionName = this.FullName;
@@ -190,6 +284,11 @@ namespace MongoDB.Driver
                 throw new MongoCommException("Could not update document, communication failure", this.connection,ioe);
             }           
             
+        }
+        
+        public void Update (Document doc, Document selector, int flags, bool safemode){
+            Update(doc,selector,flags);
+            CheckError(safemode);
         }
         
         public void Update(Document doc, Document selector, int flags){
@@ -216,7 +315,28 @@ namespace MongoDB.Driver
                 Document s = new Document().Append("$set", doc);
                 doc = s;
             }
-            this.Update(doc, selector, UpdateFlags.MultiUpdate);
+            this.Update(doc, selector, UpdateFlags.MultiUpdate);           
+        }
+        
+        
+        public void UpdateAll (Document doc, Document selector, bool safemode){
+            if(safemode)this.Db.ResetError();
+            this.UpdateAll(doc, selector);
+            CheckPreviousError(safemode);
+        }
+        
+
+        private void CheckError(bool safemode){
+            if(safemode){
+                Document err = this.Db.GetLastError();
+                if(ErrorTranslator.IsError(err)) throw ErrorTranslator.Translate(err);
+            }
+        }
+        private void CheckPreviousError(bool safemode){
+            if(safemode){
+                Document err = this.Db.GetPreviousError();
+                if(ErrorTranslator.IsError(err)) throw ErrorTranslator.Translate(err);
+            }
         }
     }
 }

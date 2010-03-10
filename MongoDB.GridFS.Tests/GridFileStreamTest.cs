@@ -260,7 +260,27 @@ namespace MongoDB.GridFS
             Assert.AreEqual(newsize, gfs.GridFileInfo.Length);
         }
 
-
+        [Test]
+        public void TestReadLengthIsSameAsWriteLength(){
+            string filename = "readwritelength.txt";
+            GridFileStream gfs = fs.Create(filename);
+            int length = 0;
+            for(int i = 1; i <= 50; i++){
+                gfs.Write(BitConverter.GetBytes(i), 0, 4);
+                length += 4;
+            }
+            gfs.Close();
+            Assert.AreEqual(length, gfs.GridFileInfo.Length, "File length written is not the same as in gridfileinfo");
+            
+            gfs = fs.OpenRead(filename);            
+            byte[] buffer = new byte[16];
+            int read = 0;
+            int readLength = read;
+            while((read = gfs.Read(buffer,0,buffer.Length)) > 0){
+                readLength += read;
+            }
+            Assert.AreEqual(length, readLength, "Too much read back.");
+        }
 
         #region File API compatibility
 

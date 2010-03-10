@@ -86,6 +86,12 @@
     <Compile Include="TestDatabaseJS.cs" />
     <Compile Include="TestMapReduce.cs" />
     <Compile Include="TestMapReduceBuilder.cs" />
+    <Compile Include="TestConcurrency.cs" />
+    <Compile Include="TestCollectionSafeMode.cs" />
+    <Compile Include="MongoTestBase.cs" />
+    <Compile Include="TestCollectionMetaData.cs" />
+    <Compile Include="TestBinary.cs" />
+    <Compile Include="Util\TestJsonUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -115,5 +121,8 @@
     <EmbeddedResource Include="test-data\tests.binary.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Util\" />
   </ItemGroup>
 </Project>

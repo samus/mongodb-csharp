@@ -68,10 +68,11 @@ namespace MongoDB.Driver
                 throw new MongoCommException("Operation cannot be performed on a closed connection.", this);
             }
             try{
-                msg.Write(tcpclnt.GetStream());
-                
-                ReplyMessage reply = new ReplyMessage();                
-                reply.Read(tcpclnt.GetStream());
+                ReplyMessage reply = new ReplyMessage();
+                lock(tcpclnt){
+                    msg.Write(tcpclnt.GetStream());
+                    reply.Read(tcpclnt.GetStream());
+                }
                 return reply;
             }catch(IOException){
                 this.Reconnect();
@@ -91,8 +92,9 @@ namespace MongoDB.Driver
                 throw new MongoCommException("Operation cannot be performed on a closed connection.", this);
             }
             try{
-                msg.Write(tcpclnt.GetStream()); 
-                
+                lock(tcpclnt){
+                    msg.Write(tcpclnt.GetStream()); 
+                }
             }catch(IOException){//Sending doesn't seem to always trigger the detection of a closed socket.
                 this.Reconnect();
                 throw;
@@ -118,6 +120,7 @@ namespace MongoDB.Driver
         
         public virtual void Open(){
             tcpclnt = new TcpClient();
+            tcpclnt.NoDelay = true;
             tcpclnt.Connect(this.Host, this.Port);
             this.state = ConnectionState.Opened;
         }
