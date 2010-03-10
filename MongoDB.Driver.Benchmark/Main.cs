@@ -184,7 +184,7 @@ namespace MongoDB.Driver.Benchmark
             MemoryStream ms = new MemoryStream();
             for(int i = 0; i < perTrial; i++){
                 BsonWriter writer = new BsonWriter(ms);
-                writer.Write(doc);
+                writer.WriteObject(doc);
                 ms.Seek(0,SeekOrigin.Begin);
             }
         }
@@ -193,7 +193,7 @@ namespace MongoDB.Driver.Benchmark
         static void RunDecodeTest(string name, Document doc){
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
-            writer.Write(doc);
+            writer.WriteObject(doc);
     
             byte[] buff = ms.ToArray();
             

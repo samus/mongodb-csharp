@@ -16,7 +16,7 @@ namespace MongoDB.Driver.Bson
 			
 			MemoryStream stream = new MemoryStream();
 			BsonWriter writer = new BsonWriter(stream);
-			writer.Write(idoc);
+			writer.WriteObject(idoc);
 			
 			stream.Seek(0,SeekOrigin.Begin);
 			BsonReader reader = new BsonReader(stream);
@@ -38,7 +38,7 @@ namespace MongoDB.Driver.Bson
 			
 			MemoryStream outmem = new MemoryStream ();
 			BsonWriter outwriter = new BsonWriter (outmem);
-			outwriter.Write(indoc);
+			outwriter.WriteObject(indoc);
 			byte[] outdata = outmem.ToArray ();
 			String outhex = BitConverter.ToString (outdata);
 			outhex = outhex.Replace ("-", "");

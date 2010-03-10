@@ -35,7 +35,7 @@ namespace MongoDB.Driver.Protocol
         
         protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,0);
-            writer.WriteString(this.FullCollectionName);
+            writer.Write(this.FullCollectionName,false);
             writer.WriteValue(BsonDataType.Integer,this.NumberToReturn);
             writer.WriteValue(BsonDataType.Long,this.CursorID);
         }       

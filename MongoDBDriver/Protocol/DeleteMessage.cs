@@ -29,15 +29,15 @@ namespace MongoDB.Driver.Protocol
         
         protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,0);
-            writer.WriteString(this.FullCollectionName);
+            writer.Write(this.FullCollectionName,false);
             writer.WriteValue(BsonDataType.Integer,0);
-            writer.Write(this.Selector);
+            writer.WriteObject(this.Selector);
         }
         
         protected override int CalculateBodySize(BsonWriter writer){
             int size = 8; //first int32, second int32 
             size += writer.CalculateSize(this.FullCollectionName,false);
-            size += writer.CalculateSize(Selector);
+            size += writer.CalculateSizeObject(Selector);
             return size;
         }
     }

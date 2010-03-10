@@ -23,10 +23,10 @@ namespace MongoDB.Driver.Protocol
 
         protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,0);
-            writer.WriteString(this.FullCollectionName);
+            writer.Write(this.FullCollectionName,false);
             
             foreach(Document doc in this.Documents){
-                writer.Write(doc);
+                writer.WriteObject(doc);
             }
         }
         
@@ -34,7 +34,7 @@ namespace MongoDB.Driver.Protocol
             int size = 4; //first int32
             size += writer.CalculateSize(this.FullCollectionName,false);
             foreach(Document doc in this.Documents){
-                size += writer.CalculateSize(doc);
+                size += writer.CalculateSizeObject(doc);
             }
             return size;
         }

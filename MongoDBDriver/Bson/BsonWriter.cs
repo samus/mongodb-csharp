@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -14,11 +15,18 @@ namespace MongoDB.Driver.Bson
         private readonly byte[] _buffer;
         private readonly int _maxChars;
         private readonly Stream _stream;
+        private readonly IBsonObjectDescriptor _descriptor;
         private readonly BinaryWriter _writer;
 
-        public BsonWriter(Stream stream){
-            this._stream = stream;
-            _writer = new BinaryWriter(this._stream);
+        public BsonWriter(Stream stream)
+            :this(stream,new DocumentDescriptor()){
+            
+        }
+
+        public BsonWriter(Stream stream, IBsonObjectDescriptor descriptor){
+            _stream = stream;
+            _descriptor = descriptor;
+            _writer = new BinaryWriter(_stream);
             _buffer = new byte[BufferLength];
             _maxChars = BufferLength/Encoding.UTF8.GetMaxByteCount(1);
         }
@@ -52,10 +60,10 @@ namespace MongoDB.Driver.Bson
                     return;
                 }
                 case BsonDataType.Obj:
-                    if(obj is Document)
-                        Write((Document)obj);
-                    else if(obj is DBRef)
+                    if(obj is DBRef)
                         Write((DBRef)obj);
+                    else
+                        WriteObject(obj);
                     return;
                 case BsonDataType.Array:
                     Write((IEnumerable)obj);
@@ -88,11 +96,6 @@ namespace MongoDB.Driver.Bson
             _writer.Write(id.Value);
         }
 
-        private void Write(string str){
-            _writer.Write(CalculateSize(str, false));
-            WriteString(str);
-        }
-
         private void Write(Binary binary){
             if(binary.Subtype == Binary.TypeCode.General){
                 _writer.Write(binary.Bytes.Length + 4);
@@ -123,12 +126,12 @@ namespace MongoDB.Driver.Bson
         }
 
         private void Write(MongoRegex regex){
-            WriteString(regex.Expression);
-            WriteString(regex.Options);
+            Write(regex.Expression,false);
+            Write(regex.Options,false);
         }
 
         public void Write(DBRef reference){
-            Write((Document)reference);
+            WriteObject((Document)reference);
         }
 
         private void Write(DateTime dataTime){
@@ -137,15 +140,15 @@ namespace MongoDB.Driver.Bson
             _writer.Write((long)time);
         }
 
-        public void Write(Document document){
-            var size = CalculateSize(document);
+        public void WriteObject(object obj){
+            var propertys = _descriptor.GetPropertys(obj);
+            var size = CalculateSizeObject(propertys);
             _writer.Write(size);
-            foreach(String key in document.Keys){
-                var val = document[key];
-                var type = TranslateToBsonType(val);
+            foreach(var property in propertys){
+                var type = TranslateToBsonType(property.Value);
                 _writer.Write((byte)type);
-                WriteString(key);
-                WriteValue(type, val);
+                Write(property.Name,false);
+                WriteValue(type, property.Value);
             }
             _writer.Write((byte)0);
         }
@@ -157,14 +160,21 @@ namespace MongoDB.Driver.Bson
             foreach(var val in enumerable){
                 var bsonType = TranslateToBsonType(val);
                 _writer.Write((byte)bsonType);
-                WriteString(keyname.ToString());
+                Write(keyname.ToString(),false);
                 WriteValue(bsonType, val);
                 keyname++;
             }
             _writer.Write((byte)0);
         }
 
-        public void WriteString(String value){
+        private void Write(string value)
+        {
+            Write(value,true);
+        }
+
+        public void Write(string value, bool includeLength){
+            if(includeLength)
+                _writer.Write(CalculateSize(value, false));
             var byteCount = Encoding.UTF8.GetByteCount(value);
             if(byteCount < BufferLength){
                 Encoding.UTF8.GetBytes(value, 0, value.Length, _buffer, 0);
@@ -207,12 +217,9 @@ namespace MongoDB.Driver.Bson
                 case BsonDataType.String:
                     return CalculateSize((string)obj);
                 case BsonDataType.Obj:{
-                    var type = obj.GetType();
-                    if(type == typeof(Document))
-                        return CalculateSize((Document)obj);
-                    if(type == typeof(DBRef))
+                    if(obj.GetType() == typeof(DBRef))
                         return CalculateSize((DBRef)obj);
-                    break;
+                    return CalculateSizeObject(obj);
                 }
                 case BsonDataType.Array:
                     return CalculateSize((IEnumerable)obj);
@@ -247,7 +254,7 @@ namespace MongoDB.Driver.Bson
         public int CalculateSize(CodeWScope codeScope){
             var size = 4;
             size += CalculateSize(codeScope.Value, true);
-            size += CalculateSize(codeScope.Scope);
+            size += CalculateSizeObject(codeScope.Scope);
             return size;
         }
 
@@ -265,15 +272,20 @@ namespace MongoDB.Driver.Bson
         }
 
         public int CalculateSize(DBRef reference){
-            return CalculateSize((Document)reference);
+            return CalculateSizeObject((Document)reference);
         }
 
-        public int CalculateSize(Document document){
+        public int CalculateSizeObject(object obj){
+            var propertys = _descriptor.GetPropertys(obj);
+            return CalculateSizeObject(propertys);
+        }
+
+        private int CalculateSizeObject(IEnumerable<BsonObjectProperty> propertys){
             var size = 4;
-            foreach(String key in document.Keys){
+            foreach(var property in propertys){
                 var elsize = 1; //type
-                elsize += CalculateSize(key, false);
-                elsize += CalculateSize(document[key]);
+                elsize += CalculateSize(property.Name, false);
+                elsize += CalculateSize(property.Value);
                 size += elsize;
             }
             size += 1; //terminator
@@ -310,13 +322,13 @@ namespace MongoDB.Driver.Bson
             _writer.Flush();
         }
 
-        protected BsonDataType TranslateToBsonType(object value){
-            if(value == null)
+        protected BsonDataType TranslateToBsonType(object obj){
+            if(obj == null)
                 return BsonDataType.Null;
 
-            var type = value.GetType();
+            var type = obj.GetType();
 
-            if(value is Enum) //special case enums               
+            if(obj is Enum) //special case enums               
                 type = Enum.GetUnderlyingType(type);
 
             if(type == typeof(Double))
@@ -325,8 +337,6 @@ namespace MongoDB.Driver.Bson
                 return BsonDataType.Number;
             if(type == typeof(String))
                 return BsonDataType.String;
-            if(type == typeof(Document))
-                return BsonDataType.Obj;
             if(type == typeof(int))
                 return BsonDataType.Integer;
             if(type == typeof(long))
@@ -355,8 +365,11 @@ namespace MongoDB.Driver.Bson
                 return BsonDataType.MinKey;
             if(type == typeof(MongoMaxKey))
                 return BsonDataType.MaxKey;
-            if(value is IEnumerable)
+
+            if(_descriptor.IsArray(obj))
                 return BsonDataType.Array;
+            if(_descriptor.IsObject(obj))
+                return BsonDataType.Obj;
 
             throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized", type.FullName));
         }

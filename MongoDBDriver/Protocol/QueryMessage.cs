@@ -53,21 +53,21 @@ namespace MongoDB.Driver.Protocol
 
         protected override void WriteBody (BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer,(int)this.Options);
-            writer.WriteString(this.FullCollectionName);
+            writer.Write(this.FullCollectionName,false);
             writer.WriteValue(BsonDataType.Integer,(int)this.NumberToSkip);
             writer.WriteValue(BsonDataType.Integer,(int)this.NumberToReturn);
-            writer.Write(this.Query);
+            writer.WriteObject(this.Query);
             if(this.ReturnFieldSelector != null){
-                writer.Write(this.ReturnFieldSelector);
+                writer.WriteObject(this.ReturnFieldSelector);
             }
         }
 		
 		protected override int CalculateBodySize(BsonWriter writer){
             int size = 12; //options, numbertoskip, numbertoreturn
             size += writer.CalculateSize(this.FullCollectionName,false);
-            size += writer.CalculateSize(this.Query);
+            size += writer.CalculateSizeObject(this.Query);
             if(this.ReturnFieldSelector != null){
-                size += writer.CalculateSize(this.ReturnFieldSelector);
+                size += writer.CalculateSizeObject(this.ReturnFieldSelector);
             }
             return size;
         }        

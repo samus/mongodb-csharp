@@ -20,7 +20,7 @@ namespace MongoDB.Driver.Protocol
         }
         
         protected override void WriteBody (BsonWriter writer){
-            writer.WriteString(this.Message);            
+            writer.Write(this.Message,false);            
         }
         
         protected override int CalculateBodySize(BsonWriter writer){

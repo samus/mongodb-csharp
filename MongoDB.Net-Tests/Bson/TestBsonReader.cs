@@ -144,7 +144,7 @@ namespace MongoDB.Driver.Bson
                 .Append("minkey", MongoMinKey.Value)
                 .Append("maxkey", MongoMaxKey.Value)
             ;
-            writer.Write(expected);
+            writer.WriteObject(expected);
             writer.Flush();
             ms.Seek(0,SeekOrigin.Begin);           
             
@@ -158,7 +158,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
             
-            writer.Write(doc);
+            writer.WriteObject(doc);
             return BitConverter.ToString(ms.ToArray()).Replace("-","");
                         
         }
