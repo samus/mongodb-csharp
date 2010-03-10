@@ -62,11 +62,11 @@ namespace MongoDB.Driver.Bson
 
         public void ReadElement(object instance){
             Position++;
-            var typeNum = (sbyte)_reader.ReadByte();
+            var typeNumber = (sbyte)_reader.ReadByte();
             var key = ReadString();
             _builder.BeginProperty(instance, key);
-            var element = ReadElementType(typeNum);
-            _builder.EndProperty(instance, element);
+            var element = ReadElementType(typeNumber);
+            _builder.EndProperty(instance, key, element);
         }
 
         private object ReadBinary(){

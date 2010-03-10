@@ -7,6 +7,6 @@
         object BeginArray();
         object EndArray(object instance);
         void BeginProperty(object instance, string name);
-        void EndProperty(object instance, object value);
+        void EndProperty(object instance, string name, object value);
     }
 }

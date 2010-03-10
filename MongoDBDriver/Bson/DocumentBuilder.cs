@@ -6,8 +6,6 @@ namespace MongoDB.Driver.Bson
 {
     public class DocumentBuilder : IBsonObjectBuilder
     {
-        readonly Stack<string> propterys = new Stack<string>();
-
         /// <summary>
         /// Begins the object.
         /// </summary>
@@ -54,17 +52,16 @@ namespace MongoDB.Driver.Bson
         /// <param name="instance">The instance.</param>
         /// <param name="name">The name.</param>
         public void BeginProperty(object instance, string name){
-            propterys.Push(name);
         }
 
         /// <summary>
         /// Ends the property.
         /// </summary>
         /// <param name="instance">The instance.</param>
+        /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        public void EndProperty(object instance, object value){
+        public void EndProperty(object instance, string name, object value){
             var document = (Document)instance;
-            var name = propterys.Pop();
             document.Add(name, value);
         }
 

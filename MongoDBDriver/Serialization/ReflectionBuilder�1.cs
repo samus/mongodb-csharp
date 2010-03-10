@@ -13,6 +13,7 @@ namespace MongoDB.Driver.Serialization
         readonly Stack<PropertyDescriptor> _property = new Stack<PropertyDescriptor>();
         readonly Stack<bool> _arrayMode = new Stack<bool>();
 
+
         public ReflectionBuilder()
         {
             _type.Push(typeof(T));
@@ -22,7 +23,8 @@ namespace MongoDB.Driver.Serialization
         {
             _arrayMode.Push(false);
             var type = _type.Peek();
-            return FormatterServices.GetUninitializedObject(type);
+            return Activator.CreateInstance(type);
+            //return FormatterServices.GetUninitializedObject(type);
         }
 
         public object EndObject(object instance)
@@ -44,6 +46,7 @@ namespace MongoDB.Driver.Serialization
             }
 
             _type.Push(typeof(object));
+            
             return new List<object>();
         }
 
@@ -54,20 +57,25 @@ namespace MongoDB.Driver.Serialization
             return instance;
         }
 
+        Stack<string> names = new Stack<string>();
         public void BeginProperty(object instance, string name)
         {
             if(_arrayMode.Peek())
                 return;
 
-            var type = instance.GetType();
+            if(instance is Document){
+                names.Push(name);
+            }else{
+                var type = instance.GetType();
 
-            var property = TypeDescriptor.GetProperties(type).Find(name, true);
+                var property = TypeDescriptor.GetProperties(type).Find(name, true);
 
-            _property.Push(property);
-            _type.Push(property.PropertyType);
+                _property.Push(property);
+                _type.Push(property.PropertyType);
+            }
         }
 
-        public void EndProperty(object instance, object value)
+        public void EndProperty(object instance, string name, object value)
         {
             if(_arrayMode.Peek())
             {
@@ -75,11 +83,16 @@ namespace MongoDB.Driver.Serialization
             }
             else
             {
-                var proprety = _property.Pop();
+                if(instance is Document){
+                    var document = (Document)instance;
+                    document.Add(name, value);
+                }else{
+                    var proprety = _property.Pop();
 
-                proprety.SetValue(instance, value);
+                    proprety.SetValue(instance, value);
 
-                _type.Pop();
+                    _type.Pop();
+                }
             }
         }
     }
