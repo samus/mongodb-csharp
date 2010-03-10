@@ -6,158 +6,189 @@ using System.Text;
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
-    /// Class that knows how to format a native object into bson bits.
+    ///   Class that knows how to format a native object into bson bits.
     /// </summary>
     public class BsonWriter
     {
-        private Stream stream;
-        private BinaryWriter writer;
-        private int buffLength = 256;
-        private byte[] buffer;
-        int maxChars;
-        
+        private const int BufferLength = 256;
+        private readonly byte[] _buffer;
+        private readonly int _maxChars;
+        private readonly Stream _stream;
+        private readonly BinaryWriter _writer;
+
         public BsonWriter(Stream stream){
-            this.stream = stream;
-            writer = new BinaryWriter(this.stream);
-            buffer = new byte[buffLength];
-            maxChars = buffLength / Encoding.UTF8.GetMaxByteCount(1);
+            this._stream = stream;
+            _writer = new BinaryWriter(this._stream);
+            _buffer = new byte[BufferLength];
+            _maxChars = BufferLength/Encoding.UTF8.GetMaxByteCount(1);
         }
-        
-        public void Write(Document doc){
-            int size = CalculateSize(doc);
-            writer.Write(size);
-            foreach(String key in doc.Keys){
-                Object val = doc[key];
-                BsonDataType t = TranslateToBsonType(val);
-                writer.Write((byte)t);
-                this.WriteString(key);
-                this.WriteValue(t,val);
-            }
-            writer.Write((byte)0);
-        }
-        
-        public void WriteArray(IEnumerable arr){
-            int size = CalculateSize(arr);
-            writer.Write(size);
-            int keyname = 0;
-            foreach(Object val in arr){
-                BsonDataType t = TranslateToBsonType(val);
-                writer.Write((byte)t);
-                this.WriteString(keyname.ToString());
-                this.WriteValue(t,val);
-                keyname++;
-            }
-            writer.Write((byte)0);
-        }        
-        
-        public void WriteValue(BsonDataType dt, Object obj){
-            switch (dt){
+
+        public void WriteValue(BsonDataType dateType, Object obj){
+            switch(dateType){
                 case BsonDataType.MinKey:
                 case BsonDataType.MaxKey:
                 case BsonDataType.Null:
                     return;
                 case BsonDataType.Boolean:
-                    writer.Write((bool)obj);
+                    _writer.Write((bool)obj);
                     return;
                 case BsonDataType.Integer:
-                    writer.Write((int)obj);
+                    _writer.Write((int)obj);
                     return;
                 case BsonDataType.Long:
-                    writer.Write((long)obj);
-                    return;                    
+                    _writer.Write((long)obj);
+                    return;
                 case BsonDataType.Date:
-                    DateTime d = (DateTime)obj;
-                    TimeSpan diff = d.ToUniversalTime() - BsonInfo.Epoch;
-                    double time = Math.Floor(diff.TotalMilliseconds);
-                    writer.Write((long)time);
+                    Write((DateTime)obj);
                     return;
                 case BsonDataType.Oid:
-                    Oid id = (Oid) obj;
-                    writer.Write(id.Value);
+                    Write((Oid)obj);
                     return;
                 case BsonDataType.Number:
-                    writer.Write((double)obj);
+                    _writer.Write((double)obj);
                     return;
                 case BsonDataType.String:{
-                    String str = (String)obj;
-                    writer.Write(CalculateSize(str,false));
-                    this.WriteString(str);
+                    Write((String)obj);
                     return;
-                    }
+                }
                 case BsonDataType.Obj:
-                    if(obj is Document){
-                        this.Write((Document)obj);
-                    }else if(obj is DBRef){
-                        this.Write((Document)((DBRef)obj));
-                    }
+                    if(obj is Document)
+                        Write((Document)obj);
+                    else if(obj is DBRef)
+                        Write((DBRef)obj);
                     return;
                 case BsonDataType.Array:
-                    this.WriteArray((IEnumerable)obj);
+                    Write((IEnumerable)obj);
                     return;
                 case BsonDataType.Regex:{
-                    MongoRegex r = (MongoRegex)obj;
-                    this.WriteString(r.Expression);
-                    this.WriteString(r.Options);
+                    Write((MongoRegex)obj);
                     return;
                 }
                 case BsonDataType.Code:{
-                    Code c = (Code)obj;
-                    this.WriteValue(BsonDataType.String,c.Value);
+                    Write((Code)obj);
                     return;
                 }
                 case BsonDataType.CodeWScope:{
-                    CodeWScope cw = (CodeWScope)obj;
-                    writer.Write(CalculateSize(cw));
-                    this.WriteValue(BsonDataType.String,cw.Value);
-                    this.WriteValue(BsonDataType.Obj,cw.Scope);
+                    Write((CodeWScope)obj);
                     return;
                 }
                 case BsonDataType.Binary:{
-                    if (obj is Guid) {
-                        writer.Write((int)16);
-                        writer.Write((byte)3);
-                        writer.Write(((Guid)obj).ToByteArray());
-                    } else {
-                        Binary b = (Binary)obj;
-                        if(b.Subtype == Binary.TypeCode.General){
-                            writer.Write(b.Bytes.Length + 4);
-                            writer.Write((byte)b.Subtype);
-                            writer.Write(b.Bytes.Length);
-                        }else{
-                            writer.Write(b.Bytes.Length);
-                            writer.Write((byte)b.Subtype);
-                        }
-                        writer.Write(b.Bytes);
-                    }
+                    if(obj is Guid)
+                        Write((Guid)obj);
+                    else
+                        Write((Binary)obj);
                     return;
                 }
                 default:
-                    throw new NotImplementedException(String.Format("Writing {0} types not implemented.",obj.GetType().Name));                
+                    throw new NotImplementedException(String.Format("Writing {0} types not implemented.", obj.GetType().Name));
             }
         }
-        
-        public void WriteString(String str){
-            int byteCount = Encoding.UTF8.GetByteCount(str);
-            if(byteCount < buffLength){
-                Encoding.UTF8.GetBytes(str, 0, str.Length, buffer, 0);
-                writer.Write(buffer,0,byteCount);
-            }else{
+
+        private void Write(Oid id){
+            _writer.Write(id.Value);
+        }
+
+        private void Write(string str){
+            _writer.Write(CalculateSize(str, false));
+            WriteString(str);
+        }
+
+        private void Write(Binary binary){
+            if(binary.Subtype == Binary.TypeCode.General){
+                _writer.Write(binary.Bytes.Length + 4);
+                _writer.Write((byte)binary.Subtype);
+                _writer.Write(binary.Bytes.Length);
+            }
+            else{
+                _writer.Write(binary.Bytes.Length);
+                _writer.Write((byte)binary.Subtype);
+            }
+            _writer.Write(binary.Bytes);
+        }
+
+        private void Write(Guid guid){
+            _writer.Write(16);
+            _writer.Write((byte)3);
+            _writer.Write(guid.ToByteArray());
+        }
+
+        private void Write(CodeWScope codeScope){
+            _writer.Write(CalculateSize(codeScope));
+            WriteValue(BsonDataType.String, codeScope.Value);
+            WriteValue(BsonDataType.Obj, codeScope.Scope);
+        }
+
+        private void Write(Code code){
+            WriteValue(BsonDataType.String, code.Value);
+        }
+
+        private void Write(MongoRegex regex){
+            WriteString(regex.Expression);
+            WriteString(regex.Options);
+        }
+
+        public void Write(DBRef reference){
+            Write((Document)reference);
+        }
+
+        private void Write(DateTime dataTime){
+            var diff = dataTime.ToUniversalTime() - BsonInfo.Epoch;
+            var time = Math.Floor(diff.TotalMilliseconds);
+            _writer.Write((long)time);
+        }
+
+        public void Write(Document document){
+            var size = CalculateSize(document);
+            _writer.Write(size);
+            foreach(String key in document.Keys){
+                var val = document[key];
+                var t = TranslateToBsonType(val);
+                _writer.Write((byte)t);
+                WriteString(key);
+                WriteValue(t, val);
+            }
+            _writer.Write((byte)0);
+        }
+
+        public void Write(IEnumerable enumerable){
+            var size = CalculateSize(enumerable);
+            _writer.Write(size);
+            var keyname = 0;
+            foreach(var val in enumerable){
+                var bsonType = TranslateToBsonType(val);
+                _writer.Write((byte)bsonType);
+                WriteString(keyname.ToString());
+                WriteValue(bsonType, val);
+                keyname++;
+            }
+            _writer.Write((byte)0);
+        }
+
+        public void WriteString(String value){
+            var byteCount = Encoding.UTF8.GetByteCount(value);
+            if(byteCount < BufferLength){
+                Encoding.UTF8.GetBytes(value, 0, value.Length, _buffer, 0);
+                _writer.Write(_buffer, 0, byteCount);
+            }
+            else{
                 int charCount;
-                int totalCharsWritten = 0;
-                
-                for (int i = str.Length; i > 0; i -= charCount){
-                  charCount = (i > maxChars) ? maxChars : i;
-                  int count = Encoding.UTF8.GetBytes(str, totalCharsWritten, charCount, buffer, 0);
-                  writer.Write(buffer, 0, count);
-                  totalCharsWritten += charCount;
+                var totalCharsWritten = 0;
+
+                for(var i = value.Length; i > 0; i -= charCount){
+                    charCount = (i > _maxChars) ? _maxChars : i;
+                    var count = Encoding.UTF8.GetBytes(value, totalCharsWritten, charCount, _buffer, 0);
+                    _writer.Write(_buffer, 0, count);
+                    totalCharsWritten += charCount;
                 }
             }
-            writer.Write((byte)0);
+            _writer.Write((byte)0);
         }
-        
-        public int CalculateSize(Object val){
-            if(val == null) return 0;
-            switch (TranslateToBsonType(val)){
+
+        public int CalculateSize(Object obj){
+            if(obj == null)
+                return 0;
+
+            switch(TranslateToBsonType(obj)){
                 case BsonDataType.MinKey:
                 case BsonDataType.MaxKey:
                 case BsonDataType.Null:
@@ -174,102 +205,119 @@ namespace MongoDB.Driver.Bson
                 case BsonDataType.Number:
                     return sizeof(Double);
                 case BsonDataType.String:
-                    return CalculateSize((string)val);
+                    return CalculateSize((string)obj);
                 case BsonDataType.Obj:{
-                    Type t = val.GetType();
-                    if(t == typeof(Document)){
-                        return CalculateSize((Document)val);
-                    }
-                    if(t == typeof(DBRef)){
-                        return CalculateSize((Document)((DBRef)val));
-                    }
-                    throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented yet.",t.Name));
+                    var type = obj.GetType();
+                    if(type == typeof(Document))
+                        return CalculateSize((Document)obj);
+                    if(type == typeof(DBRef))
+                        return CalculateSize((DBRef)obj);
+                    break;
                 }
                 case BsonDataType.Array:
-                    return CalculateSize((IEnumerable)val);                    
+                    return CalculateSize((IEnumerable)obj);
                 case BsonDataType.Regex:{
-                    MongoRegex r = (MongoRegex)val;
-                    int size = CalculateSize(r.Expression,false);
-                    size += CalculateSize(r.Options,false);
-                    return size;
-                    }
-                case BsonDataType.Code:
-                    Code c = (Code)val;
-                    return CalculateSize(c.Value,true);
-                case BsonDataType.CodeWScope:{
-                    CodeWScope cw = (CodeWScope)val;
-                    int size = 4;
-                    size += CalculateSize(cw.Value,true);
-                    size += CalculateSize(cw.Scope);
-                    return size;
-                    }
-                case BsonDataType.Binary:{
-                    if (val is Guid)
-                        return 21;
-                    Binary b = (Binary)val;
-                    int size = 4; //size int
-                    size += 1; //subtype
-                    if (b.Subtype == Binary.TypeCode.General)
-                    {
-                        size += 4; //embedded size int
-                    }
-                    size += b.Bytes.Length;
-                    return size;
+                    return CalculateSize((MongoRegex)obj);
                 }
-                default:
-                    throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.",val.GetType().Name));
+                case BsonDataType.Code:
+                    return CalculateSize((Code)obj);
+                case BsonDataType.CodeWScope:{
+                    return CalculateSize((CodeWScope)obj);
+                }
+                case BsonDataType.Binary:{
+                    if(obj is Guid)
+                        return CalculateSize((Guid)obj);
+                    return CalculateSize((Binary)obj);
+                }
             }
+
+            throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.", obj.GetType().Name));
         }
-        
+
+        private int CalculateSize(Code code){
+            return CalculateSize(code.Value, true);
+        }
+
+        public int CalculateSize(MongoRegex regex){
+            var size = CalculateSize(regex.Expression, false);
+            size += CalculateSize(regex.Options, false);
+            return size;
+        }
+
+        public int CalculateSize(CodeWScope codeScope){
+            var size = 4;
+            size += CalculateSize(codeScope.Value, true);
+            size += CalculateSize(codeScope.Scope);
+            return size;
+        }
+
+        public int CalculateSize(Binary binary){
+            var size = 4; //size int
+            size += 1; //subtype
+            if(binary.Subtype == Binary.TypeCode.General)
+                size += 4; //embedded size int
+            size += binary.Bytes.Length;
+            return size;
+        }
+
+        public int CalculateSize(Guid guid){
+            return 21;
+        }
+
+        public int CalculateSize(DBRef reference){
+            return CalculateSize((Document)reference);
+        }
+
         public int CalculateSize(Document doc){
-            int size = 4;
+            var size = 4;
             foreach(String key in doc.Keys){
-                int elsize = 1; //type
-                elsize += CalculateSize(key,false);
+                var elsize = 1; //type
+                elsize += CalculateSize(key, false);
                 elsize += CalculateSize(doc[key]);
                 size += elsize;
-            }            
+            }
             size += 1; //terminator
             return size;
         }
-        
+
         public int CalculateSize(IEnumerable arr){
-            int size = 4;//base size for the object
-            int keyname = 0;
-            foreach(Object o in arr){
-                int elsize = 1; //type
-                size += CalculateSize(keyname.ToString(),false); //element name
+            var size = 4; //base size for the object
+            var keyname = 0;
+            foreach(var o in arr){
+                var elsize = 1; //type
+                size += CalculateSize(keyname.ToString(), false); //element name
                 size += CalculateSize(o);
                 size += elsize;
-                keyname++;    
-            }            
+                keyname++;
+            }
             size += 1; //terminator
             return size;
         }
-        
+
         public int CalculateSize(String val){
             return CalculateSize(val, true);
         }
-        
+
         public int CalculateSize(String val, bool includeLen){
-            int size = 1; //terminator
-            if(includeLen) size += 4;
+            var size = 1; //terminator
+            if(includeLen)
+                size += 4;
             if(val != null)
                 size += Encoding.UTF8.GetByteCount(val);
             return size;
-        }        
-        
+        }
+
         public void Flush(){
-            writer.Flush();
+            _writer.Flush();
         }
 
         protected BsonDataType TranslateToBsonType(Object value){
             if(value == null)
                 return BsonDataType.Null;
-            
+
             var type = value.GetType();
 
-            if(value is Enum)//special case enums               
+            if(value is Enum) //special case enums               
                 type = Enum.GetUnderlyingType(type);
 
             if(type == typeof(Double))
@@ -310,8 +358,8 @@ namespace MongoDB.Driver.Bson
                 return BsonDataType.MaxKey;
             if(value is IEnumerable)
                 return BsonDataType.Array;
-            
-            throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized",type.FullName));
+
+            throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized", type.FullName));
         }
     }
 }
