@@ -262,57 +262,56 @@ namespace MongoDB.Driver.Bson
         public void Flush(){
             writer.Flush();
         }
-        
-        protected BsonDataType TranslateToBsonType(Object val){
-            if(val == null)return BsonDataType.Null;
-            Type t = val.GetType();
-            //special case enums
-            if(val is Enum){
-                t = Enum.GetUnderlyingType(t);
-            }        
-            BsonDataType ret;
-            if(t == typeof(Double)){
-                ret = BsonDataType.Number;
-            }else if(t == typeof(Single)){
-                ret = BsonDataType.Number;
-            }else if(t == typeof(String)){
-                ret = BsonDataType.String;
-            }else if(t == typeof(Document)){
-                ret = BsonDataType.Obj;
-            }else if(t == typeof(int)){
-                ret = BsonDataType.Integer;
-            }else if(t == typeof(long)){
-                ret = BsonDataType.Long;
-            }else if(t == typeof(bool)){
-                ret = BsonDataType.Boolean;
-            }else if(t == typeof(Oid)){
-                ret = BsonDataType.Oid;
-            }else if(t == typeof(DateTime)){
-                ret = BsonDataType.Date;
-            }else if(t == typeof(MongoRegex)){
-                ret = BsonDataType.Regex;
-            }else if(t == typeof(DBRef)){
-                ret = BsonDataType.Obj;
-            }else if(t == typeof(Code)){
-                ret = BsonDataType.Code;
-            }else if(t == typeof(CodeWScope)){
-                ret = BsonDataType.CodeWScope;
-            }else if(t == typeof(DBNull)){ 
-                ret = BsonDataType.Null;
-            }else if(t == typeof(Binary)){
-                ret = BsonDataType.Binary;
-            }else if(t == typeof(Guid)){
-                ret = BsonDataType.Binary;
-            }else if(t == typeof(MongoMinKey)){
-                ret = BsonDataType.MinKey;
-            }else if(t == typeof(MongoMaxKey)){
-                ret = BsonDataType.MaxKey;
-            }else if(val is IEnumerable){
-                ret = BsonDataType.Array;
-            }else{
-                throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized",t.FullName));
-            }
-            return ret;
+
+        protected BsonDataType TranslateToBsonType(Object value){
+            if(value == null)
+                return BsonDataType.Null;
+            
+            var type = value.GetType();
+
+            if(value is Enum)//special case enums               
+                type = Enum.GetUnderlyingType(type);
+
+            if(type == typeof(Double))
+                return BsonDataType.Number;
+            if(type == typeof(Single))
+                return BsonDataType.Number;
+            if(type == typeof(String))
+                return BsonDataType.String;
+            if(type == typeof(Document))
+                return BsonDataType.Obj;
+            if(type == typeof(int))
+                return BsonDataType.Integer;
+            if(type == typeof(long))
+                return BsonDataType.Long;
+            if(type == typeof(bool))
+                return BsonDataType.Boolean;
+            if(type == typeof(Oid))
+                return BsonDataType.Oid;
+            if(type == typeof(DateTime))
+                return BsonDataType.Date;
+            if(type == typeof(MongoRegex))
+                return BsonDataType.Regex;
+            if(type == typeof(DBRef))
+                return BsonDataType.Obj;
+            if(type == typeof(Code))
+                return BsonDataType.Code;
+            if(type == typeof(CodeWScope))
+                return BsonDataType.CodeWScope;
+            if(type == typeof(DBNull))
+                return BsonDataType.Null;
+            if(type == typeof(Binary))
+                return BsonDataType.Binary;
+            if(type == typeof(Guid))
+                return BsonDataType.Binary;
+            if(type == typeof(MongoMinKey))
+                return BsonDataType.MinKey;
+            if(type == typeof(MongoMaxKey))
+                return BsonDataType.MaxKey;
+            if(value is IEnumerable)
+                return BsonDataType.Array;
+            
+            throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized",type.FullName));
         }
     }
 }
