@@ -132,6 +132,8 @@
     <Compile Include="MapReduceBuilder.cs" />
     <Compile Include="QueryOptions.cs" />
     <Compile Include="Connections\RawConnection.cs" />
+    <Compile Include="Serialization\ReflectionBuilder´1.cs" />
+    <Compile Include="Serialization\ReflectionDescriptor.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
     <Compile Include="Util\JsonFormatter.cs" />

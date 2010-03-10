@@ -121,8 +121,7 @@ namespace MongoDB.Driver
             return SendCommandCore(command);
         }
 
-        public Document SendCommand(Document cmd)
-        {
+        public Document SendCommand(Document cmd){
             AuthenticateIfRequired();
             return SendCommandCore(cmd);
         }
