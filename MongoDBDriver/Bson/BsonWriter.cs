@@ -12,7 +12,6 @@ namespace MongoDB.Driver.Bson
     {
         private Stream stream;
         private BinaryWriter writer;
-        private Encoding encoding = Encoding.UTF8;
         private int buffLength = 256;
         private byte[] buffer;
         int maxChars;
@@ -21,7 +20,7 @@ namespace MongoDB.Driver.Bson
             this.stream = stream;
             writer = new BinaryWriter(this.stream);
             buffer = new byte[buffLength];
-            maxChars = buffLength / encoding.GetMaxByteCount(1);
+            maxChars = buffLength / Encoding.UTF8.GetMaxByteCount(1);
         }
         
         public void Write(Document doc){
@@ -138,9 +137,9 @@ namespace MongoDB.Driver.Bson
         }
         
         public void WriteString(String str){
-            int byteCount = encoding.GetByteCount(str);
+            int byteCount = Encoding.UTF8.GetByteCount(str);
             if(byteCount < buffLength){
-                encoding.GetBytes(str,0,str.Length,buffer,0);
+                Encoding.UTF8.GetBytes(str, 0, str.Length, buffer, 0);
                 writer.Write(buffer,0,byteCount);
             }else{
                 int charCount;
@@ -148,7 +147,7 @@ namespace MongoDB.Driver.Bson
                 
                 for (int i = str.Length; i > 0; i -= charCount){
                   charCount = (i > maxChars) ? maxChars : i;
-                  int count = encoding.GetBytes(str, totalCharsWritten, charCount, buffer, 0);
+                  int count = Encoding.UTF8.GetBytes(str, totalCharsWritten, charCount, buffer, 0);
                   writer.Write(buffer, 0, count);
                   totalCharsWritten += charCount;
                 }
@@ -255,7 +254,8 @@ namespace MongoDB.Driver.Bson
         public int CalculateSize(String val, bool includeLen){
             int size = 1; //terminator
             if(includeLen) size += 4;
-            if(val != null) size += encoding.GetByteCount(val);
+            if(val != null)
+                size += Encoding.UTF8.GetByteCount(val);
             return size;
         }        
         
