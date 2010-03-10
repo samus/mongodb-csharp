@@ -61,6 +61,9 @@
     <Compile Include="Bson\TestBsonBinary.cs" />
     <Compile Include="Bson\TestRoundTrips.cs" />
     <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
+    <Compile Include="Serialization\ReflectionBuilderTests.cs" />
+    <Compile Include="Serialization\RelectionDescriptorTests.cs" />
+    <Compile Include="Serialization\SerializationTestBase.cs" />
     <Compile Include="TestAuthentication.cs" />
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />

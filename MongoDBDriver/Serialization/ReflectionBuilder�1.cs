@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Serialization
@@ -12,7 +11,6 @@ namespace MongoDB.Driver.Serialization
         readonly Stack<Type> _type = new Stack<Type>();
         readonly Stack<PropertyDescriptor> _property = new Stack<PropertyDescriptor>();
         readonly Stack<bool> _arrayMode = new Stack<bool>();
-
 
         public ReflectionBuilder()
         {
@@ -38,16 +36,23 @@ namespace MongoDB.Driver.Serialization
             _arrayMode.Push(true);
             var type = _type.Peek();
 
+            if(!type.IsInterface)
+                return Activator.CreateInstance(type);
+
             if(type.IsGenericType)
             {
-                var t = type.GetGenericArguments()[0];
-                _type.Push(t);
-                return Activator.CreateInstance(typeof(List<>).MakeGenericType(t));
+                var arrayType = type.GetGenericArguments()[0];
+                if(typeof(IEnumerable<>).MakeGenericType(arrayType).IsAssignableFrom(type))
+                {
+                    _type.Push(arrayType);
+                    return Activator.CreateInstance(typeof(List<>).MakeGenericType(arrayType));
+                }
             }
-
-            _type.Push(typeof(object));
             
-            return new List<object>();
+            if(typeof(IEnumerable).IsAssignableFrom(type))
+                return new List<object>();
+            
+            throw new Exception();
         }
 
         public object EndArray(object instance)
@@ -57,22 +62,17 @@ namespace MongoDB.Driver.Serialization
             return instance;
         }
 
-        Stack<string> names = new Stack<string>();
-        public void BeginProperty(object instance, string name)
-        {
-            if(_arrayMode.Peek())
+        public void BeginProperty(object instance, string name){
+            if(_arrayMode.Peek()||instance is Document)
                 return;
 
-            if(instance is Document){
-                names.Push(name);
-            }else{
-                var type = instance.GetType();
+            var type = instance.GetType();
 
-                var property = TypeDescriptor.GetProperties(type).Find(name, true);
+            var property = TypeDescriptor.GetProperties(type).Find(name, true);
 
-                _property.Push(property);
-                _type.Push(property.PropertyType);
-            }
+            _property.Push(property);
+            _type.Push(property.PropertyType);
+
         }
 
         public void EndProperty(object instance, string name, object value)
