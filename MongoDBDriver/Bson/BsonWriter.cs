@@ -284,10 +284,9 @@ namespace MongoDB.Driver.Bson
             var size = 4; //base size for the object
             var keyname = 0;
             foreach(var o in enumerable){
-                var elsize = 1; //type
                 size += CalculateSize(keyname.ToString(), false); //element name
                 size += CalculateSize(o);
-                size += elsize;
+                size += 1; // elsize
                 keyname++;
             }
             size += 1; //terminator
