@@ -9,19 +9,36 @@ namespace MongoDB.Driver.Configuration
 
         public MongoDBConfiguration() { }
 
+        [ConfigurationProperty("connection")]
+        public ConnectionElement Connection{
+            get{return (ConnectionElement)this["connection"];}
+            set{ this["connection"] = value; }
+        }
+
+        [ConfigurationProperty("gridFS")]
+        public GridFSElement GridFS
+        {
+            get { return (GridFSElement)this["gridFS"]; }
+            set { this["gridFS"] = value; }
+        }
+
+    }
+
+
+    public class ConnectionElement : ConfigurationElement
+    {
+
         [ConfigurationProperty("port", DefaultValue = "27017", IsRequired = true)]
         [IntegerValidator(MinValue = 1, MaxValue = 65535, ExcludeRange = false)]
-        public int Port
-        {
+        public int Port{
             get { return (Int32)this["port"]; }
             set { this["port"] = value; }
         }
 
         [ConfigurationProperty("host", DefaultValue = "localhost", IsRequired = true)]
-         public string Host {
+        public string Host{
             get { return (String)this["host"]; }
             set { this["host"] = value; }
-
         }
 
         [ConfigurationProperty("database", IsRequired = true)]
@@ -47,15 +64,24 @@ namespace MongoDB.Driver.Configuration
             get { return (String)this["password"]; }
             set { this["password"] = value; }
         }
-
     }
 
-    /// <summary>
-    /// Not used at the moment but could be used later
-    /// </summary>
-    public class ChildConfigElement : ConfigurationElement
+    public class GridFSElement : ConfigurationElement
     {
-        public ChildConfigElement() { }
+        [ConfigurationProperty("collection", IsRequired = false, DefaultValue="fs")]
+        public string Collection
+        {
+            get { return (String)this["collection"]; }
+            set { this["collection"] = value; }
+        }
+
+        [ConfigurationProperty("chunkSize", IsRequired = false, DefaultValue="256000")]
+        public Int32 ChunkSize
+        {
+            get { return (Int32)this["chunkSize"]; }
+            set { this["chunkSize"] = value; }
+        }
+
     }
 
 }
