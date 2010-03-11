@@ -21,11 +21,12 @@ namespace MongoDB.Driver.Bson
             this.stream = stream;
             writer = new BinaryWriter(this.stream);
             buffer = new byte[buffLength];
-            maxChars = buffLength / encoding.GetMaxByteCount(1);
+            maxChars = buffLength / encoding.GetMaxByteCount(1);    
         }
         
         public void Write(Document doc){
             int size = CalculateSize(doc);
+            if(size >= BsonInfo.MaxDocumentSize) throw new ArgumentException("Maximum document size exceeded.");
             writer.Write(size);
             foreach(String key in doc.Keys){
                 Object val = doc[key];

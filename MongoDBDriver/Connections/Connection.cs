@@ -69,7 +69,7 @@ namespace MongoDB.Driver.Connections
         /// <param name="msg"></param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public ReplyMessage SendTwoWayMessage (RequestMessageBase msg){
+        public ReplyMessage SendTwoWayMessage (IRequestMessage msg){
             if (this.State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }
@@ -93,7 +93,7 @@ namespace MongoDB.Driver.Connections
         /// <param name="msg"></param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>        
-        public void SendMessage (RequestMessageBase msg){
+        public void SendMessage (IRequestMessage msg){
             if (this.State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }

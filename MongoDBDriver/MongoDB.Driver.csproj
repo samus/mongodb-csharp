@@ -77,9 +77,10 @@
     <Compile Include="Connections\Connection.cs" />
     <Compile Include="Connections\ConnectionFactory.cs" />
     <Compile Include="Connections\ConnectionFactoryBase.cs" />
-    <Compile Include="Connections\PooledConnectionFactory.cs" />
     <Compile Include="Connections\ConnectionState.cs" />
     <Compile Include="Connections\IConnectionFactory.cs" />
+    <Compile Include="Connections\PooledConnectionFactory.cs" />
+    <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="Connections\SimpleConnectionFactory.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="AssemblyInfo.cs" />
@@ -87,36 +88,24 @@
     <Compile Include="DatabaseMetaData.cs" />
     <Compile Include="DBRef.cs" />
     <Compile Include="Document.cs" />
-    <Compile Include="ICursor.cs" />
-    <Compile Include="IMongoCollection.cs" />
-    <Compile Include="IndexOrder.cs" />
-    <Compile Include="Protocol\GetMoreMessage.cs" />
-    <Compile Include="Protocol\InsertMessage.cs" />
-    <Compile Include="Protocol\KillCursorsMessage.cs" />
-    <Compile Include="Protocol\MessageBase.cs" />
-    <Compile Include="Protocol\MessageHeader.cs" />
-    <Compile Include="Protocol\OpCode.cs" />
-    <Compile Include="Protocol\QueryMessage.cs" />
-    <Compile Include="Protocol\RequestMessageBase.cs" />
-    <Compile Include="Mongo.cs" />
-    <Compile Include="Protocol\MsgMessage.cs" />
-    <Compile Include="Protocol\ReplyMessage.cs" />
-    <Compile Include="Bson\BsonReader.cs" />
-    <Compile Include="Cursor.cs" />
     <Compile Include="Exceptions\MongoCommandException.cs" />
     <Compile Include="Exceptions\MongoCommException.cs" />
-    <Compile Include="MongoConnectionStringBuilder.cs" />
     <Compile Include="Exceptions\MongoDuplicateKeyException.cs" />
     <Compile Include="Exceptions\MongoDuplicateKeyUpdateException.cs" />
     <Compile Include="Exceptions\MongoException.cs" />
     <Compile Include="Exceptions\MongoMapReduceException.cs" />
+    <Compile Include="Exceptions\MongoOperationException.cs" />
+    <Compile Include="ICursor.cs" />
+    <Compile Include="IMongoCollection.cs" />
+    <Compile Include="IndexOrder.cs" />
+    <Compile Include="Mongo.cs" />
+    <Compile Include="Bson\BsonReader.cs" />
+    <Compile Include="Cursor.cs" />
+    <Compile Include="MongoConnectionStringBuilder.cs" />
     <Compile Include="MongoMaxKey.cs" />
     <Compile Include="MongoMinKey.cs" />
-    <Compile Include="Exceptions\MongoOperationException.cs" />
     <Compile Include="MongoServerEndPoint.cs" />
     <Compile Include="Oid.cs" />
-    <Compile Include="Protocol\DeleteMessage.cs" />
-    <Compile Include="Protocol\UpdateMessage.cs" />
     <Compile Include="MongoRegex.cs" />
     <Compile Include="OidGenerator.cs" />
     <Compile Include="Code.cs" />
@@ -125,8 +114,20 @@
     <Compile Include="DatabaseJS.cs" />
     <Compile Include="MapReduce.cs" />
     <Compile Include="MapReduceBuilder.cs" />
+    <Compile Include="Protocol\DeleteMessage.cs" />
+    <Compile Include="Protocol\GetMoreMessage.cs" />
+    <Compile Include="Protocol\InsertMessage.cs" />
+    <Compile Include="Protocol\IRequestMessage.cs" />
+    <Compile Include="Protocol\KillCursorsMessage.cs" />
+    <Compile Include="Protocol\MessageBase.cs" />
+    <Compile Include="Protocol\MessageHeader.cs" />
+    <Compile Include="Protocol\MsgMessage.cs" />
+    <Compile Include="Protocol\OpCode.cs" />
+    <Compile Include="Protocol\QueryMessage.cs" />
+    <Compile Include="Protocol\ReplyMessage.cs" />
+    <Compile Include="Protocol\RequestMessageBase.cs" />
+    <Compile Include="Protocol\UpdateMessage.cs" />
     <Compile Include="QueryOptions.cs" />
-    <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
     <Compile Include="Util\JsonFormatter.cs" />
@@ -147,6 +148,12 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
     </BootstrapperPackage>
+    <Folder Include="Connections" />
+    <Folder Include="Exceptions" />
+    <Folder Include="Protocol" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Util\" />
+  </ItemGroup>
 </Project>

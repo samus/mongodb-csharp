@@ -9,6 +9,7 @@ namespace MongoDB.Driver.Bson
         /// </summary>
         static BsonInfo(){
             Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            MaxDocumentSize = 1024 * 1024 * 4; //4MB.
         }
 
         /// <summary>
@@ -16,5 +17,10 @@ namespace MongoDB.Driver.Bson
         /// </summary>
         /// <value>The epoch.</value>
         public static DateTime Epoch { get; private set; }
+        
+        /// <summary>
+        /// The maximum size a document can be.
+        /// </summary>
+        public static int MaxDocumentSize { get; private set; }
     }
 }
