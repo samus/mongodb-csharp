@@ -11,16 +11,19 @@ namespace MongoDB.Driver.Serialization
         readonly Stack<Type> _type = new Stack<Type>();
         readonly Stack<PropertyDescriptor> _property = new Stack<PropertyDescriptor>();
         readonly Stack<bool> _arrayMode = new Stack<bool>();
+        private readonly ArrayFactory _arrayFactory;
 
         public ReflectionBuilder()
         {
             _type.Push(typeof(T));
+            _arrayFactory = new ArrayFactory();
         }
 
         public object BeginObject()
         {
             _arrayMode.Push(false);
             var type = _type.Peek();
+
             return Activator.CreateInstance(type);
             //return FormatterServices.GetUninitializedObject(type);
         }
@@ -36,23 +39,11 @@ namespace MongoDB.Driver.Serialization
             _arrayMode.Push(true);
             var type = _type.Peek();
 
-            if(!type.IsInterface)
-                return Activator.CreateInstance(type);
-
-            if(type.IsGenericType)
-            {
-                var arrayType = type.GetGenericArguments()[0];
-                if(typeof(IEnumerable<>).MakeGenericType(arrayType).IsAssignableFrom(type))
-                {
-                    _type.Push(arrayType);
-                    return Activator.CreateInstance(typeof(List<>).MakeGenericType(arrayType));
-                }
-            }
+            Type containingType;
+            var instance = _arrayFactory.Create(type, out containingType);
+            _type.Push(containingType);
             
-            if(typeof(IEnumerable).IsAssignableFrom(type))
-                return new List<object>();
-            
-            throw new Exception();
+            return instance;
         }
 
         public object EndArray(object instance)
