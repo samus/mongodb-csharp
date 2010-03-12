@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Bson
 {
@@ -17,7 +18,7 @@ namespace MongoDB.Driver.Bson
         private readonly IBsonObjectBuilder _builder;
 
         public BsonReader(Stream stream)
-            :this(stream,new DocumentBuilder()){
+            :this(stream,new ReflectionBuilder<Document>()){
         }
 
         public BsonReader(Stream stream,IBsonObjectBuilder builder){

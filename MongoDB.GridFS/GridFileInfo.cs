@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver;
 
@@ -49,7 +50,15 @@ namespace MongoDB.GridFS
         }
 
         public string[] Aliases{
-            get { return (String[])filedata["aliases"]; }
+            get 
+            {
+                var aliases = filedata["aliases"];
+                
+                if(aliases is List<string>)
+                    filedata["aliases"] = aliases = ((List<string>)aliases).ToArray();
+                
+                return (String[])aliases; 
+            }
             set { filedata["aliases"] = value; }
         }
 
