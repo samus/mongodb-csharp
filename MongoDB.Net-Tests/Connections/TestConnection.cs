@@ -35,7 +35,7 @@ namespace MongoDB.Driver.Connections
                 //Should be able to resend.
                 Assert.IsTrue(conn.State == ConnectionState.Opened);
                 QueryMessage qmsg = generateQueryMessage();
-                ReplyMessage rmsg = conn.SendTwoWayMessage(qmsg);
+                ReplyMessage<Document> rmsg = conn.SendTwoWayMessage(qmsg);
                 Assert.IsNotNull(rmsg);
             
             }

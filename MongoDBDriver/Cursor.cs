@@ -103,7 +103,7 @@ namespace MongoDB.Driver
             get {return modifiable;}
         }
         
-        private ReplyMessage reply;
+        private ReplyMessage<Document> reply;
         
         public Cursor(Connection conn, string fullCollectionName){
             this.connection = conn;
@@ -163,7 +163,7 @@ namespace MongoDB.Driver
             }
             try{
                 this.reply = connection.SendTwoWayMessage(query);
-                this.id = this.reply.CursorID;
+                this.id = this.reply.CursorId;
                 if(this.limit < 0)this.limit = this.limit * -1;
             }catch(IOException ioe){
                 throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
@@ -175,7 +175,7 @@ namespace MongoDB.Driver
             GetMoreMessage gmm = new GetMoreMessage(this.fullCollectionName, this.Id, this.limit);
             try{
                 this.reply = connection.SendTwoWayMessage(gmm);
-                this.id = this.reply.CursorID;
+                this.id = this.reply.CursorId;
             }catch(IOException ioe){
                 this.id = 0;
                 throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);

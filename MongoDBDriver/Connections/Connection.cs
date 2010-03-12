@@ -6,9 +6,9 @@ namespace MongoDB.Driver.Connections
 {
     /// <summary>
     /// Connection is a managment unit which uses a RawConnection from connection pool
-    /// to comunicate with the server. 
+    /// to comunicate with the server.
     /// <remarks>
-    /// If an connection error occure, the RawConnection is transparently replaced 
+    /// If an connection error occure, the RawConnection is transparently replaced
     /// by a new fresh connection.
     /// </remarks>
     /// </summary>
@@ -69,12 +69,12 @@ namespace MongoDB.Driver.Connections
         /// <param name="msg"></param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public ReplyMessage SendTwoWayMessage (RequestMessageBase msg){
+        public ReplyMessage<Document> SendTwoWayMessage (RequestMessageBase msg){
             if (this.State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }
             try {
-                ReplyMessage reply = new ReplyMessage ();
+                var reply = new ReplyMessage<Document> ();
                 lock (_connection) {
                     msg.Write (_connection.GetStream ());
                     reply.Read (_connection.GetStream ());
