@@ -13,11 +13,6 @@ namespace MongoDB.Driver
             }
         }
 
-        public override void OnInit ()
-        {
-            base.OnInit();
-        }        
-        
         [Test]
         public void TestFollowReference(){
             IMongoCollection refs = DB["refs"];

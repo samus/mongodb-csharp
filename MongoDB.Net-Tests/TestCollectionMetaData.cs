@@ -11,9 +11,6 @@ namespace MongoDB.Driver
     {
         Database adminDb;
 
-        String adminuser = "adminuser";
-        String adminpass = "admin1234";
-        
         public override string TestCollections {
             get {
                 return "indextests,rename,renamed";
