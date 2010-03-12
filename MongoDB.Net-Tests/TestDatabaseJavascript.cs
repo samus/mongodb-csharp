@@ -7,9 +7,9 @@ namespace MongoDB.Driver{
 
 
     [TestFixture()]
-    public class TestDatabaseJS : MongoTestBase
+    public class TestDatabaseJavascript : MongoTestBase
     {
-        DatabaseJS js;
+        DatabaseJavascript js;
         public override string TestCollections {
             get {
                 return "jsreads";

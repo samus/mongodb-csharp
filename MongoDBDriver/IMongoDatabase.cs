@@ -21,7 +21,7 @@ namespace MongoDB.Driver
         /// Gets the javascript.
         /// </summary>
         /// <value>The javascript.</value>
-        DatabaseJS Javascript { get; }
+        DatabaseJavascript Javascript { get; }
 
         /// <summary>
         /// Gets the <see cref="MongoDB.Driver.IMongoCollection&lt;MongoDB.Driver.Document&gt;"/> with the specified name.

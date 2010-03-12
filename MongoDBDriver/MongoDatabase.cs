@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     public class MongoDatabase : IMongoDatabase
     {
         private readonly Connection _connection;
-        private DatabaseJS _javascript;
+        private DatabaseJavascript _javascript;
         private DatabaseMetaData _metaData;
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace MongoDB.Driver
         /// Gets the javascript.
         /// </summary>
         /// <value>The javascript.</value>
-        public DatabaseJS Javascript{
-            get { return _javascript ?? (_javascript = new DatabaseJS(this)); }
+        public DatabaseJavascript Javascript{
+            get { return _javascript ?? (_javascript = new DatabaseJavascript(this)); }
         }
 
         /// <summary>
