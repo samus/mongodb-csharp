@@ -16,25 +16,24 @@ namespace MongoDB.Driver.Protocol
     ///   [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
     /// </remarks>
     public class QueryMessage<T> : RequestMessageBase
-        where T : class
     {
         public QueryMessage(){
             Header = new MessageHeader(OpCode.Query);
         }
 
-        public QueryMessage(T query, String fullCollectionName)
+        public QueryMessage(object query, String fullCollectionName)
             : this(query, fullCollectionName, 0, 0){
         }
 
-        public QueryMessage(T query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
+        public QueryMessage(object query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
             : this(query, fullCollectionName, numberToReturn, numberToSkip, null){
         }
 
-        public QueryMessage(T query,
+        public QueryMessage(object query,
             String fullCollectionName,
             Int32 numberToReturn,
             Int32 numberToSkip,
-            T returnFieldSelector){
+            object returnFieldSelector){
             Header = new MessageHeader(OpCode.Query);
             Query = query;
             FullCollectionName = fullCollectionName;
@@ -51,9 +50,9 @@ namespace MongoDB.Driver.Protocol
 
         public int NumberToReturn { get; set; }
 
-        public T Query { get; set; }
+        public object Query { get; set; }
 
-        public T ReturnFieldSelector { get; set; }
+        public object ReturnFieldSelector { get; set; }
 
         protected override void WriteBody(BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer, (int)Options);
