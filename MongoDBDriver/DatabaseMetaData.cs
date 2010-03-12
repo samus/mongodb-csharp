@@ -10,12 +10,12 @@ namespace MongoDB.Driver
     {        
         private Connection connection;  
         private string name;
-        private Database db;
+        private MongoDatabase db;
         
         public DatabaseMetaData(string name, Connection conn){
             this.connection = conn;
             this.name = name;
-            this.db = new Database(conn, name);
+            this.db = new MongoDatabase(conn, name);
         }
         
         public MongoCollection<Document> CreateCollection(String name){
@@ -48,7 +48,7 @@ namespace MongoDB.Driver
         
         public void AddUser(string username, string password){
             IMongoCollection<Document> users = db["system.users"];
-            string pwd = Database.Hash(username + ":mongo:" + password);
+            string pwd = MongoDatabase.Hash(username + ":mongo:" + password);
             Document user = new Document().Append("user", username).Append("pwd", pwd);
             
             if (FindUser(username) != null){

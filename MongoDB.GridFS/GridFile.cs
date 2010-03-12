@@ -6,7 +6,7 @@ namespace MongoDB.GridFS
 {
     public class GridFile{
 
-        private Database db;
+        private MongoDatabase db;
         
         private string name;
         public string Name {
@@ -25,9 +25,9 @@ namespace MongoDB.GridFS
             get { return this.chunks; }
         }        
         
-        public GridFile(Database db):this(db,"fs"){}
+        public GridFile(MongoDatabase db):this(db,"fs"){}
 
-        public GridFile(Database db, string bucket){
+        public GridFile(MongoDatabase db, string bucket){
             this.db = db;
             this.files = db[bucket + ".files"];
             this.chunks = db[bucket + ".chunks"];

@@ -9,7 +9,7 @@ namespace MongoDB.Driver
         ///   Gets the database.
         /// </summary>
         /// <value>The database.</value>
-        Database Database { get; }
+        MongoDatabase Database { get; }
 
         /// <summary>
         ///   Gets or sets the name.

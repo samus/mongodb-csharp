@@ -17,7 +17,7 @@ namespace MongoDB.GridFS
         private const string DEFAULT_CONTENT_TYPE = "text/plain";
         
         private GridFile gridFile;
-        private Database db;
+        private MongoDatabase db;
         private string bucket;
 
 
@@ -82,7 +82,7 @@ namespace MongoDB.GridFS
         }
         #endregion
 
-        public GridFileInfo(Database db, string bucket, string filename){
+        public GridFileInfo(MongoDatabase db, string bucket, string filename){
             this.db = db;
             this.bucket = bucket;
             this.gridFile = new GridFile(db,bucket);
@@ -90,7 +90,7 @@ namespace MongoDB.GridFS
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
 
-        public GridFileInfo(Database db, string filename){
+        public GridFileInfo(MongoDatabase db, string filename){
             this.db = db;
             this.bucket = "fs";
             this.gridFile = new GridFile(db);

@@ -9,10 +9,10 @@ namespace MongoDB.Driver{
     public class DatabaseJS : ICollection<Document>
     {   
         //private Connection connection;
-        private Database db;
+        private MongoDatabase db;
         private IMongoCollection<Document> js;
         
-        internal DatabaseJS (Database db){
+        internal DatabaseJS (MongoDatabase db){
             this.db = db;
             this.js = db["system.js"];
             //Needed for some versions of the db to retrieve the functions.

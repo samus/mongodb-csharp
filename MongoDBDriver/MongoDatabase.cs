@@ -6,18 +6,18 @@ using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
-    public class Database
+    public class MongoDatabase
     {
         private readonly Connection _connection;
         private DatabaseJS _javascript;
         private DatabaseMetaData _metaData;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Database"/> class.
+        /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="name">The name.</param>
-        public Database(string connectionString, String name)
+        public MongoDatabase(string connectionString, String name)
             :this(ConnectionFactory.GetConnection(connectionString),name)
         {
             if(name == null)
@@ -25,11 +25,11 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Database"/> class.
+        /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
         /// </summary>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
-        public Database(Connection connection, String name){
+        public MongoDatabase(Connection connection, String name){
             //Todo: should be internal
             Name = name;
             _connection = connection;
@@ -124,35 +124,41 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        ///   Most operations do not have a return code in order to save the client from having to wait for results.
-        ///   GetLastError can be called to retrieve the return code if clients want one.
+        /// Most operations do not have a return code in order to save the client from having to wait for results.
+        /// GetLastError can be called to retrieve the return code if clients want one.
         /// </summary>
+        /// <returns></returns>
         public Document GetLastError(){
             return SendCommand("getlasterror");
         }
 
         /// <summary>
-        ///   Retrieves the last error and forces the database to fsync all files before returning.
+        /// Retrieves the last error and forces the database to fsync all files before returning.
         /// </summary>
+        /// <param name="fsync">if set to <c>true</c> [fsync].</param>
+        /// <returns></returns>
         /// <remarks>
-        ///   Server version 1.3+
+        /// Server version 1.3+
         /// </remarks>
-        public Document GetLastErrorAndFSync(){
-            return SendCommand(new Document{{"getlasterror", 1.0}, {"fsync", true}});
+        public Document GetLastError(bool fsync){
+            return SendCommand(new Document { { "getlasterror", 1.0 }, { "fsync", fsync } });
         }
 
         /// <summary>
-        ///   Call after sending a bulk operation to the database.
+        /// Call after sending a bulk operation to the database.
         /// </summary>
+        /// <returns></returns>
         public Document GetPreviousError(){
             return SendCommand("getpreverror");
         }
 
         /// <summary>
-        ///   Gets the sister database on the same Mongo connection with the given name.
+        /// Gets the sister database on the same Mongo connection with the given name.
         /// </summary>
-        public Database GetSisterDatabase(string sisterDbName){
-            return new Database(_connection, sisterDbName);
+        /// <param name="sisterDatabaseName">Name of the sister database.</param>
+        /// <returns></returns>
+        public MongoDatabase GetSisterDatabase(string sisterDatabaseName){
+            return new MongoDatabase(_connection, sisterDatabaseName);
         }
 
         /// <summary>
@@ -194,31 +200,22 @@ namespace MongoDB.Driver
         /// <summary>
         /// Sends the command.
         /// </summary>
-        /// <param name="command">The command.</param>
+        /// <param name="commandName">The command name.</param>
         /// <returns></returns>
-        public Document SendCommand(string command){
+        public Document SendCommand(string commandName){
             AuthenticateIfRequired();
-            return SendCommandCore(command);
+            var cmd = new Document().Append(commandName, 1.0);
+            return SendCommandCore(cmd);
         }
 
         /// <summary>
         /// Sends the command.
         /// </summary>
-        /// <param name="cmd">The CMD.</param>
+        /// <param name="command">The CMD.</param>
         /// <returns></returns>
-        public Document SendCommand(Document cmd){
+        public Document SendCommand(Document command){
             AuthenticateIfRequired();
-            return SendCommandCore(cmd);
-        }
-
-        /// <summary>
-        /// Sends the command core.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        /// <returns></returns>
-        private Document SendCommandCore(string command){
-            var cmd = new Document().Append(command, 1.0);
-            return SendCommandCore(cmd);
+            return SendCommandCore(command);
         }
 
         /// <summary>
@@ -270,7 +267,7 @@ namespace MongoDB.Driver
             if(string.IsNullOrEmpty(builder.Username))
                 return;
 
-            var nonceResult = SendCommandCore("getnonce");
+            var nonceResult = SendCommandCore(new Document().Append("getnonce", 1.0));
             var nonce = (String)nonceResult["nonce"];
 
             if(nonce == null)

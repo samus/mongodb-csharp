@@ -16,7 +16,7 @@ namespace MongoDB.Driver
         private static readonly OidGenerator OidGenerator = new OidGenerator();
         private readonly ObjectDescriptor _objectDescriptor = new ObjectDescriptor();
         private readonly Connection _connection;
-        private Database _database;
+        private MongoDatabase _database;
         private CollectionMetaData _metaData;
 
         /// <summary>
@@ -36,8 +36,8 @@ namespace MongoDB.Driver
         /// Gets the database.
         /// </summary>
         /// <value>The database.</value>
-        public Database Database{
-            get { return _database ?? (_database = new Database(_connection, DatabaseName)); }
+        public MongoDatabase Database{
+            get { return _database ?? (_database = new MongoDatabase(_connection, DatabaseName)); }
         }
 
         /// <summary>

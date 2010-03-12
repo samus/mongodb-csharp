@@ -86,7 +86,7 @@
     <Compile Include="Connections\ConnectionState.cs" />
     <Compile Include="Connections\IConnectionFactory.cs" />
     <Compile Include="Connections\SimpleConnectionFactory.cs" />
-    <Compile Include="Database.cs" />
+    <Compile Include="MongoDatabase.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
     <Compile Include="DatabaseMetaData.cs" />
