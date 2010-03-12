@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver.Connections;
 using MongoDB.Driver.Protocol;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver
 {
@@ -13,6 +14,7 @@ namespace MongoDB.Driver
         where T : class
     {
         private static readonly OidGenerator OidGenerator = new OidGenerator();
+        private readonly ObjectDescriptor _objectDescriptor = new ObjectDescriptor();
         private readonly Connection _connection;
         private Database _database;
         private CollectionMetaData _metaData;
@@ -88,10 +90,10 @@ namespace MongoDB.Driver
         public T FindOne(object spec)
         {
             var cursor = Find(spec, -1, 0, null);
-            foreach(var doc in cursor.Documents)
+            foreach(var document in cursor.Documents)
             {
                 cursor.Dispose();
-                return doc;
+                return document;
             }
             //FIXME Decide if this should throw a not found exception instead of returning null.
             return null; //this.Find(spec, -1, 0, null)[0];
@@ -310,7 +312,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="documents">The documents.</param>
         public void Insert(IEnumerable<Document> documents){
-            Insert((IEnumerable<object>)documents);
+            Insert<Document>(documents);
         }
 
         /// <summary>
@@ -326,16 +328,10 @@ namespace MongoDB.Driver
 
             var insertDocument = new List<object>();
 
-            //Fixme: This should be handled by an external class
-            /*
-            foreach(var doc in documents)
-                if(doc.Contains("_id") == false)
-                {
-                    doc.Prepend("_id", OidGenerator.Generate());
-                }
-            */
-            foreach(var document in documents)
+            foreach(var document in documents){
+                _objectDescriptor.SetPropertyValueIfEmpty(document, "_id", () => OidGenerator.Generate());
                 insertDocument.Add(document);
+            }
 
             insertMessage.Documents = insertDocument.ToArray();
 
@@ -461,17 +457,15 @@ namespace MongoDB.Driver
             var selector = new Document();
             var upsert = UpdateFlags.Upsert;
 
-            //Todo: this needs to be cheched in an external class
-            /*
-             if(document.Contains("_id") & document["_id"] != null)
-                selector["_id"] = document["_id"];
-            else
-            {
+            var value = _objectDescriptor.GetPropteryValue(document,"_id");
+
+            if(value!=null){
+                selector["_id"] = value;
+            }else{
                 //Likely a new document
-                document.Prepend("_id", OidGenerator.Generate());
+                _objectDescriptor.SetPropertyValue(document, "_id", OidGenerator.Generate());
                 upsert = UpdateFlags.Upsert;
             }
-             * */
 
             Update(document, selector, upsert);
         }
@@ -484,7 +478,8 @@ namespace MongoDB.Driver
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         public void Update(Document document, Document selector, bool safemode)
         {
-            Update((object)document, (object)document, safemode);
+            Update((object)document, (object)selector, 0, safemode);
+            //Update((object)document, (object)document, safemode);
         }
 
         /// <summary>
@@ -599,14 +594,11 @@ namespace MongoDB.Driver
         {
             var foundOp = false;
 
-            //Todo: need to get this info external
-            /*
-             * foreach(string key in document.Keys)
-                if(key.IndexOf('$') == 0)
-                {
+            foreach(var name in _objectDescriptor.GetPropertyNames(document))
+                if(name.IndexOf('$') == 0){
                     foundOp = true;
                     break;
-                }*/
+                }
 
             if(foundOp == false)
             {
@@ -625,7 +617,7 @@ namespace MongoDB.Driver
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         public void UpdateAll(Document document, Document selector, bool safemode)
         {
-            UpdateAll((object)document, (object)selector);
+            UpdateAll((object)document, (object)selector,safemode);
         }
         /// <summary>
         /// Updates all.

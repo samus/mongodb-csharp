@@ -1,5 +1,6 @@
 using System.IO;
 using MongoDB.Driver.Bson;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Protocol
 {
@@ -12,7 +13,7 @@ namespace MongoDB.Driver.Protocol
             var header = Header;
             var bstream = new BufferedStream(stream);
             var writer = new BinaryWriter(bstream);
-            var bwriter = new BsonWriter(bstream);
+            var bwriter = new BsonWriter(bstream,new ReflectionDescriptor());
 
             Header.MessageLength += CalculateBodySize(bwriter);
 
