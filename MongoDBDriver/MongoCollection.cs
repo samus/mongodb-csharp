@@ -342,7 +342,7 @@ namespace MongoDB.Driver
         /// <param name="selector">The query spec to find the document to update.</param>
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(Document document, Document selector, UpdateFlags flags){
-            var updateMessage = new UpdateMessage{
+            var updateMessage = new UpdateMessage<Document>{
                 FullCollectionName = FullName, 
                 Selector = selector, 
                 Document = document, 

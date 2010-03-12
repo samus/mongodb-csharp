@@ -14,7 +14,7 @@ namespace MongoDB.Driver.Protocol
     ///   BSON      document;           // the document data to update with or insert
     ///   }
     /// </remarks>
-    public class UpdateMessage : RequestMessageBase
+    public class UpdateMessage<T> : RequestMessageBase where T:class
     {
         public UpdateMessage(){
             Header = new MessageHeader(OpCode.Update);
@@ -22,9 +22,9 @@ namespace MongoDB.Driver.Protocol
 
         public string FullCollectionName { get; set; }
 
-        public Document Selector { get; set; }
+        public T Selector { get; set; }
 
-        public Document Document { get; set; }
+        public T Document { get; set; }
 
         public int Flags { get; set; }
 
