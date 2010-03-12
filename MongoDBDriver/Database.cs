@@ -51,9 +51,23 @@ namespace MongoDB.Driver
             }
         }
 
+        /// <summary>
+        /// Gets the collection.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public IMongoCollection GetCollection(String name){
-            IMongoCollection col = new MongoCollection<Document>(this.connection, this.Name, name);
-            return col;
+            return new MongoCollection<Document>(this.connection, this.Name, name);
+        }
+
+        /// <summary>
+        /// Gets the collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public IMongoCollection<T> GetCollection<T>(String name) where T : class{
+            return new MongoCollection<T>(this.connection, this.Name, name);
         }
 
         /// <summary>
