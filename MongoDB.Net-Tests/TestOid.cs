@@ -32,6 +32,34 @@ namespace MongoDB.Driver
         }
         
         [Test]
+        public void TestQuoteCharacters(){
+            bool thrown = false;
+            Oid val = new Oid("4a7067c30a57000000008ecb");
+            try{
+                new Oid(val.ToString());
+            }catch(ArgumentException ae){
+                thrown = true;
+            }
+            Assert.IsTrue(thrown,"ID has quotes and should throw an exception.");
+        }
+        
+        [Test]
+        public void TestOidEquality(){
+            Oid val = new Oid("4a7067c30a57000000008ecb");
+            Assert.AreEqual(val, new Oid(val.ToString().Replace("\"", "")));
+        }
+        
+        [Test]
+        public void TestOidFromBytes(){
+            byte[] bytes = new byte[]{1,2,3,4,5,6,7,8,9,10,11,12};
+            string hex = "0102030405060708090a0b0c";
+            
+            Oid bval = new Oid(bytes);
+            Oid sval = new Oid(hex);
+            Assert.AreEqual(bval, sval);
+        }
+        
+        [Test]
         public void TestNullValue(){
             bool thrown = false;
             try{

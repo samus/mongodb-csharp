@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
 
@@ -313,6 +313,22 @@ namespace MongoDB.Driver
             Assert.IsTrue(found,"Should have found docs updated for TestMany");
         }
 
+        [Test]
+        public void TestUpdatePartial(){
+            IMongoCollection updates = DB["updates"];
+            int coolness = 5;
+            Document einstein = new Document(){{"Last", "Einstien"},{"First", "Albert"},{"Coolness",coolness++}};
+            updates.Insert(einstein);
+            Document selector = new Document(){{"_id", einstein["_id"]}};
+            
+            updates.Update(new Document(){{"$inc", new Document(){{"Coolness", 1}}}}, selector);
+            Assert.AreEqual(coolness++, Convert.ToInt32(updates.FindOne(selector)["Coolness"]), "Coolness field not incremented", true);
+            
+            updates.Update(new Document(){{"$set",new Document(){{"Last", "Einstein"}}},
+                                          {"$inc",new Document(){{"Coolness",1}}}},selector,true);
+            Assert.AreEqual(coolness++, Convert.ToInt32(updates.FindOne(selector)["Coolness"]), "Coolness field not incremented");
+        }
+        
         [Test]
         public void TestCount(){
             IMongoCollection counts = DB["counts"];
