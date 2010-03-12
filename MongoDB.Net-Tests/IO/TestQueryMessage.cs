@@ -16,7 +16,7 @@ namespace MongoDB.Driver.IO
             Document query = new Document();
             query.Add("col1", 1);
             
-            QueryMessage msg = new QueryMessage(query,"TestDB.TestCol");
+            var msg = new QueryMessage<Document>(query,"TestDB.TestCol");
             MemoryStream buffer = new MemoryStream();
             msg.Write(buffer);
             
@@ -35,7 +35,7 @@ namespace MongoDB.Driver.IO
             Document query = new Document();
             query.Add("col1", 1);
             
-            QueryMessage msg = new QueryMessage(query,"TestDB.TestCol");
+            var msg = new QueryMessage<Document>(query,"TestDB.TestCol");
             MemoryStream buffer = new MemoryStream();
             msg.Write(buffer);
             

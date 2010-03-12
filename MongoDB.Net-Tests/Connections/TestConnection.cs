@@ -15,7 +15,7 @@ namespace MongoDB.Driver.Connections
             Connections.Connection conn = ConnectionFactory.GetConnection(string.Empty);
             conn.Open();
             
-            QueryMessage qmsg = generateQueryMessage();
+            var qmsg = generateQueryMessage();
             conn.SendTwoWayMessage(qmsg);
             
             conn.Close();
@@ -28,13 +28,13 @@ namespace MongoDB.Driver.Connections
                         
             WriteBadMessage(conn);
             try{    
-                QueryMessage qmsg = generateQueryMessage();
+                var qmsg = generateQueryMessage();
                 conn.SendTwoWayMessage(qmsg);
                 
             }catch(IOException){
                 //Should be able to resend.
                 Assert.IsTrue(conn.State == ConnectionState.Opened);
-                QueryMessage qmsg = generateQueryMessage();
+                var qmsg = generateQueryMessage();
                 ReplyMessage<Document> rmsg = conn.SendTwoWayMessage(qmsg);
                 Assert.IsNotNull(rmsg);
             
@@ -54,11 +54,11 @@ namespace MongoDB.Driver.Connections
             writer.Write((byte)0);
         }
         
-        protected QueryMessage generateQueryMessage(){
+        protected QueryMessage<Document> generateQueryMessage(){
             Document qdoc = new Document();
             qdoc.Add("listDatabases", 1.0);
             //QueryMessage qmsg = new QueryMessage(qdoc,"system.namespaces");
-            QueryMessage qmsg = new QueryMessage(qdoc,"admin.$cmd");
+            var qmsg = new QueryMessage<Document>(qdoc,"admin.$cmd");
             qmsg.NumberToReturn = -1;
             
             return qmsg;

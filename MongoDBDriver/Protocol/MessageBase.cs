@@ -5,6 +5,6 @@ namespace MongoDB.Driver.Protocol
     /// </summary>
     public abstract class MessageBase
     {
-        public MessageHeader Header { get; set; }
+        public MessageHeader Header { get; protected set; }
     }
 }

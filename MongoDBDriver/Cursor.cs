@@ -151,7 +151,7 @@ namespace MongoDB.Driver
         }
         
         private void RetrieveData(){
-            QueryMessage query = new QueryMessage();
+            var query = new QueryMessage<Document>();
             query.FullCollectionName = this.FullCollectionName;
             query.Query = BuildSpec();
             query.NumberToReturn = this.limit;
