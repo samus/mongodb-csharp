@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     /// <summary>
     /// 
     /// </summary>
-    public class MongoCollection : IMongoCollection
+    public class MongoCollection<T> : IMongoCollection<T>
     {
         private static readonly OidGenerator OidGenerator = new OidGenerator();
         private readonly Connection _connection;
@@ -17,7 +17,7 @@ namespace MongoDB.Driver
         private CollectionMetaData _metaData;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoCollection"/> class.
+        /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>

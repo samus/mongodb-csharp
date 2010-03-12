@@ -22,7 +22,7 @@ namespace MongoDB.Driver
         }
         
         public override void OnInit (){
-            MongoCollection col = (MongoCollection)DB["threadsmallreads"];
+            var col = (MongoCollection<Document>)DB["threadsmallreads"];
             for(int j = 0; j < 4; j++){
                 col.Insert(new Document(){{"x", 4},{"j", j}});
             }

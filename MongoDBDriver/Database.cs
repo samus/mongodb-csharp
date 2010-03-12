@@ -52,7 +52,7 @@ namespace MongoDB.Driver
         }
 
         public IMongoCollection GetCollection(String name){
-            IMongoCollection col = new MongoCollection(this.connection, this.Name, name);
+            IMongoCollection col = new MongoCollection<Document>(this.connection, this.Name, name);
             return col;
         }
 
