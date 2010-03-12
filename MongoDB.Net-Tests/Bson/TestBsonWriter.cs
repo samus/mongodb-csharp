@@ -87,7 +87,7 @@ namespace MongoDB.Driver.Bson
         }
 
         [Test]
-        public void TestNullsDontThrowExceptionsExceptions(){
+        public void TestNullsDontThrowExceptions(){
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
             Document doc = new Document().Append("n", null);
@@ -97,5 +97,24 @@ namespace MongoDB.Driver.Bson
                 Assert.Fail("Null Reference Exception was thrown on trying to serialize a null value");
             }
         }
+        
+        [Test]
+        public void TestWritingTooLargeDocument(){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            Binary b = new Binary(new byte[BsonInfo.MaxDocumentSize]);
+            Document big = new Document().Append("x", b);
+            bool thrown = false;
+            try{
+                writer.Write(big);    
+            }catch(ArgumentException){
+                thrown = true;
+            }catch(Exception e){
+                Assert.Fail("Wrong Exception thrown " + e.GetType().Name);
+            }
+            
+            Assert.IsTrue(thrown, "Shouldn't be able to write large document");
+        }
+      
     }
 }

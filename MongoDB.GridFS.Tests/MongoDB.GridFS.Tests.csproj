@@ -42,8 +42,13 @@
     <Compile Include="GridFileStreamTest.cs" />
     <Compile Include="GridFileTest.cs" />
     <Compile Include="GridTestBase.cs" />
+    <None Include="MongoDB.GridFS.Tests.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MongoDB.Net-Tests\MongoDB.Driver.Tests.csproj">
+      <Project>{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}</Project>
+      <Name>MongoDB.Driver.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
       <Name>MongoDB.Driver</Name>
@@ -52,15 +57,6 @@
       <Project>{B42DBBF9-0A1F-4749-9787-013BF8D8F435}</Project>
       <Name>MongoDB.GridFS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MongoDB.Net-Tests\MongoDB.Driver.Tests.csproj">
-      <Project>{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}</Project>
-      <Name>MongoDB.Driver.Tests</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="MongoDB.GridFS.Tests.dll.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>

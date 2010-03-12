@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
 
@@ -220,6 +222,40 @@ namespace MongoDB.Driver
             Assert.AreEqual(album.ToString(), result.ToString());
         }
 
+        [Test]
+        public void TestInsertLargerThan4MBDocument(){
+            Binary b = new Binary(new byte[1024 * 1024]);
+            Document big = new Document(){{"name", "Big Document"}, {"b1", b}, {"b2", b}, {"b3", b}, {"b4", b}};
+            IMongoCollection inserts = DB["inserts"];
+            bool thrown = false;
+            try{
+                inserts.Insert(big);               
+            }catch(MongoException){
+                thrown = true;
+            }catch(Exception e){
+                Assert.Fail("Wrong Exception thrown " + e.GetType().Name);
+            }
+            Assert.IsTrue(thrown, "Shouldn't be able to insert large document");
+        }
+        
+        [Test]
+        public void TestInsertBulkLargerThan4MBOfDocuments(){
+            Binary b = new Binary(new byte[1024 * 1024 * 2]);
+            IMongoCollection inserts = DB["inserts"];
+            try{
+                Document[] docs = new Document[10];
+                    //6MB+ of documents
+                for(int x = 0; x < docs.Length; x++){
+                    docs[x] = new Document(){{"name", "bulk"}, {"b", b}, {"x", x}};
+                }
+                inserts.Insert(docs,true);
+                long count = inserts.Count(new Document(){{"name", "bulk"}});
+                Assert.AreEqual(docs.Length, count, "Wrong number of documents inserted");
+            }catch(MongoException){
+                Assert.Fail("MongoException should not have been thrown.");
+            }
+        }
+        
         [Test]
         public void TestDelete(){
             IMongoCollection deletes = DB["deletes"];

@@ -6,7 +6,7 @@ namespace MongoDB.Driver.Protocol
     /// <summary>
     /// Description of Message.
     /// </summary>
-    public abstract class RequestMessageBase : MessageBase
+    public abstract class RequestMessageBase : MessageBase, IRequestMessage
     {
         public void Write (Stream stream){
             MessageHeader header = this.Header;
@@ -15,6 +15,9 @@ namespace MongoDB.Driver.Protocol
             BsonWriter bwriter = new BsonWriter(bstream);
             
             Header.MessageLength += this.CalculateBodySize(bwriter);
+            if(Header.MessageLength > MessageBase.MaximumMessageSize){
+                throw new MongoException("Maximum message length exceeded");
+            }
             
             writer.Write(header.MessageLength);
             writer.Write(header.RequestId);
