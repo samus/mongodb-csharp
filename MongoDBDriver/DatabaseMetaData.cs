@@ -18,19 +18,19 @@ namespace MongoDB.Driver
             this.db = new Database(conn, name);
         }
         
-        public Collection CreateCollection(String name){
+        public MongoCollection CreateCollection(String name){
             return this.CreateCollection(name,null);
         }
         
-        public Collection CreateCollection(String name, Document options){
+        public MongoCollection CreateCollection(String name, Document options){
             Document cmd = new Document();
             cmd.Append("create", name).Update(options);
             db.SendCommand(cmd);
-            return new Collection(name, connection, this.name);
+            return new MongoCollection(connection, this.name, name);
         }
 
                 
-        public Boolean DropCollection(Collection col){
+        public Boolean DropCollection(MongoCollection col){
             return this.DropCollection(col.Name);
         }
 
