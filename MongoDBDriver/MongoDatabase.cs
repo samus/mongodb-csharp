@@ -6,7 +6,7 @@ using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
-    public class MongoDatabase
+    public class MongoDatabase : IMongoDatabase
     {
         private readonly Connection _connection;
         private DatabaseJS _javascript;
