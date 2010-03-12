@@ -256,7 +256,7 @@ namespace MongoDB.Driver
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
         public void Delete(Document selector){
-            var deleteMessage = new DeleteMessage{
+            var deleteMessage = new DeleteMessage<Document>{
                 FullCollectionName = FullName, 
                 Selector = selector
             };
