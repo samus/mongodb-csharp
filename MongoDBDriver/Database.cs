@@ -8,7 +8,6 @@ namespace MongoDB.Driver
 {
     public class Database
     {
-        private readonly IMongoCollection<Document> _command;
         private readonly Connection _connection;
         private DatabaseJS _javascript;
         private DatabaseMetaData _metaData;
@@ -34,7 +33,6 @@ namespace MongoDB.Driver
             //Todo: should be internal
             Name = name;
             _connection = connection;
-            _command = this["$cmd"];
         }
 
         /// <summary>
@@ -229,7 +227,7 @@ namespace MongoDB.Driver
         /// <param name="cmd">The CMD.</param>
         /// <returns></returns>
         private Document SendCommandCore(Document cmd){
-            var result = _command.FindOne(cmd);
+            var result = FindOneCommand<Document>(cmd);
             var ok = (double)result["ok"];
             if(ok != 1.0){
                 var msg = string.Empty;
@@ -240,6 +238,24 @@ namespace MongoDB.Driver
                 throw new MongoCommandException(msg, result, cmd);
             }
             return result;
+        }
+
+        /// <summary>
+        /// Finds the one command.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="spec">The spec.</param>
+        /// <returns></returns>
+        private T FindOneCommand<T>(Document spec) where T:class{
+            var cursor = new Cursor<T>(_connection, Name + ".$cmd", spec??new Document(), -1, 0, null);
+            
+            foreach(var document in cursor.Documents)
+            {
+                cursor.Dispose();
+                return document;
+            }
+
+            return null;
         }
 
         /// <summary>
