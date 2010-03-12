@@ -8,7 +8,7 @@
     <ProjectGuid>{B42DBBF9-0A1F-4749-9787-013BF8D8F435}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>MongoDB.GridFS</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <RootNamespace>MongoDB.GridFS</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -43,10 +43,6 @@
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
       <Name>MongoDB.Driver</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MongoDB.Net-Tests\MongoDB.Driver.Tests.csproj">
-      <Project>{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}</Project>
-      <Name>MongoDB.Driver.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -8,7 +8,7 @@
     <ProjectGuid>{0C293FE9-F670-4FEF-A60F-20F8C978B1CD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>MongoDB.GridFS.Tests</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <RootNamespace>MongoDB.GridFS.Tests</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
