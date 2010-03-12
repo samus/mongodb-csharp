@@ -133,7 +133,7 @@ namespace MongoDB.Driver
         public ICursor Find(Document spec, int limit, int skip, Document fields){
             if(spec == null)
                 spec = new Document();
-            return new Cursor(_connection, FullName, spec, limit, skip, fields);
+            return new Cursor<Document>(_connection, FullName, spec, limit, skip, fields);
         }
 
         /// <summary>

@@ -6,214 +6,306 @@ using MongoDB.Driver.Protocol;
 
 namespace MongoDB.Driver
 {
-	public class Cursor : ICursor {
-        private Connection connection;
-        
-        private long id = -1;
-        public long Id{
-            get {return id;}
-        }       
-        
-        private String fullCollectionName;
-        public string FullCollectionName {
-            get {return fullCollectionName;}
+    public class Cursor<T> : ICursor
+        where T : class
+    {
+        private bool _modifiable = true;
+        private readonly Connection _connection;
+        private readonly Document _specOpts = new Document();
+        private Document _fields;
+        private int _limit;
+        private QueryOptions _options;
+        private ReplyMessage<Document> _reply;
+        private int _skip;
+        private Document _spec;
+
+        public Cursor(Connection conn, string fullCollectionName){
+            //Todo: should be internal
+            Id = -1;
+            _connection = conn;
+            FullCollectionName = fullCollectionName;
         }
 
-        private Document spec;
-        public ICursor Spec (Document spec){
+        public Cursor(Connection conn, String fullCollectionName, Document spec, int limit, int skip, Document fields)
+            :
+                this(conn, fullCollectionName){
+            //Todo: should be internal
+            if(spec == null)
+                spec = new Document();
+            _spec = spec;
+            _limit = limit;
+            _skip = skip;
+            _fields = fields;
+        }
+
+        /// <summary>
+        ///   Gets or sets the full name of the collection.
+        /// </summary>
+        /// <value>The full name of the collection.</value>
+        public string FullCollectionName { get; private set; }
+
+        /// <summary>
+        ///   Gets or sets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        public long Id { get; private set; }
+
+        /// <summary>
+        ///   Specs the specified spec.
+        /// </summary>
+        /// <param name = "spec">The spec.</param>
+        /// <returns></returns>
+        public ICursor Spec(Document spec){
             TryModify();
-            this.spec = spec;
+            _spec = spec;
             return this;
         }
-        
-        private int limit;
-        public ICursor Limit (int limit){
+
+        /// <summary>
+        /// Limits the specified limit.
+        /// </summary>
+        /// <param name="limit">The limit.</param>
+        /// <returns></returns>
+        public ICursor Limit(int limit){
             TryModify();
-            this.limit = limit;
+            _limit = limit;
             return this;
         }
-        
-        private int skip;        
-        public ICursor Skip (int skip){
+
+        /// <summary>
+        /// Skips the specified skip.
+        /// </summary>
+        /// <param name="skip">The skip.</param>
+        /// <returns></returns>
+        public ICursor Skip(int skip){
             TryModify();
-            this.skip = skip;
+            _skip = skip;
             return this;
         }
-        
-        private Document fields;        
-        public ICursor Fields (Document fields){
+
+        /// <summary>
+        /// Fieldses the specified fields.
+        /// </summary>
+        /// <param name="fields">The fields.</param>
+        /// <returns></returns>
+        public ICursor Fields(Document fields){
             TryModify();
-            this.fields = fields;
+            _fields = fields;
             return this;
         }
-        
-        private QueryOptions options;
-        public ICursor Options(QueryOptions options){
-            TryModify();
-            this.options = options;
-            return this;
-        }
-        
-        #region "Spec Options"
-        private Document specOpts = new Document();
-        
+
+        /// <summary>
+        /// Sorts the specified field.
+        /// </summary>
+        /// <param name="field">The field.</param>
+        /// <returns></returns>
         public ICursor Sort(string field){
-            return this.Sort(field, IndexOrder.Ascending);
+            return Sort(field, IndexOrder.Ascending);
         }
-        
+
+        /// <summary>
+        /// Sorts the specified field.
+        /// </summary>
+        /// <param name="field">The field.</param>
+        /// <param name="order">The order.</param>
+        /// <returns></returns>
         public ICursor Sort(string field, IndexOrder order){
-            return this.Sort(new Document().Append(field, order));
+            return Sort(new Document().Append(field, order));
         }
-        
+
+        /// <summary>
+        /// Sorts the specified fields.
+        /// </summary>
+        /// <param name="fields">The fields.</param>
+        /// <returns></returns>
         public ICursor Sort(Document fields){
             TryModify();
             AddOrRemoveSpecOpt("$orderby", fields);
             return this;
         }
-        
+
+        /// <summary>
+        /// Hints the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns></returns>
         public ICursor Hint(Document index){
             TryModify();
             AddOrRemoveSpecOpt("$hint", index);
             return this;
         }
 
+        /// <summary>
+        /// Snapshots the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns></returns>
         public ICursor Snapshot(Document index){
             TryModify();
             AddOrRemoveSpecOpt("$snapshot", index);
             return this;
         }
-        
+
+        /// <summary>
+        /// Explains this instance.
+        /// </summary>
+        /// <returns></returns>
         public Document Explain(){
             TryModify();
-            specOpts["$explain"] = true;
-            
-            IEnumerable<Document> docs = this.Documents;
+            _specOpts["$explain"] = true;
+
+            var docs = Documents;
             using((IDisposable)docs){
-                foreach(Document doc in docs){
+                foreach(var doc in docs)
                     return doc;
-                }
             }
             throw new InvalidOperationException("Explain failed.");
         }
 
-        #endregion
-        
-        private bool modifiable = true;
+        /// <summary>
+        /// Optionses the specified options.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <returns></returns>
+        public ICursor Options(QueryOptions options)
+        {
+            TryModify();
+            _options = options;
+            return this;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="Cursor&lt;T&gt;"/> is modifiable.
+        /// </summary>
+        /// <value><c>true</c> if modifiable; otherwise, <c>false</c>.</value>
         public bool Modifiable{
-            get {return modifiable;}
+            get { return _modifiable; }
         }
-        
-        private ReplyMessage<Document> reply;
-        
-        public Cursor(Connection conn, string fullCollectionName){
-            this.connection = conn;
-            this.fullCollectionName = fullCollectionName;
-        }
-        
-        public Cursor(Connection conn, String fullCollectionName, Document spec, int limit, int skip, Document fields):
-                this(conn,fullCollectionName){
-            if(spec == null)spec = new Document();
-            this.spec = spec;
-            this.limit = limit;
-            this.skip = skip;
-            this.fields = fields;
-        }
-        
+
+        /// <summary>
+        /// Gets the documents.
+        /// </summary>
+        /// <value>The documents.</value>
         public IEnumerable<Document> Documents{
             get{
-                if(this.reply == null){
+                if(_reply == null)
                     RetrieveData();
-                }
-                int docsReturned = 0;
-                Document[] docs = this.reply.Documents;
-                Boolean shouldBreak = false;
+                var docsReturned = 0;
+                var docs = _reply.Documents;
+                var shouldBreak = false;
                 while(!shouldBreak){
-                    foreach(Document doc in docs){
-                        if((this.limit == 0) || (this.limit != 0 && docsReturned < this.limit)){
+                    foreach(var doc in docs)
+                        if((_limit == 0) || (_limit != 0 && docsReturned < _limit)){
                             docsReturned++;
                             yield return doc;
-                        }else{
-                            shouldBreak = true;
+                        }
+                        else
                             yield break;
-                        }
+                    
+                    if(Id != 0){
+                        RetrieveMoreData();
+                        docs = _reply.Documents;
+                        if(docs == null)
+                            shouldBreak = true;
                     }
-                    if(this.Id != 0 && shouldBreak == false){
-                        RetrieveMoreData();                 
-                        docs = this.reply.Documents;
-                        if(docs == null){
-                            shouldBreak = true; 
-                        }
-                    }else{
+                    else
                         shouldBreak = true;
-                    }
                 }
-            }           
+            }
         }
-        
-        private void RetrieveData(){
-            var query = new QueryMessage<Document>();
-            query.FullCollectionName = this.FullCollectionName;
-            query.Query = BuildSpec();
-            query.NumberToReturn = this.limit;
-            query.NumberToSkip = this.skip;
-            query.Options = options;
-            
-            if(this.fields != null){
-                query.ReturnFieldSelector = this.fields;
-            }
-            try{
-                this.reply = connection.SendTwoWayMessage(query);
-                this.id = this.reply.CursorId;
-                if(this.limit < 0)this.limit = this.limit * -1;
-            }catch(IOException ioe){
-                throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
-            }
 
-        }
-        
-        private void RetrieveMoreData(){
-            GetMoreMessage gmm = new GetMoreMessage(this.fullCollectionName, this.Id, this.limit);
-            try{
-                this.reply = connection.SendTwoWayMessage(gmm);
-                this.id = this.reply.CursorId;
-            }catch(IOException ioe){
-                this.id = 0;
-                throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
-            }
-        }
-        
-        
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose(){
-            if(this.Id == 0) return; //All server side resources disposed of.
-            KillCursorsMessage kcm = new KillCursorsMessage(this.Id);
+            if(Id == 0)//All server side resources disposed of.
+                return; 
+            
+            var killCursorsMessage = new KillCursorsMessage(Id);
             try{
-                this.id = 0;
-                connection.SendMessage(kcm);
-            }catch(IOException ioe){
-                throw new MongoCommException("Could not read data, communication failure", this.connection,ioe);
+                _connection.SendMessage(killCursorsMessage);
+                Id = 0;
+            }
+            catch(IOException ioe){
+                throw new MongoCommException("Could not read data, communication failure", _connection, ioe);
             }
         }
-        
+
+        /// <summary>
+        /// Retrieves the data.
+        /// </summary>
+        private void RetrieveData(){
+            var query = new QueryMessage<Document>{
+                FullCollectionName = FullCollectionName,
+                Query = BuildSpec(),
+                NumberToReturn = _limit,
+                NumberToSkip = _skip,
+                Options = _options
+            };
+
+            if(_fields != null)
+                query.ReturnFieldSelector = _fields;
+            try{
+                _reply = _connection.SendTwoWayMessage(query);
+                Id = _reply.CursorId;
+                if(_limit < 0)
+                    _limit = _limit*-1;
+                _modifiable = false;
+            }
+            catch(IOException ioe){
+                throw new MongoCommException("Could not read data, communication failure", _connection, ioe);
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the more data.
+        /// </summary>
+        private void RetrieveMoreData(){
+            var getMoreMessage = new GetMoreMessage(FullCollectionName, Id, _limit);
+
+            try{
+                _reply = _connection.SendTwoWayMessage(getMoreMessage);
+                Id = _reply.CursorId;
+            }
+            catch(IOException ioe){
+                Id = 0;
+                throw new MongoCommException("Could not read data, communication failure", _connection, ioe);
+            }
+        }
+
+        /// <summary>
+        /// Tries the modify.
+        /// </summary>
         private void TryModify(){
-            if(this.modifiable) return;
+            if(_modifiable)
+                return;
             throw new InvalidOperationException("Cannot modify a cursor that has already returned documents.");
         }
 
+        /// <summary>
+        /// Adds the or remove spec opt.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="doc">The doc.</param>
         private void AddOrRemoveSpecOpt(string key, Document doc){
-            if(doc == null){
-                specOpts.Remove(key);
-            }else{
-                specOpts[key] = doc;
-            }
+            if(doc == null)
+                _specOpts.Remove(key);
+            else
+                _specOpts[key] = doc;
         }
-        
+
+        /// <summary>
+        /// Builds the spec.
+        /// </summary>
+        /// <returns></returns>
         private Document BuildSpec(){
-            if(this.specOpts.Count == 0) return this.spec;
-            Document doc = new Document();
-            this.specOpts.CopyTo(doc);
-            doc["$query"] = this.spec;
-            return doc;
+            if(_specOpts.Count == 0)
+                return _spec;
+            
+            var document = new Document();
+            _specOpts.CopyTo(document);
+            document["$query"] = _spec;
+            return document;
         }
-              
     }
 }
