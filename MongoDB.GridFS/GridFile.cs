@@ -12,14 +12,16 @@ namespace MongoDB.GridFS
         public string Name {
             get { return name; }
         }
-        
-        private IMongoCollection files;
-        public IMongoCollection Files{
+
+        private IMongoCollection<Document> files;
+        public IMongoCollection<Document> Files
+        {
             get { return this.files; }
         }
 
-        private IMongoCollection chunks;
-        public IMongoCollection Chunks{
+        private IMongoCollection<Document> chunks;
+        public IMongoCollection<Document> Chunks
+        {
             get { return this.chunks; }
         }        
         

@@ -5,7 +5,7 @@ namespace MongoDB.Linq
 {
 	public static class MongoLinqEx
 	{
-		public static IMongoQuery AsQueryable<T>(this T collection) where T : IMongoCollection
+        public static IMongoQuery AsQueryable<T>(this T collection) where T : IMongoCollection<Document>
 		{
 			return new MongoQuery(new MongoQueryProvider(collection));
 		}

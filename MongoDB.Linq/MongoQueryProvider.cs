@@ -13,9 +13,10 @@ namespace MongoDB.Linq {
             public bool IsFirstCall;
         }
 
-        private readonly IMongoCollection collection;
+        private readonly IMongoCollection<Document> collection;
 
-        public MongoQueryProvider(IMongoCollection collection) {
+        public MongoQueryProvider(IMongoCollection<Document> collection)
+        {
             this.collection = collection;
         }
 

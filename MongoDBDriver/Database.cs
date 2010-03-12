@@ -8,47 +8,76 @@ namespace MongoDB.Driver
 {
     public class Database
     {
-        private Connection connection;
-        private IMongoCollection command;
+        private readonly IMongoCollection<Document> _command;
+        private readonly Connection _connection;
+        private DatabaseJS _javascript;
+        private DatabaseMetaData _metaData;
 
-        public Database(string connectionString, String name){
-            this.connection = ConnectionFactory.GetConnection(connectionString);
-            this.Name = name;
-            this.command = this["$cmd"];
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Database"/> class.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        /// <param name="name">The name.</param>
+        public Database(string connectionString, String name)
+            :this(ConnectionFactory.GetConnection(connectionString),name)
+        {
+            if(name == null)
+                throw new ArgumentNullException("name");
         }
 
-        public Database(Connection conn, String name){
-            this.connection = conn;
-            this.Name = name;
-            this.command = this["$cmd"];
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Database"/> class.
+        /// </summary>
+        /// <param name="connection">The conn.</param>
+        /// <param name="name">The name.</param>
+        public Database(Connection connection, String name){
+            //Todo: should be internal
+            Name = name;
+            _connection = connection;
+            _command = this["$cmd"];
         }
 
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name { get; private set; }
 
-        private DatabaseMetaData metaData;
-        public DatabaseMetaData MetaData {
-            get { return metaData ?? (metaData = new DatabaseMetaData(this.Name, this.connection)); }
+        /// <summary>
+        /// Gets the meta data.
+        /// </summary>
+        /// <value>The meta data.</value>
+        public DatabaseMetaData MetaData{
+            get { return _metaData ?? (_metaData = new DatabaseMetaData(Name, _connection)); }
         }
 
-        private DatabaseJS js;
-        public DatabaseJS JS {
-            get { return js ?? (js = new DatabaseJS(this)); }
+        /// <summary>
+        /// Gets the javascript.
+        /// </summary>
+        /// <value>The javascript.</value>
+        public DatabaseJS Javascript{
+            get { return _javascript ?? (_javascript = new DatabaseJS(this)); }
         }
 
+        /// <summary>
+        /// Gets the <see cref="MongoDB.Driver.IMongoCollection&lt;MongoDB.Driver.Document&gt;"/> with the specified name.
+        /// </summary>
+        /// <value></value>
+        public IMongoCollection<Document> this[String name]{
+            get { return GetCollection(name); }
+        }
+
+        /// <summary>
+        /// Gets the collection names.
+        /// </summary>
+        /// <returns></returns>
         public List<String> GetCollectionNames(){
-            IMongoCollection namespaces = this["system.namespaces"];
-            ICursor<Document> cursor = namespaces.Find(new Document());
-            List<String> names = new List<string>();
-            foreach (Document doc in cursor.Documents){
-                names.Add((String)doc["name"]); //Fix Me: Should filter built-ins
-            }
+            var namespaces = this["system.namespaces"];
+            var cursor = namespaces.Find(new Document());
+            var names = new List<string>();
+            foreach(var document in cursor.Documents)
+                names.Add((String)document["name"]); //Todo: Should filter built-ins
             return names;
-        }
-
-        public IMongoCollection this[ String name ]  {
-            get{
-                return this.GetCollection(name);
-            }
         }
 
         /// <summary>
@@ -56,8 +85,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public IMongoCollection GetCollection(String name){
-            return new MongoCollection<Document>(this.connection, this.Name, name);
+        public IMongoCollection<Document> GetCollection(String name){
+            return new MongoCollection<Document>(_connection, Name, name);
         }
 
         /// <summary>
@@ -67,115 +96,161 @@ namespace MongoDB.Driver
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public IMongoCollection<T> GetCollection<T>(String name) where T : class{
-            return new MongoCollection<T>(this.connection, this.Name, name);
+            return new MongoCollection<T>(_connection, Name, name);
         }
 
         /// <summary>
         /// Gets the document that a reference is pointing to.
         /// </summary>
+        /// <param name="reference">The reference.</param>
+        /// <returns></returns>
         public Document FollowReference(DBRef reference){
             if(reference == null)
                 throw new ArgumentNullException("reference", "cannot be null");
-            Document query = new Document().Append("_id", reference.Id);
+            var query = new Document().Append("_id", reference.Id);
             return this[reference.CollectionName].FindOne(query);
         }
-        
+
         /// <summary>
-        /// Most operations do not have a return code in order to save the client from having to wait for results.
-        /// GetLastError can be called to retrieve the return code if clients want one. 
+        /// Follows the reference.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reference">The reference.</param>
+        /// <returns></returns>
+        public T FollowReference<T>(DBRef reference) where T:class
+        {
+            if(reference == null)
+                throw new ArgumentNullException("reference", "cannot be null");
+            var query = new Document().Append("_id", reference.Id);
+            return GetCollection<T>(reference.CollectionName).FindOne(query);
+        }
+
+        /// <summary>
+        ///   Most operations do not have a return code in order to save the client from having to wait for results.
+        ///   GetLastError can be called to retrieve the return code if clients want one.
         /// </summary>
         public Document GetLastError(){
             return SendCommand("getlasterror");
         }
-        
+
         /// <summary>
-        /// Retrieves the last error and forces the database to fsync all files before returning. 
+        ///   Retrieves the last error and forces the database to fsync all files before returning.
         /// </summary>
-        /// <remarks>Server version 1.3+</remarks>
+        /// <remarks>
+        ///   Server version 1.3+
+        /// </remarks>
         public Document GetLastErrorAndFSync(){
-            return SendCommand(new Document {{"getlasterror", 1.0},{"fsync", true}});
+            return SendCommand(new Document{{"getlasterror", 1.0}, {"fsync", true}});
         }
-        
+
         /// <summary>
-        /// Call after sending a bulk operation to the database. 
+        ///   Call after sending a bulk operation to the database.
         /// </summary>
         public Document GetPreviousError(){
             return SendCommand("getpreverror");
         }
 
         /// <summary>
-        /// Gets the sister database on the same Mongo connection with the given name.
+        ///   Gets the sister database on the same Mongo connection with the given name.
         /// </summary>
         public Database GetSisterDatabase(string sisterDbName){
-            return new Database(connection, sisterDbName);
-        }
-        
-        /// <summary>
-        /// Resets last error.  This is good to call before a bulk operation.
-        /// </summary>
-        public void ResetError(){
-            SendCommand("reseterror");   
+            return new Database(_connection, sisterDbName);
         }
 
+        /// <summary>
+        ///   Resets last error.  This is good to call before a bulk operation.
+        /// </summary>
+        public void ResetError(){
+            SendCommand("reseterror");
+        }
+
+        /// <summary>
+        /// Evals the specified javascript.
+        /// </summary>
+        /// <param name="javascript">The javascript.</param>
+        /// <returns></returns>
         public Document Eval(string javascript){
             return Eval(javascript, new Document());
         }
 
+        /// <summary>
+        /// Evals the specified javascript.
+        /// </summary>
+        /// <param name="javascript">The javascript.</param>
+        /// <param name="scope">The scope.</param>
+        /// <returns></returns>
         public Document Eval(string javascript, Document scope){
             return Eval(new CodeWScope(javascript, scope));
         }
 
-        public Document Eval(CodeWScope cw){
-            Document cmd = new Document().Append("$eval", cw);
+        /// <summary>
+        /// Evals the specified code scope.
+        /// </summary>
+        /// <param name="codeScope">The code scope.</param>
+        /// <returns></returns>
+        public Document Eval(CodeWScope codeScope){
+            var cmd = new Document().Append("$eval", codeScope);
             return SendCommand(cmd);
         }
 
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
         public Document SendCommand(string command){
             AuthenticateIfRequired();
             return SendCommandCore(command);
         }
 
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <param name="cmd">The CMD.</param>
+        /// <returns></returns>
         public Document SendCommand(Document cmd){
             AuthenticateIfRequired();
             return SendCommandCore(cmd);
         }
 
-        private Document SendCommandCore(string command)
-        {
-            var cmd = new Document().Append(command,1.0);
+        /// <summary>
+        /// Sends the command core.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        private Document SendCommandCore(string command){
+            var cmd = new Document().Append(command, 1.0);
             return SendCommandCore(cmd);
         }
 
-        private Document SendCommandCore(Document cmd)
-        {
-            Document result = this.command.FindOne(cmd);
-            double ok = (double)result["ok"];
-            if(ok != 1.0)
-            {
+        /// <summary>
+        /// Sends the command core.
+        /// </summary>
+        /// <param name="cmd">The CMD.</param>
+        /// <returns></returns>
+        private Document SendCommandCore(Document cmd){
+            var result = _command.FindOne(cmd);
+            var ok = (double)result["ok"];
+            if(ok != 1.0){
                 var msg = string.Empty;
                 if(result.Contains("msg"))
-                {
                     msg = (string)result["msg"];
-                }
                 else if(result.Contains("errmsg"))
-                {
                     msg = (string)result["errmsg"];
-                }
                 throw new MongoCommandException(msg, result, cmd);
             }
             return result;
         }
 
         /// <summary>
-        /// Authenticates the on first request.
+        ///   Authenticates the on first request.
         /// </summary>
-        private void AuthenticateIfRequired()
-        {
-            if(connection.IsAuthenticated)
+        private void AuthenticateIfRequired(){
+            if(_connection.IsAuthenticated)
                 return;
 
-            var builder = new MongoConnectionStringBuilder(connection.ConnectionString);
-            
+            var builder = new MongoConnectionStringBuilder(_connection.ConnectionString);
+
             if(string.IsNullOrEmpty(builder.Username))
                 return;
 
@@ -186,35 +261,32 @@ namespace MongoDB.Driver
                 throw new MongoException("Error retrieving nonce", null);
 
             var pwd = Hash(builder.Username + ":mongo:" + builder.Password);
-            var auth = new Document
-            {
+            var auth = new Document{
                 {"authenticate", 1.0},
                 {"user", builder.Username},
                 {"nonce", nonce},
                 {"key", Hash(nonce + builder.Username + pwd)}
             };
-            try
-            {
+            try{
                 SendCommandCore(auth);
             }
-            catch(MongoCommandException exception)
-            {
+            catch(MongoCommandException exception){
                 //Todo: use custom exception?
                 throw new MongoException("Authentication faild for " + builder.Username, exception);
             }
 
-            connection.MaskAuthenticated();
+            _connection.MaskAuthenticated();
         }
 
         /// <summary>
-        /// Hashes the specified text.
+        ///   Hashes the specified text.
         /// </summary>
-        /// <param name="text">The text.</param>
+        /// <param name = "text">The text.</param>
         /// <returns></returns>
         internal static string Hash(string text){
-            MD5 md5 = MD5.Create();
-            byte[] hash = md5.ComputeHash(Encoding.Default.GetBytes(text));
-            return BitConverter.ToString(hash).Replace("-","").ToLower();
+            var md5 = MD5.Create();
+            var hash = md5.ComputeHash(Encoding.Default.GetBytes(text));
+            return BitConverter.ToString(hash).Replace("-", "").ToLower();
         }
     }
 }

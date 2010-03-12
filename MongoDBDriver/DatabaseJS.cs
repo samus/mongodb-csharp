@@ -10,7 +10,7 @@ namespace MongoDB.Driver{
     {   
         //private Connection connection;
         private Database db;
-        private IMongoCollection js;
+        private IMongoCollection<Document> js;
         
         internal DatabaseJS (Database db){
             this.db = db;

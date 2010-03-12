@@ -10,6 +10,7 @@ namespace MongoDB.Driver
     /// 
     /// </summary>
     public class MongoCollection<T> : IMongoCollection<T>
+        where T : class
     {
         private static readonly OidGenerator OidGenerator = new OidGenerator();
         private readonly Connection _connection;
@@ -72,10 +73,24 @@ namespace MongoDB.Driver
         /// <returns>
         /// A <see cref="Document"/> from the collection.
         /// </returns>
-        public Document FindOne(Document spec){
-            var cur = Find(spec, -1, 0, null);
-            foreach(var doc in cur.Documents){
-                cur.Dispose();
+        public T FindOne(Document spec)
+        {
+            return FindOne((object)spec);
+        }
+
+        /// <summary>
+        /// Finds and returns the first document in a query.
+        /// </summary>
+        /// <param name="spec">A <see cref="Document"/> representing the query.</param>
+        /// <returns>
+        /// A <see cref="Document"/> from the collection.
+        /// </returns>
+        public T FindOne(object spec)
+        {
+            var cursor = Find(spec, -1, 0, null);
+            foreach(var doc in cursor.Documents)
+            {
+                cursor.Dispose();
                 return doc;
             }
             //FIXME Decide if this should throw a not found exception instead of returning null.
@@ -86,7 +101,7 @@ namespace MongoDB.Driver
         /// Finds all.
         /// </summary>
         /// <returns></returns>
-        public ICursor<Document> FindAll()
+        public ICursor<T> FindAll()
         {
             var spec = new Document();
             return Find(spec, 0, 0, null);
@@ -97,7 +112,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="where">The where.</param>
         /// <returns></returns>
-        public ICursor<Document> Find(String where)
+        public ICursor<T> Find(String where)
         {
             var spec = new Document();
             spec.Append("$where", new Code(where));
@@ -109,7 +124,17 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
-        public ICursor<Document> Find(Document spec)
+        public ICursor<T> Find(Document spec)
+        {
+            return Find((object)spec);
+        }
+
+        /// <summary>
+        /// Finds the specified spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <returns></returns>
+        public ICursor<T> Find(object spec)
         {
             return Find(spec, 0, 0, null);
         }
@@ -121,7 +146,19 @@ namespace MongoDB.Driver
         /// <param name="limit">The limit.</param>
         /// <param name="skip">The skip.</param>
         /// <returns></returns>
-        public ICursor<Document> Find(Document spec, int limit, int skip)
+        public ICursor<T> Find(Document spec, int limit, int skip)
+        {
+            return Find((object)spec, limit, skip, null);
+        }
+
+        /// <summary>
+        /// Finds the specified spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <param name="limit">The limit.</param>
+        /// <param name="skip">The skip.</param>
+        /// <returns></returns>
+        public ICursor<T> Find(object spec, int limit, int skip)
         {
             return Find(spec, limit, skip, null);
         }
@@ -134,11 +171,24 @@ namespace MongoDB.Driver
         /// <param name="skip">The skip.</param>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        public ICursor<Document> Find(Document spec, int limit, int skip, Document fields)
+        public ICursor<T> Find(Document spec, int limit, int skip, Document fields)
+        {
+            return Find((object)spec, limit, skip, (object)fields);
+        }
+
+        /// <summary>
+        /// Finds the specified spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <param name="limit">The limit.</param>
+        /// <param name="skip">The skip.</param>
+        /// <param name="fields">The fields.</param>
+        /// <returns></returns>
+        public ICursor<T> Find(object spec, int limit, int skip, object fields)
         {
             if(spec == null)
                 spec = new Document();
-            return new Cursor<Document>(_connection, FullName, spec, limit, skip, fields);
+            return new Cursor<T>(_connection, FullName, spec, limit, skip, fields);
         }
 
         /// <summary>
@@ -173,11 +223,26 @@ namespace MongoDB.Driver
         /// It will return 0 if the collection doesn't exist yet.
         /// </remarks>
         public long Count(Document spec){
-            try{
+            return Count((object)spec);
+        }
+
+        /// <summary>
+        /// Count all items in a collection that match the query spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// It will return 0 if the collection doesn't exist yet.
+        /// </remarks>
+        public long Count(object spec)
+        {
+            try
+            {
                 var response = Database.SendCommand(new Document().Append("count", Name).Append("query", spec));
                 return Convert.ToInt64((double)response["n"]);
             }
-            catch(MongoCommandException){
+            catch(MongoCommandException)
+            {
                 //FIXME This is an exception condition when the namespace is missing. 
                 //-1 might be better here but the console returns 0.
                 return 0;
@@ -188,6 +253,14 @@ namespace MongoDB.Driver
         ///   Inserts the Document into the collection.
         /// </summary>
         public void Insert(Document document, bool safemode){
+            Insert((object)document,safemode);
+        }
+
+        /// <summary>
+        ///   Inserts the Document into the collection.
+        /// </summary>
+        public void Insert(object document, bool safemode)
+        {
             Insert(document);
             CheckError(safemode);
         }
@@ -197,8 +270,16 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="document">The doc.</param>
         public void Insert(Document document){
-            var docs = new[]{document};
-            Insert(docs);
+            Insert((object)document);
+        }
+
+        /// <summary>
+        /// Inserts the specified doc.
+        /// </summary>
+        /// <param name="document">The doc.</param>
+        public void Insert(object document)
+        {
+            Insert(new[] { document });
         }
 
         /// <summary>
@@ -206,7 +287,18 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="documents">The documents.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        public void Insert(IEnumerable<Document> documents, bool safemode){
+        public void Insert(IEnumerable<Document> documents, bool safemode)
+        {
+            Insert((IEnumerable<object>)documents, safemode);
+        }
+
+        /// <summary>
+        /// Inserts the specified documents.
+        /// </summary>
+        /// <param name="documents">The documents.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Insert<TElement>(IEnumerable<TElement> documents, bool safemode)
+        {
             if(safemode)
                 Database.ResetError();
             Insert(documents);
@@ -218,24 +310,41 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="documents">The documents.</param>
         public void Insert(IEnumerable<Document> documents){
-            var insertMessage = new InsertMessage<Document>{
+            Insert((IEnumerable<object>)documents);
+        }
+
+        /// <summary>
+        /// Inserts the specified documents.
+        /// </summary>
+        /// <param name="documents">The documents.</param>
+        public void Insert<TElement>(IEnumerable<TElement> documents)
+        {
+            var insertMessage = new InsertMessage
+            {
                 FullCollectionName = FullName
             };
 
-            var insertDocument = new List<Document>();
+            var insertDocument = new List<object>();
 
+            //Fixme: This should be handled by an external class
+            /*
             foreach(var doc in documents)
-                if(doc.Contains("_id") == false){
+                if(doc.Contains("_id") == false)
+                {
                     doc.Prepend("_id", OidGenerator.Generate());
                 }
-            
-            insertDocument.AddRange(documents);
+            */
+            foreach(var document in documents)
+                insertDocument.Add(document);
+
             insertMessage.Documents = insertDocument.ToArray();
-            
-            try{
+
+            try
+            {
                 _connection.SendMessage(insertMessage);
             }
-            catch(IOException exception){
+            catch(IOException exception)
+            {
                 throw new MongoCommException("Could not insert document, communication failure", _connection, exception);
             }
         }
@@ -249,6 +358,19 @@ namespace MongoDB.Driver
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
         public void Delete(Document selector, bool safemode){
+            Delete((object)selector, safemode);
+        }
+
+        /// <summary>
+        /// Deletes documents from the collection according to the spec.
+        /// </summary>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>
+        /// An empty document will match all documents in the collection and effectively truncate it.
+        /// </remarks>
+        public void Delete(object selector, bool safemode)
+        {
             Delete(selector);
             CheckError(safemode);
         }
@@ -261,15 +383,30 @@ namespace MongoDB.Driver
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
         public void Delete(Document selector){
-            var deleteMessage = new DeleteMessage{
-                FullCollectionName = FullName, 
+            Delete((object)selector);
+        }
+
+        /// <summary>
+        /// Deletes documents from the collection according to the spec.
+        /// </summary>
+        /// <param name="selector">The selector.</param>
+        /// <remarks>
+        /// An empty document will match all documents in the collection and effectively truncate it.
+        /// </remarks>
+        public void Delete(object selector)
+        {
+            var deleteMessage = new DeleteMessage
+            {
+                FullCollectionName = FullName,
                 Selector = selector
             };
 
-            try{
+            try
+            {
                 _connection.SendMessage(deleteMessage);
             }
-            catch(IOException exception){
+            catch(IOException exception)
+            {
                 throw new MongoCommException("Could not delete document, communication failure", _connection, exception);
             }
         }
@@ -280,6 +417,16 @@ namespace MongoDB.Driver
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         public void Update(Document document, bool safemode){
+            Update((object)document,safemode);
+        }
+
+        /// <summary>
+        /// Updates the specified document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Update(object document, bool safemode)
+        {
             Update(document);
             CheckError(safemode);
         }
@@ -293,19 +440,39 @@ namespace MongoDB.Driver
         /// the document then it is assumed that the document is new and an upsert is sent to the database
         /// instead.
         /// </remarks>
-        public void Update(Document document){
+        public void Update(Document document)
+        {
+            Update((object)document);
+        }
+
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <remarks>
+        /// _id will be used in the document to create a selector.  If it isn't in
+        /// the document then it is assumed that the document is new and an upsert is sent to the database
+        /// instead.
+        /// </remarks>
+        public void Update(object document)
+        {
             //Try to generate a selector using _id for an existing document.
             //otherwise just set the upsert flag to 1 to insert and send onward.
             var selector = new Document();
             var upsert = UpdateFlags.Upsert;
-            
-            if(document.Contains("_id") & document["_id"] != null)
+
+            //Todo: this needs to be cheched in an external class
+            /*
+             if(document.Contains("_id") & document["_id"] != null)
                 selector["_id"] = document["_id"];
-            else{
+            else
+            {
                 //Likely a new document
                 document.Prepend("_id", OidGenerator.Generate());
                 upsert = UpdateFlags.Upsert;
             }
+             * */
+
             Update(document, selector, upsert);
         }
 
@@ -315,7 +482,19 @@ namespace MongoDB.Driver
         /// <param name="document">The document.</param>
         /// <param name="selector">The selector.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        public void Update(Document document, Document selector, bool safemode){
+        public void Update(Document document, Document selector, bool safemode)
+        {
+            Update((object)document, (object)document, safemode);
+        }
+
+        /// <summary>
+        /// Updates the specified document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Update(object document, object selector, bool safemode)
+        {
             Update(document, selector, 0, safemode);
         }
 
@@ -324,7 +503,17 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="selector">The selector.</param>
-        public void Update(Document document, Document selector){
+        public void Update(Document document, Document selector)
+        {
+            Update((object)document, (object)selector);
+        }
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        public void Update(object document, object selector)
+        {
             Update(document, selector, 0);
         }
 
@@ -335,7 +524,20 @@ namespace MongoDB.Driver
         /// <param name="selector">The selector.</param>
         /// <param name="flags">The flags.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        public void Update(Document document, Document selector, UpdateFlags flags, bool safemode){
+        public void Update(Document document, Document selector, UpdateFlags flags, bool safemode)
+        {
+            Update((object)document, (object)selector, flags, safemode);
+        }
+
+        /// <summary>
+        /// Updates the specified document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="flags">The flags.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Update(object document, object selector, UpdateFlags flags, bool safemode)
+        {
             Update(document, selector, flags);
             CheckError(safemode);
         }
@@ -346,18 +548,32 @@ namespace MongoDB.Driver
         /// <param name="document">The <see cref="Document"/> to update with</param>
         /// <param name="selector">The query spec to find the document to update.</param>
         /// <param name="flags"><see cref="UpdateFlags"/></param>
-        public void Update(Document document, Document selector, UpdateFlags flags){
-            var updateMessage = new UpdateMessage{
-                FullCollectionName = FullName, 
-                Selector = selector, 
-                Document = document, 
+        public void Update(Document document, Document selector, UpdateFlags flags)
+        {
+            Update((object)document, (object)selector, flags);
+        }
+        /// <summary>
+        /// Updates a document with the data in doc as found by the selector.
+        /// </summary>
+        /// <param name="document">The <see cref="Document"/> to update with</param>
+        /// <param name="selector">The query spec to find the document to update.</param>
+        /// <param name="flags"><see cref="UpdateFlags"/></param>
+        public void Update(object document, object selector, UpdateFlags flags)
+        {
+            var updateMessage = new UpdateMessage
+            {
+                FullCollectionName = FullName,
+                Selector = selector,
+                Document = document,
                 Flags = (int)flags
             };
 
-            try{
+            try
+            {
                 _connection.SendMessage(updateMessage);
             }
-            catch(IOException exception){
+            catch(IOException exception)
+            {
                 throw new MongoCommException("Could not update document, communication failure", _connection, exception);
             }
         }
@@ -368,20 +584,36 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="selector">The selector.</param>
-        public void UpdateAll(Document document, Document selector){
+        public void UpdateAll(Document document, Document selector)
+        {
+            UpdateAll((object)document, (object)selector);
+        }
+
+        /// <summary>
+        /// Runs a multiple update query against the database.  It will wrap any
+        /// doc with $set if the passed in doc doesn't contain any '$' ops.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        public void UpdateAll(object document, object selector)
+        {
             var foundOp = false;
 
-            foreach(string key in document.Keys)
-                if(key.IndexOf('$') == 0){
+            //Todo: need to get this info external
+            /*
+             * foreach(string key in document.Keys)
+                if(key.IndexOf('$') == 0)
+                {
                     foundOp = true;
                     break;
-                }
-            
-            if(foundOp == false){
+                }*/
+
+            if(foundOp == false)
+            {
                 //wrap document in a $set.
                 document = new Document().Append("$set", document);
             }
-            
+
             Update(document, selector, UpdateFlags.MultiUpdate);
         }
 
@@ -391,7 +623,18 @@ namespace MongoDB.Driver
         /// <param name="document">The document.</param>
         /// <param name="selector">The selector.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        public void UpdateAll(Document document, Document selector, bool safemode){
+        public void UpdateAll(Document document, Document selector, bool safemode)
+        {
+            UpdateAll((object)document, (object)selector);
+        }
+        /// <summary>
+        /// Updates all.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void UpdateAll(object document, object selector, bool safemode)
+        {
             if(safemode)
                 Database.ResetError();
             UpdateAll(document, selector);
@@ -406,7 +649,20 @@ namespace MongoDB.Driver
         /// The document will contain the _id that is saved to the database.  This is really just an alias
         /// to Update(Document) to maintain consistency between drivers.
         /// </remarks>
-        public void Save(Document document){
+        public void Save(Document document)
+        {
+            Save((object)document);
+        }
+        /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <remarks>
+        /// The document will contain the _id that is saved to the database.  This is really just an alias
+        /// to Update(Document) to maintain consistency between drivers.
+        /// </remarks>
+        public void Save(object document)
+        {
             Update(document);
         }
 

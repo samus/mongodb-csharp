@@ -40,7 +40,7 @@ namespace MongoDB.Driver
         /// <param name = "limit">The limit.</param>
         /// <param name = "skip">The skip.</param>
         /// <param name = "fields">The fields.</param>
-        public Cursor(Connection connection, String fullCollectionName, Document spec, int limit, int skip, Document fields)
+        public Cursor(Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields)
             : this(connection, fullCollectionName){
             //Todo: should be internal
             if(spec == null)

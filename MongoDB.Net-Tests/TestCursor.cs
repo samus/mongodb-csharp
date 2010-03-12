@@ -18,13 +18,13 @@ namespace MongoDB.Driver
         
         public override void OnInit (){
             //smallreads
-            IMongoCollection smallreads = DB["smallreads"];
+            IMongoCollection<Document> smallreads = DB["smallreads"];
             for(int j = 1; j < 5; j++){
                 smallreads.Insert(new Document(){{"x", 4},{"j", j}});
             }
             smallreads.Insert(new Document(){{"x", 4}, {"j", 5}, {"n", 1}});
-            
-            IMongoCollection reads = DB["reads"];
+
+            IMongoCollection<Document> reads = DB["reads"];
             for(int j = 1; j < 10000; j++){
                 reads.Insert(new Document(){{"x", 4},{"h", "hi"},{"j", j}});
             }
@@ -95,7 +95,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestSort(){
-            IMongoCollection sorts = DB["sorts"];
+            IMongoCollection<Document> sorts = DB["sorts"];
             int[] randoms = new int[]{4,6,8,9,1,3,2,5,7,0};
             foreach(int x in randoms){
                 sorts.Insert(new Document().Append("x", randoms[x]));
@@ -125,7 +125,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestHint(){
-            IMongoCollection reads = DB["reads"];
+            IMongoCollection<Document> reads = DB["reads"];
             Document hint = new Document().Append("x",IndexOrder.Ascending);
             
             Document exp = reads.FindAll().Hint(hint).Explain();

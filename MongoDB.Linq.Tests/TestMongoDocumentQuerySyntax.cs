@@ -11,13 +11,13 @@ namespace MongoDB.Linq.Tests {
     public class TestMongoDocumentQuerySyntax {
 
         private IMongoQuery queryable;
-        private Mock<IMongoCollection> collectionMock;
+        private Mock<IMongoCollection<Document>> collectionMock;
         private Mock<ICursor<Document>> cursorMock;
 
         [SetUp]
         public void Setup() {
             Debug.WriteLine("initializing queryable");
-            collectionMock = new Mock<IMongoCollection>();
+            collectionMock = new Mock<IMongoCollection<Document>>();
             cursorMock = new Mock<ICursor<Document>>();
             collectionMock.Setup(c => c.Find(It.IsAny<Document>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Document>())).Returns(cursorMock.Object);
             queryable = new MongoQuery(new MongoQueryProvider(collectionMock.Object));

@@ -17,7 +17,7 @@ namespace Simple
     {
         Mongo mongo;
         Database simple;
-        IMongoCollection categories;
+        IMongoCollection<Document> categories;
         
         public static void Main (string[] args){
             MainClass main = new MainClass();

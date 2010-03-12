@@ -16,9 +16,9 @@ namespace MongoDB.GridFS
     /// </remarks>
     public class GridFileStream : Stream
     {
-        
-        private IMongoCollection files;
-        private IMongoCollection chunks;
+
+        private IMongoCollection<Document> files;
+        private IMongoCollection<Document> chunks;
         private Document chunk;
         private bool chunkDirty;
         private long chunkLower = -1;
@@ -68,8 +68,9 @@ namespace MongoDB.GridFS
             }
         }
         #endregion
-        
-        public GridFileStream(GridFileInfo gridfileinfo,IMongoCollection files, IMongoCollection chunks, FileAccess access){
+
+        public GridFileStream(GridFileInfo gridfileinfo, IMongoCollection<Document> files, IMongoCollection<Document> chunks, FileAccess access)
+        {
             switch (access){
                 case FileAccess.Read:
                     canRead = true;

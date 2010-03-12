@@ -18,9 +18,9 @@ namespace MongoDB.Driver{
         
         public override void OnInit (){
             DB["system.js"].Delete(new Document());
-            js = DB.JS;
-            
-            IMongoCollection jsreads = DB["jsreads"];
+            js = DB.Javascript;
+
+            IMongoCollection<Document> jsreads = DB["jsreads"];
             for(int j = 1; j < 10; j++){
                 jsreads.Insert(new Document(){{"j", j}});
             }
@@ -28,7 +28,7 @@ namespace MongoDB.Driver{
         
         [Test()]
         public void TestCanGetDatabaseJSObject(){
-            Assert.IsNotNull(DB.JS);
+            Assert.IsNotNull(DB.Javascript);
         }
         
         [Test()]

@@ -18,7 +18,7 @@ namespace MongoDB.Driver
         }
         
         public override void OnInit (){
-            IMongoCollection its = DB["indextests"];
+            IMongoCollection<Document> its = DB["indextests"];
             its.Insert(createDoc("S","A","Anderson","OH"));
             its.Insert(createDoc("T","B","Delhi","OH"));
             its.Insert(createDoc("F","B","Cincinnati","OH"));

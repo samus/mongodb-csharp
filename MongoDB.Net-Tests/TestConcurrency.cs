@@ -33,8 +33,8 @@ namespace MongoDB.Driver
         public void TestMultiThreadedWrites (){
             Mongo db = new Mongo();
             db.Connect();
-            
-            IMongoCollection col = DB["threadinserts"];
+
+            IMongoCollection<Document> col = DB["threadinserts"];
             
             List<string> identifiers = new List<string>{"A", "B", "C", "D"};
             List<Thread> threads = new List<Thread>();
@@ -90,8 +90,8 @@ namespace MongoDB.Driver
         public void TestMultiThreadedReadsAndWrites(){
             Mongo db = new Mongo();
             db.Connect();
-            
-            IMongoCollection col = DB["threadreadinserts"];
+
+            IMongoCollection<Document> col = DB["threadreadinserts"];
             
             List<string> identifiers = new List<string>{"A", "B", "C", "D"};
             List<string> colnames = new List<string>{"threadsmallreads", "threadsmallreads",
@@ -147,7 +147,7 @@ namespace MongoDB.Driver
         public int Iterations{get; set;}
         public int Count{get;set;}
         public String Identifier{get; set;}
-        public IMongoCollection Collection{get; set;}
+        public IMongoCollection<Document> Collection { get; set; }
         
         public void DoInserts(){
             for(int x = 0; x < this.Iterations; x++){
@@ -165,7 +165,7 @@ namespace MongoDB.Driver
     public class Reader{
         public int Iterations{get; set;}
         public int Count{get;set;}
-        public IMongoCollection Collection{get; set;}
+        public IMongoCollection<Document> Collection { get; set; }
         
         public void DoReads(){
             for(int x = 0; x < this.Iterations; x++){

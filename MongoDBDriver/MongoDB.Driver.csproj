@@ -77,7 +77,6 @@
     <Compile Include="Bson\DocumentDescriptor.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
-    <Compile Include="IMongoCollection´1.cs" />
     <Compile Include="MongoCollection.cs" />
     <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connections\Connection.cs" />
