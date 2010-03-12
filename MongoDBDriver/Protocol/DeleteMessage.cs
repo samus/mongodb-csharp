@@ -16,7 +16,7 @@ namespace MongoDB.Driver.Protocol
     ///   BSON      selector;               // query object.  See below for details.
     ///   }
     /// </remarks>
-    public class DeleteMessage<T> : RequestMessageBase where T:class
+    public class DeleteMessage : RequestMessageBase
     {
         public DeleteMessage(){
             Header = new MessageHeader(OpCode.Delete);
@@ -24,7 +24,7 @@ namespace MongoDB.Driver.Protocol
 
         public string FullCollectionName { get; set; }
 
-        public T Selector { get; set; }
+        public object Selector { get; set; }
 
         protected override void WriteBody(BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer, 0);

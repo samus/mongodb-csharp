@@ -256,7 +256,7 @@ namespace MongoDB.Driver
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
         public void Delete(Document selector){
-            var deleteMessage = new DeleteMessage<Document>{
+            var deleteMessage = new DeleteMessage{
                 FullCollectionName = FullName, 
                 Selector = selector
             };
@@ -342,7 +342,7 @@ namespace MongoDB.Driver
         /// <param name="selector">The query spec to find the document to update.</param>
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(Document document, Document selector, UpdateFlags flags){
-            var updateMessage = new UpdateMessage<Document>{
+            var updateMessage = new UpdateMessage{
                 FullCollectionName = FullName, 
                 Selector = selector, 
                 Document = document, 
