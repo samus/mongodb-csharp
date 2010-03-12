@@ -213,7 +213,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="documents">The documents.</param>
         public void Insert(IEnumerable<Document> documents){
-            var insertMessage = new InsertMessage{
+            var insertMessage = new InsertMessage<Document>{
                 FullCollectionName = FullName
             };
 
