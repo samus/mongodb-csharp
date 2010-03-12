@@ -358,7 +358,8 @@ namespace MongoDB.GridFS
 
             Binary data = new Binary(this.blankBuffer);
             int i = 0;
-            using (ICursor cur = chunks.Find(new Document().Append("query",query).Append("sort",sort),0,0,fields)){
+            using(ICursor<Document> cur = chunks.Find(new Document().Append("query", query).Append("sort", sort), 0, 0, fields))
+            {
                 foreach(Document doc in cur.Documents){
                     int n = Convert.ToInt32(doc["n"]);
                     if(i < n){

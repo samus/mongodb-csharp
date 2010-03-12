@@ -48,21 +48,21 @@ namespace MongoDB.Driver
         /// Finds all.
         /// </summary>
         /// <returns></returns>
-        ICursor FindAll();
+        ICursor<Document> FindAll();
 
         /// <summary>
         /// Finds the specified where.
         /// </summary>
         /// <param name="where">The where.</param>
         /// <returns></returns>
-        ICursor Find(String where);
+        ICursor<Document> Find(String where);
 
         /// <summary>
         /// Finds the specified spec.
         /// </summary>
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
-        ICursor Find(Document spec);
+        ICursor<Document> Find(Document spec);
 
         /// <summary>
         /// Finds the specified spec.
@@ -71,7 +71,7 @@ namespace MongoDB.Driver
         /// <param name="limit">The limit.</param>
         /// <param name="skip">The skip.</param>
         /// <returns></returns>
-        ICursor Find(Document spec, int limit, int skip);
+        ICursor<Document> Find(Document spec, int limit, int skip);
 
         /// <summary>
         /// Finds the specified spec.
@@ -81,7 +81,7 @@ namespace MongoDB.Driver
         /// <param name="skip">The skip.</param>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        ICursor Find(Document spec, int limit, int skip, Document fields);
+        ICursor<Document> Find(Document spec, int limit, int skip, Document fields);
 
         /// <summary>
         /// Entrypoint into executing a map/reduce query against the collection.

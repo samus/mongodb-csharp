@@ -170,7 +170,8 @@ namespace MongoDB.Driver
         public void DoReads(){
             for(int x = 0; x < this.Iterations; x++){
                 try{
-                    using(ICursor c = this.Collection.FindAll()){
+                    using(ICursor<Document> c = this.Collection.FindAll())
+                    {
                         //Just read one and do nothing with the Document.
                         foreach(Document d in c.Documents){
                             d["works"] = true;

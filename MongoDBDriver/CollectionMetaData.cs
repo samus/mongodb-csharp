@@ -44,8 +44,8 @@ namespace MongoDB.Driver
                     return indexes;
                 
                 indexes.Clear ();
-                
-                ICursor docs = db["system.indexes"].Find (new Document ().Append ("ns", this.fullName));
+
+                var docs = db["system.indexes"].Find(new Document().Append("ns", this.fullName));
                 foreach (Document doc in docs.Documents) {
                     indexes.Add ((string)doc["name"], doc);
                 }

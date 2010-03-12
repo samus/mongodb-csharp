@@ -33,11 +33,12 @@ namespace MongoDB.GridFS
             this.name = bucket;
         }
         
-        public ICursor ListFiles(){
+        public ICursor<Document> ListFiles(){
             return this.ListFiles(new Document());
         }
-        
-        public ICursor ListFiles(Document query){
+
+        public ICursor<Document> ListFiles(Document query)
+        {
             return this.files.Find(new Document().Append("query",query)
                                                 .Append("orderby", new Document()
                                                 .Append("filename", 1)));

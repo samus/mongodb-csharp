@@ -62,7 +62,7 @@ namespace MongoDB.Driver
             Document fields = new Document();
             fields["x"] = 1;
 
-            ICursor c = DB["finds"].Find(query,-1,0,fields);
+            ICursor<Document> c = DB["finds"].Find(query, -1, 0, fields);
             foreach(Document result in c.Documents){
                 Assert.IsNotNull(result);
                 Assert.AreEqual(4, result["x"]);
@@ -75,7 +75,7 @@ namespace MongoDB.Driver
             Document query = new Document();
             query["j"] = new Document().Append("$gt",20);
 
-            ICursor c = DB["finds"].Find(query);
+            ICursor<Document> c = DB["finds"].Find(query);
             foreach(Document result in c.Documents){
                 Assert.IsNotNull(result);
                 Object j = result["j"];
@@ -86,7 +86,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestManualWhere(){
             Document query = new Document().Append("$where", new Code("this.j % 2 == 0"));
-            ICursor c = DB["finds"].Find(query);
+            ICursor<Document> c = DB["finds"].Find(query);
             foreach(Document result in c.Documents){
                 Assert.IsNotNull(result);
                 Object j = result["j"];
@@ -108,7 +108,8 @@ namespace MongoDB.Driver
             Assert.AreEqual(4, CountDocs(col.Find(funcDoc)), "Function where didn't return 4 docs");
         }
 
-        private int CountDocs(ICursor cur){
+        private int CountDocs(ICursor<Document> cur)
+        {
             int cnt = 0;
             foreach(Document doc in cur.Documents){
                 cnt++;
@@ -117,7 +118,7 @@ namespace MongoDB.Driver
         }
         [Test]
         public void TestWhere(){
-            ICursor c = DB["finds"].Find("this.j % 2 == 0");
+            ICursor<Document> c = DB["finds"].Find("this.j % 2 == 0");
             foreach(Document result in c.Documents){
                 Assert.IsNotNull(result);
                 Object j = result["j"];
@@ -287,7 +288,7 @@ namespace MongoDB.Driver
             updates.Insert(new Document().Append("Last", "Cordr").Append("First","Sam3"));
 
             Document selector = new Document().Append("Last", "Cordr");
-            ICursor results = updates.Find(selector);
+            ICursor<Document> results = updates.Find(selector);
             bool found = false;
             foreach(Document doc in results.Documents){
                 Assert.AreEqual("Cordr", doc["Last"]);

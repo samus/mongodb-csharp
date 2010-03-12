@@ -6,7 +6,7 @@ using MongoDB.Driver.Protocol;
 
 namespace MongoDB.Driver
 {
-    public class Cursor<T> : ICursor
+    public class Cursor<T> : ICursor<T>
         where T : class
     {
         private bool _modifiable = true;
@@ -15,7 +15,7 @@ namespace MongoDB.Driver
         private Document _fields;
         private int _limit;
         private QueryOptions _options;
-        private ReplyMessage<Document> _reply;
+        private ReplyMessage<T> _reply;
         private int _skip;
         private Document _spec;
 
@@ -27,8 +27,7 @@ namespace MongoDB.Driver
         }
 
         public Cursor(Connection conn, String fullCollectionName, Document spec, int limit, int skip, Document fields)
-            :
-                this(conn, fullCollectionName){
+            :this(conn, fullCollectionName){
             //Todo: should be internal
             if(spec == null)
                 spec = new Document();
@@ -55,7 +54,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name = "spec">The spec.</param>
         /// <returns></returns>
-        public ICursor Spec(Document spec){
+        public ICursor<T> Spec(Document spec){
             TryModify();
             _spec = spec;
             return this;
@@ -66,7 +65,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="limit">The limit.</param>
         /// <returns></returns>
-        public ICursor Limit(int limit){
+        public ICursor<T> Limit(int limit)
+        {
             TryModify();
             _limit = limit;
             return this;
@@ -77,7 +77,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="skip">The skip.</param>
         /// <returns></returns>
-        public ICursor Skip(int skip){
+        public ICursor<T> Skip(int skip)
+        {
             TryModify();
             _skip = skip;
             return this;
@@ -88,7 +89,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        public ICursor Fields(Document fields){
+        public ICursor<T> Fields(Document fields)
+        {
             TryModify();
             _fields = fields;
             return this;
@@ -99,7 +101,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="field">The field.</param>
         /// <returns></returns>
-        public ICursor Sort(string field){
+        public ICursor<T> Sort(string field)
+        {
             return Sort(field, IndexOrder.Ascending);
         }
 
@@ -109,7 +112,8 @@ namespace MongoDB.Driver
         /// <param name="field">The field.</param>
         /// <param name="order">The order.</param>
         /// <returns></returns>
-        public ICursor Sort(string field, IndexOrder order){
+        public ICursor<T> Sort(string field, IndexOrder order)
+        {
             return Sort(new Document().Append(field, order));
         }
 
@@ -118,7 +122,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        public ICursor Sort(Document fields){
+        public ICursor<T> Sort(Document fields)
+        {
             TryModify();
             AddOrRemoveSpecOpt("$orderby", fields);
             return this;
@@ -129,7 +134,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public ICursor Hint(Document index){
+        public ICursor<T> Hint(Document index)
+        {
             TryModify();
             AddOrRemoveSpecOpt("$hint", index);
             return this;
@@ -140,7 +146,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public ICursor Snapshot(Document index){
+        public ICursor<T> Snapshot(Document index)
+        {
             TryModify();
             AddOrRemoveSpecOpt("$snapshot", index);
             return this;
@@ -150,7 +157,7 @@ namespace MongoDB.Driver
         /// Explains this instance.
         /// </summary>
         /// <returns></returns>
-        public Document Explain(){
+        public T Explain(){
             TryModify();
             _specOpts["$explain"] = true;
 
@@ -167,7 +174,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="options">The options.</param>
         /// <returns></returns>
-        public ICursor Options(QueryOptions options)
+        public ICursor<T> Options(QueryOptions options)
         {
             TryModify();
             _options = options;
@@ -186,7 +193,7 @@ namespace MongoDB.Driver
         /// Gets the documents.
         /// </summary>
         /// <value>The documents.</value>
-        public IEnumerable<Document> Documents{
+        public IEnumerable<T> Documents{
             get{
                 if(_reply == null)
                     RetrieveData();
@@ -235,7 +242,7 @@ namespace MongoDB.Driver
         /// Retrieves the data.
         /// </summary>
         private void RetrieveData(){
-            var query = new QueryMessage<Document>{
+            var query = new QueryMessage<T>{
                 FullCollectionName = FullCollectionName,
                 Query = BuildSpec(),
                 NumberToReturn = _limit,
@@ -246,7 +253,7 @@ namespace MongoDB.Driver
             if(_fields != null)
                 query.ReturnFieldSelector = _fields;
             try{
-                _reply = _connection.SendTwoWayMessage(query);
+                _reply = _connection.SendTwoWayMessage<T>(query);
                 Id = _reply.CursorId;
                 if(_limit < 0)
                     _limit = _limit*-1;
@@ -264,7 +271,7 @@ namespace MongoDB.Driver
             var getMoreMessage = new GetMoreMessage(FullCollectionName, Id, _limit);
 
             try{
-                _reply = _connection.SendTwoWayMessage(getMoreMessage);
+                _reply = _connection.SendTwoWayMessage<T>(getMoreMessage);
                 Id = _reply.CursorId;
             }
             catch(IOException ioe){

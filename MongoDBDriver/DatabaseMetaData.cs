@@ -62,7 +62,7 @@ namespace MongoDB.Driver
             users.Delete(new Document().Append("user", username));
         }
 
-        public ICursor ListUsers(){
+        public ICursor<Document> ListUsers(){
             IMongoCollection users = db["system.users"];
             return users.FindAll();
         }

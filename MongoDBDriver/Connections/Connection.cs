@@ -64,17 +64,26 @@ namespace MongoDB.Driver.Connections
         }
 
         /// <summary>
+        /// Sends the two way message.
+        /// </summary>
+        /// <param name="msg">The MSG.</param>
+        /// <returns></returns>
+        public ReplyMessage<Document> SendTwoWayMessage(RequestMessageBase msg){
+            return SendTwoWayMessage<Document>(msg);
+        }
+
+        /// <summary>
         /// Used for sending a message that gets a reply such as a query.
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public ReplyMessage<Document> SendTwoWayMessage (RequestMessageBase msg){
-            if (this.State != ConnectionState.Opened) {
+        public ReplyMessage<T> SendTwoWayMessage<T>(RequestMessageBase msg) where T:class {
+            if (State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }
             try {
-                var reply = new ReplyMessage<Document> ();
+                var reply = new ReplyMessage<T> ();
                 lock (_connection) {
                     msg.Write (_connection.GetStream ());
                     reply.Read (_connection.GetStream ());

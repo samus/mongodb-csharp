@@ -86,7 +86,8 @@ namespace MongoDB.Driver
         /// Finds all.
         /// </summary>
         /// <returns></returns>
-        public ICursor FindAll(){
+        public ICursor<Document> FindAll()
+        {
             var spec = new Document();
             return Find(spec, 0, 0, null);
         }
@@ -96,7 +97,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="where">The where.</param>
         /// <returns></returns>
-        public ICursor Find(String where){
+        public ICursor<Document> Find(String where)
+        {
             var spec = new Document();
             spec.Append("$where", new Code(where));
             return Find(spec, 0, 0, null);
@@ -107,7 +109,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
-        public ICursor Find(Document spec){
+        public ICursor<Document> Find(Document spec)
+        {
             return Find(spec, 0, 0, null);
         }
 
@@ -118,7 +121,8 @@ namespace MongoDB.Driver
         /// <param name="limit">The limit.</param>
         /// <param name="skip">The skip.</param>
         /// <returns></returns>
-        public ICursor Find(Document spec, int limit, int skip){
+        public ICursor<Document> Find(Document spec, int limit, int skip)
+        {
             return Find(spec, limit, skip, null);
         }
 
@@ -130,7 +134,8 @@ namespace MongoDB.Driver
         /// <param name="skip">The skip.</param>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        public ICursor Find(Document spec, int limit, int skip, Document fields){
+        public ICursor<Document> Find(Document spec, int limit, int skip, Document fields)
+        {
             if(spec == null)
                 spec = new Document();
             return new Cursor<Document>(_connection, FullName, spec, limit, skip, fields);
