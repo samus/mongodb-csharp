@@ -11,8 +11,7 @@ namespace MongoDB.Driver.Protocol
     ///   cstring   fullCollectionName; // "dbname.collectionname"
     ///   BSON[]    documents;          // one or more documents to insert into the collection
     /// </remarks>
-    public class InsertMessage<T> : RequestMessageBase
-        where T : class
+    public class InsertMessage : RequestMessageBase
     {
         public InsertMessage(){
             Header = new MessageHeader(OpCode.Insert);
@@ -20,7 +19,7 @@ namespace MongoDB.Driver.Protocol
 
         public string FullCollectionName { get; set; }
 
-        public T[] Documents { get; set; }
+        public object[] Documents { get; set; }
 
         protected override void WriteBody(BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer, 0);
