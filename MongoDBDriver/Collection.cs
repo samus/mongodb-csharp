@@ -7,9 +7,7 @@ using MongoDB.Driver.Protocol;
 namespace MongoDB.Driver
 {
     public class Collection : IMongoCollection 
-    {
-        private static OidGenerator oidGenerator = new OidGenerator();
-        
+    {       
         private Connection connection;
         
         private string name;        
@@ -162,7 +160,7 @@ namespace MongoDB.Driver
             List<Document> idocs = new List<Document>();
             foreach(Document doc in docs){
                 if(doc.Contains("_id") == false){
-                    Oid _id = oidGenerator.Generate();
+                    Oid _id = Oid.Generate();
                     doc.Prepend("_id",_id);
                 }
             }
@@ -235,7 +233,7 @@ namespace MongoDB.Driver
                 selector["_id"] = doc["_id"];   
             }else{
                 //Likely a new document
-                doc.Prepend("_id",oidGenerator.Generate());
+                doc.Prepend("_id",Oid.Generate());
                 upsert = 1;
             }
             this.Update(doc, selector, upsert);

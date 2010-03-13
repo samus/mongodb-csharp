@@ -75,7 +75,7 @@ namespace MongoDB.Driver.Bson
                     return;
                 case BsonDataType.Oid:
                     Oid id = (Oid) obj;
-                    writer.Write(id.Value);
+                    writer.Write(id.ToByteArray());
                     return;
                 case BsonDataType.Number:
                     writer.Write((double)obj);

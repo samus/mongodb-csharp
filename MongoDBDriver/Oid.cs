@@ -4,13 +4,14 @@ using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver{
 
+    /// <summary>
+    /// Oid is an immutable object that represents a Mongo ObjectId.
+    /// </summary>
     public class Oid
     {
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        /// <value>The value.</value>
-        public byte[] Value { get; set; }
+        private static OidGenerator oidGenerator = new OidGenerator();
+        
+        private byte[] bytes;
 
         /// <summary>
         /// Gets the created.
@@ -19,7 +20,7 @@ namespace MongoDB.Driver{
         public DateTime Created{
             get{
                 byte[] time = new byte[4];
-                Array.Copy(this.Value,time,4);
+                Array.Copy(bytes,time,4);
                 Array.Reverse(time);
                 int seconds = BitConverter.ToInt32(time,0);
                 return BsonInfo.Epoch.AddSeconds(seconds);
@@ -37,7 +38,7 @@ namespace MongoDB.Driver{
         /// <param name="value">The value.</param>
         public Oid(string value){
             ValidateHex(value);
-            this.Value = DecodeHex(value);
+            bytes = DecodeHex(value);
         }
 
         /// <summary>
@@ -45,7 +46,8 @@ namespace MongoDB.Driver{
         /// </summary>
         /// <param name="value">The value.</param>
         public Oid(byte[] value){
-            this.Value = value;
+            bytes = new byte[12];
+            Array.Copy(value,bytes,12);
         }
 
         /// <summary>
@@ -83,9 +85,28 @@ namespace MongoDB.Driver{
         /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
         public override string ToString() {
-            return String.Format("\"{0}\"",BitConverter.ToString(Value).Replace("-","").ToLower());
+            return String.Format("\"{0}\"",BitConverter.ToString(bytes).Replace("-","").ToLower());
+        }
+        
+        /// <summary>
+        /// Converts the Oid to a byte array. 
+        /// </summary>
+        public byte[] ToByteArray(){
+            byte[] ret = new byte[12];
+            Array.Copy(bytes, ret,12);
+            return ret;
         }
 
+        /// <summary>
+        /// Generates an Oid using OidGenerator. 
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Oid"/>
+        /// </returns>
+        public static Oid Generate(){
+            return oidGenerator.Generate();   
+        }
+        
         /// <summary>
         /// Validates the hex.
         /// </summary>
