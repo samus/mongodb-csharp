@@ -46,7 +46,34 @@ namespace MongoDB.Driver
         [Test]
         public void TestOidEquality(){
             Oid val = new Oid("4a7067c30a57000000008ecb");
-            Assert.AreEqual(val, new Oid(val.ToString().Replace("\"", "")));
+            Oid other = new Oid("4a7067c30a57000000008ecb");
+
+            Assert.IsTrue(val.Equals(other), "Equals(Oid) did not work");
+            Assert.IsTrue(val == other, "== operator did not work");
+        }
+        
+        [Test]
+        public void TestOidInEquality(){
+            Oid val = new Oid("4a7067c30a57000000008ecb");
+            Oid other = new Oid("5a7067c30a57000000008ecb");
+            
+            Assert.IsFalse(val == null);
+            Assert.IsFalse(val == other);
+            Assert.IsFalse(val.Equals(other));
+            Assert.IsTrue(val != null);
+            Assert.IsTrue(val != other);
+        }
+
+        [Test]
+        public void TestOidComparisons(){
+            Oid lower = new Oid("4a7067c30a57000000008ecb");
+            Oid higher = new Oid("5a7067c30a57000000008ecb");
+            
+            Assert.AreEqual(1, lower.CompareTo(null));
+            Assert.AreEqual(1, higher.CompareTo(lower));
+            
+            Assert.IsTrue(lower < higher);
+            Assert.IsTrue(higher > lower);
         }
         
         [Test]
@@ -110,8 +137,19 @@ namespace MongoDB.Driver
             //Expected: 2010-01-07 02:24:56.633
             DateTime expected = new DateTime(2010,1,7,7,21,57,DateTimeKind.Utc);
             Assert.AreEqual(expected,oid.Created);
-            
-  
         }
+        
+        [Test]
+        public void TestToByteArray(){
+            byte[] bytes = new byte[]{1,2,3,4,5,6,7,8,9,10,11,12};
+            string hex = "0102030405060708090a0b0c";
+
+            Oid bval = new Oid(bytes);
+            byte[] bytes2 = bval.ToByteArray();
+            
+            Assert.IsNotNull(bytes2);
+            Assert.AreEqual(12, bytes2.Length);
+            Assert.AreEqual(bytes, bytes2);
+        }        
     }
 }

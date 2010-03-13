@@ -7,7 +7,7 @@ namespace MongoDB.Driver{
     /// <summary>
     /// Oid is an immutable object that represents a Mongo ObjectId.
     /// </summary>
-    public class Oid
+    public class Oid: IEquatable<Oid>, IComparable<Oid>
     {
         private static OidGenerator oidGenerator = new OidGenerator();
         
@@ -30,11 +30,6 @@ namespace MongoDB.Driver{
         /// <summary>
         /// Initializes a new instance of the <see cref="Oid"/> class.
         /// </summary>
-        public Oid(){}
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Oid"/> class.
-        /// </summary>
         /// <param name="value">The value.</param>
         public Oid(string value){
             ValidateHex(value);
@@ -50,6 +45,7 @@ namespace MongoDB.Driver{
             Array.Copy(value,bytes,12);
         }
 
+
         /// <summary>
         /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
         /// </summary>
@@ -57,17 +53,32 @@ namespace MongoDB.Driver{
         /// <returns>
         /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="T:System.NullReferenceException">
-        /// The <paramref name="obj"/> parameter is null.
-        /// </exception>
         public override bool Equals(object obj){
-            if(obj.GetType() == typeof(Oid)){
-                string hex = obj.ToString();
-                return this.ToString().Equals(hex);
+            if(obj is Oid){
+                return this.CompareTo((Oid)obj) == 0;
             }
             return false;
         }
 
+        public bool Equals (Oid other){
+            return this.CompareTo(other) == 0;
+        }
+        
+        public int CompareTo (Oid other){
+            if (System.Object.ReferenceEquals(other, null)){
+                return 1;
+            }
+            byte[] otherBytes = other.ToByteArray();
+            for(int x = 0; x < bytes.Length; x++){
+                if(bytes[x] < otherBytes[x]){
+                    return -1;
+                }else if(bytes[x] > otherBytes[x]){
+                    return 1;
+                }
+            }
+            return 0;
+        }
+        
         /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
@@ -106,6 +117,23 @@ namespace MongoDB.Driver{
         public static Oid Generate(){
             return oidGenerator.Generate();   
         }
+
+        public static bool operator ==(Oid a, Oid b){
+            return a.Equals(b);
+        }
+    
+        public static bool operator !=(Oid a, Oid b){
+            return !(a == b);
+        }
+    
+        public static bool operator >(Oid a, Oid b){
+            return a.CompareTo(b) > 0;
+        }
+    
+        public static bool operator <(Oid a, Oid b){
+            return a.CompareTo(b) < 0;
+        }
+        
         
         /// <summary>
         /// Validates the hex.
