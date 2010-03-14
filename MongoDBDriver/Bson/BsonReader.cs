@@ -20,6 +20,13 @@ namespace MongoDB.Driver.Bson
 
         private const int MaxCharBytesSize = 128;
 
+        private byte[] seqRange1 = new byte[]{0,127};  //Range of 1-byte sequence
+        private byte[] seqRange2 = new byte[]{194,223};//Range of 2-byte sequence
+        private byte[] seqRange3 = new byte[]{224,239};//Range of 3-byte sequence
+        private byte[] seqRange4 = new byte[]{240,244};//Range of 4-byte sequence
+        
+        private byte[] multiRange = new byte[]{128,191}; //Range of second, third, or fourth byte of a multi-byte sequence
+
         public BsonReader (Stream stream)
         {
             this.stream = stream;
@@ -162,20 +169,31 @@ namespace MongoDB.Driver.Bson
             EnsureBuffers ();
 
             StringBuilder builder = null;
-
             int totalBytesRead = 0;
+
+            int rollback = 0;
             do {
                 int byteCount = 0;
                 byte b;
+                if(rollback > 0){
+                    //Copy end bytes to begining
+                    Array.Copy(_byteBuffer, _byteBuffer.Length - 1, _byteBuffer, 0, rollback);
+                    byteCount = rollback;
+                    rollback = 0;
+                }
                 while (byteCount < MaxCharBytesSize && (b = reader.ReadByte ()) > 0) {
                     _byteBuffer[byteCount++] = b;
                 }
+                
+                rollback = DetermineRollBackAmount(byteCount, b);
+                byteCount -= rollback;
+                    
                 totalBytesRead += byteCount;
                 position += byteCount;
 
                 int length = Encoding.UTF8.GetChars (_byteBuffer, 0, byteCount, _charBuffer, 0);
 
-                if (byteCount < MaxCharBytesSize && builder == null) {
+                if (byteCount < MaxCharBytesSize && builder == null && rollback == 0) {
                     position++;
                     return new string (_charBuffer, 0, length);
                 }
@@ -185,13 +203,64 @@ namespace MongoDB.Driver.Bson
 
                 builder.Append (_charBuffer, 0, length);
 
-                if (byteCount < MaxCharBytesSize) {
+                if (byteCount < MaxCharBytesSize && rollback == 0) {
                     position++;
                     return builder.ToString ();
                 }
             } while (true);
         }
 
+        /// <summary>
+        /// Figures out how much if any bytes of a character may not have been completely read because it didn't
+        /// fit into the byte buffer.
+        /// </summary>
+        /// <returns>
+        /// The number of bytes in a incomplete character that have been read.
+        /// </returns>
+        private int DetermineRollBackAmount(int byteCount, byte b){
+            int rollback = 0;
+            //Check if we may have cut off a multibyte character.
+            int seqSize = BytesInSequence(b);
+            if(b > 0){
+                if(seqSize > 1){ //last byte is the start so only character to rollback.
+                    rollback = 1;
+                }else if(IsMultiRangeByte(b)){
+                    //look at the last few characters put in the buffer and figure out if it is a complete
+                    //character.
+                    rollback = 1;
+                    for(int idx = byteCount - 2; idx > 0; idx--){
+                        rollback++;
+                        if(IsMultiByteStart(_byteBuffer[idx])){
+                            if(BytesInSequence(_byteBuffer[idx]) == rollback){
+                                //It read a full character
+                                rollback = 0;
+                            }
+                            break;
+                        }
+                        
+                    }
+                }
+            }
+            return rollback;
+        }
+        
+        private bool IsMultiByteStart(byte b){
+            return BytesInSequence(b) > 1;
+        }
+        
+        private bool IsMultiRangeByte(byte b){
+            if(b >= multiRange[0] && b <= multiRange[1]) return true;
+            return false;
+        }
+        
+        private int BytesInSequence(byte b){
+            if(b <= seqRange1[1]) return 1;
+            if(b >= seqRange2[0] && b <= seqRange2[1]) return 2;
+            if(b >= seqRange3[0] && b <= seqRange3[1]) return 3;
+            if(b >= seqRange4[0] && b <= seqRange4[1]) return 4;
+            return 0;
+        }
+        
         public string ReadLenString (){
             int length = reader.ReadInt32 ();
             string s = GetString (length - 1);

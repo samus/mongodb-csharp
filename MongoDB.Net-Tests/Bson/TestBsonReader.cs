@@ -9,6 +9,9 @@ namespace MongoDB.Driver.Bson
     [TestFixture]
     public class TestBsonReader
     {
+        char pound = '\u00a3';
+        char euro = '\u20ac';
+        
         [Test]
         public void TestReadString(){
             byte[] buf = HexToBytes("7465737400");
@@ -21,13 +24,16 @@ namespace MongoDB.Driver.Bson
         }
         
         [Test]
-        public void TestReadLongerString(){
-            byte[] buf = HexToBytes("7465737474657374746573747465737474657374746573747465737474657374746573747465737400");
+        public void TestReadStringLong(){
+            StringBuilder sb = new StringBuilder();
+            sb.Append('t',260);
+            string expected = sb.ToString();
+            byte[] buf = Encoding.UTF8.GetBytes(expected + '\0');
             MemoryStream ms = new MemoryStream(buf);
             BsonReader reader = new BsonReader(ms);
             
             String s = reader.ReadString();
-            Assert.AreEqual("testtesttesttesttesttesttesttesttesttest",s);
+            Assert.AreEqual(expected,s);
         }
         
         [Test]
@@ -51,6 +57,58 @@ namespace MongoDB.Driver.Bson
             String str = reader.ReadLenString();
             Assert.AreEqual(buf.Length, reader.Position);
             Assert.AreEqual("test", (String)str);
+        }
+        
+        [Test]
+        public void TestReadStringBreakDblByteCharOverBuffer(){
+            StringBuilder sb = new StringBuilder();
+            sb.Append("1");
+            sb.Append(pound, 64); //will break the pound symbol over the buffer boundry.
+            //sb.Append("1");
+            
+            string expected = sb.ToString();
+            
+            byte[] buf = Encoding.UTF8.GetBytes(expected + '\0');
+            //Assert.AreEqual(130, buf.Length);
+            
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            string read = reader.ReadString();            
+            Console.WriteLine(read);
+            Assert.AreEqual(expected, read);
+        }
+        
+        [Test]
+        public void TestReadStringDblByteCharOnEndOfBufferBoundry(){
+            StringBuilder sb = new StringBuilder();
+            sb.Append(pound, 66); //puts a pound symbol at the end of the buffer boundry but not broken.
+            
+            string expected = sb.ToString();
+            
+            byte[] buf = Encoding.UTF8.GetBytes(expected + '\0');
+            
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            string read = reader.ReadString();            
+            Console.WriteLine(read);
+            Assert.AreEqual(expected, read);
+        }
+
+        [Test]
+        public void TestReadStringTripleByteCharBufferBoundry(){
+            StringBuilder sb = new StringBuilder();
+            sb.Append("1");
+            sb.Append(euro, 66); //will break the euro symbol over the buffer boundry.
+            
+            string expected = sb.ToString();
+            
+            byte[] buf = Encoding.UTF8.GetBytes(expected + '\0');
+            
+            MemoryStream ms = new MemoryStream(buf);
+            BsonReader reader = new BsonReader(ms);
+            string read = reader.ReadString();            
+            Console.WriteLine(read);
+            Assert.AreEqual(expected, read);
         }
                 
         [Test]
