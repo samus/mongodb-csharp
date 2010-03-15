@@ -168,46 +168,48 @@ namespace MongoDB.Driver.Bson
         public string ReadString (){
             EnsureBuffers ();
 
-            StringBuilder builder = null;
+            StringBuilder builder = new StringBuilder();
             int totalBytesRead = 0;
-
-            int rollback = 0;
+            int offset = 0;
+            int times = 5;
             do {
                 int byteCount = 0;
+                int count = offset;
                 byte b;
-                if(rollback > 0){
-                    //Copy end bytes to begining
-                    Array.Copy(_byteBuffer, _byteBuffer.Length - 1, _byteBuffer, 0, rollback);
-                    byteCount = rollback;
-                    rollback = 0;
+                while (count < MaxCharBytesSize && (b = reader.ReadByte ()) > 0) {
+                    _byteBuffer[count++] = b;
                 }
-                while (byteCount < MaxCharBytesSize && (b = reader.ReadByte ()) > 0) {
-                    _byteBuffer[byteCount++] = b;
+                byteCount = count - offset;
+                totalBytesRead += byteCount;
+                Console.WriteLine("read " + byteCount + " bytes. totalRead " + totalBytesRead );                
+                position += byteCount;
+                
+                if(count == 0) break; //first byte read was the terminator.
+                int lastFullCharStop = GetLastFullCharStop(count - 1);
+                
+                int charCount = Encoding.UTF8.GetChars (_byteBuffer, 0, lastFullCharStop + 1, _charBuffer, 0);
+                builder.Append (_charBuffer, 0, charCount);
+
+                if(lastFullCharStop < byteCount - 1){
+                    offset = byteCount - lastFullCharStop - 1;
+                    Console.WriteLine("New Offset is: " + offset);
+                    //Copy end bytes to begining
+                    Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
+                }else{
+                    offset = 0;
                 }
                 
-                rollback = DetermineRollBackAmount(byteCount, b);
-                byteCount -= rollback;
-                    
-                totalBytesRead += byteCount;
-                position += byteCount;
-
-                int length = Encoding.UTF8.GetChars (_byteBuffer, 0, byteCount, _charBuffer, 0);
-
-                if (byteCount < MaxCharBytesSize && builder == null && rollback == 0) {
-                    position++;
-                    return new string (_charBuffer, 0, length);
+                if(b == 0){
+                    Console.WriteLine("Read the null byte");
+                    break;
+                }else{
+                    Console.WriteLine("Did not read the null byte");
                 }
+            } while (times-- > 0);
+            //} while (true);
+            position++;
+            return builder.ToString();
 
-                if (builder == null)
-                    builder = new StringBuilder (MaxCharBytesSize * 2);
-
-                builder.Append (_charBuffer, 0, length);
-
-                if (byteCount < MaxCharBytesSize && rollback == 0) {
-                    position++;
-                    return builder.ToString ();
-                }
-            } while (true);
         }
 
         /// <summary>
@@ -237,7 +239,6 @@ namespace MongoDB.Driver.Bson
                             }
                             break;
                         }
-                        
                     }
                 }
             }
@@ -252,14 +253,7 @@ namespace MongoDB.Driver.Bson
             if(b >= multiRange[0] && b <= multiRange[1]) return true;
             return false;
         }
-        
-        private int BytesInSequence(byte b){
-            if(b <= seqRange1[1]) return 1;
-            if(b >= seqRange2[0] && b <= seqRange2[1]) return 2;
-            if(b >= seqRange3[0] && b <= seqRange3[1]) return 3;
-            if(b >= seqRange4[0] && b <= seqRange4[1]) return 4;
-            return 0;
-        }
+
         
         public string ReadLenString (){
             int length = reader.ReadInt32 ();
@@ -276,31 +270,71 @@ namespace MongoDB.Driver.Bson
 
             EnsureBuffers ();
 
-            StringBuilder builder = null;
-
+            StringBuilder builder = new StringBuilder (length);;
+            
+            Console.WriteLine("String " + length + " bytes.");
             int totalBytesRead = 0;
+            int offset = 0;
             do {
-                int count = ((length - totalBytesRead) > MaxCharBytesSize) ? MaxCharBytesSize : (length - totalBytesRead);
-                int byteCount = reader.BaseStream.Read (_byteBuffer, 0, count);
+                int byteCount = 0;                
+                int count = ((length - totalBytesRead) > MaxCharBytesSize - offset) ? (MaxCharBytesSize - offset) :
+                                                                            (length - totalBytesRead);
+                
+                Console.WriteLine("reading " + count + " bytes. Offset " + offset);
+                byteCount = reader.BaseStream.Read (_byteBuffer, offset, count);
+                totalBytesRead += byteCount;
+                byteCount += offset;
+                Console.WriteLine("read " + byteCount + " bytes. totalRead " + totalBytesRead );
+                
+                int lastFullCharStop = 0;
+                if(byteCount > 1) lastFullCharStop = GetLastFullCharStop(byteCount - 1);
+                
                 if (byteCount == 0)
                     throw new EndOfStreamException ("Unable to read beyond the end of the stream.");
 
                 position += byteCount;
 
-                int charCount = Encoding.UTF8.GetChars (_byteBuffer, 0, byteCount, _charBuffer, 0);
-                if (totalBytesRead == 0 && byteCount == length)
-                    return new string (_charBuffer, 0, charCount);
-
-                if (builder == null)
-                    builder = new StringBuilder (length);
-
+                int charCount = Encoding.UTF8.GetChars (_byteBuffer, 0, lastFullCharStop + 1, _charBuffer, 0);
                 builder.Append (_charBuffer, 0, charCount);
-                totalBytesRead += byteCount;
+                
+                if(lastFullCharStop < byteCount - 1){
+                    offset = byteCount - lastFullCharStop - 1;
+                    Console.WriteLine("New Offset is: " + offset);
+                    //Copy end bytes to begining
+                    Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
+                }else{
+                    offset = 0;
+                }
+                
             } while (totalBytesRead < length);
 
             return builder.ToString ();
         }
 
+        private int GetLastFullCharStop(int start){
+            Console.WriteLine("starting at " + start);
+            //if(start == 0) return 0;
+            int bis = BytesInSequence(_byteBuffer[start]);
+            if(bis == 1) return start;
+            if(bis > 1) return start - 1; //start character is the begining so stop is one back.
+            int back = 0;
+            while((bis = BytesInSequence(_byteBuffer[start - back])) == 0){
+                back++;
+                Console.WriteLine("looking back " + back);
+            }
+            back = Math.Max(0, back - bis - 1);
+            Console.WriteLine("back " + back);
+            return start - back;
+        }
+        
+        private int BytesInSequence(byte b){
+            if(b <= seqRange1[1]) return 1;
+            if(b >= seqRange2[0] && b <= seqRange2[1]) return 2;
+            if(b >= seqRange3[0] && b <= seqRange3[1]) return 3;
+            if(b >= seqRange4[0] && b <= seqRange4[1]) return 4;
+            return 0;
+        }
+        
         private void EnsureBuffers (){
             if (_byteBuffer == null) {
                 _byteBuffer = new byte[MaxCharBytesSize];
