@@ -128,12 +128,13 @@
     <Compile Include="Code.cs" />
     <Compile Include="CodeWScope.cs" />
     <Compile Include="Binary.cs" />
-    <Compile Include="DatabaseJS.cs" />
+    <Compile Include="DatabaseJavascript.cs" />
     <Compile Include="MapReduce.cs" />
     <Compile Include="MapReduceBuilder.cs" />
     <Compile Include="QueryOptions.cs" />
     <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="Serialization\ArrayFactory.cs" />
+    <Compile Include="Serialization\MongoDefaultAttribute.cs" />
     <Compile Include="Serialization\MongoIgnoreAttribute.cs" />
     <Compile Include="Serialization\MongoNameAttribute.cs" />
     <Compile Include="Serialization\ObjectDescriptor.cs" />
