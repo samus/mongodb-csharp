@@ -13,7 +13,8 @@ namespace MongoDB.Driver.Bson
     public class BsonReader
     {
         private Stream stream;
-        private BinaryReader reader;        private int position = 0;
+        private BinaryReader reader;
+        private int position = 0;
 
         private byte[] _byteBuffer;
         private char[] _charBuffer;
@@ -175,7 +176,7 @@ namespace MongoDB.Driver.Bson
             do {
                 int byteCount = 0;
                 int count = offset;
-                byte b;
+                byte b = 0;;
                 while (count < MaxCharBytesSize && (b = reader.ReadByte ()) > 0) {
                     _byteBuffer[count++] = b;
                 }
@@ -287,7 +288,7 @@ namespace MongoDB.Driver.Bson
                 Console.WriteLine("read " + byteCount + " bytes. totalRead " + totalBytesRead );
                 
                 int lastFullCharStop = 0;
-                if(byteCount > 1) lastFullCharStop = GetLastFullCharStop(byteCount - 1);
+                lastFullCharStop = GetLastFullCharStop(byteCount - 1);
                 
                 if (byteCount == 0)
                     throw new EndOfStreamException ("Unable to read beyond the end of the stream.");
@@ -313,18 +314,26 @@ namespace MongoDB.Driver.Bson
 
         private int GetLastFullCharStop(int start){
             Console.WriteLine("starting at " + start);
-            //if(start == 0) return 0;
-            int bis = BytesInSequence(_byteBuffer[start]);
-            if(bis == 1) return start;
-            if(bis > 1) return start - 1; //start character is the begining so stop is one back.
-            int back = 0;
-            while((bis = BytesInSequence(_byteBuffer[start - back])) == 0){
-                back++;
-                Console.WriteLine("looking back " + back);
+            int lookbackPos = start;
+            int bis = 0;
+            while(lookbackPos >= 0){
+                bis = BytesInSequence(_byteBuffer[lookbackPos]);
+                if(bis == 0){
+                    lookbackPos--;
+                    continue;
+                }else if(bis == 1){
+                    break;
+                }else{
+                    lookbackPos--;
+                    break;
+                }
             }
-            back = Math.Max(0, back - bis - 1);
-            Console.WriteLine("back " + back);
-            return start - back;
+            if(bis == start - lookbackPos){
+                //Full character.
+                return start;
+            }else{
+                return lookbackPos;
+            }
         }
         
         private int BytesInSequence(byte b){

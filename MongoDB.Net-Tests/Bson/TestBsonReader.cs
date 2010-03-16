@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -82,7 +82,19 @@ namespace MongoDB.Driver.Bson
             
             Assert.AreEqual(expected, WriteAndReadLenString(expected));
         }
-
+        
+        [Test]
+        public void TestReadLenStringShortTripleByte(){
+            StringBuilder sb = new StringBuilder();
+            //sb.Append('1',127); //first char of euro at the end of the boundry.
+            //sb.Append(euro, 5);
+            //sb.Append('1',128);
+            sb.Append(euro);
+            
+            string expected = sb.ToString();
+            Assert.AreEqual(expected, WriteAndReadLenString(expected));
+        }
+        
         [Test]
         public void TestReadLenStringTripleByteCharBufferBoundry0(){
             StringBuilder sb = new StringBuilder();
