@@ -25,8 +25,6 @@ namespace MongoDB.Driver.Bson
         private byte[] seqRange2 = new byte[]{194,223};//Range of 2-byte sequence
         private byte[] seqRange3 = new byte[]{224,239};//Range of 3-byte sequence
         private byte[] seqRange4 = new byte[]{240,244};//Range of 4-byte sequence
-        
-        private byte[] multiRange = new byte[]{128,191}; //Range of second, third, or fourth byte of a multi-byte sequence
 
         public BsonReader (Stream stream)
         {
@@ -172,7 +170,6 @@ namespace MongoDB.Driver.Bson
             StringBuilder builder = new StringBuilder();
             int totalBytesRead = 0;
             int offset = 0;
-            int times = 5;
             do {
                 int byteCount = 0;
                 int count = offset;
@@ -182,7 +179,6 @@ namespace MongoDB.Driver.Bson
                 }
                 byteCount = count - offset;
                 totalBytesRead += byteCount;
-                Console.WriteLine("read " + byteCount + " bytes. totalRead " + totalBytesRead );                
                 position += byteCount;
                 
                 if(count == 0) break; //first byte read was the terminator.
@@ -193,7 +189,6 @@ namespace MongoDB.Driver.Bson
 
                 if(lastFullCharStop < byteCount - 1){
                     offset = byteCount - lastFullCharStop - 1;
-                    Console.WriteLine("New Offset is: " + offset);
                     //Copy end bytes to begining
                     Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
                 }else{
@@ -201,61 +196,14 @@ namespace MongoDB.Driver.Bson
                 }
                 
                 if(b == 0){
-                    Console.WriteLine("Read the null byte");
                     break;
-                }else{
-                    Console.WriteLine("Did not read the null byte");
                 }
-            } while (times-- > 0);
-            //} while (true);
+            } while (true);
             position++;
             return builder.ToString();
 
         }
 
-        /// <summary>
-        /// Figures out how much if any bytes of a character may not have been completely read because it didn't
-        /// fit into the byte buffer.
-        /// </summary>
-        /// <returns>
-        /// The number of bytes in a incomplete character that have been read.
-        /// </returns>
-        private int DetermineRollBackAmount(int byteCount, byte b){
-            int rollback = 0;
-            //Check if we may have cut off a multibyte character.
-            int seqSize = BytesInSequence(b);
-            if(b > 0){
-                if(seqSize > 1){ //last byte is the start so only character to rollback.
-                    rollback = 1;
-                }else if(IsMultiRangeByte(b)){
-                    //look at the last few characters put in the buffer and figure out if it is a complete
-                    //character.
-                    rollback = 1;
-                    for(int idx = byteCount - 2; idx > 0; idx--){
-                        rollback++;
-                        if(IsMultiByteStart(_byteBuffer[idx])){
-                            if(BytesInSequence(_byteBuffer[idx]) == rollback){
-                                //It read a full character
-                                rollback = 0;
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            return rollback;
-        }
-        
-        private bool IsMultiByteStart(byte b){
-            return BytesInSequence(b) > 1;
-        }
-        
-        private bool IsMultiRangeByte(byte b){
-            if(b >= multiRange[0] && b <= multiRange[1]) return true;
-            return false;
-        }
-
-        
         public string ReadLenString (){
             int length = reader.ReadInt32 ();
             string s = GetString (length - 1);
@@ -273,7 +221,6 @@ namespace MongoDB.Driver.Bson
 
             StringBuilder builder = new StringBuilder (length);;
             
-            Console.WriteLine("String " + length + " bytes.");
             int totalBytesRead = 0;
             int offset = 0;
             do {
@@ -281,11 +228,9 @@ namespace MongoDB.Driver.Bson
                 int count = ((length - totalBytesRead) > MaxCharBytesSize - offset) ? (MaxCharBytesSize - offset) :
                                                                             (length - totalBytesRead);
                 
-                Console.WriteLine("reading " + count + " bytes. Offset " + offset);
                 byteCount = reader.BaseStream.Read (_byteBuffer, offset, count);
                 totalBytesRead += byteCount;
                 byteCount += offset;
-                Console.WriteLine("read " + byteCount + " bytes. totalRead " + totalBytesRead );
                 
                 int lastFullCharStop = 0;
                 lastFullCharStop = GetLastFullCharStop(byteCount - 1);
@@ -300,7 +245,6 @@ namespace MongoDB.Driver.Bson
                 
                 if(lastFullCharStop < byteCount - 1){
                     offset = byteCount - lastFullCharStop - 1;
-                    Console.WriteLine("New Offset is: " + offset);
                     //Copy end bytes to begining
                     Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
                 }else{
@@ -313,7 +257,6 @@ namespace MongoDB.Driver.Bson
         }
 
         private int GetLastFullCharStop(int start){
-            Console.WriteLine("starting at " + start);
             int lookbackPos = start;
             int bis = 0;
             while(lookbackPos >= 0){
@@ -373,7 +316,7 @@ namespace MongoDB.Driver.Bson
 
         private IEnumerable ConvertToArray (Document doc){
             var genericListType = typeof(List<>);
-            var arrayType = GetTypeForIEnumerable(doc);
+            var arrayType  = GetTypeForIEnumerable(doc);
             var listType = genericListType.MakeGenericType(arrayType);
 
             var list = (IList)Activator.CreateInstance(listType);
