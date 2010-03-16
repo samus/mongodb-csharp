@@ -48,7 +48,7 @@ namespace MongoDB.Driver.Bson
             return _builder.EndArray(instance);
         }
 
-        public void ReadElements(object instance){
+        private void ReadElements(object instance){
             var startPosition = Position;
             var size = _reader.ReadInt32();
             Position += 4;
@@ -61,7 +61,7 @@ namespace MongoDB.Driver.Bson
                 throw new InvalidDataException(string.Format("Should have read {0} bytes from stream but only read {1}", size, (Position - startPosition)));
         }
 
-        public void ReadElement(object instance){
+        private void ReadElement(object instance){
             Position++;
             var typeNumber = (sbyte)_reader.ReadByte();
             var key = ReadString();

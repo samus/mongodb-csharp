@@ -52,20 +52,6 @@ namespace MongoDB.Driver.Bson
             Assert.AreEqual(buf.Length, reader.Position);
             Assert.AreEqual("test", (String)str);
         }
-                
-        [Test]
-        public void TestReadStringElement(){
-            byte[] buf = HexToBytes("027465737400050000007465737400");
-            MemoryStream ms = new MemoryStream(buf);
-            BsonReader reader = new BsonReader(ms);
-            Document doc = new Document();
-            
-            reader.ReadElement(doc);
-            //Assert.AreEqual(buf.Length,read);
-            Assert.IsTrue(doc.Contains("test"));
-            Assert.AreEqual("test",(String)doc["test"]);
-            Assert.AreEqual(buf.Length,reader.Position);
-        }
         
         [Test]
         public void TestReadEmptyDocument(){
