@@ -238,8 +238,6 @@ namespace MongoDB.Driver.Bson
                 if (byteCount == 0)
                     throw new EndOfStreamException ("Unable to read beyond the end of the stream.");
 
-                position += byteCount;
-
                 int charCount = Encoding.UTF8.GetChars (_byteBuffer, 0, lastFullCharStop + 1, _charBuffer, 0);
                 builder.Append (_charBuffer, 0, charCount);
                 
@@ -252,7 +250,8 @@ namespace MongoDB.Driver.Bson
                 }
                 
             } while (totalBytesRead < length);
-
+            
+            position += totalBytesRead;
             return builder.ToString ();
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -10,6 +11,7 @@ namespace MongoDB.Driver.Bson
     [TestFixture]
     public class TestBsonWriter
     {
+        char euro = '\u20ac';
         [Test]
         public void TestCalculateSizeOfEmptyDoc(){
             Document doc = new Document();
@@ -55,6 +57,35 @@ namespace MongoDB.Driver.Bson
             string hexdump = BitConverter.ToString(ms.ToArray());
             
             Assert.AreEqual(expected, hexdump);
+        }
+        
+        [Test]
+        public void TestWriteMultibyteString(){
+            
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            
+            string val = new StringBuilder().Append(euro,3).ToString();
+            string expected = BitConverter.ToString(Encoding.UTF8.GetBytes(val + '\0'));
+            Assert.AreEqual(expected,WriteStringAndGetHex(val));
+        }
+        
+        [Test]
+        public void TestWriteMultibyteStringLong(){
+            
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            
+            string val = new StringBuilder().Append("ww").Append(euro,180).ToString();
+            string expected = BitConverter.ToString(Encoding.UTF8.GetBytes(val + '\0'));
+            Assert.AreEqual(expected,WriteStringAndGetHex(val));
+        }
+        
+        private string WriteStringAndGetHex(string val){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            writer.WriteString(val);
+            return BitConverter.ToString(ms.ToArray());
         }
         
         [Test]

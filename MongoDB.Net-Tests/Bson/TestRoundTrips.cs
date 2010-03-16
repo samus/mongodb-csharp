@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 using MongoDB.Driver.Bson;
 
@@ -12,6 +13,22 @@ namespace MongoDB.Driver.Bson
     public class TestRoundTrips
     {
 
+        [Test]
+        public void TestMultibyteUnicode(){
+            char pound = '\u00a3';
+            char euro = '\u20ac';
+            String euros = new StringBuilder().Append(euro,65).ToString();
+            String pounds = new StringBuilder().Append(pound,65).ToString();
+            Document source = new Document(){{euros,euros}, {"pounds", pounds}};
+            //Document source = new Document(){{"euros",euros}};
+            
+            Document copy = WriteAndRead(source);
+            
+            Assert.AreEqual(euros, copy[euros]);
+            Assert.AreEqual(pounds, copy["pounds"]);
+            
+        }
+        
         [Test]
         public void TestDBRef(){
             Document source = new Document();
