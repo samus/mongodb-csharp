@@ -6,8 +6,7 @@ namespace MongoDB.Driver
         public enum TypeCode:byte{
             Unknown = 0,
             General = 2,
-            // Uuid is now replaced by Guid
-            //Uuid = 3,
+            // Uuid = 3 is now replaced by Guid
             Md5 = 5,
             UserDefined = 80
         }
