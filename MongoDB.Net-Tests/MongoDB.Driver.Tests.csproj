@@ -87,7 +87,7 @@
     <Compile Include="TestOid.cs" />
     <Compile Include="TestOidGenerator.cs" />
     <Compile Include="Bson\TestBsonWriter.cs" />
-    <Compile Include="TestDatabaseJS.cs" />
+    <Compile Include="TestDatabaseJavascript.cs" />
     <Compile Include="TestMapReduce.cs" />
     <Compile Include="TestMapReduceBuilder.cs" />
     <Compile Include="TestConcurrency.cs" />

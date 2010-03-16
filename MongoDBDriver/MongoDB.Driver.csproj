@@ -134,9 +134,14 @@
     <Compile Include="QueryOptions.cs" />
     <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="Serialization\ArrayFactory.cs" />
+    <Compile Include="Serialization\Handlers\DocumentArrayBuilderHandler.cs" />
+    <Compile Include="Serialization\Handlers\DocumentBuilderHandler.cs" />
+    <Compile Include="Serialization\Handlers\IBsonBuilderHandler.cs" />
     <Compile Include="Serialization\MongoDefaultAttribute.cs" />
     <Compile Include="Serialization\MongoIgnoreAttribute.cs" />
     <Compile Include="Serialization\MongoNameAttribute.cs" />
+    <Compile Include="Serialization\Handlers\ObjectArrayBuilderHandler.cs" />
+    <Compile Include="Serialization\Handlers\ObjectBuilderHandler.cs" />
     <Compile Include="Serialization\ObjectDescriptor.cs" />
     <Compile Include="Serialization\ReflectionBuilder´1.cs" />
     <Compile Include="Serialization\ReflectionDescriptor.cs" />
