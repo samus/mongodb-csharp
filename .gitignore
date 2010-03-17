@@ -22,3 +22,5 @@
 /_UpgradeReport_Files/*
 
 /redist/*.zip
+
+*_ReSharper.*/**
