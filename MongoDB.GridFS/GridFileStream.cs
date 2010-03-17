@@ -116,7 +116,7 @@ namespace MongoDB.GridFS
                 buffPosition += readCount;
                 bytesLeftToRead -= readCount;
                 bytesRead += readCount;
-                offset += bytesRead;
+                offset += readCount;
                 MoveTo(position + readCount);
             }
             return bytesRead;
