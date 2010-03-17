@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using MongoDB.Driver.Serialization.Attributes;
 
 namespace MongoDB.Driver.Serialization.Handlers
 {

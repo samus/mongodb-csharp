@@ -22,7 +22,6 @@ namespace MongoDB.Driver.Serialization.Handlers
                 list.Add(obj);
 
             return list;
-
         }
 
         public Type BeginProperty(string name){
