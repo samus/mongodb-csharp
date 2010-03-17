@@ -1,6 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+# SharpDevelop 3.1.0.4890
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver", "MongoDBDriver\MongoDB.Driver.csproj", "{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}"
 EndProject
 Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{502F3381-58AA-461B-B9D8-12578A588C61}"
@@ -18,6 +19,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.GridFS.Tests", "MongoDB.GridFS.Tests\MongoDB.GridFS.Tests.csproj", "{0C293FE9-F670-4FEF-A60F-20F8C978B1CD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{4345382B-FAA2-46E2-99CF-C90ACA2DD574}"
+	ProjectSection(SolutionItems) = postProject
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple", "examples\Simple\Simple.csproj", "{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}"
 EndProject
@@ -67,10 +70,8 @@ Global
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
-		{1BAAE3D8-7720-4AA5-9335-E59824E7B667} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
+		{502F3381-58AA-461B-B9D8-12578A588C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{502F3381-58AA-461B-B9D8-12578A588C61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MongoDBDriver\MongoDB.Driver.csproj
@@ -103,5 +104,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1BAAE3D8-7720-4AA5-9335-E59824E7B667} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
+		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
 	EndGlobalSection
 EndGlobal

@@ -13,7 +13,6 @@ Namespace Simple
     '''Find one document
     '''Find several documents and iterate through them.
     '''</summary>
-    
     Public Class Application
         Private mongo as Mongo
         Private simple as Database
@@ -22,7 +21,9 @@ Namespace Simple
         Public Shared Sub Main()
             Dim app As New Application()
             app.Setup()
-            //main.Run()
+            app.Run()
+            Console.WriteLine("Press any key to continue...")
+            Console.ReadKey()
         End Sub
         
         ''' <summary>
@@ -35,7 +36,7 @@ Namespace Simple
             mongo.Connect()
             simple = mongo("simple")
             categories = simple("categories")
-            //Clean()
+            Clean()
             
             Dim names() As String = {"Bluez", "Jazz", "Classical", "Rock", "Oldies", "Heavy Metal"}
 
@@ -46,12 +47,12 @@ Namespace Simple
         
         Public Sub Clean()
             categories.Delete(new Document().Append("name", "Jazz")) 'remove documents with the name Jazz.
-            categories.Delete(new Document()) 'remove everything from the categories collection.        
+            categories.Delete(new Document()) 'remove everything from the categories collection.
         End Sub
         Public Sub Run()
-            Dim category As Document = categories.FindOne(new Document.Append("name", "Bluez"))
+            Dim category As Document = categories.FindOne(new Document().Append("name", "Bluez"))
             
-            Console.WriteLine ("The id findOne" + category("_id"))
+            Console.WriteLine ("The id findOne" & category("_id").ToString())
             
             Dim selector As Document = New Document().Append("_id", category("_id"))
             
@@ -75,15 +76,18 @@ Namespace Simple
             'Find(new Document()) is equivalent to FindAll()
             'Specifying the cursor in a using block will close it on the server if we decide not
             'to iterate through the whole thing.
-REM            using(ICursor all = categories.Find(new Document())){
-REM                foreach(Document doc in all.Documents){
-REM                    Console.WriteLine(doc.ToString());
-REM                }
-REM            }
+            Dim all As ICursor = categories.Find(New Document())
+            Try
+                For Each doc As Document In all.Documents
+                    Console.WriteLine(doc.ToString())
+                Next
+            Finally
+                all.Dispose()
+            End Try
             
             mongo.Disconnect()
         End Sub
                 
     End Class
 
-End Namespace    
+End Namespace

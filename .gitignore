@@ -28,3 +28,8 @@
 /_UpgradeReport_Files/*
 
 /redist/*.zip
+
+/examples/Simple/obj/Debug/Simple.csproj.FileListAbsolute.txt
+/examples/Simple/obj/Debug/Simple.exe
+/examples/SimpleVB/obj/Debug/SimpleVB.exe
+/examples/SimpleVB/obj/Debug/SimpleVB.vbproj.FileListAbsolute.txt
