@@ -26,6 +26,7 @@ namespace MongoDB.Driver{
         public Oid(){}
         
         public Oid(string value){
+            value = value.Replace("\"", "");
             ValidateHex(value);
             this.Value = DecodeHex(value);
         }

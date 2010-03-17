@@ -85,5 +85,14 @@ namespace MongoDB.Driver
             
   
         }
+
+        [Test]
+        public void TestNewOidFromToString(){
+            var hex = "4B458B95D114BE541B000000";
+            var firstOid = new Oid(hex);
+            var secondOid = new Oid(firstOid.ToString());
+            
+            Assert.AreEqual(firstOid.ToString(), secondOid.ToString());
+        }
     }
 }
