@@ -142,9 +142,14 @@
     <Compile Include="Serialization\Attributes\MongoNameAttribute.cs" />
     <Compile Include="Serialization\Handlers\ObjectArrayBuilderHandler.cs" />
     <Compile Include="Serialization\Handlers\ObjectBuilderHandler.cs" />
+    <Compile Include="Serialization\ISerializationFactory.cs" />
     <Compile Include="Serialization\ObjectDescriptor.cs" />
-    <Compile Include="Serialization\ReflectionBuilder´1.cs" />
-    <Compile Include="Serialization\ReflectionDescriptor.cs" />
+    <Compile Include="Serialization\BsonReflectionBuilder.cs" />
+    <Compile Include="Serialization\BsonReflectionDescriptor.cs" />
+    <Compile Include="Serialization\SerializationFactory.cs" />
+    <Compile Include="Serialization\TypeRegistry.cs" />
+    <Compile Include="Serialization\TypeRegistryItem.cs" />
+    <Compile Include="Serialization\TypeRegistryProperty.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
     <Compile Include="Util\JsonFormatter.cs" />
