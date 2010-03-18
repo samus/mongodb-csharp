@@ -12,7 +12,7 @@ namespace MongoDB.Driver.Configuration
             set{this["key"] = value;}
         }
         
-        [ConfigurationProperty("connectionString", DefaultValue = "Server=localhost:27017", IsRequired = true)]
+        [ConfigurationProperty("connectionString", DefaultValue = "Server=localhost:27017")]
         public string ConnectionString{
             get { return (String)this["connectionString"]; }
             set { this["connectionString"] = value; }
