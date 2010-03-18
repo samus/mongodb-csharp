@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using MongoDB.Driver.Bson;
 
@@ -15,6 +16,8 @@ namespace MongoDB.Driver.Protocol
         /// </summary>
         /// <param name="objectDescriptor">The object descriptor.</param>
         protected RequestMessageBase(IBsonObjectDescriptor objectDescriptor){
+            if(objectDescriptor == null)
+                throw new ArgumentNullException("objectDescriptor");
             _objectDescriptor = objectDescriptor;
         }
 

@@ -1,6 +1,6 @@
 namespace MongoDB.Driver.Bson
 {
-    public enum BsonDataType:sbyte
+    public enum BsonDataType
     {
         Number = 1,
         /// <summary>

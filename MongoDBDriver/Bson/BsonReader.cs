@@ -77,8 +77,8 @@ namespace MongoDB.Driver.Bson
             _builder.EndProperty(instance, key, element);
         }
 
-        public Object ReadElementType(sbyte typeNum){
-            switch((BsonDataType)typeNum){
+        public Object ReadElementType(int typeNumber){
+            switch((BsonDataType)typeNumber){
                 case BsonDataType.Null:
                 case BsonDataType.Undefined:
                     return DBNull.Value;
@@ -120,7 +120,7 @@ namespace MongoDB.Driver.Bson
                 case BsonDataType.Binary:
                     return ReadBinary();
                 default:
-                    throw new ArgumentOutOfRangeException(String.Format("Type Number: {0} not recognized", typeNum));
+                    throw new ArgumentOutOfRangeException(String.Format("Type Number: {0} not recognized", typeNumber));
             }
         }
 

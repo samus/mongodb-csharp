@@ -17,7 +17,7 @@ namespace MongoDB.Driver
         private readonly Connection _connection;
         private MongoDatabase _database;
         private CollectionMetaData _metaData;
-        private ISerializationFactory _serializationFactory = SerializationFactory.Default;
+        private readonly ISerializationFactory _serializationFactory = SerializationFactory.Default;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.

@@ -19,7 +19,7 @@ namespace MongoDB.Driver
         private QueryOptions _options;
         private ReplyMessage<T> _reply;
         private int _skip;
-        private ISerializationFactory _serializationFactory = SerializationFactory.Default;
+        private readonly ISerializationFactory _serializationFactory = SerializationFactory.Default;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Cursor&lt;T&gt;" /> class.
@@ -280,6 +280,7 @@ namespace MongoDB.Driver
                 return;
 
             var killCursorsMessage = new KillCursorsMessage(Id);
+
             try{
                 _connection.SendMessage(killCursorsMessage);
                 Id = 0;

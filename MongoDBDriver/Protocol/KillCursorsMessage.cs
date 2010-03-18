@@ -22,13 +22,12 @@ namespace MongoDB.Driver.Protocol
             Header = new MessageHeader(OpCode.KillCursors);
         }
 
-        public KillCursorsMessage(long cursorId)
-            :base(new DocumentDescriptor()){
+        public KillCursorsMessage(long cursorId) : this()
+        {
             CursorIds = new[]{cursorId};
         }
 
-        public KillCursorsMessage(long[] cursorIDs)
-            : base(new DocumentDescriptor())
+        public KillCursorsMessage(long[] cursorIDs) : this()
         {
             CursorIds = cursorIDs;
         }
