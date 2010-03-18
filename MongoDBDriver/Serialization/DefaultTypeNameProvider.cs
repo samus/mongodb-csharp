@@ -5,7 +5,7 @@ namespace MongoDB.Driver.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class DefaultObjectTypeNameProvider : IObjectTypeNameProvider
+    public class DefaultTypeNameProvider : ITypeNameProvider
     {
         /// <summary>
         /// Gets the name.

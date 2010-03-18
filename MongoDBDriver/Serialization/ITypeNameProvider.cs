@@ -5,7 +5,7 @@ namespace MongoDB.Driver.Serialization
     /// <summary>
     /// Provides a way to get a name for the _type database field and back.
     /// </summary>
-    public interface IObjectTypeNameProvider
+    public interface ITypeNameProvider
     {
         /// <summary>
         /// Gets the name.
