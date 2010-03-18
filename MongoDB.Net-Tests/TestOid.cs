@@ -34,13 +34,12 @@ namespace MongoDB.Driver
         [Test]
         public void TestQuoteCharacters(){
             bool thrown = false;
-            Oid val = new Oid("4a7067c30a57000000008ecb");
+            Oid val = new Oid(@"""4a7067c30a57000000008ecb""");
             try{
                 new Oid(val.ToString());
             }catch(ArgumentException ae){
-                thrown = true;
+                Assert.Fail("Creating an Oid from the json representation should not fail.");
             }
-            Assert.IsTrue(thrown,"ID has quotes and should throw an exception.");
         }
         
         [Test]
@@ -151,5 +150,14 @@ namespace MongoDB.Driver
             Assert.AreEqual(12, bytes2.Length);
             Assert.AreEqual(bytes, bytes2);
         }        
+
+        [Test]
+        public void TestNewOidFromToString(){
+            var hex = "4B458B95D114BE541B000000";
+            var firstOid = new Oid(hex);
+            var secondOid = new Oid(firstOid.ToString());
+            
+            Assert.AreEqual(firstOid.ToString(), secondOid.ToString());
+        }
     }
 }

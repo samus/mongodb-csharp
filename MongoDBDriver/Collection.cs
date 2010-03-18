@@ -160,7 +160,7 @@ namespace MongoDB.Driver
             List<Document> idocs = new List<Document>();
             foreach(Document doc in docs){
                 if(doc.Contains("_id") == false){
-                    Oid _id = Oid.Generate();
+                    Oid _id = Oid.NewOid();
                     doc.Prepend("_id",_id);
                 }
             }
@@ -233,7 +233,7 @@ namespace MongoDB.Driver
                 selector["_id"] = doc["_id"];   
             }else{
                 //Likely a new document
-                doc.Prepend("_id",Oid.Generate());
+                doc.Prepend("_id",Oid.NewOid());
                 upsert = 1;
             }
             this.Update(doc, selector, upsert);

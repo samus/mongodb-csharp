@@ -32,6 +32,7 @@ namespace MongoDB.Driver{
         /// </summary>
         /// <param name="value">The value.</param>
         public Oid(string value){
+            value = value.Replace("\"", "");
             ValidateHex(value);
             bytes = DecodeHex(value);
         }
@@ -114,7 +115,7 @@ namespace MongoDB.Driver{
         /// <returns>
         /// A <see cref="Oid"/>
         /// </returns>
-        public static Oid Generate(){
+        public static Oid NewOid(){
             return oidGenerator.Generate();   
         }
 

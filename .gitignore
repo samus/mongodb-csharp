@@ -24,12 +24,11 @@
 
 /examples/*/bin/*
 /examples/*/test-results/*
+/examples/*/obj/*
 
 /_UpgradeReport_Files/*
 
 /redist/*.zip
 
-/examples/Simple/obj/Debug/Simple.csproj.FileListAbsolute.txt
-/examples/Simple/obj/Debug/Simple.exe
-/examples/SimpleVB/obj/Debug/SimpleVB.exe
-/examples/SimpleVB/obj/Debug/SimpleVB.vbproj.FileListAbsolute.txt
+*_ReSharper.*/**
+>>>>>>> dc06fc695339fb920a153bad7a131c47f57ac7d7:.gitignore
