@@ -15,7 +15,7 @@ namespace MongoDB.Driver.Serialization
         /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
         /// </summary>
         public SerializationFactory(){
-            TypeNameProvider = new DefaultTypeNameProvider();
+            TypeNameProvider = new QualifiedNameTypeNameProvider();
             Registry = new TypeRegistry(this);
         }
 
