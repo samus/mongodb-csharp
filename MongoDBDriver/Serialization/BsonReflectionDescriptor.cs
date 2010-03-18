@@ -5,7 +5,7 @@ using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Serialization
 {
-    public class ReflectionDescriptor : IBsonObjectDescriptor
+    public class BsonReflectionDescriptor : IBsonObjectDescriptor
     {
         public IEnumerable<BsonObjectProperty> GetPropertys(object obj)
         {

@@ -20,7 +20,7 @@ namespace MongoDB.Driver.Bson
         private readonly BinaryWriter _writer;
 
         public BsonWriter(Stream stream)
-            :this(stream,new ReflectionDescriptor()){
+            :this(stream,new BsonReflectionDescriptor()){
             
         }
 

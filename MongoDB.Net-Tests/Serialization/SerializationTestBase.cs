@@ -21,7 +21,7 @@ namespace MongoDB.Driver.Serialization
         {
             using(var mem = new MemoryStream())
             {
-                var writer = new BsonWriter(mem, new ReflectionDescriptor());
+                var writer = new BsonWriter(mem, new BsonReflectionDescriptor());
                 writer.WriteObject(instance);
                 writer.Flush();
                 return Convert.ToBase64String(mem.ToArray());

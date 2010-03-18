@@ -166,5 +166,18 @@ namespace MongoDB.Driver.Serialization
             Assert.AreEqual(1, document.Count);
             Assert.AreEqual("a", document["A"]);
         }
+
+        public class DefaultId
+        {
+            public int Id { get; set; }
+        }
+
+        [Test]
+        public void CanDeserializeToDefaultIdProperty(){
+            const string bson = "DgAAABBfaWQAAQAAAAA=";
+            var obj = Deserialize<DefaultId>(bson);
+            Assert.IsNotNull(obj);
+            Assert.AreEqual(1,obj.Id);           
+        }
     }
 }
