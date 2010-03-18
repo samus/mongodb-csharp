@@ -78,6 +78,7 @@
     <Compile Include="Bson\DocumentDescriptor.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
+    <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="MongoCollection.cs" />
     <Compile Include="CollectionMetaData.cs" />
@@ -157,7 +158,6 @@
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="Configuration\ConnectionElement.cs" />
     <Compile Include="Configuration\ConnectionCollection.cs" />
-    <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="Serialization\ReflectionBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

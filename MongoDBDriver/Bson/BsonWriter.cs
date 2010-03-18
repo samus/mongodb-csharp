@@ -18,10 +18,9 @@ namespace MongoDB.Driver.Bson
         private readonly Stream _stream;
         private readonly IBsonObjectDescriptor _descriptor;
         private readonly BinaryWriter _writer;
-        
+
         public BsonWriter(Stream stream)
-            :this(stream,new BsonReflectionDescriptor()){
-            
+            : this(stream, new BsonReflectionDescriptor()){
         }
 
         public BsonWriter(Stream stream, IBsonObjectDescriptor descriptor){
@@ -67,7 +66,7 @@ namespace MongoDB.Driver.Bson
                         WriteObject(obj);
                     return;
                 case BsonDataType.Array:
-                    Write((IEnumerable)obj);
+                    WriteEnumerable((IEnumerable)obj);
                     return;
                 case BsonDataType.Regex:{
                     Write((MongoRegex)obj);
@@ -156,7 +155,7 @@ namespace MongoDB.Driver.Bson
             _writer.Write((byte)0);
         }
 
-        public void Write(IEnumerable enumerable){
+        public void WriteEnumerable(IEnumerable enumerable){
             var size = CalculateSize(enumerable);
             _writer.Write(size);
             var keyname = 0;

@@ -137,7 +137,7 @@ namespace MongoDB.Driver.Bson
             Document big = new Document().Append("x", b);
             bool thrown = false;
             try{
-                writer.Write(big);    
+                writer.WriteObject(big);    
             }catch(ArgumentException){
                 thrown = true;
             }catch(Exception e){

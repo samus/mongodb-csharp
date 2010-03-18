@@ -13,7 +13,6 @@ namespace MongoDB.Driver
     public class MongoCollection<T> : IMongoCollection<T>
         where T : class
     {
-        private static readonly OidGenerator OidGenerator = new OidGenerator();
         private readonly ObjectDescriptor _objectDescriptor = new ObjectDescriptor();
         private readonly Connection _connection;
         private MongoDatabase _database;
@@ -329,7 +328,7 @@ namespace MongoDB.Driver
             var insertDocument = new List<object>();
 
             foreach(var document in documents){
-                _objectDescriptor.SetPropertyValueIfEmpty(document, "_id", () => OidGenerator.Generate());
+                _objectDescriptor.SetPropertyValueIfEmpty(document, "_id", Oid.NewOid);
                 insertDocument.Add(document);
             }
 
@@ -463,7 +462,7 @@ namespace MongoDB.Driver
                 selector["_id"] = value;
             }else{
                 //Likely a new document
-                _objectDescriptor.SetPropertyValue(document, "_id", OidGenerator.Generate());
+                _objectDescriptor.SetPropertyValue(document, "_id", Oid.NewOid());
                 upsert = UpdateFlags.Upsert;
             }
 
