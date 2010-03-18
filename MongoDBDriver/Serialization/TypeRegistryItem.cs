@@ -20,14 +20,16 @@ namespace MongoDB.Driver.Serialization
         /// Initializes a new instance of the <see cref="TypeRegistryItem"/> class.
         /// </summary>
         /// <param name="type">The type.</param>
-        public TypeRegistryItem(Type type){
+        /// <param name="typeName">Name of the type.</param>
+        public TypeRegistryItem(Type type,object typeName){
             if(type == null)
                 throw new ArgumentNullException("type");
-            
+            if(typeName == null)
+                throw new ArgumentNullException("typeName");
+
             Type = type;
             IdPropertyName = DefaultIdProperty;
-            //Todo use factory to get name
-            TypeName = type.AssemblyQualifiedName;
+            TypeName = typeName;
             //Todo: replace with reflection emit one
             _createInstance = t => Activator.CreateInstance(t);
             
