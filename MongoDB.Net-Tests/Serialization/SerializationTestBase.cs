@@ -32,7 +32,7 @@ namespace MongoDB.Driver.Serialization
         {
             using(var mem = new MemoryStream(Convert.FromBase64String(base64)))
             {
-                var reader = new BsonReader(mem, new ReflectionBuilder<T>());
+                var reader = new BsonReader(mem, new BsonReflectionBuilder(typeof(T)));
                 return (T)reader.ReadObject();
             }
         }

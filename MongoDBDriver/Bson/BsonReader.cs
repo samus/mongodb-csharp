@@ -18,7 +18,7 @@ namespace MongoDB.Driver.Bson
         private readonly IBsonObjectBuilder _builder;
 
         public BsonReader(Stream stream)
-            :this(stream,new ReflectionBuilder<Document>()){
+            : this(stream, new BsonReflectionBuilder(typeof(Document))){
         }
 
         public BsonReader(Stream stream,IBsonObjectBuilder builder){

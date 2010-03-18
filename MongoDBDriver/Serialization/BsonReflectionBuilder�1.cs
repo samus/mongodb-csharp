@@ -5,13 +5,15 @@ using MongoDB.Driver.Serialization.Handlers;
 
 namespace MongoDB.Driver.Serialization
 {
-    public class ReflectionBuilder<T> : IBsonObjectBuilder
+    public class BsonReflectionBuilder : IBsonObjectBuilder
     {
         readonly Stack<Type> _type = new Stack<Type>();
 
-        public ReflectionBuilder()
-        {
-            _type.Push(typeof(T));
+        public BsonReflectionBuilder(Type rootType){
+            if(rootType == null)
+                throw new ArgumentNullException("rootType");
+
+            _type.Push(rootType);
         }
 
         public object BeginObject()

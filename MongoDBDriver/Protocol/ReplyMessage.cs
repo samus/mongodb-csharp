@@ -50,7 +50,7 @@ namespace MongoDB.Driver.Protocol
             StartingFrom = reader.ReadInt32();
             NumberReturned = reader.ReadInt32();
 
-            var breader = new BsonReader(stream,new ReflectionBuilder<T>());
+            var breader = new BsonReader(stream,new BsonReflectionBuilder(typeof(T)));
             var documents = new List<T>();
             
             for(var num = 0; num < NumberReturned; num++)
