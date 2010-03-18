@@ -6,7 +6,7 @@ namespace MongoDB.Driver.Serialization.Attributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class MongoNameAttribute : Attribute
+    public sealed class MongoNameAttribute : Attribute
     {
         /// <summary>
         /// Gets or sets the name.

@@ -6,7 +6,7 @@ namespace MongoDB.Driver.Serialization.Attributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class MongoIgnoreAttribute : Attribute
+    public sealed class MongoIgnoreAttribute : Attribute
     {
     }
 }

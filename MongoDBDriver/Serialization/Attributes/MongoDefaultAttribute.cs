@@ -6,7 +6,7 @@ namespace MongoDB.Driver.Serialization.Attributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class MongoDefaultAttribute : Attribute
+    public sealed class MongoDefaultAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoDefaultAttribute"/> class.

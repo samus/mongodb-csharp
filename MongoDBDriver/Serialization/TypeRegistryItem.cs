@@ -10,11 +10,11 @@ namespace MongoDB.Driver.Serialization
     /// </summary>
     public class TypeRegistryItem
     {
-        public delegate object CreateInstanceDelegate(Type type);
+        public delegate object CreateInstanceFunc(Type type);
 
         private const string DefaultIdProperty = "Id";
         private readonly Dictionary<string, TypeRegistryProperty> _propertys = new Dictionary<string, TypeRegistryProperty>();
-        private readonly CreateInstanceDelegate _createInstance;
+        private readonly CreateInstanceFunc _createInstance;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeRegistryItem"/> class.
@@ -109,7 +109,7 @@ namespace MongoDB.Driver.Serialization
         /// </summary>
         /// <param name="propertyInfo">The property info.</param>
         /// <returns></returns>
-        private string GetPropertyName(PropertyInfo propertyInfo){
+        private static string GetPropertyName(PropertyInfo propertyInfo){
             foreach(MongoNameAttribute nameAttribute in propertyInfo.GetCustomAttributes(typeof(MongoNameAttribute), true))
                 return nameAttribute.Name;
 

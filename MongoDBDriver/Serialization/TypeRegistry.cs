@@ -8,7 +8,8 @@ namespace MongoDB.Driver.Serialization
     /// </summary>
     public class TypeRegistry
     {
-        private readonly Dictionary<Type,TypeRegistryItem> _items = new Dictionary<Type, TypeRegistryItem>();
+        private readonly Dictionary<Type, TypeRegistryItem> _items = new Dictionary<Type, TypeRegistryItem>();
+        private readonly Dictionary<object, TypeRegistryItem> _names = new Dictionary<object, TypeRegistryItem>();
 
         /// <summary>
         /// Gets the or create.
@@ -22,6 +23,7 @@ namespace MongoDB.Driver.Serialization
                 return item;
 
             _items.Add(type,item = new TypeRegistryItem(type));
+            _names.Add(item.TypeName, item);
 
             return item;
         }

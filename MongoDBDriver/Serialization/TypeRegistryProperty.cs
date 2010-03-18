@@ -5,11 +5,11 @@ namespace MongoDB.Driver.Serialization
 {
     public class TypeRegistryProperty
     {
-        public delegate object GetValueDelegate(object instance);
-        public delegate void SetValueDelegate(object instance, object value);
+        public delegate object GetValueFunc(object instance);
+        public delegate void SetValueAction(object instance, object value);
 
-        private readonly GetValueDelegate _getValue;
-        private readonly SetValueDelegate _setValue;
+        private readonly GetValueFunc _getValue;
+        private readonly SetValueAction _setValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeRegistryProperty"/> class.

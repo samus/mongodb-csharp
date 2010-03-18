@@ -136,6 +136,7 @@
     <Compile Include="Protocol\UpdateMessage.cs" />
     <Compile Include="QueryOptions.cs" />
     <Compile Include="Serialization\ArrayFactory.cs" />
+    <Compile Include="Serialization\DefaultObjectTypeNameProvider.cs" />
     <Compile Include="Serialization\Handlers\DocumentArrayBuilderHandler.cs" />
     <Compile Include="Serialization\Handlers\DocumentBuilderHandler.cs" />
     <Compile Include="Serialization\Handlers\IBsonBuilderHandler.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Serialization\Attributes\MongoNameAttribute.cs" />
     <Compile Include="Serialization\Handlers\ObjectArrayBuilderHandler.cs" />
     <Compile Include="Serialization\Handlers\ObjectBuilderHandler.cs" />
+    <Compile Include="Serialization\IObjectTypeNameProvider.cs" />
     <Compile Include="Serialization\ISerializationFactory.cs" />
     <Compile Include="Serialization\ObjectDescriptor.cs" />
     <Compile Include="Serialization\BsonReflectionBuilder.cs" />
