@@ -1,20 +1,18 @@
-/*
- * User: scorder
- */
 using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
+    /// The OP_DELETE message is used to remove one or more messages from a collection.
     /// </summary>
     /// <remarks>
-    ///   struct {
-    ///   MsgHeader header;                 // standard message header
-    ///   int32     ZERO;                   // 0 - reserved for future use
-    ///   cstring   fullCollectionName;     // "dbname.collectionname"
-    ///   int32     ZERO;                   // 0 - reserved for future use
-    ///   BSON      selector;               // query object.  See below for details.
-    ///   }
+    /// struct {
+    ///     MsgHeader header;                 // standard message header
+    ///     int32     ZERO;                   // 0 - reserved for future use
+    ///     cstring   fullCollectionName;     // "dbname.collectionname"
+    ///     int32     ZERO;                   // 0 - reserved for future use
+    ///     BSON      selector;               // query object.  See below for details.
+    /// }
     /// </remarks>
     public class DeleteMessage : RequestMessageBase
     {

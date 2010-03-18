@@ -4,16 +4,18 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
-    ///   Description of QueryMessage.
+    /// The OP_QUERY message is used to query the database for documents in a collection.
     /// </summary>
     /// <remarks>
-    ///   MsgHeader header;                 // standard message header
-    ///   int32     opts;                   // query options.  See QueryOptions for values
-    ///   cstring   fullCollectionName;     // "dbname.collectionname"
-    ///   int32     numberToSkip;           // number of documents to skip when returning results
-    ///   int32     numberToReturn;         // number of documents to return in the first OP_REPLY
-    ///   BSON      query ;                 // query object.  See below for details.
-    ///   [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
+    /// struct {
+    ///     MsgHeader header;                 // standard message header
+    ///     int32     opts;                   // query options.  See below for details.
+    ///     cstring   fullCollectionName;     // "dbname.collectionname"
+    ///     int32     numberToSkip;           // number of documents to skip when returning results
+    ///     int32     numberToReturn;         // number of documents to return in the first OP_REPLY
+    ///     BSON      query ;                 // query object.  See below for details.
+    ///     [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
+    /// }
     /// </remarks>
     public class QueryMessage<T> : RequestMessageBase
     {

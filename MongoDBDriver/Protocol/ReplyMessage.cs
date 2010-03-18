@@ -5,6 +5,20 @@ using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Protocol
 {
+    /// <summary>
+    /// The OP_REPLY message is sent by the database in response to an CONTRIB:OP_QUERY  or CONTRIB:OP_GET_MORE  message.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <remarks>
+    /// struct {
+    ///     MsgHeader header;                 // standard message header
+    ///     int32     responseFlag;           // normally zero, non-zero on query failure
+    ///     int64     cursorID;               // id of the cursor created for this query response
+    ///     int32     startingFrom;           // indicates where in the cursor this reply is starting
+    ///     int32     numberReturned;         // number of documents in the reply
+    ///     BSON[]    documents;              // documents
+    /// }
+    /// </remarks>
     public class ReplyMessage<T> : MessageBase where T : class
     {
         /// <summary>

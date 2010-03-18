@@ -3,12 +3,14 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
+    /// Deprecated. OP_MSG sends a diagnostic message to the database.  
+    /// The database sends back a fixed resonse.
     /// </summary>
     /// <remarks>
-    ///   struct {
-    ///   MsgHeader header;    // standard message header
-    ///   cstring   message;   // message for the database
-    ///   }
+    /// struct {
+    ///     MsgHeader header;    // standard message header
+    ///     cstring   message;   // message for the database
+    /// }
     /// </remarks>
     public class MsgMessage : RequestMessageBase
     {

@@ -5,13 +5,15 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
-    /// Description of InsertMessage.
+    /// The OP_INSERT message is used to insert one or more documents into a collection.
     /// </summary>
     /// <remarks>
-    /// MsgHeader header;             // standard message header
-    /// int32     ZERO;               // 0 - reserved for future use
-    /// cstring   fullCollectionName; // "dbname.collectionname"
-    /// BSON[]    documents;          // one or more documents to insert into the collection
+    /// struct {
+    ///     MsgHeader header;             // standard message header
+    ///     int32     ZERO;               // 0 - reserved for future use
+    ///     cstring   fullCollectionName; // "dbname.collectionname"
+    ///     BSON[]    documents;          // one or more documents to insert into the collection
+    /// }
     /// </remarks>
     public class InsertMessage : MessageBase, IRequestMessage
     {

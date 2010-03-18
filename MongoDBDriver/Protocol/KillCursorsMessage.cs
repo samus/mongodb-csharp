@@ -3,15 +3,17 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
-    ///   Description of KillCursorsMessage.
+    /// The OP_KILL_CURSORS message is used to close an active 
+    /// cursor in the database. This is necessary to ensure 
+    /// that database resources are reclaimed at the end of the query.
     /// </summary>
     /// <remarks>
-    ///   struct {
-    ///   MsgHeader header;                 // standard message header
-    ///   int32     ZERO;                   // 0 - reserved for future use
-    ///   int32     numberOfCursorIDs;      // number of cursorIDs in message
-    ///   int64[]   cursorIDs;                // array of cursorIDs to close
-    ///   }
+    /// struct {
+    ///     MsgHeader header;                 // standard message header
+    ///     int32     ZERO;                   // 0 - reserved for future use
+    ///     int32     numberOfCursorIDs;      // number of cursorIDs in message
+    ///     int64[]   cursorIDs;                // array of cursorIDs to close
+    /// }
     /// </remarks>
     public class KillCursorsMessage : RequestMessageBase
     {

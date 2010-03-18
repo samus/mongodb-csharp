@@ -3,16 +3,16 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
-    ///   Description of GetMoreMessage.
+    /// The OP_GETMORE message is used to query the database for documents in a collection.
     /// </summary>
     /// <remarks>
-    ///   struct {
-    ///   MsgHeader header;                 // standard message header
-    ///   int32     ZERO;                   // 0 - reserved for future use
-    ///   cstring   fullCollectionName;     // "dbname.collectionname"
-    ///   int32     numberToReturn;         // number of documents to return
-    ///   int64     cursorID;               // cursorID from the OP_REPLY
-    ///   }
+    /// struct {
+    ///     MsgHeader header;                 // standard message header
+    ///     int32     ZERO;                   // 0 - reserved for future use
+    ///     cstring   fullCollectionName;     // "dbname.collectionname"
+    ///     int32     numberToReturn;         // number of documents to return
+    ///     int64     cursorID;               // cursorID from the OP_REPLY
+    /// }
     /// </remarks>
     public class GetMoreMessage : RequestMessageBase
     {
@@ -42,7 +42,7 @@ namespace MongoDB.Driver.Protocol
         }
 
         /// <summary>
-        /// Gets or sets the cursor id.
+        /// cursorID from the OP_REPLY.
         /// </summary>
         /// <value>The cursor id.</value>
         public long CursorId { get; set; }
