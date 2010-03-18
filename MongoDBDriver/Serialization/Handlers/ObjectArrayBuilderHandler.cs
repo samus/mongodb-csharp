@@ -18,7 +18,7 @@ namespace MongoDB.Driver.Serialization.Handlers
             _list = (IList)_arrayFactory.Create(type, out _containingType);
         }
 
-        public object Compleate(){
+        public object Complete(){
             return _type.IsArray ? CreateArrayFromList() : _list;
         }
 

@@ -5,10 +5,10 @@ namespace MongoDB.Driver.Serialization.Handlers
     public interface IBsonBuilderHandler
     {
         /// <summary>
-        /// Compleates this instance.
+        /// Completes this instance.
         /// </summary>
         /// <returns></returns>
-        object Compleate();
+        object Complete();
 
         /// <summary>
         /// Begins the property.

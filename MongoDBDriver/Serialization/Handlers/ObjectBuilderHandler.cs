@@ -35,7 +35,7 @@ namespace MongoDB.Driver.Serialization.Handlers
             _currentProperty.SetValue(_instance,value);
         }
 
-        public object Compleate(){
+        public object Complete(){
             return _instance;
         }
     }

@@ -47,14 +47,14 @@ namespace MongoDB.Driver.Serialization
         {
             var handler = ((IBsonBuilderHandler)instance);
 
-            return handler.Compleate();
+            return handler.Complete();
         }
 
         public object EndArray(object instance)
         {
             var handler = ((IBsonBuilderHandler)instance);
 
-            return handler.Compleate();
+            return handler.Complete();
         }
 
         public void EndProperty(object instance, string name, object value)

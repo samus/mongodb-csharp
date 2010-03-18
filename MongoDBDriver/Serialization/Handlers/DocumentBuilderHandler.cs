@@ -11,7 +11,7 @@ namespace MongoDB.Driver.Serialization.Handlers
             _document.Add(name, value);
         }
 
-        public object Compleate(){
+        public object Complete(){
             if(DBRef.IsDocumentDBRef(_document))
                 return DBRef.FromDocument(_document);
 

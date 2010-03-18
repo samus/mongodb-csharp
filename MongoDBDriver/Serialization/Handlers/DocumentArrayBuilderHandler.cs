@@ -8,7 +8,7 @@ namespace MongoDB.Driver.Serialization.Handlers
     {
         private readonly List<object> _list = new List<object>();
         
-        public object Compleate(){
+        public object Complete(){
             var type = GetResultListType();
 
             if(type == typeof(object))
