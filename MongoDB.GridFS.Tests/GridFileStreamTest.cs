@@ -236,6 +236,30 @@ namespace MongoDB.GridFS
                 expected++;
             }
         }
+        
+        [Test]
+        public void TestReadFrom3Chunks(){
+            string filename = "read3chunks.txt";
+            int chunks = 3;
+            int chunkSize = 256 * 1024;
+            int size = (256 * 1024 * chunks) - 5000;
+            
+            
+            Object id = CreateDummyFile(filename,size,chunkSize,0);
+
+            
+            using(GridFileStream gfs = fs.OpenRead(filename)){
+                int buffsize = 10240;
+                Byte[] buff = new Byte[buffsize];
+                int read = 0;
+                int totalRead = 0;
+                while((read = gfs.Read(buff,0,buffsize)) != 0){
+                    totalRead += read;
+                }
+                Assert.AreEqual(size,totalRead,"Not all bytes read back");
+            }
+            
+        }        
 
         [Test]
         public void TestSetLengthBigger(){
