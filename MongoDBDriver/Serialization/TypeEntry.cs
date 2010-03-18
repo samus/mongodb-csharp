@@ -102,7 +102,10 @@ namespace MongoDB.Driver.Serialization
             foreach(var propertyInfo in Type.GetProperties()){
                 var name = GetPropertyName(propertyInfo);
 
-                _propertys.Add(propertyInfo.Name, new TypeProperty(name,Type,propertyInfo));
+                if(GetPropertyAttribute<MongoIgnoreAttribute>(propertyInfo)!=null)
+                    continue;
+
+                _propertys.Add(name, new TypeProperty(name, Type, propertyInfo));
             }
         }
 
@@ -116,6 +119,19 @@ namespace MongoDB.Driver.Serialization
                 return nameAttribute.Name;
 
             return propertyInfo.Name.Equals(DefaultIdProperty) ? "_id" : propertyInfo.Name;
+        }
+
+        /// <summary>
+        /// Gets the property attribute.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="propertyInfo">The property info.</param>
+        /// <returns></returns>
+        private static T GetPropertyAttribute<T>(PropertyInfo propertyInfo) where T : Attribute
+        {
+            foreach(T attribute in propertyInfo.GetCustomAttributes(typeof(T), true))
+                return attribute;
+            return null;
         }
     }
 }
