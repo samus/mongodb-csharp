@@ -21,6 +21,11 @@ namespace MongoDB.Driver
             }
         }
 
+        public object Id{
+            get { return this["_id"]; }
+            set { this["_id"] = value; }
+        }
+
         public ICollection Keys {
             get { return (orderedKeys); }
         }
@@ -51,6 +56,7 @@ namespace MongoDB.Driver
             //Relies on ArgumentException from above if key already exists.
             orderedKeys.Insert (Position, key);
         }
+
         public Document Prepend (String key, Object value)
         {
             this.Insert (key, value, 0);
