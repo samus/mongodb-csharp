@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace MongoDB.Driver.Serialization
 {
-    public class TypeRegistryProperty
+    public class TypeProperty
     {
         public delegate object GetValueFunc(object instance);
         public delegate void SetValueAction(object instance, object value);
@@ -12,12 +12,12 @@ namespace MongoDB.Driver.Serialization
         private readonly SetValueAction _setValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TypeRegistryProperty"/> class.
+        /// Initializes a new instance of the <see cref="TypeProperty"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="ownerType">Type of the owner.</param>
         /// <param name="propertyInfo">The property info.</param>
-        public TypeRegistryProperty(string name, Type ownerType, PropertyInfo propertyInfo ){
+        public TypeProperty(string name, Type ownerType, PropertyInfo propertyInfo ){
             if(name == null)
                 throw new ArgumentNullException("name");
             if(ownerType == null)

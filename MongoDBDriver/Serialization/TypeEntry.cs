@@ -8,20 +8,20 @@ namespace MongoDB.Driver.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class TypeRegistryItem
+    public class TypeEntry
     {
         public delegate object CreateInstanceFunc(Type type);
 
         private const string DefaultIdProperty = "Id";
-        private readonly Dictionary<string, TypeRegistryProperty> _propertys = new Dictionary<string, TypeRegistryProperty>();
+        private readonly Dictionary<string, TypeProperty> _propertys = new Dictionary<string, TypeProperty>();
         private readonly CreateInstanceFunc _createInstance;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TypeRegistryItem"/> class.
+        /// Initializes a new instance of the <see cref="TypeEntry"/> class.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="typeName">Name of the type.</param>
-        public TypeRegistryItem(Type type,object typeName){
+        public TypeEntry(Type type,object typeName){
             if(type == null)
                 throw new ArgumentNullException("type");
             if(typeName == null)
@@ -68,7 +68,7 @@ namespace MongoDB.Driver.Serialization
         /// Gets the propertys.
         /// </summary>
         /// <value>The propertys.</value>
-        public IEnumerable<TypeRegistryProperty> Propertys{
+        public IEnumerable<TypeProperty> Propertys{
             get{return _propertys.Values;}
         }
 
@@ -77,8 +77,8 @@ namespace MongoDB.Driver.Serialization
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public TypeRegistryProperty GetProperty(string name){
-            TypeRegistryProperty property;
+        public TypeProperty GetProperty(string name){
+            TypeProperty property;
 
             if(!_propertys.TryGetValue(name, out property))
                 //Todo: custom exception type
@@ -102,7 +102,7 @@ namespace MongoDB.Driver.Serialization
             foreach(var propertyInfo in Type.GetProperties()){
                 var name = GetPropertyName(propertyInfo);
 
-                _propertys.Add(propertyInfo.Name, new TypeRegistryProperty(name,Type,propertyInfo));
+                _propertys.Add(propertyInfo.Name, new TypeProperty(name,Type,propertyInfo));
             }
         }
 

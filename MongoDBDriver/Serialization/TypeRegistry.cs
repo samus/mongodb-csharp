@@ -9,8 +9,8 @@ namespace MongoDB.Driver.Serialization
     public class TypeRegistry
     {
         private readonly SerializationFactory _serializationFactory;
-        private readonly Dictionary<Type, TypeRegistryItem> _items = new Dictionary<Type, TypeRegistryItem>();
-        private readonly Dictionary<object, TypeRegistryItem> _names = new Dictionary<object, TypeRegistryItem>();
+        private readonly Dictionary<Type, TypeEntry> _items = new Dictionary<Type, TypeEntry>();
+        private readonly Dictionary<object, TypeEntry> _names = new Dictionary<object, TypeEntry>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeRegistry"/> class.
@@ -28,8 +28,8 @@ namespace MongoDB.Driver.Serialization
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        public TypeRegistryItem GetOrCreate(Type type){
-            TypeRegistryItem item;
+        public TypeEntry GetOrCreate(Type type){
+            TypeEntry item;
             
             if(_items.TryGetValue(type,out item))
                 return item;
@@ -44,8 +44,8 @@ namespace MongoDB.Driver.Serialization
         /// </summary>
         /// <param name="typeName">Name of the type.</param>
         /// <returns></returns>
-        public TypeRegistryItem GetOrCreate(object typeName){
-            TypeRegistryItem item;
+        public TypeEntry GetOrCreate(object typeName){
+            TypeEntry item;
 
             if(_names.TryGetValue(typeName, out item))
                 return item;
@@ -61,8 +61,8 @@ namespace MongoDB.Driver.Serialization
         /// <param name="type">The type.</param>
         /// <param name="typeName">Name of the type.</param>
         /// <returns></returns>
-        private TypeRegistryItem CreateAndAddItem(Type type,object typeName){
-            var item = new TypeRegistryItem(type, typeName);
+        private TypeEntry CreateAndAddItem(Type type,object typeName){
+            var item = new TypeEntry(type, typeName);
             
             _items.Add(type,item);
             _names.Add(item.TypeName, item);
