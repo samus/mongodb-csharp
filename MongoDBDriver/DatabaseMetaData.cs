@@ -10,27 +10,29 @@ namespace MongoDB.Driver
     {        
         private Connection connection;  
         private string name;
-        private Database db;
+        private MongoDatabase db;
         
         public DatabaseMetaData(string name, Connection conn){
             this.connection = conn;
             this.name = name;
-            this.db = new Database(conn, name);
+            this.db = new MongoDatabase(conn, name);
         }
         
-        public Collection CreateCollection(String name){
+        public MongoCollection<Document> CreateCollection(String name){
             return this.CreateCollection(name,null);
         }
-        
-        public Collection CreateCollection(String name, Document options){
+
+        public MongoCollection<Document> CreateCollection(String name, Document options)
+        {
             Document cmd = new Document();
             cmd.Append("create", name).Update(options);
             db.SendCommand(cmd);
-            return new Collection(name, connection, this.name);
+            return new MongoCollection<Document>(connection, this.name, name);
         }
 
-                
-        public Boolean DropCollection(Collection col){
+
+        public Boolean DropCollection(MongoCollection<Document> col)
+        {
             return this.DropCollection(col.Name);
         }
 
@@ -45,8 +47,8 @@ namespace MongoDB.Driver
         }
         
         public void AddUser(string username, string password){
-            IMongoCollection users = db["system.users"];
-            string pwd = Database.Hash(username + ":mongo:" + password);
+            IMongoCollection<Document> users = db["system.users"];
+            string pwd = MongoDatabase.Hash(username + ":mongo:" + password);
             Document user = new Document().Append("user", username).Append("pwd", pwd);
             
             if (FindUser(username) != null){
@@ -56,12 +58,12 @@ namespace MongoDB.Driver
         }
 
         public void RemoveUser(string username){
-            IMongoCollection users = db["system.users"];
+            IMongoCollection<Document> users = db["system.users"];
             users.Delete(new Document().Append("user", username));
         }
 
-        public ICursor ListUsers(){
-            IMongoCollection users = db["system.users"];
+        public ICursor<Document> ListUsers(){
+            IMongoCollection<Document> users = db["system.users"];
             return users.FindAll();
         }
 

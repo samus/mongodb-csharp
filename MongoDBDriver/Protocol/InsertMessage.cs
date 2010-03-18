@@ -7,13 +7,13 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
-    /// Description of InsertMessage.
+    ///   Description of InsertMessage.
     /// </summary>
     /// <remarks>
-    ///      MsgHeader header;             // standard message header
-    ///      int32     ZERO;               // 0 - reserved for future use
-    ///      cstring   fullCollectionName; // "dbname.collectionname"
-    ///      BSON[]    documents;          // one or more documents to insert into the collection
+    ///   MsgHeader header;             // standard message header
+    ///   int32     ZERO;               // 0 - reserved for future use
+    ///   cstring   fullCollectionName; // "dbname.collectionname"
+    ///   BSON[]    documents;          // one or more documents to insert into the collection
     /// </remarks>
     public class InsertMessage : MessageBase, IRequestMessage
     {
@@ -21,15 +21,15 @@ namespace MongoDB.Driver.Protocol
             public int Size;
             public List<Document> Documents;
         }
-        
+
         public string FullCollectionName { get; set; }
 
-        public Document[] Documents { get; set; }
+        public object[] Documents { get; set; }
 
         private List<MessageChunk> chunks = new List<MessageChunk>();
         
         public InsertMessage(){
-            this.Header = new MessageHeader(OpCode.Insert);
+            Header = new MessageHeader(OpCode.Insert);
         }
 
         public void Write (Stream stream){
@@ -71,7 +71,7 @@ namespace MongoDB.Driver.Protocol
         /// The base size that all chunks will have.
         /// </summary>
         protected int CalculateBaseSize(BsonWriter writer){
-            int size = 4; //first int32
+            var size = 4; //first int32
             size += writer.CalculateSize(this.FullCollectionName,false);
             size += Header.MessageLength;
             return size;
@@ -87,7 +87,7 @@ namespace MongoDB.Driver.Protocol
             
             BsonWriter writer = new BsonWriter(stream);
             writer.WriteValue(BsonDataType.Integer,0);
-            writer.WriteString(this.FullCollectionName);
+            writer.Write(this.FullCollectionName,false);
             
             foreach(Document doc in chunk.Documents){
                 writer.Write(doc);

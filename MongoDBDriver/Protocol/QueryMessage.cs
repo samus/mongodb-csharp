@@ -4,19 +4,44 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
-    /// Description of QueryMessage.
+    ///   Description of QueryMessage.
     /// </summary>
     /// <remarks>
-    ///    MsgHeader header;                 // standard message header
-    ///    int32     opts;                   // query options.  See QueryOptions for values
-    ///    cstring   fullCollectionName;     // "dbname.collectionname"
-    ///    int32     numberToSkip;           // number of documents to skip when returning results
-    ///    int32     numberToReturn;         // number of documents to return in the first OP_REPLY
-    ///    BSON      query ;                 // query object.  See below for details.
-    ///  [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
+    ///   MsgHeader header;                 // standard message header
+    ///   int32     opts;                   // query options.  See QueryOptions for values
+    ///   cstring   fullCollectionName;     // "dbname.collectionname"
+    ///   int32     numberToSkip;           // number of documents to skip when returning results
+    ///   int32     numberToReturn;         // number of documents to return in the first OP_REPLY
+    ///   BSON      query ;                 // query object.  See below for details.
+    ///   [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
     /// </remarks>
-    public class QueryMessage : RequestMessageBase
+    public class QueryMessage<T> : RequestMessageBase
     {
+        public QueryMessage(){
+            Header = new MessageHeader(OpCode.Query);
+        }
+
+        public QueryMessage(object query, String fullCollectionName)
+            : this(query, fullCollectionName, 0, 0){
+        }
+
+        public QueryMessage(object query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
+            : this(query, fullCollectionName, numberToReturn, numberToSkip, null){
+        }
+
+        public QueryMessage(object query,
+            String fullCollectionName,
+            Int32 numberToReturn,
+            Int32 numberToSkip,
+            object returnFieldSelector){
+            Header = new MessageHeader(OpCode.Query);
+            Query = query;
+            FullCollectionName = fullCollectionName;
+            NumberToReturn = numberToReturn;
+            NumberToSkip = numberToSkip;
+            ReturnFieldSelector = returnFieldSelector;
+        }
+
         public QueryOptions Options { get; set; }
 
         public string FullCollectionName { get; set; }
@@ -25,51 +50,27 @@ namespace MongoDB.Driver.Protocol
 
         public int NumberToReturn { get; set; }
 
-        public Document Query { get; set; }
+        public object Query { get; set; }
 
-        public Document ReturnFieldSelector { get; set; }
-        
-        public QueryMessage(){
-            this.Header = new MessageHeader(OpCode.Query);
-        }
-        
-        public QueryMessage(Document query, String fullCollectionName)
-            :this(query,fullCollectionName,0,0){
-        }
-        
-        public QueryMessage(Document query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
-            :this(query,fullCollectionName,numberToReturn, numberToSkip, null){
-        }
-        
-        public QueryMessage(Document query, String fullCollectionName, Int32 numberToReturn, 
-                            Int32 numberToSkip, Document returnFieldSelector){
-            this.Header = new MessageHeader(OpCode.Query);
-            this.Query = query;
-            this.FullCollectionName = fullCollectionName;
-            this.NumberToReturn = numberToReturn;
-            this.NumberToSkip = numberToSkip;
-            this.ReturnFieldSelector = returnFieldSelector;
+        public object ReturnFieldSelector { get; set; }
+
+        protected override void WriteBody(BsonWriter writer){
+            writer.WriteValue(BsonDataType.Integer, (int)Options);
+            writer.Write(FullCollectionName, false);
+            writer.WriteValue(BsonDataType.Integer, NumberToSkip);
+            writer.WriteValue(BsonDataType.Integer, NumberToReturn);
+            writer.WriteObject(Query);
+            if(ReturnFieldSelector != null)
+                writer.WriteObject(ReturnFieldSelector);
         }
 
-        protected override void WriteBody (BsonWriter writer){
-            writer.WriteValue(BsonDataType.Integer,(int)this.Options);
-            writer.WriteString(this.FullCollectionName);
-            writer.WriteValue(BsonDataType.Integer,(int)this.NumberToSkip);
-            writer.WriteValue(BsonDataType.Integer,(int)this.NumberToReturn);
-            writer.Write(this.Query);
-            if(this.ReturnFieldSelector != null){
-                writer.Write(this.ReturnFieldSelector);
-            }
-        }
-		
-		protected override int CalculateBodySize(BsonWriter writer){
-            int size = 12; //options, numbertoskip, numbertoreturn
-            size += writer.CalculateSize(this.FullCollectionName,false);
-            size += writer.CalculateSize(this.Query);
-            if(this.ReturnFieldSelector != null){
-                size += writer.CalculateSize(this.ReturnFieldSelector);
-            }
+        protected override int CalculateBodySize(BsonWriter writer){
+            var size = 12; //options, numbertoskip, numbertoreturn
+            size += writer.CalculateSize(FullCollectionName, false);
+            size += writer.CalculateSizeObject(Query);
+            if(ReturnFieldSelector != null)
+                size += writer.CalculateSizeObject(ReturnFieldSelector);
             return size;
-        }        
+        }
     }
 }

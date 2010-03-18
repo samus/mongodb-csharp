@@ -6,13 +6,13 @@ namespace MongoDB.Driver{
     /// <summary>
     /// Encapsulates and provides access to the serverside javascript stored in db.system.js.
     /// </summary>
-    public class DatabaseJS : ICollection<Document>
+    public class DatabaseJavascript : ICollection<Document>
     {   
         //private Connection connection;
-        private Database db;
-        private IMongoCollection js;
+        private MongoDatabase db;
+        private IMongoCollection<Document> js;
         
-        internal DatabaseJS (Database db){
+        internal DatabaseJavascript (MongoDatabase db){
             this.db = db;
             this.js = db["system.js"];
             //Needed for some versions of the db to retrieve the functions.

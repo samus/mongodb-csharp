@@ -6,7 +6,7 @@ namespace MongoDB.Driver.Protocol
     public abstract class MessageBase
     {
         public static int MaximumMessageSize = 1024 * 1024 * 4;
-        
-        public MessageHeader Header { get; set; }
+        public MessageHeader Header { get; protected set; }
+
     }
 }

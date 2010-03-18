@@ -2,8 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Bson
 {
@@ -12,9 +12,9 @@ namespace MongoDB.Driver.Bson
     /// </summary>
     public class BsonReader
     {
-        private Stream stream;
-        private BinaryReader reader;
-        private int position = 0;
+        private readonly BinaryReader _reader;
+        private readonly Stream _stream;
+        private readonly IBsonObjectBuilder _builder;
 
         private byte[] _byteBuffer;
         private char[] _charBuffer;
@@ -26,144 +26,106 @@ namespace MongoDB.Driver.Bson
         private byte[] seqRange3 = new byte[]{224,239};//Range of 3-byte sequence
         private byte[] seqRange4 = new byte[]{240,244};//Range of 4-byte sequence
 
-        public BsonReader (Stream stream)
-        {
-            this.stream = stream;
-            reader = new BinaryReader (this.stream);
+        public BsonReader(Stream stream)
+            :this(stream,new ReflectionBuilder<Document>()){
         }
 
-        public int Position {
-            get { return position; }
+        public BsonReader(Stream stream,IBsonObjectBuilder builder){
+            _builder = builder;
+            Position = 0;
+            _stream = stream;
+            _reader = new BinaryReader(_stream);
         }
 
-        public Document Read ()
-        {
-            position = 0;
-            Document doc = ReadDocument();
+        public int Position { get; private set; }
+
+        public Document Read(){
+            Position = 0;
+            var doc = (Document)ReadObject();
             return doc;
         }
 
-        public Document ReadDocument(){
-            int startpos = position;
-            Document doc = new Document ();
-            int size = reader.ReadInt32 ();
-            position += 4;
-            while ((position - startpos) + 1 < size) {
-                ReadElement (doc);
-            }
-            byte eoo = reader.ReadByte ();
-            position++;
-            if (eoo != 0)
-                throw new InvalidDataException ("Document not null terminated");
-            if (size != position - startpos) {
-                throw new InvalidDataException (string.Format ("Should have read {0} bytes from stream but only read {1}", size, (position - startpos)));
-            }
-            return doc;
+        public object ReadObject(){
+            var instance = _builder.BeginObject();
+            ReadElements(instance);
+            return _builder.EndObject(instance);
         }
 
-        public void ReadElement (Document doc){
-            sbyte typeNum = (sbyte)reader.ReadByte ();
-            position++;
-            String key = ReadString ();
-            Object element = ReadElementType(typeNum);
-            doc.Add (key, element);
+        public object ReadArray(){
+            var instance = _builder.BeginArray();
+            ReadElements(instance);
+            return _builder.EndArray(instance);
+        }
+        
+        private void ReadElements(object instance){
+            var startPosition = Position;
+            var size = _reader.ReadInt32();
+            Position += 4;
+            while((Position - startPosition) + 1 < size)
+                ReadElement(instance);
+            Position++;
+            if(_reader.ReadByte() != 0)
+                throw new InvalidDataException("Document not null terminated");
+            if(size != Position - startPosition)
+                throw new InvalidDataException(string.Format("Should have read {0} bytes from stream but only read {1}", size, (Position - startPosition)));
+        }
+        
+        private void ReadElement(object instance){
+            Position++;
+            var typeNumber = (sbyte)_reader.ReadByte();
+            var key = ReadString();
+            _builder.BeginProperty(instance, key);
+            var element = ReadElementType(typeNumber);
+            _builder.EndProperty(instance, key, element);
         }
 
-        public Object ReadElementType (sbyte typeNum){
-            switch ((BsonDataType)typeNum) {
-            case BsonDataType.Null:
-            case BsonDataType.Undefined:
-                return DBNull.Value;
-            case BsonDataType.MinKey:
-                return MongoMinKey.Value;
-            case BsonDataType.MaxKey:
-                return MongoMaxKey.Value;
-            case BsonDataType.Boolean:
-                position++;
-                return reader.ReadBoolean ();
-            case BsonDataType.Integer:
-                position += 4;
-                return reader.ReadInt32 ();
-            case BsonDataType.Long:
-                position += 8;
-                return reader.ReadInt64 ();
-            case BsonDataType.Date:
-                position += 8;
-                long millis = reader.ReadInt64 ();
-                return BsonInfo.Epoch.AddMilliseconds(millis);
-            case BsonDataType.Oid:
-                position += 12;
-                return new Oid (reader.ReadBytes (12));
-            case BsonDataType.Number:
-                position += 8;
-                return reader.ReadDouble ();
-            case BsonDataType.String:{
-                return ReadLenString ();
-            }
-            case BsonDataType.Obj:{
-                Document doc = this.ReadDocument();
-                if(DBRef.IsDocumentDBRef(doc)){
-                    return DBRef.FromDocument(doc);
-                }
-                return doc;
-            }
-
-            case BsonDataType.Array:{
-                Document doc = this.ReadDocument();
-                return ConvertToArray (doc);
-            }
-            case BsonDataType.Regex:{
-                MongoRegex r = new MongoRegex ();
-                r.Expression = this.ReadString ();
-                r.Options = this.ReadString ();
-                return r;
-            }
-            case BsonDataType.Code:{
-                Code c = new Code ();
-                c.Value = ReadLenString();
-                return c;
-            }
-            case BsonDataType.CodeWScope:{
-                int startpos = position;
-                int size = reader.ReadInt32 ();
-                position += 4;
-
-                String val = this.ReadLenString();
-                Document scope = this.ReadDocument();
-                if (size != position - startpos) {
-                    throw new System.IO.InvalidDataException (string.Format ("Should have read {0} bytes from stream but read {1} in CodeWScope", size, position - startpos));
-                }
-                return new CodeWScope (val, scope);
-            }
-            case BsonDataType.Binary:{
-                int size = reader.ReadInt32 ();
-                position += 4;
-                byte subtype = reader.ReadByte ();
-                position ++;
-                if (subtype == (byte)Binary.TypeCode.General) {
-                    size = reader.ReadInt32 ();
-                    position += 4;
-                }
-                byte[] bytes = reader.ReadBytes (size);
-                position += size;
-
-                // From http://en.wikipedia.org/wiki/Universally_Unique_Identifier
-                // The most widespread use of this standard is in Microsoft's Globally Unique Identifiers (GUIDs).
-                if (subtype == 3 && 16 == size)
-                {
-                    return new Guid(bytes);
-                }
-
-                Binary b = new Binary();
-                b.Bytes = bytes;
-                b.Subtype = (Binary.TypeCode)subtype;
-                return b;
-            }
-            default:
-                throw new ArgumentOutOfRangeException (String.Format ("Type Number: {0} not recognized", typeNum));
+        public Object ReadElementType(sbyte typeNum){
+            switch((BsonDataType)typeNum){
+                case BsonDataType.Null:
+                case BsonDataType.Undefined:
+                    return DBNull.Value;
+                case BsonDataType.MinKey:
+                    return MongoMinKey.Value;
+                case BsonDataType.MaxKey:
+                    return MongoMaxKey.Value;
+                case BsonDataType.Boolean:
+                    Position++;
+                    return _reader.ReadBoolean();
+                case BsonDataType.Integer:
+                    Position += 4;
+                    return _reader.ReadInt32();
+                case BsonDataType.Long:
+                    Position += 8;
+                    return _reader.ReadInt64();
+                case BsonDataType.Date:
+                    Position += 8;
+                    var milliseconds = _reader.ReadInt64();
+                    return BsonInfo.Epoch.AddMilliseconds(milliseconds);
+                case BsonDataType.Oid:
+                    Position += 12;
+                    return new Oid(_reader.ReadBytes(12));
+                case BsonDataType.Number:
+                    Position += 8;
+                    return _reader.ReadDouble();
+                case BsonDataType.String:
+                    return ReadLengthString();
+                case BsonDataType.Obj:
+                    return ReadObject();
+                case BsonDataType.Array:
+                    return ReadArray();
+                case BsonDataType.Regex:
+                    return ReadRegex();
+                case BsonDataType.Code:
+                    return ReadCode();
+                case BsonDataType.CodeWScope:
+                    return ReadScope();
+                case BsonDataType.Binary:
+                    return ReadBinary();
+                default:
+                    throw new ArgumentOutOfRangeException(String.Format("Type Number: {0} not recognized", typeNum));
             }
         }
-
+        
         public string ReadString (){
             EnsureBuffers ();
 
@@ -174,12 +136,12 @@ namespace MongoDB.Driver.Bson
                 int byteCount = 0;
                 int count = offset;
                 byte b = 0;;
-                while (count < MaxCharBytesSize && (b = reader.ReadByte ()) > 0) {
+                while (count < MaxCharBytesSize && (b = _reader.ReadByte ()) > 0) {
                     _byteBuffer[count++] = b;
                 }
                 byteCount = count - offset;
                 totalBytesRead += byteCount;
-                position += byteCount;
+                Position += byteCount;
                 
                 if(count == 0) break; //first byte read was the terminator.
                 int lastFullCharStop = GetLastFullCharStop(count - 1);
@@ -199,17 +161,17 @@ namespace MongoDB.Driver.Bson
                     break;
                 }
             } while (true);
-            position++;
+            Position++;
             return builder.ToString();
 
         }
 
-        public string ReadLenString (){
-            int length = reader.ReadInt32 ();
+        public string ReadLengthString (){
+            int length = _reader.ReadInt32 ();
             string s = GetString (length - 1);
-            reader.ReadByte ();
+            _reader.ReadByte ();
 
-            position += (4 + 1);
+            Position += (4 + 1);
             return s;
         }
 
@@ -228,7 +190,7 @@ namespace MongoDB.Driver.Bson
                 int count = ((length - totalBytesRead) > MaxCharBytesSize - offset) ? (MaxCharBytesSize - offset) :
                                                                             (length - totalBytesRead);
                 
-                byteCount = reader.BaseStream.Read (_byteBuffer, offset, count);
+                byteCount = _reader.BaseStream.Read (_byteBuffer, offset, count);
                 totalBytesRead += byteCount;
                 byteCount += offset;
                 
@@ -251,10 +213,59 @@ namespace MongoDB.Driver.Bson
                 
             } while (totalBytesRead < length);
             
-            position += totalBytesRead;
+            Position += totalBytesRead;
             return builder.ToString ();
         }
+        
+        private object ReadScope(){
+            var startpos = Position;
+            var size = _reader.ReadInt32();
+            Position += 4;
 
+            var val = ReadLengthString();
+            var scope = (Document)ReadObject();
+            if(size != Position - startpos)
+                throw new InvalidDataException(string.Format("Should have read {0} bytes from stream but read {1} in CodeWScope",
+                    size,
+                    Position - startpos));
+            
+            return new CodeWScope(val, scope);
+        }
+
+        private object ReadCode(){
+            return new Code{Value = ReadLengthString()};
+        }
+
+        private object ReadRegex(){
+            return new MongoRegex{
+                Expression = ReadString(), 
+                Options = ReadString()
+            };
+        }
+
+        private object ReadBinary(){
+            var size = _reader.ReadInt32();
+            Position += 4;
+            var subtype = _reader.ReadByte();
+            Position ++;
+            if(subtype == (byte)Binary.TypeCode.General){
+                size = _reader.ReadInt32();
+                Position += 4;
+            }
+            var bytes = _reader.ReadBytes(size);
+            Position += size;
+
+            // From http://en.wikipedia.org/wiki/Universally_Unique_Identifier
+            // The most widespread use of this standard is in Microsoft's Globally Unique Identifiers (GUIDs).
+            if(subtype == 3 && 16 == size)
+                return new Guid(bytes);
+
+            return new Binary{
+                Bytes = bytes, 
+                Subtype = (Binary.TypeCode)subtype
+            };
+        }
+        
         private int GetLastFullCharStop(int start){
             int lookbackPos = start;
             int bis = 0;

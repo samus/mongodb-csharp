@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     public abstract class MongoTestBase
     {
         public Mongo Mongo{get;set;}
-        public Database DB{
+        public IMongoDatabase DB{
             get{
                 return this.Mongo["tests"];
             }

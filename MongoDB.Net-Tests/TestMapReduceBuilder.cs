@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     [TestFixture()]
     public class TestMapReduceBuilder : MongoTestBase
     {
-        IMongoCollection mrcol;
+        IMongoCollection<Document> mrcol;
         string mapfunction = "function(){\n" +
                             "   this.tags.forEach(\n" +
                             "       function(z){\n" +

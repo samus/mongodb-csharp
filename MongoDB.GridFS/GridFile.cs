@@ -6,26 +6,28 @@ namespace MongoDB.GridFS
 {
     public class GridFile{
 
-        private Database db;
+        private IMongoDatabase db;
         
         private string name;
         public string Name {
             get { return name; }
         }
-        
-        private IMongoCollection files;
-        public IMongoCollection Files{
+
+        private IMongoCollection<Document> files;
+        public IMongoCollection<Document> Files
+        {
             get { return this.files; }
         }
 
-        private IMongoCollection chunks;
-        public IMongoCollection Chunks{
+        private IMongoCollection<Document> chunks;
+        public IMongoCollection<Document> Chunks
+        {
             get { return this.chunks; }
         }        
         
-        public GridFile(Database db):this(db,"fs"){}
+        public GridFile(IMongoDatabase db):this(db,"fs"){}
 
-        public GridFile(Database db, string bucket){
+        public GridFile(IMongoDatabase db, string bucket){
             this.db = db;
             this.files = db[bucket + ".files"];
             this.chunks = db[bucket + ".chunks"];
@@ -33,11 +35,12 @@ namespace MongoDB.GridFS
             this.name = bucket;
         }
         
-        public ICursor ListFiles(){
+        public ICursor<Document> ListFiles(){
             return this.ListFiles(new Document());
         }
-        
-        public ICursor ListFiles(Document query){
+
+        public ICursor<Document> ListFiles(Document query)
+        {
             return this.files.Find(new Document().Append("query",query)
                                                 .Append("orderby", new Document()
                                                 .Append("filename", 1)));

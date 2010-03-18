@@ -150,7 +150,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
 
-            writer.Write(source);
+            writer.WriteObject(source);
             writer.Flush();
             ms.Seek(0, SeekOrigin.Begin);
 

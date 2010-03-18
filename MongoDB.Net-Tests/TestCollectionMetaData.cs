@@ -9,11 +9,8 @@ namespace MongoDB.Driver
     [TestFixture]
     public class TestCollectionMetaData : MongoTestBase
     {
-        Database adminDb;
+        MongoDatabase adminDb;
 
-        String adminuser = "adminuser";
-        String adminpass = "admin1234";
-        
         public override string TestCollections {
             get {
                 return "indextests,rename,renamed";
@@ -21,7 +18,7 @@ namespace MongoDB.Driver
         }
         
         public override void OnInit (){
-            IMongoCollection its = DB["indextests"];
+            IMongoCollection<Document> its = DB["indextests"];
             its.Insert(createDoc("S","A","Anderson","OH"));
             its.Insert(createDoc("T","B","Delhi","OH"));
             its.Insert(createDoc("F","B","Cincinnati","OH"));

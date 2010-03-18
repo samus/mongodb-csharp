@@ -81,6 +81,10 @@
     <Compile Include="Connections\TestConnectionFactory.cs" />
     <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
+    <Compile Include="Serialization\ArrayFactoryTests.cs" />
+    <Compile Include="Serialization\ReflectionBuilderTests.cs" />
+    <Compile Include="Serialization\RelectionDescriptorTests.cs" />
+    <Compile Include="Serialization\SerializationTestBase.cs" />
     <Compile Include="TestAuthentication.cs" />
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
@@ -103,7 +107,7 @@
     <Compile Include="TestOid.cs" />
     <Compile Include="TestOidGenerator.cs" />
     <Compile Include="Bson\TestBsonWriter.cs" />
-    <Compile Include="TestDatabaseJS.cs" />
+    <Compile Include="TestDatabaseJavascript.cs" />
     <Compile Include="TestMapReduce.cs" />
     <Compile Include="TestMapReduceBuilder.cs" />
     <Compile Include="TestConcurrency.cs" />

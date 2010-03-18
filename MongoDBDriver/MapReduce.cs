@@ -59,7 +59,7 @@ namespace MongoDB.Driver
 
         }
         
-        Database db;
+        MongoDatabase db;
         Document cmd;
         
         #region "Properties"
@@ -76,7 +76,7 @@ namespace MongoDB.Driver
             get {return result;}
         }
                
-        internal MapReduce (Database db, string name){
+        internal MapReduce (MongoDatabase db, string name){
             this.db = db;
             this.cmd = new Document().Append("mapreduce", name);
             this.Verbose = true;

@@ -6,9 +6,9 @@ namespace MongoDB.Driver.Connections
 {
     /// <summary>
     /// Connection is a managment unit which uses a RawConnection from connection pool
-    /// to comunicate with the server. 
+    /// to comunicate with the server.
     /// <remarks>
-    /// If an connection error occure, the RawConnection is transparently replaced 
+    /// If an connection error occure, the RawConnection is transparently replaced
     /// by a new fresh connection.
     /// </remarks>
     /// </summary>
@@ -63,18 +63,27 @@ namespace MongoDB.Driver.Connections
             get { return _factory.ConnectionString; }
         }
 
+         /// <summary>
+        /// Sends the two way message.
+        /// </summary>
+        /// <param name="msg">The MSG.</param>
+        /// <returns></returns>
+        public ReplyMessage<Document> SendTwoWayMessage(IRequestMessage msg){
+            return SendTwoWayMessage<Document>(msg);
+        }
+
         /// <summary>
         /// Used for sending a message that gets a reply such as a query.
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public ReplyMessage SendTwoWayMessage (IRequestMessage msg){
-            if (this.State != ConnectionState.Opened) {
+        public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage msg) where T:class {
+            if (State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }
             try {
-                ReplyMessage reply = new ReplyMessage ();
+                var reply = new ReplyMessage<T> ();
                 lock (_connection) {
                     msg.Write (_connection.GetStream ());
                     reply.Read (_connection.GetStream ());

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 
@@ -52,7 +52,6 @@ namespace MongoDB.Driver.Bson
         public void TestReadStringDblByteCharOnEndOfBufferBoundry(){
             StringBuilder sb = new StringBuilder();
             sb.Append(pound, 66); //puts a pound symbol at the end of the buffer boundry but not broken.
-            
             string expected = sb.ToString();
             Assert.AreEqual(expected, WriteAndReadString(expected));
         }
@@ -160,10 +159,10 @@ namespace MongoDB.Driver.Bson
             BinaryWriter w = new BinaryWriter(ms);
             int byteCount = bs.CalculateSize(val,false);           
             w.Write(byteCount);
-            bs.WriteString(val);
+            bs.Write(val,false);
             ms.Seek(0,SeekOrigin.Begin);
             BsonReader reader = new BsonReader(ms);
-            return reader.ReadLenString();
+            return reader.ReadLengthString();
         }
         
         
@@ -173,7 +172,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader reader = new BsonReader(ms);
             
-            Document doc = reader.ReadDocument();
+            Document doc = (Document)reader.ReadObject();
             
             Assert.IsNotNull(doc);
         }
@@ -197,7 +196,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader reader = new BsonReader(ms);
             
-            Document doc = reader.ReadDocument();
+            Document doc = (Document)reader.ReadObject();
             
             Assert.IsNotNull(doc, "Document was null");
             Assert.IsTrue(doc.Contains("_id"));
@@ -216,7 +215,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream(buf);
             BsonReader reader = new BsonReader(ms);
             
-            Document doc = reader.ReadDocument();
+            Document doc = (Document)reader.ReadObject();
             Assert.IsNotNull(doc, "Document was null");
             Assert.AreEqual(buf.Length, reader.Position);
             Assert.IsTrue(doc.Contains("a"));
@@ -244,7 +243,7 @@ namespace MongoDB.Driver.Bson
                 .Append("minkey", MongoMinKey.Value)
                 .Append("maxkey", MongoMaxKey.Value)
             ;
-            writer.Write(expected);
+            writer.WriteObject(expected);
             writer.Flush();
             ms.Seek(0,SeekOrigin.Begin);           
             
@@ -258,7 +257,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
             
-            writer.Write(doc);
+            writer.WriteObject(doc);
             return BitConverter.ToString(ms.ToArray()).Replace("-","");
                         
         }

@@ -18,7 +18,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
             
-            Assert.AreEqual(5,writer.CalculateSize(doc));
+            Assert.AreEqual(5,writer.CalculateSizeObject(doc));
         }
         
         [Test]
@@ -31,7 +31,7 @@ namespace MongoDB.Driver.Bson
             BsonWriter writer = new BsonWriter(ms);
             //BsonDocument bdoc = BsonConvert.From(doc);
             
-            Assert.AreEqual(21,writer.CalculateSize(doc));
+            Assert.AreEqual(21,writer.CalculateSizeObject(doc));
         }
         
         [Test]
@@ -44,7 +44,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
             
-            Assert.AreEqual(51,writer.CalculateSize(doc));            
+            Assert.AreEqual(51,writer.CalculateSizeObject(doc));            
         }
         
         [Test]
@@ -52,7 +52,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
             string expected = "54-65-73-74-73-2E-69-6E-73-65-72-74-73-00";
-            writer.WriteString("Tests.inserts");
+            writer.Write("Tests.inserts",false);
             
             string hexdump = BitConverter.ToString(ms.ToArray());
             
@@ -84,7 +84,7 @@ namespace MongoDB.Driver.Bson
         private string WriteStringAndGetHex(string val){
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
-            writer.WriteString(val);
+            writer.Write(val,false);
             return BitConverter.ToString(ms.ToArray());
         }
         
@@ -95,7 +95,7 @@ namespace MongoDB.Driver.Bson
             string expected = "1400000002746573740005000000746573740000";
             Document doc = new Document().Append("test", "test");
             
-            writer.Write(doc);
+            writer.WriteObject(doc);
             
             string hexdump = BitConverter.ToString(ms.ToArray());
             hexdump = hexdump.Replace("-","");
@@ -123,7 +123,7 @@ namespace MongoDB.Driver.Bson
             BsonWriter writer = new BsonWriter(ms);
             Document doc = new Document().Append("n", null);
             try{
-                writer.Write(doc);
+                writer.WriteObject(doc);
             }catch(NullReferenceException){
                 Assert.Fail("Null Reference Exception was thrown on trying to serialize a null value");
             }
