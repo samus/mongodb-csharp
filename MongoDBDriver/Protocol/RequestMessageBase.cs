@@ -12,7 +12,7 @@ namespace MongoDB.Driver.Protocol
             var header = Header;
             var bstream = new BufferedStream(stream);
             var writer = new BinaryWriter(bstream);
-            var bwriter = new BsonWriter(bstream);
+            var bwriter = new BsonWriter(bstream,new DocumentDescriptor());
             
             Header.MessageLength += this.CalculateBodySize(bwriter);
             if(Header.MessageLength > MessageBase.MaximumMessageSize){

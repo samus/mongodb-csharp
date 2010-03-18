@@ -9,7 +9,7 @@ namespace MongoDB.Driver{
     /// </summary>
     public class Oid: IEquatable<Oid>, IComparable<Oid>
     {
-        private static OidGenerator oidGenerator = new OidGenerator();
+        private static readonly OidGenerator oidGenerator = new OidGenerator();
         
         private byte[] bytes;
 

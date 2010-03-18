@@ -22,9 +22,9 @@ namespace MongoDB.Driver.Bson
         private byte[] _byteBuffer;
         private char[] _charBuffer;
 
-        public BsonReader(Stream stream)
+        /*public BsonReader(Stream stream)
             : this(stream, new BsonReflectionBuilder(typeof(Document))){
-        }
+        }*/
 
         public BsonReader(Stream stream, IBsonObjectBuilder builder){
             _builder = builder;

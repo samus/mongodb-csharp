@@ -19,9 +19,9 @@ namespace MongoDB.Driver.Bson
         private readonly IBsonObjectDescriptor _descriptor;
         private readonly BinaryWriter _writer;
 
-        public BsonWriter(Stream stream)
+        /*public BsonWriter(Stream stream)
             : this(stream, new BsonReflectionDescriptor()){
-        }
+        }*/
 
         public BsonWriter(Stream stream, IBsonObjectDescriptor descriptor){
             _stream = stream;

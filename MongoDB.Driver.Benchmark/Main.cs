@@ -183,7 +183,7 @@ namespace MongoDB.Driver.Benchmark
         static void DoEncode(Document doc){
             MemoryStream ms = new MemoryStream();
             for(int i = 0; i < perTrial; i++){
-                BsonWriter writer = new BsonWriter(ms);
+                BsonWriter writer = new BsonWriter(ms, new DocumentDescriptor());
                 writer.WriteObject(doc);
                 ms.Seek(0,SeekOrigin.Begin);
             }
@@ -192,7 +192,7 @@ namespace MongoDB.Driver.Benchmark
 
         static void RunDecodeTest(string name, Document doc){
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms);
+            BsonWriter writer = new BsonWriter(ms, new DocumentDescriptor());
             writer.WriteObject(doc);
     
             byte[] buff = ms.ToArray();
@@ -217,7 +217,7 @@ namespace MongoDB.Driver.Benchmark
         static void DoDecode(byte[] buff){
             MemoryStream ms = new MemoryStream(buff);
             for(int i = 0; i < perTrial; i++){
-                BsonReader reader = new BsonReader(ms);
+                BsonReader reader = new BsonReader(ms,new DocumentBuilder());
                 reader.Read();
                 ms.Seek(0,SeekOrigin.Begin);
             }
