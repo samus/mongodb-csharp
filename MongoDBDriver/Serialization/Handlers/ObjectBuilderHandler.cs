@@ -1,38 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using MongoDB.Driver.Serialization.Attributes;
 
 namespace MongoDB.Driver.Serialization.Handlers
 {
     public class ObjectBuilderHandler : IBsonBuilderHandler
     {
+        private readonly SerializationFactory _serializationFactory;
         private readonly Type _type;
         private readonly object _instance;
-        private PropertyDescriptor _currentProperty;
-        private Dictionary<string,PropertyDescriptor> _propertys = new Dictionary<string, PropertyDescriptor>();
+        private readonly TypeEntry _typeEntry;
+        private TypeProperty _currentProperty;
 
-        public ObjectBuilderHandler(Type type){
+        public ObjectBuilderHandler(SerializationFactory serializationFactory, Type type){
+            if(serializationFactory == null)
+                throw new ArgumentNullException("serializationFactory");
             if(type == null)
                 throw new ArgumentNullException("type");
-            
-            _type = type;
-            _instance = Activator.CreateInstance(type);
-            //_instance = FormatterServices.GetUninitializedObject(type);
 
-            foreach(PropertyDescriptor property in TypeDescriptor.GetProperties(_type)){
-                var nameAttribute = (MongoNameAttribute)property.Attributes[typeof(MongoNameAttribute)];
-                _propertys.Add(nameAttribute != null ? nameAttribute.Name : property.Name, property);
-            }
+            _type = type;
+            _serializationFactory = serializationFactory;
+            _typeEntry = _serializationFactory.Registry.GetOrCreate(_type);
+            _instance = _typeEntry.CreateInstance();
         }
 
         public Type BeginProperty(string name){
-            _currentProperty = _propertys[name];
+            _currentProperty = _typeEntry.GetProperty(name);
             return _currentProperty.PropertyType;
         }
 
         public void EndProperty(object value){
-            _currentProperty.SetValue(_instance,value);
+            _currentProperty.SetValue(_instance, value);
         }
 
         public object Complete(){

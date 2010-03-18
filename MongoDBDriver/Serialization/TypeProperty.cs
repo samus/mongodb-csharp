@@ -27,11 +27,18 @@ namespace MongoDB.Driver.Serialization
 
             MongoName = name;
             OwnerType = ownerType;
+            PropertyType = propertyInfo.PropertyType;
             //Todo: replace with reflection emit one
             _getValue = i=>propertyInfo.GetValue(i,null);
             //Todo: replace with reflection emit one
             _setValue = (i, o) => propertyInfo.SetValue(i, o, null);
         }
+
+        /// <summary>
+        /// Gets or sets the type of the property.
+        /// </summary>
+        /// <value>The type of the property.</value>
+        public Type PropertyType { get; private set; }
 
         /// <summary>
         /// Gets or sets the name of the mongo.

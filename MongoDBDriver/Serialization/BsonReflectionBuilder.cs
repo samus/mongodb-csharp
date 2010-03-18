@@ -27,7 +27,7 @@ namespace MongoDB.Driver.Serialization
             if(type == typeof(Document))
                 return new DocumentBuilderHandler();
 
-            return new ObjectBuilderHandler(type);
+            return new ObjectBuilderHandler(_serializationFactory, type);
         }
 
         public void BeginProperty(object instance, string name)
