@@ -9,7 +9,7 @@ namespace MongoDB.Driver.Serialization
     public class TypeRegistry
     {
         private readonly SerializationFactory _serializationFactory;
-        private readonly Dictionary<Type, TypeEntry> _items = new Dictionary<Type, TypeEntry>();
+        private readonly Dictionary<Type, TypeEntry> _entries = new Dictionary<Type, TypeEntry>();
         private readonly Dictionary<object, TypeEntry> _names = new Dictionary<object, TypeEntry>();
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace MongoDB.Driver.Serialization
         public TypeEntry GetOrCreate(Type type){
             TypeEntry item;
             
-            if(_items.TryGetValue(type,out item))
+            if(_entries.TryGetValue(type,out item))
                 return item;
 
             var typeName = _serializationFactory.TypeNameProvider.GetName(type);
@@ -64,7 +64,7 @@ namespace MongoDB.Driver.Serialization
         private TypeEntry CreateAndAddItem(Type type,object typeName){
             var item = new TypeEntry(type, typeName);
             
-            _items.Add(type,item);
+            _entries.Add(type,item);
             _names.Add(item.TypeName, item);
 
             return item;
