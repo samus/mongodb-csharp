@@ -41,6 +41,8 @@ Patches
 =======
 Patches are welcome and will likely be accepted.  By submitting a patch you assign the copyright to me, Sam Corder.  This is necessary to simplify the number of copyright holders should it become necessary that the copyright need to be reassigned or the code relicensed.  The code will always be available under an OSI approved license.
 
+A bug fix patch should contain a test case that reproduces the issue along with the actual fix.  Try to follow the same style that the code is already in so that things remain clean.
+
 Usage
 =====
 One of the best sources for how to use the driver is the unit tests.  Basic usage can be found in the TestCollection set of test cases.
@@ -53,6 +55,8 @@ At the simplest query the database like this:
  query["field1"] = 10;
  Document result = db["tests"]["reads"].FindOne(query);
  db.Disconnect();
+
+There is also a growing number of samples in the examples directory.
 
 Getting Help
 ============
@@ -67,4 +71,6 @@ Contributors
 - Andrew Rondeau (GWBasic)
 - Doug Mayer (dougtmayer)
 - Andrew Kempe
+- Kevin Smith (codebrulee)
+- Rashadh (rashadh)
 - Sergey Bartunov (sbos)
