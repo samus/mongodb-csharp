@@ -8,7 +8,7 @@ namespace MongoDB.Driver.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class TypeEntry
+    public class TypeEntry : IObjectDescriptor
     {
         public delegate object CreateInstanceFunc(Type type);
 
@@ -75,14 +75,14 @@ namespace MongoDB.Driver.Serialization
         /// <summary>
         /// Gets the property.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="mongoName">Name of the mongo.</param>
         /// <returns></returns>
-        public TypeProperty GetProperty(string name){
+        public TypeProperty GetProperty(string mongoName){
             TypeProperty property;
 
-            if(!_propertys.TryGetValue(name, out property))
+            if(!_propertys.TryGetValue(mongoName, out property))
                 //Todo: custom exception type
-                throw new MongoException(string.Format("Mongo property \"{0}\" was not found on type \"{1}\"", name, Type.FullName));
+                throw new MongoException(string.Format("Mongo property \"{0}\" was not found on type \"{1}\"", mongoName, Type.FullName));
 
             return property;
         }
@@ -132,6 +132,38 @@ namespace MongoDB.Driver.Serialization
             foreach(T attribute in propertyInfo.GetCustomAttributes(typeof(T), true))
                 return attribute;
             return null;
+        }
+
+        /// <summary>
+        /// Gets the property value.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="mongoName">Name of the mongo.</param>
+        /// <returns></returns>
+        object IObjectDescriptor.GetPropertyValue(object instance, string mongoName){
+            var property = GetProperty(mongoName);
+            return property.GetValue(instance);
+        }
+
+        /// <summary>
+        /// Sets the property value.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="mongoName">Name of the mongo.</param>
+        /// <param name="value">The value.</param>
+        void IObjectDescriptor.SetPropertyValue(object instance, string mongoName, object value){
+            var property = GetProperty(mongoName);
+            property.SetValue(instance,value);
+        }
+
+        /// <summary>
+        /// Gets the mongo property names.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetMongoPropertyNames(){
+            foreach(var typeProperty in Propertys){
+                yield return typeProperty.MongoName;
+            }
         }
     }
 }

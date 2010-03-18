@@ -7,19 +7,26 @@ namespace MongoDB.Driver.Serialization
     public interface ISerializationFactory
     {
         /// <summary>
-        /// Gets the builder.
+        /// Gets the bson builder.
         /// </summary>
         /// <param name="rootType">Type of the root.</param>
         /// <param name="connection">The connection.</param>
         /// <returns></returns>
-        IBsonObjectBuilder GetBuilder(Type rootType,Connection connection);
+        IBsonObjectBuilder GetBsonBuilder(Type rootType,Connection connection);
 
         /// <summary>
-        /// Gets the descriptor.
+        /// Gets the bson descriptor.
         /// </summary>
         /// <param name="rootType">Type of the root.</param>
         /// <param name="connection">The connection.</param>
         /// <returns></returns>
-        IBsonObjectDescriptor GetDescriptor(Type rootType, Connection connection);
+        IBsonObjectDescriptor GetBsonDescriptor(Type rootType, Connection connection);
+
+        /// <summary>
+        /// Gets the object descriptor.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        IObjectDescriptor GetObjectDescriptor(Type type);
     }
 }

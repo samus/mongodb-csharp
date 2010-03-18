@@ -13,7 +13,6 @@ namespace MongoDB.Driver
     public class MongoCollection<T> : IMongoCollection<T>
         where T : class
     {
-        private readonly ObjectDescriptor _objectDescriptor = new ObjectDescriptor();
         private readonly Connection _connection;
         private MongoDatabase _database;
         private CollectionMetaData _metaData;
@@ -328,8 +327,15 @@ namespace MongoDB.Driver
 
             var insertDocument = new List<object>();
 
-            foreach(var document in documents){
-                _objectDescriptor.SetPropertyValueIfEmpty(document, "_id", Oid.NewOid);
+            foreach(var document in documents)
+            {
+                var descriotor = _serializationFactory.GetObjectDescriptor(document.GetType());
+                
+                var id = descriotor.GetPropertyValue(document, "_id");
+
+                if(id == null)
+                    descriotor.SetPropertyValue(document, "_id", Oid.NewOid());
+
                 insertDocument.Add(document);
             }
 
@@ -391,7 +397,7 @@ namespace MongoDB.Driver
         /// </remarks>
         public void Delete(object selector)
         {
-            var descriptor = _serializationFactory.GetDescriptor(selector.GetType(),_connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(selector.GetType(),_connection);
 
             var deleteMessage = new DeleteMessage(descriptor)
             {
@@ -459,13 +465,15 @@ namespace MongoDB.Driver
             var selector = new Document();
             var upsert = UpdateFlags.Upsert;
 
-            var value = _objectDescriptor.GetPropteryValue(document,"_id");
+            var descriptor = _serializationFactory.GetObjectDescriptor(document.GetType());
+
+            var value = descriptor.GetPropertyValue(document, "_id");
 
             if(value!=null){
                 selector["_id"] = value;
             }else{
                 //Likely a new document
-                _objectDescriptor.SetPropertyValue(document, "_id", Oid.NewOid());
+                descriptor.SetPropertyValue(document,"_id",Oid.NewOid());
                 upsert = UpdateFlags.Upsert;
             }
 
@@ -557,7 +565,7 @@ namespace MongoDB.Driver
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(object document, object selector, UpdateFlags flags)
         {
-            var descriptor = _serializationFactory.GetDescriptor(document.GetType(), _connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(document.GetType(), _connection);
 
             var updateMessage = new UpdateMessage(descriptor)
             {
@@ -598,7 +606,9 @@ namespace MongoDB.Driver
         {
             var foundOp = false;
 
-            foreach(var name in _objectDescriptor.GetPropertyNames(document))
+            var descriptor = _serializationFactory.GetObjectDescriptor(document.GetType());
+
+            foreach(var name in descriptor.GetMongoPropertyNames())
                 if(name.IndexOf('$') == 0){
                     foundOp = true;
                     break;
