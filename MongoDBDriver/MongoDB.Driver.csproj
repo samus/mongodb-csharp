@@ -135,7 +135,6 @@
     <Compile Include="Protocol\RequestMessageBase.cs" />
     <Compile Include="Protocol\UpdateMessage.cs" />
     <Compile Include="QueryOptions.cs" />
-    <Compile Include="Serialization\ArrayFactory.cs" />
     <Compile Include="Serialization\DefaultObjectTypeNameProvider.cs" />
     <Compile Include="Serialization\Handlers\DocumentArrayBuilderHandler.cs" />
     <Compile Include="Serialization\Handlers\DocumentBuilderHandler.cs" />

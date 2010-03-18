@@ -8,6 +8,7 @@ namespace MongoDB.Driver.Serialization
     [TestFixture]
     public class ArrayFactoryTests
     {
+        /*
         readonly ArrayFactory _factory = new ArrayFactory();
 
         [Test]
@@ -125,5 +126,6 @@ namespace MongoDB.Driver.Serialization
             Assert.IsInstanceOfType(typeof(Stack<int>), instance);
             Assert.AreEqual(typeof(int), containingType);
         }
+         * */
     }
 }
