@@ -7,12 +7,16 @@ namespace MongoDB.Driver.Serialization
 {
     public class BsonReflectionBuilder : IBsonObjectBuilder
     {
+        private readonly SerializationFactory _serializationFactory;
         readonly Stack<Type> _type = new Stack<Type>();
 
-        public BsonReflectionBuilder(Type rootType){
+        public BsonReflectionBuilder(SerializationFactory serializationFactory, Type rootType){
+            if(serializationFactory == null)
+                throw new ArgumentNullException("serializationFactory");
             if(rootType == null)
                 throw new ArgumentNullException("rootType");
 
+            _serializationFactory = serializationFactory;
             _type.Push(rootType);
         }
 

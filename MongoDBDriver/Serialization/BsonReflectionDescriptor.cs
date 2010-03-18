@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +8,14 @@ namespace MongoDB.Driver.Serialization
 {
     public class BsonReflectionDescriptor : IBsonObjectDescriptor
     {
+        private readonly SerializationFactory _serializationFactory;
+
+        public BsonReflectionDescriptor(SerializationFactory serializationFactory){
+            if(serializationFactory == null)
+                throw new ArgumentNullException("serializationFactory");
+            _serializationFactory = serializationFactory;
+        }
+
         public IEnumerable<BsonObjectProperty> GetPropertys(object obj)
         {
             if(obj is Document){

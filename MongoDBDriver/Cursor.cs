@@ -317,8 +317,11 @@ namespace MongoDB.Driver
 
             if(_fields != null)
                 query.ReturnFieldSelector = _fields;
+
+            var builder = _serializationFactory.GetBuilder(typeof(T), _connection);
+
             try{
-                _reply = _connection.SendTwoWayMessage<T>(query);
+                _reply = _connection.SendTwoWayMessage<T>(query, builder);
                 Id = _reply.CursorId;
                 if(_limit < 0)
                     _limit = _limit*-1;
@@ -335,8 +338,10 @@ namespace MongoDB.Driver
         private void RetrieveMoreData(){
             var getMoreMessage = new GetMoreMessage(FullCollectionName, Id, _limit);
 
+            var builder = _serializationFactory.GetBuilder(typeof(T), _connection);
+
             try{
-                _reply = _connection.SendTwoWayMessage<T>(getMoreMessage);
+                _reply = _connection.SendTwoWayMessage<T>(getMoreMessage, builder);
                 Id = _reply.CursorId;
             }
             catch(IOException exception){

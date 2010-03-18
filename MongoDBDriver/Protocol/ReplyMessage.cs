@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver.Bson;
@@ -21,6 +22,18 @@ namespace MongoDB.Driver.Protocol
     /// </remarks>
     public class ReplyMessage<T> : MessageBase where T : class
     {
+        private readonly IBsonObjectBuilder _objectBuilder;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReplyMessage&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="objectBuilder">The object builder.</param>
+        public ReplyMessage(IBsonObjectBuilder objectBuilder){
+            if(objectBuilder == null)
+                throw new ArgumentNullException("objectBuilder");
+            _objectBuilder = objectBuilder;
+        }
+
         /// <summary>
         /// normally zero, non-zero on query failure     
         /// </summary>
@@ -64,7 +77,7 @@ namespace MongoDB.Driver.Protocol
             StartingFrom = reader.ReadInt32();
             NumberReturned = reader.ReadInt32();
 
-            var breader = new BsonReader(stream,new BsonReflectionBuilder(typeof(T)));
+            var breader = new BsonReader(stream,_objectBuilder);
             var documents = new List<T>();
             
             for(var num = 0; num < NumberReturned; num++)

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using MongoDB.Driver.Bson;
 using MongoDB.Driver.Protocol;
 
 namespace MongoDB.Driver.Connections
@@ -66,26 +67,28 @@ namespace MongoDB.Driver.Connections
          /// <summary>
         /// Sends the two way message.
         /// </summary>
-        /// <param name="msg">The MSG.</param>
+        /// <param name="message">The MSG.</param>
         /// <returns></returns>
-        public ReplyMessage<Document> SendTwoWayMessage(IRequestMessage msg){
-            return SendTwoWayMessage<Document>(msg);
+        public ReplyMessage<Document> SendTwoWayMessage(IRequestMessage message){
+            return SendTwoWayMessage<Document>(message,new DocumentBuilder());
         }
 
         /// <summary>
         /// Used for sending a message that gets a reply such as a query.
         /// </summary>
-        /// <param name="msg"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="message">The message.</param>
+        /// <param name="objectBuilder">The object builder.</param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage msg) where T:class {
+        public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage message, IBsonObjectBuilder objectBuilder) where T:class {
             if (State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }
             try {
-                var reply = new ReplyMessage<T> ();
+                var reply = new ReplyMessage<T>(objectBuilder);
                 lock (_connection) {
-                    msg.Write (_connection.GetStream ());
+                    message.Write (_connection.GetStream ());
                     reply.Read (_connection.GetStream ());
                 }
                 return reply;
@@ -99,16 +102,15 @@ namespace MongoDB.Driver.Connections
         /// <summary>
         /// Used for sending a message that gets no reply such as insert or update.
         /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
-        /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>        
-        public void SendMessage (IRequestMessage msg){
-            if (this.State != ConnectionState.Opened) {
+        /// <param name="message">The message.</param>
+        /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
+        public void SendMessage (IRequestMessage message){
+            if (State != ConnectionState.Opened) {
                 throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
             }
             try {
                 lock (_connection) {
-                    msg.Write (_connection.GetStream ());
+                    message.Write (_connection.GetStream ());
                 }
             } catch (IOException) {
                 //Sending doesn't seem to always trigger the detection of a closed socket.
