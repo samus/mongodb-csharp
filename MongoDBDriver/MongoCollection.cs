@@ -17,6 +17,7 @@ namespace MongoDB.Driver
         private readonly Connection _connection;
         private MongoDatabase _database;
         private CollectionMetaData _metaData;
+        private ISerializationFactory _serializationFactory = SerializationFactory.Default;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
@@ -390,7 +391,9 @@ namespace MongoDB.Driver
         /// </remarks>
         public void Delete(object selector)
         {
-            var deleteMessage = new DeleteMessage
+            var descriptor = _serializationFactory.GetDescriptor(selector.GetType(),_connection);
+
+            var deleteMessage = new DeleteMessage(descriptor)
             {
                 FullCollectionName = FullName,
                 Selector = selector
@@ -554,7 +557,9 @@ namespace MongoDB.Driver
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(object document, object selector, UpdateFlags flags)
         {
-            var updateMessage = new UpdateMessage
+            var descriptor = _serializationFactory.GetDescriptor(document.GetType(), _connection);
+
+            var updateMessage = new UpdateMessage(descriptor)
             {
                 FullCollectionName = FullName,
                 Selector = selector,

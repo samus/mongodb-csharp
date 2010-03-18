@@ -132,9 +132,7 @@ namespace MongoDB.Driver.Connections
         /// A <see cref="System.String"/>
         /// </param>
         public void SendMsgMessage (String message){
-            MsgMessage msg = new MsgMessage ();
-            msg.Message = message;
-            this.SendMessage (msg);
+            SendMessage(new MsgMessage{Message = message});
         }
 
         /// <summary>

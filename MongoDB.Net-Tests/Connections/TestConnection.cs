@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using MongoDB.Driver.Bson;
 using MongoDB.Driver.Protocol;
+using MongoDB.Driver.Serialization;
 using NUnit.Framework;
 using MongoDB.Driver.IO;
 
@@ -58,7 +60,7 @@ namespace MongoDB.Driver.Connections
             Document qdoc = new Document();
             qdoc.Add("listDatabases", 1.0);
             //QueryMessage qmsg = new QueryMessage(qdoc,"system.namespaces");
-            var qmsg = new QueryMessage<Document>(qdoc,"admin.$cmd");
+            var qmsg = new QueryMessage<Document>(new DocumentDescriptor(), qdoc, "admin.$cmd");
             qmsg.NumberToReturn = -1;
             
             return qmsg;

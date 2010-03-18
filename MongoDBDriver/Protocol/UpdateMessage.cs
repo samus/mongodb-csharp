@@ -16,7 +16,8 @@ namespace MongoDB.Driver.Protocol
     /// </remarks>
     public class UpdateMessage : RequestMessageBase
     {
-        public UpdateMessage(){
+        public UpdateMessage(IBsonObjectDescriptor objectDescriptor)
+            : base(objectDescriptor){
             Header = new MessageHeader(OpCode.Update);
         }
 

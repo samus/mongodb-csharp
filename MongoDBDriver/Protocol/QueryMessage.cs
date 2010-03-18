@@ -17,23 +17,28 @@ namespace MongoDB.Driver.Protocol
     /// </remarks>
     public class QueryMessage<T> : RequestMessageBase
     {
-        public QueryMessage(){
+        public QueryMessage(IBsonObjectDescriptor objectDescriptor)
+            : base(objectDescriptor){
             Header = new MessageHeader(OpCode.Query);
         }
 
-        public QueryMessage(object query, String fullCollectionName)
-            : this(query, fullCollectionName, 0, 0){
+        public QueryMessage(IBsonObjectDescriptor objectDescriptor, object query, String fullCollectionName)
+            : this(objectDescriptor, query, fullCollectionName, 0, 0){
         }
 
-        public QueryMessage(object query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
-            : this(query, fullCollectionName, numberToReturn, numberToSkip, null){
+        public QueryMessage(IBsonObjectDescriptor objectDescriptor, object query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
+            : this(objectDescriptor, query, fullCollectionName, numberToReturn, numberToSkip, null)
+        {
         }
 
-        public QueryMessage(object query,
+        public QueryMessage(IBsonObjectDescriptor objectDescriptor,
+            object query,
             String fullCollectionName,
             Int32 numberToReturn,
             Int32 numberToSkip,
-            object returnFieldSelector){
+            object returnFieldSelector)
+            : base(objectDescriptor)
+        {
             Header = new MessageHeader(OpCode.Query);
             Query = query;
             FullCollectionName = fullCollectionName;

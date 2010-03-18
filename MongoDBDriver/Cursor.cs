@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver.Connections;
 using MongoDB.Driver.Protocol;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver
 {
@@ -18,6 +19,7 @@ namespace MongoDB.Driver
         private QueryOptions _options;
         private ReplyMessage<T> _reply;
         private int _skip;
+        private ISerializationFactory _serializationFactory = SerializationFactory.Default;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Cursor&lt;T&gt;" /> class.
@@ -302,7 +304,9 @@ namespace MongoDB.Driver
         ///   Retrieves the data.
         /// </summary>
         private void RetrieveData(){
-            var query = new QueryMessage<T>{
+            var descriptor = _serializationFactory.GetDescriptor(null, _connection);
+
+            var query = new QueryMessage<T>(descriptor){
                 FullCollectionName = FullCollectionName,
                 Query = BuildSpec(),
                 NumberToReturn = _limit,

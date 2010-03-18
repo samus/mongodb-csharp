@@ -15,17 +15,19 @@ namespace MongoDB.Driver.Protocol
     /// </remarks>
     public class KillCursorsMessage : RequestMessageBase
     {
-        public KillCursorsMessage(){
+        public KillCursorsMessage()
+            :base(new DocumentDescriptor()){
             Header = new MessageHeader(OpCode.KillCursors);
         }
 
         public KillCursorsMessage(long cursorId)
-            : this(){
+            :base(new DocumentDescriptor()){
             CursorIds = new[]{cursorId};
         }
 
         public KillCursorsMessage(long[] cursorIDs)
-            : this(){
+            : base(new DocumentDescriptor())
+        {
             CursorIds = cursorIDs;
         }
 

@@ -18,7 +18,8 @@ namespace MongoDB.Driver.Protocol
     /// </remarks>
     public class DeleteMessage : RequestMessageBase
     {
-        public DeleteMessage(){
+        public DeleteMessage(IBsonObjectDescriptor objectDescriptor) 
+            : base(objectDescriptor){
             Header = new MessageHeader(OpCode.Delete);
         }
 
