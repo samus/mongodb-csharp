@@ -4,13 +4,14 @@ using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver{
 
-    public class Oid
+    /// <summary>
+    /// Oid is an immutable object that represents a Mongo ObjectId.
+    /// </summary>
+    public class Oid: IEquatable<Oid>, IComparable<Oid>
     {
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        /// <value>The value.</value>
-        public byte[] Value { get; set; }
+        private static OidGenerator oidGenerator = new OidGenerator();
+        
+        private byte[] bytes;
 
         /// <summary>
         /// Gets the created.
@@ -19,7 +20,7 @@ namespace MongoDB.Driver{
         public DateTime Created{
             get{
                 byte[] time = new byte[4];
-                Array.Copy(this.Value,time,4);
+                Array.Copy(bytes,time,4);
                 Array.Reverse(time);
                 int seconds = BitConverter.ToInt32(time,0);
                 return BsonInfo.Epoch.AddSeconds(seconds);
@@ -29,15 +30,11 @@ namespace MongoDB.Driver{
         /// <summary>
         /// Initializes a new instance of the <see cref="Oid"/> class.
         /// </summary>
-        public Oid(){}
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Oid"/> class.
-        /// </summary>
         /// <param name="value">The value.</param>
         public Oid(string value){
+            value = value.Replace("\"", "");
             ValidateHex(value);
-            this.Value = DecodeHex(value);
+            bytes = DecodeHex(value);
         }
 
         /// <summary>
@@ -45,8 +42,10 @@ namespace MongoDB.Driver{
         /// </summary>
         /// <param name="value">The value.</param>
         public Oid(byte[] value){
-            this.Value = value;
+            bytes = new byte[12];
+            Array.Copy(value,bytes,12);
         }
+
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
@@ -55,17 +54,32 @@ namespace MongoDB.Driver{
         /// <returns>
         /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="T:System.NullReferenceException">
-        /// The <paramref name="obj"/> parameter is null.
-        /// </exception>
         public override bool Equals(object obj){
-            if(obj.GetType() == typeof(Oid)){
-                string hex = obj.ToString();
-                return this.ToString().Equals(hex);
+            if(obj is Oid){
+                return this.CompareTo((Oid)obj) == 0;
             }
             return false;
         }
 
+        public bool Equals (Oid other){
+            return this.CompareTo(other) == 0;
+        }
+        
+        public int CompareTo (Oid other){
+            if (System.Object.ReferenceEquals(other, null)){
+                return 1;
+            }
+            byte[] otherBytes = other.ToByteArray();
+            for(int x = 0; x < bytes.Length; x++){
+                if(bytes[x] < otherBytes[x]){
+                    return -1;
+                }else if(bytes[x] > otherBytes[x]){
+                    return 1;
+                }
+            }
+            return 0;
+        }
+        
         /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
@@ -83,9 +97,45 @@ namespace MongoDB.Driver{
         /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
         public override string ToString() {
-            return String.Format("\"{0}\"",BitConverter.ToString(Value).Replace("-","").ToLower());
+            return String.Format("\"{0}\"",BitConverter.ToString(bytes).Replace("-","").ToLower());
+        }
+        
+        /// <summary>
+        /// Converts the Oid to a byte array. 
+        /// </summary>
+        public byte[] ToByteArray(){
+            byte[] ret = new byte[12];
+            Array.Copy(bytes, ret,12);
+            return ret;
         }
 
+        /// <summary>
+        /// Generates an Oid using OidGenerator. 
+        /// </summary>
+        /// <returns>
+        /// A <see cref="Oid"/>
+        /// </returns>
+        public static Oid NewOid(){
+            return oidGenerator.Generate();   
+        }
+
+        public static bool operator ==(Oid a, Oid b){
+            return a.Equals(b);
+        }
+    
+        public static bool operator !=(Oid a, Oid b){
+            return !(a == b);
+        }
+    
+        public static bool operator >(Oid a, Oid b){
+            return a.CompareTo(b) > 0;
+        }
+    
+        public static bool operator <(Oid a, Oid b){
+            return a.CompareTo(b) < 0;
+        }
+        
+        
         /// <summary>
         /// Validates the hex.
         /// </summary>

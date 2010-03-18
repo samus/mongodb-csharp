@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     public abstract class MongoTestBase
     {
         public Mongo Mongo{get;set;}
-        public MongoDatabase DB{
+        public IMongoDatabase DB{
             get{
                 return this.Mongo["tests"];
             }
@@ -55,7 +55,7 @@ namespace MongoDB.Driver
         protected void CleanDB(){
             foreach(string col in this.TestCollections.Split(',')){
                 DB["$cmd"].FindOne(new Document(){{"drop", col.Trim()}});
-                Console.WriteLine("Dropping " + col);
+                //Console.WriteLine("Dropping " + col);
             }
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using MongoDB.Driver;
 
 namespace MongoDB.GridFS
@@ -17,7 +18,7 @@ namespace MongoDB.GridFS
         private const string DEFAULT_CONTENT_TYPE = "text/plain";
         
         private GridFile gridFile;
-        private MongoDatabase db;
+        private IMongoDatabase db;
         private string bucket;
 
 
@@ -49,15 +50,16 @@ namespace MongoDB.GridFS
             set { filedata["length"] = value; }
         }
 
-        public string[] Aliases{
-            get 
-            {
-                var aliases = filedata["aliases"];
-                
-                if(aliases is List<string>)
-                    filedata["aliases"] = aliases = ((List<string>)aliases).ToArray();
-                
-                return (String[])aliases; 
+        public IList<String> Aliases{
+            get {
+                if(filedata.Contains("aliases") == false || filedata["aliases"] == null){
+                    return null;
+                }
+                if(filedata["aliases"] is IList<String>){
+                    return (List<String>)filedata["aliases"];
+                }else{
+                    return new List<String>();   
+                }
             }
             set { filedata["aliases"] = value; }
         }
@@ -82,7 +84,7 @@ namespace MongoDB.GridFS
         }
         #endregion
 
-        public GridFileInfo(MongoDatabase db, string bucket, string filename){
+        public GridFileInfo(IMongoDatabase db, string bucket, string filename){
             this.db = db;
             this.bucket = bucket;
             this.gridFile = new GridFile(db,bucket);

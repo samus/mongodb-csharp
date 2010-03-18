@@ -1,3 +1,4 @@
+
 *~
 *.dll
 *.*~
@@ -16,10 +17,17 @@
 *.cache
 *.ReSharper
 
-bin/
-obj/
-test-results/
+*/bin/*
+*/obj/*
+*/test-results/*
+/test-results/
+
+/examples/*/bin/*
+/examples/*/test-results/*
+/examples/*/obj/*
 
 /_UpgradeReport_Files/*
 
 /redist/*.zip
+
+*_ReSharper.*/**

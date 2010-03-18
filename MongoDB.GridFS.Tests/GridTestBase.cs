@@ -26,7 +26,6 @@ namespace MongoDB.GridFS
                     sb.Append(fs + ".chunks,");
                 }
                 sb.Remove(sb.Length - 1,1); //remove last ,
-                Console.WriteLine(sb.ToString());
                 return sb.ToString();
             }
         }

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -10,6 +11,7 @@ namespace MongoDB.Driver.Bson
     [TestFixture]
     public class TestBsonWriter
     {
+        char euro = '\u20ac';
         [Test]
         public void TestCalculateSizeOfEmptyDoc(){
             Document doc = new Document();
@@ -58,6 +60,35 @@ namespace MongoDB.Driver.Bson
         }
         
         [Test]
+        public void TestWriteMultibyteString(){
+            
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            
+            string val = new StringBuilder().Append(euro,3).ToString();
+            string expected = BitConverter.ToString(Encoding.UTF8.GetBytes(val + '\0'));
+            Assert.AreEqual(expected,WriteStringAndGetHex(val));
+        }
+        
+        [Test]
+        public void TestWriteMultibyteStringLong(){
+            
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            
+            string val = new StringBuilder().Append("ww").Append(euro,180).ToString();
+            string expected = BitConverter.ToString(Encoding.UTF8.GetBytes(val + '\0'));
+            Assert.AreEqual(expected,WriteStringAndGetHex(val));
+        }
+        
+        private string WriteStringAndGetHex(string val){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            writer.Write(val,false);
+            return BitConverter.ToString(ms.ToArray());
+        }
+        
+        [Test]
         public void TestWriteDocument(){
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
@@ -87,7 +118,7 @@ namespace MongoDB.Driver.Bson
         }
 
         [Test]
-        public void TestNullsDontThrowExceptionsExceptions(){
+        public void TestNullsDontThrowExceptions(){
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
             Document doc = new Document().Append("n", null);
@@ -97,5 +128,24 @@ namespace MongoDB.Driver.Bson
                 Assert.Fail("Null Reference Exception was thrown on trying to serialize a null value");
             }
         }
+        
+        [Test]
+        public void TestWritingTooLargeDocument(){
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            Binary b = new Binary(new byte[BsonInfo.MaxDocumentSize]);
+            Document big = new Document().Append("x", b);
+            bool thrown = false;
+            try{
+                writer.Write(big);    
+            }catch(ArgumentException){
+                thrown = true;
+            }catch(Exception e){
+                Assert.Fail("Wrong Exception thrown " + e.GetType().Name);
+            }
+            
+            Assert.IsTrue(thrown, "Shouldn't be able to write large document");
+        }
+      
     }
 }

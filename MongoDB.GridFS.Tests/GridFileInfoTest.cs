@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 using NUnit.Framework;
@@ -144,11 +145,11 @@ namespace MongoDB.GridFS
                 tw.WriteLine("test");
                 tw.Close();
             }
-            gfi.Aliases = new String[]{"file1"};
+            gfi.Aliases = new List<String>(){"file1"};
             GridFileInfo gfi2 = new GridFileInfo(DB,fs, filename);
             Assert.IsTrue(gfi2.Exists, "Couldn't find " + filename);
             Assert.AreEqual("text/sam", gfi2.ContentType);
-            Assert.AreNotEqual(gfi2.Aliases, gfi.Aliases);
+            Assert.AreNotEqual(gfi2.Aliases, gfi.Aliases, "Aliases shouldn't have been updated in the DB yet.");
             gfi.UpdateInfo();
             gfi2.Refresh();
             Assert.AreEqual(gfi2.Aliases, gfi.Aliases);

@@ -25,11 +25,11 @@ Current Features
 - hint, explain, $where
 - Safemode
 - Exceptions
+- Connection Pooling
 
 Missing Features
 ================
 - Auto reconnect options
-- Connection pooling (In progress)
 - database profiling: set/get profiling level, get profiling info
 - Many unit tests
 
@@ -40,6 +40,8 @@ Currently using the driver in the GAC is not supported.  Simply copy the driver 
 Patches
 =======
 Patches are welcome and will likely be accepted.  By submitting a patch you assign the copyright to me, Sam Corder.  This is necessary to simplify the number of copyright holders should it become necessary that the copyright need to be reassigned or the code relicensed.  The code will always be available under an OSI approved license.
+
+A bug fix patch should contain a test case that reproduces the issue along with the actual fix.  Try to follow the same style that the code is already in so that things remain clean.
 
 Usage
 =====
@@ -54,6 +56,8 @@ At the simplest query the database like this:
  Document result = db["tests"]["reads"].FindOne(query);
  db.Disconnect();
 
+There is also a growing number of samples in the examples directory.
+
 Getting Help
 ============
 The Google Group mongodb-csharp at (http://groups.google.com/group/mongodb-csharp) is the best place to go.
@@ -65,5 +69,8 @@ Contributors
 - Arne Classen (Sdether)
 - Steve Wagner (lanwin)
 - Andrew Rondeau (GWBasic)
+- Doug Mayer (dougtmayer)
 - Andrew Kempe
+- Kevin Smith (codebrulee)
+- Rashadh (rashadh)
 - Sergey Bartunov (sbos)

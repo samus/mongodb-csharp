@@ -8,7 +8,7 @@ using MongoDB.Driver.Serialization;
 namespace MongoDB.Driver.Bson
 {
     /// <summary>
-    ///   Class that knows how to format a native object into bson bits.
+    /// Class that knows how to format a native object into bson bits.
     /// </summary>
     public class BsonWriter
     {
@@ -18,7 +18,7 @@ namespace MongoDB.Driver.Bson
         private readonly Stream _stream;
         private readonly IBsonObjectDescriptor _descriptor;
         private readonly BinaryWriter _writer;
-
+        
         public BsonWriter(Stream stream)
             :this(stream,new BsonReflectionDescriptor()){
             
@@ -31,9 +31,9 @@ namespace MongoDB.Driver.Bson
             _buffer = new byte[BufferLength];
             _maxChars = BufferLength/Encoding.UTF8.GetMaxByteCount(1);
         }
-
-        public void WriteValue(BsonDataType dateType, Object obj){
-            switch(dateType){
+       
+        public void WriteValue(BsonDataType dataType, Object obj){
+            switch(dataType){
                 case BsonDataType.MinKey:
                 case BsonDataType.MaxKey:
                 case BsonDataType.Null:
@@ -92,9 +92,9 @@ namespace MongoDB.Driver.Bson
                     throw new NotImplementedException(String.Format("Writing {0} types not implemented.", obj.GetType().Name));
             }
         }
-
+        
         private void Write(Oid id){
-            _writer.Write(id.Value);
+            _writer.Write(id.ToByteArray());
         }
 
         private void Write(Binary binary){
@@ -144,6 +144,8 @@ namespace MongoDB.Driver.Bson
         public void WriteObject(object obj){
             var propertys = _descriptor.GetPropertys(obj);
             var size = CalculateSizeObject(propertys);
+            if(size >= BsonInfo.MaxDocumentSize) 
+                throw new ArgumentException("Maximum document size exceeded.");
             _writer.Write(size);
             foreach(var property in propertys){
                 var type = TranslateToBsonType(property.Value);
@@ -194,7 +196,7 @@ namespace MongoDB.Driver.Bson
             }
             _writer.Write((byte)0);
         }
-
+      
         public int CalculateSize(Object obj){
             if(obj == null)
                 return 0;
@@ -241,7 +243,7 @@ namespace MongoDB.Driver.Bson
 
             throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.", obj.GetType().Name));
         }
-
+        
         private int CalculateSize(Code code){
             return CalculateSize(code.Value, true);
         }
@@ -275,6 +277,7 @@ namespace MongoDB.Driver.Bson
         public int CalculateSize(DBRef reference){
             return CalculateSizeObject((Document)reference);
         }
+        
 
         public int CalculateSizeObject(object obj){
             var propertys = _descriptor.GetPropertys(obj);
@@ -292,7 +295,7 @@ namespace MongoDB.Driver.Bson
             size += 1; //terminator
             return size;
         }
-
+        
         public int CalculateSize(IEnumerable enumerable){
             var size = 4; //base size for the object
             var keyname = 0;
@@ -305,7 +308,7 @@ namespace MongoDB.Driver.Bson
             size += 1; //terminator
             return size;
         }
-
+        
         public int CalculateSize(String value){
             return CalculateSize(value, true);
         }
@@ -322,7 +325,7 @@ namespace MongoDB.Driver.Bson
         public void Flush(){
             _writer.Flush();
         }
-
+        
         protected BsonDataType TranslateToBsonType(object obj){
             if(obj == null)
                 return BsonDataType.Null;

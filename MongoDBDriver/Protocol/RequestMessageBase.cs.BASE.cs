@@ -1,23 +1,22 @@
 using System.IO;
 using MongoDB.Driver.Bson;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Protocol
 {
     /// <summary>
     ///   Description of Message.
     /// </summary>
-    public abstract class RequestMessageBase : MessageBase, IRequestMessage
+    public abstract class RequestMessageBase : MessageBase
     {
-        public void Write (Stream stream){
+        public void Write(Stream stream){
             var header = Header;
             var bstream = new BufferedStream(stream);
             var writer = new BinaryWriter(bstream);
-            var bwriter = new BsonWriter(bstream);
-            
-            Header.MessageLength += this.CalculateBodySize(bwriter);
-            if(Header.MessageLength > MessageBase.MaximumMessageSize){
-                throw new MongoException("Maximum message length exceeded");
-            }
+            var bwriter = new BsonWriter(bstream,new ReflectionDescriptor());
+
+            Header.MessageLength += CalculateBodySize(bwriter);
+
             writer.Write(header.MessageLength);
             writer.Write(header.RequestId);
             writer.Write(header.ResponseTo);

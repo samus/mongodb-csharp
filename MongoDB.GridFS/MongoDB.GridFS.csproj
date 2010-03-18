@@ -45,7 +45,5 @@
       <Name>MongoDB.Driver</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

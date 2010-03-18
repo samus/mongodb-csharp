@@ -28,8 +28,12 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <RootNamespace>MongoDB.Driver</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>MongoDB.Driver.Tests</RootNamespace>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\scorder\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,19 +51,35 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\redist\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bson\TestBsonBinary.cs" />
     <Compile Include="Bson\TestRoundTrips.cs" />
+    <Compile Include="Connections\TestConnection.cs" />
+    <Compile Include="Connections\TestConnectionFactory.cs" />
+    <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
     <Compile Include="Serialization\ArrayFactoryTests.cs" />
     <Compile Include="Serialization\ReflectionBuilderTests.cs" />
@@ -69,8 +89,6 @@
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
-    <Compile Include="Connections\TestConnectionFactory.cs" />
-    <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="TestConnectionStringBuilder.cs" />
     <Compile Include="TestCursor.cs" />
     <Compile Include="TestDatabase.cs" />
@@ -78,9 +96,11 @@
     <Compile Include="TestDBRef.cs" />
     <Compile Include="TestDocument.cs" />
     <Compile Include="TestMongo.cs" />
-    <Compile Include="Connections\TestConnection.cs" />
     <Compile Include="IO\TestMsgMessage.cs" />
     <Compile Include="TestB.cs" />
+    <None Include="MongoDB.Driver.Tests.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="test-data\tests.charreads.txt" />
     <None Include="test-data\tests.reads.txt" />
     <None Include="test-data\tests.smallreads.txt" />
@@ -96,15 +116,9 @@
     <Compile Include="TestCollectionMetaData.cs" />
     <Compile Include="TestBinary.cs" />
     <Compile Include="Util\TestJsonUtils.cs" />
-    <None Include="MongoDB.Driver.Tests.dll.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Compile Include="Configuration\TestConfigurationSection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
-      <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
-      <Name>MongoDB.Driver</Name>
-    </ProjectReference>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
     </BootstrapperPackage>
@@ -121,10 +135,20 @@
       <Visible>False</Visible>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
+      <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
+      <Name>MongoDB.Driver</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="test-data\tests.binary.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Util\" />
+    <Folder Include="Configuration\" />
   </ItemGroup>
 </Project>

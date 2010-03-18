@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
 
@@ -222,6 +224,40 @@ namespace MongoDB.Driver
         }
 
         [Test]
+        public void TestInsertLargerThan4MBDocument(){
+            Binary b = new Binary(new byte[1024 * 1024]);
+            Document big = new Document(){{"name", "Big Document"}, {"b1", b}, {"b2", b}, {"b3", b}, {"b4", b}};
+            IMongoCollection<Document> inserts = DB["inserts"];
+            bool thrown = false;
+            try{
+                inserts.Insert(big);               
+            }catch(MongoException){
+                thrown = true;
+            }catch(Exception e){
+                Assert.Fail("Wrong Exception thrown " + e.GetType().Name);
+            }
+            Assert.IsTrue(thrown, "Shouldn't be able to insert large document");
+        }
+        
+        [Test]
+        public void TestInsertBulkLargerThan4MBOfDocuments(){
+            Binary b = new Binary(new byte[1024 * 1024 * 2]);
+            IMongoCollection<Document> inserts = DB["inserts"];
+            try{
+                Document[] docs = new Document[10];
+                    //6MB+ of documents
+                for(int x = 0; x < docs.Length; x++){
+                    docs[x] = new Document(){{"name", "bulk"}, {"b", b}, {"x", x}};
+                }
+                inserts.Insert(docs,true);
+                long count = inserts.Count(new Document(){{"name", "bulk"}});
+                Assert.AreEqual(docs.Length, count, "Wrong number of documents inserted");
+            }catch(MongoException){
+                Assert.Fail("MongoException should not have been thrown.");
+            }
+        }
+        
+        [Test]
         public void TestDelete(){
             IMongoCollection<Document> deletes = DB["deletes"];
             Document doc = new Document();
@@ -314,6 +350,22 @@ namespace MongoDB.Driver
             Assert.IsTrue(found,"Should have found docs updated for TestMany");
         }
 
+        [Test]
+        public void TestUpdatePartial(){
+            IMongoCollection<Document> updates = DB["updates"];
+            int coolness = 5;
+            Document einstein = new Document(){{"Last", "Einstien"},{"First", "Albert"},{"Coolness",coolness++}};
+            updates.Insert(einstein);
+            Document selector = new Document(){{"_id", einstein["_id"]}};
+            
+            updates.Update(new Document(){{"$inc", new Document(){{"Coolness", 1}}}}, selector);
+            Assert.AreEqual(coolness++, Convert.ToInt32(updates.FindOne(selector)["Coolness"]), "Coolness field not incremented", true);
+            
+            updates.Update(new Document(){{"$set",new Document(){{"Last", "Einstein"}}},
+                                          {"$inc",new Document(){{"Coolness",1}}}},selector,true);
+            Assert.AreEqual(coolness++, Convert.ToInt32(updates.FindOne(selector)["Coolness"]), "Coolness field not incremented");
+        }
+        
         [Test]
         public void TestCount(){
             IMongoCollection<Document> counts = DB["counts"];
