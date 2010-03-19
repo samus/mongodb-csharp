@@ -34,6 +34,8 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -98,6 +100,9 @@
     <Compile Include="TestMongo.cs" />
     <Compile Include="IO\TestMsgMessage.cs" />
     <Compile Include="TestB.cs" />
+    <None Include="..\StrongName.snk">
+      <Link>StrongName.snk</Link>
+    </None>
     <None Include="App.config" />
     <None Include="test-data\tests.charreads.txt" />
     <None Include="test-data\tests.reads.txt" />

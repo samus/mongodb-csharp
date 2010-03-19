@@ -12,6 +12,8 @@
     <AssemblyName>MongoDB.Linq</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ExpressionTreeVisitor.cs" />
     <Compile Include="MongoDocumentQuery.cs" />
     <Compile Include="IMongoQuery.cs" />
@@ -53,13 +56,17 @@
     <Compile Include="MongoQuery.cs" />
     <Compile Include="MongoQueryProvider.cs" />
     <Compile Include="MongoQueryTranslator.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
       <Name>MongoDB.Driver</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\StrongName.snk">
+      <Link>StrongName.snk</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

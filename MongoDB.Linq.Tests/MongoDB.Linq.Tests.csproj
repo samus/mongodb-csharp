@@ -12,6 +12,8 @@
     <AssemblyName>MongoDB.Linq.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -74,6 +76,9 @@
   <ItemGroup>
     <None Include="..\MongoDB.Net-Tests\App.config">
       <Link>App.config</Link>
+    </None>
+    <None Include="..\StrongName.snk">
+      <Link>StrongName.snk</Link>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

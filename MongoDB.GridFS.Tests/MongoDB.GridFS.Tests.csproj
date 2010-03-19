@@ -10,6 +10,8 @@
     <AssemblyName>MongoDB.GridFS.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <RootNamespace>MongoDB.GridFS.Tests</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,6 +46,9 @@
     <Compile Include="GridTestBase.cs" />
     <None Include="..\MongoDB.Net-Tests\App.config">
       <Link>App.config</Link>
+    </None>
+    <None Include="..\StrongName.snk">
+      <Link>StrongName.snk</Link>
     </None>
     <None Include="MongoDB.GridFS.Tests.csproj" />
   </ItemGroup>
