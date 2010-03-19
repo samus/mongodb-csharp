@@ -79,7 +79,10 @@ namespace MongoDB.Driver.Serialization
             if(value!=null){
                 var type = value.GetType();
                 if(PropertyType!=type){
-                    value = Convert.ChangeType(value, PropertyType);
+                    var code = Convert.GetTypeCode(value);
+
+                    if(code != TypeCode.Object)
+                        value = Convert.ChangeType(value, PropertyType);
                 }
             }
 
