@@ -31,7 +31,7 @@ namespace MongoDB.Driver.Serialization
             //Todo: replace with reflection emit one
             _getValue = i=>propertyInfo.GetValue(i,null);
             //Todo: replace with reflection emit one
-            _setValue = (i, o) => propertyInfo.SetValue(i, o, null);
+            _setValue = (i, o) => SetAndConvertPropertyValue(propertyInfo,i,o);
         }
 
         /// <summary>
@@ -67,6 +67,23 @@ namespace MongoDB.Driver.Serialization
         /// <param name="value">The value.</param>
         public void SetValue(object instance, object value){
             _setValue(instance, value);
+        }
+
+        /// <summary>
+        /// Sets the and convert property value.
+        /// </summary>
+        /// <param name="propertyInfo">The property info.</param>
+        /// <param name="instance">The instance.</param>
+        /// <param name="value">The value.</param>
+        private void SetAndConvertPropertyValue(PropertyInfo propertyInfo,object instance,object value){
+            if(value!=null){
+                var type = value.GetType();
+                if(PropertyType!=type){
+                    value = Convert.ChangeType(value, PropertyType);
+                }
+            }
+
+            propertyInfo.SetValue(instance, value, null);
         }
     }
 }

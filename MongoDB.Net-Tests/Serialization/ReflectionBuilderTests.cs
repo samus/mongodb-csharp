@@ -179,5 +179,20 @@ namespace MongoDB.Driver.Serialization
             Assert.IsNotNull(obj);
             Assert.AreEqual(1,obj.Id);           
         }
+
+        public class ConvertPropertyValues
+        {
+            public bool Ok{ get; set;}
+        }
+
+        [Test]
+        public void CanConvertPropertyValues(){
+            var bson = Serialize(new Document{{"Ok", 1.0}});
+
+            var obj = Deserialize<ConvertPropertyValues>(bson);
+            Assert.IsNotNull(obj);
+            Assert.AreEqual(true, obj.Ok);           
+
+        }
     }
 }
