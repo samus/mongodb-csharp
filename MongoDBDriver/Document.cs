@@ -7,6 +7,7 @@ namespace MongoDB.Driver
     /// <summary>
     ///   Description of Document.
     /// </summary>
+    [Serializable]
     public class Document : DictionaryBase
     {
         private readonly List<String> orderedKeys = new List<String>();

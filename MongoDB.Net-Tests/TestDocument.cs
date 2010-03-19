@@ -5,7 +5,8 @@
 
 using System;
 using System.Collections;
-
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
 
 using MongoDB.Driver;
@@ -151,6 +152,18 @@ namespace MongoDB.Driver
             Document d1 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "foo")));
             Document d2 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "bar")));
             AreNotEqual(d1, d2);
+        }
+
+        [Test]
+        public void TestDocumentIsSerializable(){
+            var src = new Document().Append("test", 2);
+            using(var mem = new MemoryStream()){
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(mem,src);
+                mem.Position = 0;
+                var dest = (Document)formatter.Deserialize(mem);
+                AreEqual(src,dest);
+            }
         }
 
         private void AreEqual(Document d1, Document d2) {
