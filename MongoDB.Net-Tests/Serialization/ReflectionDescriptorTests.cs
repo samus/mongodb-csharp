@@ -29,14 +29,14 @@ namespace MongoDB.Driver.Serialization
         [Test]
         public void CanSerializeAnDocumentPreperty()
         {
-            var bson = Serialize(new { A = new Document().Append("B", "b") });
+            var bson = Serialize(new { A = new Document().Add("B", "b") });
             Assert.AreEqual("FgAAAANBAA4AAAACQgACAAAAYgAAAA==", bson);
         }
 
         [Test]
         public void CanSerializeAnDocument()
         {
-            var bson = Serialize(new Document().Append("A", "a"));
+            var bson = Serialize(new Document().Add("A", "a"));
             Assert.AreEqual("DgAAAAJBAAIAAABhAAA=", bson);
         }
     }

@@ -25,7 +25,7 @@ namespace MongoDB.Driver
             get {
                 if (options != null)
                     return options;
-                Document doc = db["system.namespaces"].FindOne (new Document ().Append ("name", this.fullName));
+                Document doc = db["system.namespaces"].FindOne(new Document().Add("name", this.fullName));
                 if (doc == null)
                     doc = new Document ();
                 if (doc.Contains ("create"))
@@ -45,7 +45,7 @@ namespace MongoDB.Driver
                 
                 indexes.Clear ();
 
-                var docs = db["system.indexes"].Find(new Document().Append("ns", this.fullName));
+                var docs = db["system.indexes"].Find(new Document().Add("ns", this.fullName));
                 foreach (Document doc in docs.Documents) {
                     indexes.Add ((string)doc["name"], doc);
                 }
@@ -71,7 +71,7 @@ namespace MongoDB.Driver
 
         public void DropIndex (string name){
             Document cmd = new Document ();
-            cmd.Append ("deleteIndexes", this.name).Append ("index", name);
+            cmd.Add("deleteIndexes", this.name).Add("index", name);
             db.SendCommand (cmd);
             this.refresh ();
         }
@@ -81,7 +81,7 @@ namespace MongoDB.Driver
                 throw new ArgumentException ("Name must not be null or empty", "newName");
             
             Document cmd = new Document ();
-            cmd.Append ("renameCollection", fullName).Append ("to", db.Name + "." + newName);
+            cmd.Add("renameCollection", fullName).Add("to", db.Name + "." + newName);
             db.GetSisterDatabase ("admin").SendCommand (cmd);
             this.refresh ();
         }

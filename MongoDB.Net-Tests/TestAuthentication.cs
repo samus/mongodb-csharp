@@ -88,9 +88,9 @@ namespace MongoDB.Driver
 	    {
             var collection = mongo[testDatabaseName]["testCollection"];
             collection.Delete(new Document(),true);
-            collection.Insert(new Document().Append("value", 84),true);
+            collection.Insert(new Document().Add("value", 84),true);
             
-            var value = collection.FindOne(new Document().Append("value", 84));
+            var value = collection.FindOne(new Document().Add("value", 84));
             
             Assert.AreEqual(84, value["value"]);
         }

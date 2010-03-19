@@ -106,7 +106,7 @@ namespace MongoDB.Driver
         public Document FollowReference(DBRef reference){
             if(reference == null)
                 throw new ArgumentNullException("reference", "cannot be null");
-            var query = new Document().Append("_id", reference.Id);
+            var query = new Document().Add("_id", reference.Id);
             return this[reference.CollectionName].FindOne(query);
         }
 
@@ -120,7 +120,7 @@ namespace MongoDB.Driver
         {
             if(reference == null)
                 throw new ArgumentNullException("reference", "cannot be null");
-            var query = new Document().Append("_id", reference.Id);
+            var query = new Document().Add("_id", reference.Id);
             return GetCollection<T>(reference.CollectionName).FindOne(query);
         }
 
@@ -194,7 +194,7 @@ namespace MongoDB.Driver
         /// <param name="codeScope">The code scope.</param>
         /// <returns></returns>
         public Document Eval(CodeWScope codeScope){
-            var cmd = new Document().Append("$eval", codeScope);
+            var cmd = new Document().Add("$eval", codeScope);
             return SendCommand(cmd);
         }
 
@@ -204,7 +204,7 @@ namespace MongoDB.Driver
         /// <param name="commandName">The command name.</param>
         /// <returns></returns>
         public Document SendCommand(string commandName){
-            return SendCommand(new Document().Append(commandName, 1.0));
+            return SendCommand(new Document().Add(commandName, 1.0));
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace MongoDB.Driver
         /// <param name="commandName">Name of the command.</param>
         /// <returns></returns>
         public T SendCommand<T>(string commandName) where T : CommandResultBase{
-            return SendCommand<T>(new Document().Append(commandName, 1.0));
+            return SendCommand<T>(new Document().Add(commandName, 1.0));
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace MongoDB.Driver
             if(string.IsNullOrEmpty(builder.Username))
                 return;
 
-            var nonceResult = SendCommandCore(new Document().Append("getnonce", 1.0));
+            var nonceResult = SendCommandCore(new Document().Add("getnonce", 1.0));
             var nonce = (String)nonceResult["nonce"];
 
             if(nonce == null)

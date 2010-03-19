@@ -115,8 +115,7 @@ namespace MongoDB.Driver
         /// <returns></returns>
         public ICursor<T> Find(String where)
         {
-            var spec = new Document();
-            spec.Append("$where", new Code(where));
+            var spec = new Document{{"$where", new Code(where)}};
             return Find(spec, 0, 0, null);
         }
 
@@ -239,7 +238,7 @@ namespace MongoDB.Driver
         {
             try
             {
-                var response = Database.SendCommand(new Document().Append("count", Name).Append("query", spec));
+                var response = Database.SendCommand(new Document().Add("count", Name).Add("query", spec));
                 return Convert.ToInt64((double)response["n"]);
             }
             catch(MongoCommandException)
@@ -616,7 +615,7 @@ namespace MongoDB.Driver
             if(foundOp == false)
             {
                 //wrap document in a $set.
-                document = new Document().Append("$set", document);
+                document = new Document().Add("$set", document);
             }
 
             Update(document, selector, UpdateFlags.MultiUpdate);

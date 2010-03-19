@@ -15,7 +15,7 @@ namespace MongoDB.Driver
 
         internal MapReduce(MongoDatabase database, string name){
             this.database = database;
-            command = new Document().Append("mapreduce", name);
+            command = new Document().Add("mapreduce", name);
             Verbose = true;
         }
 

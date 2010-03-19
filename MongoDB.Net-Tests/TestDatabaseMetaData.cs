@@ -16,7 +16,7 @@ namespace MongoDB.Driver
 
         public override void OnInit () {
             //Add any new collections ones to work on.
-            DB["$cmd"].FindOne(new Document().Append("create","todrop"));
+            DB["$cmd"].FindOne(new Document().Add("create", "todrop"));
         }       
         
         [Test]
@@ -30,7 +30,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCreateCollectionWithOptions(){
-            Document options = new Document().Append("capped",true).Append("size",10000);
+            Document options = new Document().Add("capped", true).Add("size", 10000);
             DB.MetaData.CreateCollection("createdcapped",options);           
 
             List<String> names = DB.GetCollectionNames();
@@ -40,7 +40,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestCreateCollectionWithInvalidOptions(){
-            Document options = new Document().Append("invalidoption",true);
+            Document options = new Document().Add("invalidoption", true);
             DB.MetaData.CreateCollection("createdinvalid",options);          
 
             List<String> names = DB.GetCollectionNames();

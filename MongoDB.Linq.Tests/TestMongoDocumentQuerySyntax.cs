@@ -27,7 +27,7 @@ namespace MongoDB.Linq.Tests {
         public void Can_use_in_query() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo").In("bar", "baz") select d);
             Assert.AreEqual(
-                new Document().Append("foo", new Document().Append("$in", new[]{ "bar", "baz" })),
+                new Document().Add("foo", new Document().Add("$in", new[]{ "bar", "baz" })),
                 q.Query);
         }
 
@@ -36,7 +36,7 @@ namespace MongoDB.Linq.Tests {
             var a = new[] { "bar", "baz" };
             var q = (IMongoQuery)(from d in queryable where d.Key("foo").In(a) select d);
             Assert.AreEqual(
-                new Document().Append("foo", new Document().Append("$in", new[] { "bar", "baz" })),
+                new Document().Add("foo", new Document().Add("$in", new[] { "bar", "baz" })),
                 q.Query);
         }
 
@@ -44,39 +44,39 @@ namespace MongoDB.Linq.Tests {
         public void Can_use_not_in_query() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo").NotIn("bar", "baz") select d);
             Assert.AreEqual(
-                new Document().Append("foo", new Document().Append("$nin", new[] { "bar", "baz" })),
+                new Document().Add("foo", new Document().Add("$nin", new[] { "bar", "baz" })),
                 q.Query);
         }
 
         [Test]
         public void Can_use_Equals() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo").Equals("bar") select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         #region string operator overloads
         [Test]
         public void Can_use_equality_op_on_string() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") == "bar" select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_op_on_string() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") != "bar" select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne","bar")).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne","bar")).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_op_on_string_reversed() {
             var q = (IMongoQuery)(from d in queryable where "bar" == d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_op_on_string_reversed() {
             var q = (IMongoQuery)(from d in queryable where "bar" != d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne","bar")).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne","bar")).ToString(), q.Query.ToString());
         }
         #endregion
 
@@ -84,73 +84,73 @@ namespace MongoDB.Linq.Tests {
         [Test]
         public void Can_use_equality_op_on_int() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") == 10 select d);
-            Assert.AreEqual(new Document().Append("foo", 10).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", 10).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_op_on_int() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") != 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_op_on_int() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") > 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gt", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gt", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_or_equal_op_on_int() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") >= 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gte", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gte", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_op_on_int() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") < 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lt", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lt", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_or_equal_op_on_int() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") <= 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lte", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lte", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_op_on_int_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10 == d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", 10).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", 10).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_op_on_int_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10 != d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_op_on_int_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10 > d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lt", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lt", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_or_equal_op_on_int_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10 >= d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lte", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lte", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_op_on_int_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10 < d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gt", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gt", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_or_equal_op_on_int_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10 <= d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gte", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gte", 10)).ToString(), q.Query.ToString());
         }
         #endregion
 
@@ -158,73 +158,73 @@ namespace MongoDB.Linq.Tests {
         [Test]
         public void Can_use_equality_op_on_double() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") == 10.1 select d);
-            Assert.AreEqual(new Document().Append("foo", 10.1).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", 10.1).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_op_on_double() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") != 10.1 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_op_on_double() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") > 10.1 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gt", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gt", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_or_equal_op_on_double() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") >= 10.1 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gte", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gte", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_op_on_double() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") < 10.1 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lt", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lt", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_or_equal_op_on_double() {
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") <= 10.1 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lte", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lte", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_op_on_double_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10.1 == d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", 10.1).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", 10.1).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_op_on_double_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10.1 != d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_op_on_double_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10.1 > d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lt", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lt", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_or_equal_op_on_double_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10.1 >= d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lte", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lte", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_op_on_double_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10.1 < d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gt", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gt", 10.1)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_or_equal_op_on_double_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10.1 <= d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gte", 10.1)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gte", 10.1)).ToString(), q.Query.ToString());
         }
         #endregion
 
@@ -233,84 +233,84 @@ namespace MongoDB.Linq.Tests {
         public void Can_use_equality_op_on_DateTime() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") == dt select d);
-            Assert.AreEqual(new Document().Append("foo",dt).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo",dt).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_op_on_DateTime() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") != dt select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_op_on_DateTime() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") > dt select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gt", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gt", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_or_equal_op_on_DateTime() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") >= dt select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gte", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gte", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_op_on_DateTime() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") < dt select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lt", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lt", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_or_equal_op_on_DateTime() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where d.Key("foo") <= dt select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lte", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lte", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_op_on_DateTime_reversed() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where dt == d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", dt).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", dt).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_op_on_DateTime_reversed() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where dt != d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_op_on_DateTime_reversed() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where dt > d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lt", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lt", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_or_equal_op_on_DateTime_reversed() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where dt >= d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lte", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lte", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_op_on_DateTime_reversed() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where dt < d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gt", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gt", dt)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_or_equal_op_on_DateTime_reversed() {
             var dt = DateTime.Parse("2009-10-10T07:00:00.0000000Z");
             var q = (IMongoQuery)(from d in queryable where dt <= d.Key("foo") select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gte", dt)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gte", dt)).ToString(), q.Query.ToString());
         }
         #endregion
     }

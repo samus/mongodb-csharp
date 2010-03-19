@@ -39,25 +39,25 @@ namespace MongoDB.Driver.Util
         
         [Test]
         public void TestSerializeDocWithSingleNullField() {
-            var doc = new Document().Append("foo", null);
+            var doc = new Document().Add("foo", null);
             Assert.AreEqual(@"{ ""foo"": null }", JsonFormatter.Serialize(doc));
         }
 
         [Test]
         public void TestSerializeDocWithSingleTrueField() {
-            var doc = new Document().Append("foo", true);
+            var doc = new Document().Add("foo", true);
             Assert.AreEqual(@"{ ""foo"": true }", JsonFormatter.Serialize(doc));
         }
 
         [Test]
         public void TestSerializeDocWithSingleFalseField() {
-            var doc = new Document().Append("foo", false);
+            var doc = new Document().Add("foo", false);
             Assert.AreEqual(@"{ ""foo"": false }", JsonFormatter.Serialize(doc));
         }
 
         [Test]
         public void TestSerializeDocWithSingleStringField() {
-            var doc = new Document().Append("foo", "bar");
+            var doc = new Document().Add("foo", "bar");
             Assert.AreEqual(@"{ ""foo"": ""bar"" }", JsonFormatter.Serialize(doc));
         }
         
@@ -74,13 +74,13 @@ namespace MongoDB.Driver.Util
 
         [Test]
         public void TestSerializeDocWithSingleIntField() {
-            var doc = new Document().Append("foo", 10);
+            var doc = new Document().Add("foo", 10);
             Assert.AreEqual(@"{ ""foo"": 10 }", JsonFormatter.Serialize(doc));
         }
 
         [Test]
         public void TestSerializeDocWithSingleDoubleField() {
-            var doc = new Document().Append("foo", 10.1);
+            var doc = new Document().Add("foo", 10.1);
             Assert.AreEqual(@"{ ""foo"": 10.1 }", JsonFormatter.Serialize(doc));
         }
 
@@ -89,7 +89,7 @@ namespace MongoDB.Driver.Util
             var cultureBackup = Thread.CurrentThread.CurrentCulture;
 
             Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
-            var doc = new Document().Append("foo", 10.1);
+            var doc = new Document().Add("foo", 10.1);
             Assert.AreEqual(@"{ ""foo"": 10.1 }", JsonFormatter.Serialize(doc));
             
             Thread.CurrentThread.CurrentCulture = cultureBackup;
@@ -97,38 +97,38 @@ namespace MongoDB.Driver.Util
 
         [Test]
         public void TestSerializeDocWithSingleDateTimeField() {
-            var doc = new Document().Append("foo", DateTime.Parse("2009-10-10T07:00:00.0000000Z"));
+            var doc = new Document().Add("foo", DateTime.Parse("2009-10-10T07:00:00.0000000Z"));
             Assert.AreEqual(@"{ ""foo"": ""2009-10-10T07:00:00.0000000Z"" }", JsonFormatter.Serialize(doc));
         }
 
         [Test]
         public void TestSerializeDocWithSingleOidField() {
-            var doc = new Document().Append("foo", new Oid("4ac7ee91f693066f1c96b649"));
+            var doc = new Document().Add("foo", new Oid("4ac7ee91f693066f1c96b649"));
             Assert.AreEqual(@"{ ""foo"": ""4ac7ee91f693066f1c96b649"" }", JsonFormatter.Serialize(doc));
         }
         [Test]
         public void TestSerializeDocWithMultipleFields() {
-            var doc = new Document().Append("foo", "bar").Append("baz", 42);
+            var doc = new Document().Add("foo", "bar").Add("baz", 42);
             Assert.AreEqual(@"{ ""foo"": ""bar"", ""baz"": 42 }", JsonFormatter.Serialize(doc));
         }
 
         [Test]
         public void TestSerializeDocWithSubDocField() {
-            var doc = new Document().Append("foo", "bar").Append("baz", new Document().Append("a", 1));
+            var doc = new Document().Add("foo", "bar").Add("baz", new Document().Add("a", 1));
             Assert.AreEqual(@"{ ""foo"": ""bar"", ""baz"": { ""a"": 1 } }", JsonFormatter.Serialize(doc));
         }
         [Test]
         public void TestSerializeDocWithArrayOfInts() {
-            var doc = new Document().Append("foo", new[] {1,2,3,4});
+            var doc = new Document().Add("foo", new[] { 1, 2, 3, 4 });
             Assert.AreEqual(@"{ ""foo"": [ 1, 2, 3, 4 ] }", JsonFormatter.Serialize(doc));
         }
 
         [Test]
         public void TestSerializeDocWithArrayOfDocs() {
-            var doc = new Document().Append("foo", new[] {
-                new Document().Append("a", 1),
-                new Document().Append("b", 2),
-                new Document().Append("c", 3),
+            var doc = new Document().Add("foo", new[] {
+                new Document().Add("a", 1),
+                new Document().Add("b", 2),
+                new Document().Add("c", 3),
             });
             Assert.AreEqual(@"{ ""foo"": [ { ""a"": 1 }, { ""b"": 2 }, { ""c"": 3 } ] }", JsonFormatter.Serialize(doc));
         }

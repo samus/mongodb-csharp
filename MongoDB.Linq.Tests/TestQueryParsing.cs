@@ -94,93 +94,93 @@ namespace MongoDB.Linq.Tests {
         [Test]
         public void Can_use_equality_where_clause_with_equals() {
             var q = (IMongoQuery)(from d in queryable where Equals(d["foo"], "bar") select d);
-            Assert.AreEqual(new Document().Append("foo","bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo","bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_where_clause_with_equals_method_on_Document_indexer() {
             var q = (IMongoQuery)(from d in queryable where d["foo"].Equals("bar") select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_where_clause_with_equals_method_on_value() {
             var q = (IMongoQuery)(from d in queryable where "bar".Equals(d["foo"]) select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_where_clause_with_left_cast_to_string() {
             var q = (IMongoQuery)(from d in queryable where (string)d["foo"] == "bar" select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_where_clause_with_right_cast_to_object() {
             var q = (IMongoQuery)(from d in queryable where (string)d["foo"] == "bar" select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_where_clause_with_left_and_right_reversed() {
             var q = (IMongoQuery)(from d in queryable where "bar" == (string)d["foo"] select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_where_clause_with_key_as_variable() {
             string key = "foo";
             var q = (IMongoQuery)(from d in queryable where (string)d[key] == "bar" select d);
-            Assert.AreEqual(new Document().Append("foo", "bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", "bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_equality_where_clause_with_value_as_variable() {
             string value = "bar";
             var q = (IMongoQuery)(from d in queryable where (string)d["foo"] == value select d);
-            Assert.AreEqual(new Document().Append("foo","bar").ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo","bar").ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality() {
             var q = (IMongoQuery)(from d in queryable where (string)d["foo"] != "bar" select d);
-            Assert.AreEqual(new Document().Append("foo",new Document().Append("$ne","bar")).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo",new Document().Add("$ne","bar")).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_inequality_reversed() {
             var q = (IMongoQuery)(from d in queryable where "bar" != (string)d["foo"] select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$ne", "bar")).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$ne", "bar")).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than() {
             var q = (IMongoQuery)(from d in queryable where (int)d["foo"] > 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gt", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gt", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_reversed() {
             var q = (IMongoQuery)(from d in queryable where 10 > (int)d["foo"] select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lt", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lt", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_greater_than_or_equal() {
             var q = (IMongoQuery)(from d in queryable where (int)d["foo"] >= 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$gte", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$gte", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than() {
             var q = (IMongoQuery)(from d in queryable where (int)d["foo"] < 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lt", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lt", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
         public void Can_use_less_than_or_equal() {
             var q = (IMongoQuery)(from d in queryable where (int)d["foo"] <= 10 select d);
-            Assert.AreEqual(new Document().Append("foo", new Document().Append("$lte", 10)).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo", new Document().Add("$lte", 10)).ToString(), q.Query.ToString());
         }
 
         [Test]
@@ -188,8 +188,8 @@ namespace MongoDB.Linq.Tests {
             var q = (IMongoQuery)(from d in queryable where (int)d["foo"] <= 10 && (string)d["bar"] == "zoop" select d);
             Assert.AreEqual(
                 new Document()
-                    .Append("foo", new Document().Append("$lte", 10))
-                    .Append("bar","zoop"),
+                    .Add("foo", new Document().Add("$lte", 10))
+                    .Add("bar","zoop"),
                 q.Query);
         }
 		
@@ -197,7 +197,7 @@ namespace MongoDB.Linq.Tests {
 		public void Can_do_and_queries_on_same_key(){
             var q = (IMongoQuery)(from d in queryable where (int)d["foo"] < 10 && (int)d["foo"] > 5 select d);
             Assert.AreEqual(
-                new Document().Append("foo", new Document().Append("$lt", 10).Append("$gt",5)),
+                new Document().Add("foo", new Document().Add("$lt", 10).Add("$gt",5)),
                 q.Query);			
 		}
 		
@@ -208,8 +208,8 @@ namespace MongoDB.Linq.Tests {
             var q2 = (IMongoQuery)(from d in q1 where (string)d["bar"] == "zoop" select d);
             Assert.AreEqual(
                 new Document()
-                    .Append("foo", new Document().Append("$lte", 10))
-                    .Append("bar", "zoop"),
+                    .Add("foo", new Document().Add("$lte", 10))
+                    .Add("bar", "zoop"),
                 q2.Query);
         }
 
@@ -218,7 +218,7 @@ namespace MongoDB.Linq.Tests {
             // Note (sdether): dot.notation in document is a bit of a perversion, since it's not legal
             // in a document to be saved. So this syntax may break, if Document becomes more strict
             var q = (IMongoQuery)(from d in queryable where (int)d["foo.bar"] == 10 select d);
-            Assert.AreEqual(new Document().Append("foo.bar",10).ToString(), q.Query.ToString());
+            Assert.AreEqual(new Document().Add("foo.bar",10).ToString(), q.Query.ToString());
         }
     }
     // ReSharper restore InconsistentNaming

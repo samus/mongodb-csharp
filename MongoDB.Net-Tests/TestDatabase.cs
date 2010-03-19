@@ -42,7 +42,7 @@ namespace MongoDB.Driver
         public void TestReferenceNonOid(){
             IMongoCollection<Document> refs = DB["refs"];
             
-            Document doc = new Document().Append("_id",123).Append("msg", "this has a non oid key");
+            Document doc = new Document().Add("_id",123).Add("msg", "this has a non oid key");
             refs.Insert(doc);
             
             DBRef rf = new DBRef("refs",123);
@@ -71,7 +71,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestEvalWithScope(){
             int val = 3;
-            Document scope = new Document().Append("x",val);
+            Document scope = new Document().Add("x",val);
             Document result = DB.Eval("function(){return x;}", scope);
             Assert.AreEqual(val, result["retval"]);            
         }
@@ -81,7 +81,7 @@ namespace MongoDB.Driver
             int x = 3;
             int y = 4;
             string func = "adder = function(a, b){return a + b;}; return adder(x,y)";
-            Document scope = new Document().Append("x",x).Append("y", y);
+            Document scope = new Document().Add("x",x).Add("y", y);
             Document result = DB.Eval(func, scope);
             Console.Out.WriteLine(result.ToString());
             Assert.AreEqual(x + y, result["retval"]);                        

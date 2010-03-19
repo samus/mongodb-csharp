@@ -228,20 +228,20 @@ namespace MongoDB.Driver.Bson
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             
             Document expected = new Document();
-            expected.Append("str", "test")
-                .Append("int", 45)
-                .Append("long", (long)46)
-                .Append("num", 4.5)
-                .Append("date",DateTime.Today)
-                .Append("_id", new OidGenerator().Generate())
-                .Append("code", new Code("return 1;"))
-                .Append("subdoc", new Document().Append("a",1).Append("b",2))                
-                .Append("array", new String[]{"a","b","c","d"})
-                .Append("codewscope", new CodeWScope("return 2;", new Document().Append("c",1)))
-                .Append("binary", new Binary(new byte[]{0,1,2,3}))
-                .Append("regex", new MongoRegex("[A-Z]"))
-                .Append("minkey", MongoMinKey.Value)
-                .Append("maxkey", MongoMaxKey.Value)
+            expected.Add("str", "test")
+                .Add("int", 45)
+                .Add("long", (long)46)
+                .Add("num", 4.5)
+                .Add("date",DateTime.Today)
+                .Add("_id", new OidGenerator().Generate())
+                .Add("code", new Code("return 1;"))
+                .Add("subdoc", new Document().Add("a",1).Add("b",2))                
+                .Add("array", new String[]{"a","b","c","d"})
+                .Add("codewscope", new CodeWScope("return 2;", new Document().Add("c",1)))
+                .Add("binary", new Binary(new byte[]{0,1,2,3}))
+                .Add("regex", new MongoRegex("[A-Z]"))
+                .Add("minkey", MongoMinKey.Value)
+                .Add("maxkey", MongoMaxKey.Value)
             ;
             writer.WriteObject(expected);
             writer.Flush();

@@ -28,7 +28,7 @@ namespace MongoDB.Driver
         public void TestFromDocument (){
             String colname = "tests";
             String id = "32312312";
-            Document doc = new Document ().Append (DBRef.RefName, colname).Append (DBRef.IdName, id);
+            Document doc = new Document ().Add(DBRef.RefName, colname).Add(DBRef.IdName, id);
             
             DBRef expected = new DBRef (colname, id);
             Assert.AreEqual (expected, DBRef.FromDocument (doc));
@@ -38,7 +38,7 @@ namespace MongoDB.Driver
         public void TestFromIncompleteDocumentThrowsArguementException (){
             bool thrown = false;
             try {
-                DBRef.FromDocument (new Document ().Append (DBRef.RefName, "tests"));
+                DBRef.FromDocument (new Document ().Add(DBRef.RefName, "tests"));
             } catch (ArgumentException) {
                 thrown = true;
             }

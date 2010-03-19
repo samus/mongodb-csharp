@@ -52,7 +52,7 @@ namespace MongoDB.Driver.Benchmark
             RunInsertTest("batch insert (medium, no index)", db, "medium_bulk",medium,false,true);
             RunInsertTest("batch insert (large, no index)", db, "large_bulk",large,false,true);            
             
-            Document fonespec = new Document().Append("x",perTrial/2);
+            Document fonespec = new Document().Add("x",perTrial/2);
             RunFindTest("find_one (small, no index)", db, "small_none",fonespec,false);
             RunFindTest("find_one (medium, no index)", db, "medium_none",fonespec,false);
             RunFindTest("find_one (large, no index)", db, "large_none",fonespec,false);
@@ -69,7 +69,7 @@ namespace MongoDB.Driver.Benchmark
             RunFindTest("find (medium, indexed)", db, "medium_index",fonespec,true);
             RunFindTest("find (large, indexed)", db, "large_index",fonespec,true);
 
-            Document findRange = new Document().Append("x",new Document().Append("$gt",perTrial/2).Append("$lt", perTrial/2 + batchSize));
+            Document findRange = new Document().Add("x",new Document().Add("$gt",perTrial/2).Add("$lt", perTrial/2 + batchSize));
             RunFindTest("find range (small, indexed)", db, "small_index",findRange,true);
             RunFindTest("find range (medium, indexed)", db, "medium_index",findRange,true);
             RunFindTest("find range (large, indexed)", db, "large_index",findRange,true);
@@ -79,21 +79,21 @@ namespace MongoDB.Driver.Benchmark
         }
 
         static void SetupDocuments(){
-            medium.Append("integer", (int) 5);
-            medium.Append("number", 5.05);
-            medium.Append("boolean", false);
-            medium.Append("array", new String[]{"test","benchmark"});
+            medium.Add("integer", (int) 5);
+            medium.Add("number", 5.05);
+            medium.Add("boolean", false);
+            medium.Add("array", new String[]{"test","benchmark"});
 
-            large.Append("base_url", "http://www.example.com/test-me");
-            large.Append("total_word_count", (int)6743);
-            large.Append("access_time", DateTime.UtcNow);
-            large.Append("meta_tags", new Document()
-                         .Append("description", "i am a long description string")
-                         .Append("author", "Holly Man")
-                         .Append("dynamically_created_meta_tag", "who know\n what"));
-            large.Append("page_structure", new Document().Append("counted_tags", 3450)
-                         .Append("no_of_js_attached", (int)10)
-                         .Append("no_of_images", (int)6));
+            large.Add("base_url", "http://www.example.com/test-me");
+            large.Add("total_word_count", (int)6743);
+            large.Add("access_time", DateTime.UtcNow);
+            large.Add("meta_tags", new Document()
+                         .Add("description", "i am a long description string")
+                         .Add("author", "Holly Man")
+                         .Add("dynamically_created_meta_tag", "who know\n what"));
+            large.Add("page_structure", new Document().Add("counted_tags", 3450)
+                         .Add("no_of_js_attached", (int)10)
+                         .Add("no_of_images", (int)6));
             string[] words = new string[]{"10gen","web","open","source","application","paas",
                 "platform-as-a-service","technology","helps",
                 "developers","focus","building","mongodb","mongo"};
@@ -101,7 +101,7 @@ namespace MongoDB.Driver.Benchmark
             for(int i = 0; i < words.Length * 20; i++){
                 harvestedWords[i] = words[i % words.Length];
             }
-            large.Append("harvested_words", harvestedWords);
+            large.Add("harvested_words", harvestedWords);
         }
 #region Insert Tests
         static void RunInsertTest(string name, MongoDatabase db, string col, Document doc, bool index, bool bulk){
@@ -119,7 +119,7 @@ namespace MongoDB.Driver.Benchmark
             try{
                 db.MetaData.DropCollection(col);
                 if(index){
-                    Document idx = new Document().Append("x", IndexOrder.Ascending);
+                    Document idx = new Document().Add("x", IndexOrder.Ascending);
                     db[col].MetaData.CreateIndex(idx,false);
                 }
             }catch(MongoCommandException){
@@ -143,7 +143,7 @@ namespace MongoDB.Driver.Benchmark
             for(int i = 0; i < perTrial; i++){
                 Document ins = new Document();
                 doc.CopyTo(ins);
-                ins.Append("x", i);
+                ins.Add("x", i);
                 db[col].Insert(ins);
             }
         }

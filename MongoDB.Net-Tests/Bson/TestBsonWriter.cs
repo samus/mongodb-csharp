@@ -24,8 +24,8 @@ namespace MongoDB.Driver.Bson
         [Test]
         public void TestCalculateSizeOfSimpleDoc(){
             Document doc = new Document();
-            doc.Append("a","a");
-            doc.Append("b",1);
+            doc.Add("a","a");
+            doc.Add("b",1);
             
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
@@ -37,10 +37,10 @@ namespace MongoDB.Driver.Bson
         [Test]
         public void TestCalculateSizeOfComplexDoc(){
             Document doc = new Document();
-            doc.Append("a","a");
-            doc.Append("b",1);
-            Document sub = new Document().Append("c_1",1).Append("c_2",DateTime.Now);
-            doc.Append("c",sub);
+            doc.Add("a","a");
+            doc.Add("b",1);
+            Document sub = new Document().Add("c_1",1).Add("c_2",DateTime.Now);
+            doc.Add("c",sub);
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             
@@ -75,8 +75,8 @@ namespace MongoDB.Driver.Bson
             
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
-            
-            string val = new StringBuilder().Append("ww").Append(euro,180).ToString();
+
+            string val = new StringBuilder().Append("ww").Append(euro, 180).ToString();
             string expected = BitConverter.ToString(Encoding.UTF8.GetBytes(val + '\0'));
             Assert.AreEqual(expected,WriteStringAndGetHex(val));
         }
@@ -93,7 +93,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             string expected = "1400000002746573740005000000746573740000";
-            Document doc = new Document().Append("test", "test");
+            Document doc = new Document().Add("test", "test");
             
             writer.WriteObject(doc);
             
@@ -121,7 +121,7 @@ namespace MongoDB.Driver.Bson
         public void TestNullsDontThrowExceptions(){
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
-            Document doc = new Document().Append("n", null);
+            Document doc = new Document().Add("n", null);
             try{
                 writer.WriteObject(doc);
             }catch(NullReferenceException){
@@ -134,7 +134,7 @@ namespace MongoDB.Driver.Bson
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             Binary b = new Binary(new byte[BsonInfo.MaxDocumentSize]);
-            Document big = new Document().Append("x", b);
+            Document big = new Document().Add("x", b);
             bool thrown = false;
             try{
                 writer.WriteObject(big);    

@@ -30,7 +30,7 @@ namespace MongoDB.Driver
             bool thrown = false;
             try{
                 MongoDatabase db = m["admin"];
-                db["$cmd"].FindOne(new Document().Append("listDatabases", 1.0));
+                db["$cmd"].FindOne(new Document().Add("listDatabases", 1.0));
             }catch(MongoCommException){
                 thrown = true;
             }

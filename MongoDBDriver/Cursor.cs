@@ -143,7 +143,7 @@ namespace MongoDB.Driver
         /// <param name = "order">The order.</param>
         /// <returns></returns>
         public ICursor<T> Sort(string field, IndexOrder order){
-            return Sort(new Document().Append(field, order));
+            return Sort(new Document().Add(field, order));
         }
 
         /// <summary>

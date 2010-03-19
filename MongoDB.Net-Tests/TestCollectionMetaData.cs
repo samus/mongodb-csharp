@@ -55,7 +55,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCreateIndex(){
             CollectionMetaData cmd = DB["indextests"].MetaData;
-            cmd.CreateIndex("lastnames", new Document().Append("lname", IndexOrder.Ascending), false);
+            cmd.CreateIndex("lastnames", new Document().Add("lname", IndexOrder.Ascending), false);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["lastnames"]);
         }
@@ -63,7 +63,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCreateIndexNoNames(){
             CollectionMetaData cmd = DB["indextests"].MetaData;
-            cmd.CreateIndex(new Document().Append("lname", IndexOrder.Ascending).Append("fname",IndexOrder.Ascending), true);
+            cmd.CreateIndex(new Document().Add("lname", IndexOrder.Ascending).Add("fname", IndexOrder.Ascending), true);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["_lname_fname_unique_"]);
         }
@@ -71,7 +71,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestDropIndex(){
             CollectionMetaData cmd = DB["indextests"].MetaData;
-            cmd.CreateIndex("firstnames", new Document().Append("fname", IndexOrder.Ascending), false);
+            cmd.CreateIndex("firstnames", new Document().Add("fname", IndexOrder.Ascending), false);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["firstnames"]);
             cmd.DropIndex("firstnames");

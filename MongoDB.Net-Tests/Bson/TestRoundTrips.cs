@@ -32,7 +32,7 @@ namespace MongoDB.Driver.Bson
         [Test]
         public void TestDBRef(){
             Document source = new Document();
-            source.Append("x",1).Append("ref",new DBRef("refs","ref1"));
+            source.Add("x", 1).Add("ref", new DBRef("refs", "ref1"));
 
             Document copy = WriteAndRead(source);
 
@@ -51,7 +51,7 @@ namespace MongoDB.Driver.Bson
             DateTime now = DateTime.Now;
 
             Document source = new Document();
-            source.Append("d",now);
+            source.Add("d", now);
 
             Document copy = WriteAndRead(source);
             
@@ -67,7 +67,7 @@ namespace MongoDB.Driver.Bson
             DateTime now = DateTime.UtcNow;
             
             Document source = new Document();
-            source.Append("d",now);
+            source.Add("d", now);
             
             Document copy = WriteAndRead(source);           
             DateTime then = (DateTime)copy["d"];           
@@ -81,7 +81,7 @@ namespace MongoDB.Driver.Bson
             Guid expected = Guid.NewGuid();
 
             Document source = new Document();
-            source.Append("uuid", expected);
+            source.Add("uuid", expected);
 
             Guid read = (Guid)(WriteAndRead(source)["uuid"]);
 

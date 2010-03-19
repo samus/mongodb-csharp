@@ -130,7 +130,7 @@ namespace MongoDB.Linq {
                     case "NotIn":
                         var argsLambda = Expression.Lambda(m.Arguments[0]);
                         var argsValue = argsLambda.Compile().DynamicInvoke();
-                        Query.Add(keyStack.Pop(), new Document().Append((m.Method.Name == "In") ? "$in" : "$nin", argsValue));
+                        Query.Add(keyStack.Pop(), new Document().Add((m.Method.Name == "In") ? "$in" : "$nin", argsValue));
                         break;
                     case "Equals":
                         Visit(m.Arguments[0]);
@@ -172,7 +172,7 @@ namespace MongoDB.Linq {
         private void AddEqualityQuery() {
             var key = keyStack.Pop();
             var value = valueStack.Pop();
-            Query.Append(key, value);
+            Query.Add(key, value);
         }
 
         protected override Expression VisitUnary(UnaryExpression u) {
@@ -232,9 +232,9 @@ namespace MongoDB.Linq {
                         case ExpressionType.GreaterThanOrEqual: conditional = reverseConditional ? "$lte" : "$gte"; break;
                     }
 					if(Query.Contains(key)){
-						((Document)Query[key]).Append(conditional,value);
+                        ((Document)Query[key]).Add(conditional, value);
 					}else{
-                    		Query.Append(key, new Document().Append(conditional, value));
+                        Query.Add(key, new Document().Add(conditional, value));
 					}
                     inConditional = false;
                     foundKey = false;

@@ -73,7 +73,7 @@ namespace MongoDB.Driver{
         public void TestCanAddAFunctionDoc(){
             string name = "fadddoc";
             Code func = new Code("function(x, y){return x + y;}");
-            Document doc = new Document().Append("_id", name).Append("value", func);
+            Document doc = new Document().Add("_id", name).Add("value", func);
             js.Add(doc);
             Assert.IsNotNull(js[name]);                        
         }
@@ -96,7 +96,7 @@ namespace MongoDB.Driver{
         public void TestCanAddFunctionByAssignment(){
             string name = "fassignadd";
             Code func = new Code("function(x,y){return x + y;}");
-            Document doc = new Document().Append("_id", name).Append("value", func);
+            Document doc = new Document().Add("_id", name).Add("value", func);
             js[name] = doc;
             Assert.IsNotNull(js[name]);
         }
@@ -107,7 +107,7 @@ namespace MongoDB.Driver{
             AddFunction(name);
             Assert.IsTrue(js.Contains(name));
             Assert.IsFalse(js.Contains("none"));
-            Assert.IsTrue(js.Contains(new Document().Append("_id", name).Append("value", new Code("dfs"))));
+            Assert.IsTrue(js.Contains(new Document().Add("_id", name).Add("value", new Code("dfs"))));
         }
         
         [Test]
@@ -118,7 +118,7 @@ namespace MongoDB.Driver{
             
             for(int i = 0; i < cnt; i++){
                 string name = "_" + i + "fcopyTo";
-                Document doc = new Document().Append("_id", name).Append("value", func);
+                Document doc = new Document().Add("_id", name).Add("value", func);
                 js[name] = doc;
             }
             
@@ -141,7 +141,7 @@ namespace MongoDB.Driver{
         [Test]
         public void TestRemoveByDoc(){
             String name = "fremoved";
-            Document func = new Document().Append("_id", name);
+            Document func = new Document().Add("_id", name);
             AddFunction(name);
             Assert.IsTrue(js.Contains(name));
             js.Remove(func);
@@ -181,8 +181,8 @@ namespace MongoDB.Driver{
         public void TestExecWithScope(){
             js.Add("lt", new Code("function(doc){ return doc.j < limit;}"));
             int cnt = 0;
-            Document scope = new Document().Append("limit", 5);
-            Document query = new Document().Append("$where", new CodeWScope("lt(this)",scope));
+            Document scope = new Document().Add("limit", 5);
+            Document query = new Document().Add("$where", new CodeWScope("lt(this)",scope));
             foreach(Document doc in DB["jsreads"].Find(query).Documents){
                 cnt++;
             }
@@ -191,7 +191,7 @@ namespace MongoDB.Driver{
         
         protected void AddFunction(string name){
             Code func = new Code("function(x,y){return x + y;}");
-            DB["system.js"].Insert(new Document().Append("_id", name).Append("value", func));
+            DB["system.js"].Insert(new Document().Add("_id", name).Add("value", func));
         }
     }
 }

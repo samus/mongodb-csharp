@@ -221,13 +221,13 @@ namespace MongoDB.GridFS
         /// </summary>
         public void Truncate(){
             if(filedata.Contains("_id") == false) return;
-            this.gridFile.Chunks.Delete(new Document().Append("files_id", filedata["_id"]));
+            this.gridFile.Chunks.Delete(new Document().Add("files_id", filedata["_id"]));
             this.Length = 0;
             this.gridFile.Files.Update(filedata);
         }
 
         public string CalcMD5(){
-            Document doc = this.db.SendCommand(new Document().Append("filemd5", this.Id).Append("root",this.bucket));
+            Document doc = this.db.SendCommand(new Document().Add("filemd5", this.Id).Add("root", this.bucket));
             return (String)doc["md5"];
         }
         
@@ -254,7 +254,7 @@ namespace MongoDB.GridFS
         }
         
         private void LoadFileData(){
-            Document doc = this.gridFile.Files.FindOne(new Document().Append("filename",this.FileName));
+            Document doc = this.gridFile.Files.FindOne(new Document().Add("filename", this.FileName));
             if(doc != null){
                 filedata = doc;
             }else{

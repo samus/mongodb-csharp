@@ -343,7 +343,7 @@ namespace MongoDB.GridFS
 
 
         protected Document GrabChunk(Object fileid, int chunk){
-            return DB[filesystem + ".chunks"].FindOne(new Document().Append("files_id", fileid).Append("n", chunk));
+            return DB[filesystem + ".chunks"].FindOne(new Document().Add("files_id", fileid).Add("n", chunk));
         }
         
         protected Object CreateDummyFile(string filename, int size, int chunksize, int initialOffset){

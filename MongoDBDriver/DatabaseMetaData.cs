@@ -25,7 +25,7 @@ namespace MongoDB.Driver
         public MongoCollection<Document> CreateCollection(String name, Document options)
         {
             Document cmd = new Document();
-            cmd.Append("create", name).Update(options);
+            cmd.Add("create", name).Merge(options);
             db.SendCommand(cmd);
             return new MongoCollection<Document>(connection, this.name, name);
         }
@@ -37,7 +37,7 @@ namespace MongoDB.Driver
         }
 
         public Boolean DropCollection(String name){
-			Document result = db.SendCommand(new Document().Append("drop",name));
+            Document result = db.SendCommand(new Document().Add("drop", name));
             return result.Contains("ok") && ((double)result["ok"] == 1);
         }
         
@@ -49,7 +49,7 @@ namespace MongoDB.Driver
         public void AddUser(string username, string password){
             IMongoCollection<Document> users = db["system.users"];
             string pwd = MongoDatabase.Hash(username + ":mongo:" + password);
-            Document user = new Document().Append("user", username).Append("pwd", pwd);
+            Document user = new Document().Add("user", username).Add("pwd", pwd);
             
             if (FindUser(username) != null){
                 throw new MongoException("A user with the name " + username + " already exists in this database.", null);
@@ -59,7 +59,7 @@ namespace MongoDB.Driver
 
         public void RemoveUser(string username){
             IMongoCollection<Document> users = db["system.users"];
-            users.Delete(new Document().Append("user", username));
+            users.Delete(new Document().Add("user", username));
         }
 
         public ICursor<Document> ListUsers(){
@@ -68,7 +68,7 @@ namespace MongoDB.Driver
         }
 
         public Document FindUser(string username){
-            return FindUser(new Document().Append("user",username));
+            return FindUser(new Document().Add("user", username));
         }
 
         public Document FindUser(Document spec){

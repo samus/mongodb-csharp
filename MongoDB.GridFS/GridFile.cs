@@ -31,7 +31,7 @@ namespace MongoDB.GridFS
             this.db = db;
             this.files = db[bucket + ".files"];
             this.chunks = db[bucket + ".chunks"];
-            this.chunks.MetaData.CreateIndex(new Document().Append("files_id", 1).Append("n", 1),true);
+            this.chunks.MetaData.CreateIndex(new Document().Add("files_id", 1).Add("n", 1), true);
             this.name = bucket;
         }
         
@@ -41,9 +41,9 @@ namespace MongoDB.GridFS
 
         public ICursor<Document> ListFiles(Document query)
         {
-            return this.files.Find(new Document().Append("query",query)
-                                                .Append("orderby", new Document()
-                                                .Append("filename", 1)));
+            return this.files.Find(new Document().Add("query", query)
+                                                .Add("orderby", new Document()
+                                                .Add("filename", 1)));
         }
         
         /// <summary>
@@ -55,8 +55,8 @@ namespace MongoDB.GridFS
         public void Copy(String src, String dest){
             if(Exists(src) == false) throw new FileNotFoundException("Not found in the database.", src);
             if(Exists(dest) == true) throw new IOException("Destination file already exists.");
-            
-            Document scope = new Document().Append("bucket", this.name).Append("srcfile", src).Append("destfile",dest);
+
+            Document scope = new Document().Add("bucket", this.name).Add("srcfile", src).Add("destfile", dest);
             String func ="function(){\n" +
                             //"   print(\"copying \" + srcfile);\n" +
                             "   var files = db[bucket + \".files\"];\n" +
@@ -123,15 +123,15 @@ namespace MongoDB.GridFS
         /// Permanently removes a file from the database. 
         /// </summary>
         public void Delete(Object id){
-            files.Delete(new Document().Append("_id",id));
-            chunks.Delete(new Document().Append("files_id",id));
+            files.Delete(new Document().Add("_id", id));
+            chunks.Delete(new Document().Add("files_id", id));
         }
         
         /// <summary>
         /// Permanently removes a file from the database. 
         /// </summary>        
         public void Delete(String filename){
-            files.Delete(new Document().Append("filename",filename));
+            files.Delete(new Document().Add("filename", filename));
         }
         
         /// <summary>
@@ -149,23 +149,23 @@ namespace MongoDB.GridFS
         /// Gets a value indicating whether the file exists.
         /// </summary>
         public Boolean Exists(string name){
-            return this.files.FindOne(new Document().Append("filename",name)) != null;
+            return this.files.FindOne(new Document().Add("filename", name)) != null;
         }
         /// <summary>
         /// Gets a value indicating whether the file exists.
         /// </summary>
         public Boolean Exists(Object id){
-            return this.files.FindOne(new Document().Append("_id",id)) != null;
+            return this.files.FindOne(new Document().Add("_id", id)) != null;
         }
         #endregion        
         
         #region Move
         public void Move(String src, String dest){
-            this.files.Update(new Document().Append("$set", new Document().Append("filename",dest)), new Document().Append("filename", src));
+            this.files.Update(new Document().Add("$set", new Document().Add("filename", dest)), new Document().Add("filename", src));
         }
         
         public void Move(Object id, String dest){
-            this.files.Update(new Document().Append("$set", new Document().Append("filename",dest)), new Document().Append("_id", id));
+            this.files.Update(new Document().Add("$set", new Document().Add("filename", dest)), new Document().Add("_id", id));
         }
         #endregion      
         

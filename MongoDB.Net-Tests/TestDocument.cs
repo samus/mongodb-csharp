@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
@@ -67,7 +68,7 @@ namespace MongoDB.Driver
             d["one"] = 1;
             d.Add("two", 2);
             d["three"] = 3;
-            ICollection vals = d.Values;
+            var vals = d.Values;
             Assert.AreEqual(3, vals.Count);
 
         }
@@ -114,49 +115,49 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestTwoDocumentsWithSameContentInSameOrderAreEqual() {
-            Document d1 = new Document().Append("k1", "v1").Append("k2", "v2");
-            Document d2 = new Document().Append("k1", "v1").Append("k2", "v2");
+            Document d1 = new Document().Add("k1", "v1").Add("k2", "v2");
+            Document d2 = new Document().Add("k1", "v1").Add("k2", "v2");
             AreEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithSameContentInDifferentOrderAreNotEqual() {
-            Document d1 = new Document().Append("k1", "v1").Append("k2", "v2");
-            Document d2 = new Document().Append("k2", "v2").Append("k1", "v1");
+            Document d1 = new Document().Add("k1", "v1").Add("k2", "v2");
+            Document d2 = new Document().Add("k2", "v2").Add("k1", "v1");
             AreNotEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithSameArrayContentAreEqual() {
-            Document d1 = new Document().Append("k1", new string[] { "v1", "v2" });
-            Document d2 = new Document().Append("k1", new string[] { "v1", "v2" });
+            Document d1 = new Document().Add("k1", new string[] { "v1", "v2" });
+            Document d2 = new Document().Add("k1", new string[] { "v1", "v2" });
             AreEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithMisorderedArrayContentAreNotEqual() {
-            Document d1 = new Document().Append("k1", new string[] { "v1", "v2" });
-            Document d2 = new Document().Append("k1", new string[] { "v2", "v1" });
+            Document d1 = new Document().Add("k1", new string[] { "v1", "v2" });
+            Document d2 = new Document().Add("k1", new string[] { "v2", "v1" });
             AreNotEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithSameDocumentChildTreeAreEqual() {
-            Document d1 = new Document().Append("k1", new Document().Append("k2",new Document().Append("k3","foo")));
-            Document d2 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "foo")));
+            Document d1 = new Document().Add("k1", new Document().Add("k2",new Document().Add("k3","foo")));
+            Document d2 = new Document().Add("k1", new Document().Add("k2", new Document().Add("k3", "foo")));
             AreEqual(d1, d2);
         }
 
         [Test]
         public void TestTwoDocumentsWithDifferentDocumentChildTreeAreNotEqual() {
-            Document d1 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "foo")));
-            Document d2 = new Document().Append("k1", new Document().Append("k2", new Document().Append("k3", "bar")));
+            Document d1 = new Document().Add("k1", new Document().Add("k2", new Document().Add("k3", "foo")));
+            Document d2 = new Document().Add("k1", new Document().Add("k2", new Document().Add("k3", "bar")));
             AreNotEqual(d1, d2);
         }
 
         [Test]
         public void TestDocumentIsSerializable(){
-            var src = new Document().Append("test", 2);
+            var src = new Document().Add("test", 2);
             using(var mem = new MemoryStream()){
                 var formatter = new BinaryFormatter();
                 formatter.Serialize(mem,src);
@@ -164,6 +165,27 @@ namespace MongoDB.Driver
                 var dest = (Document)formatter.Deserialize(mem);
                 AreEqual(src,dest);
             }
+        }
+
+        [Test]
+        public void TestIdSets_IdField(){
+            var document = new Document{Id = 10};
+            Assert.AreEqual(10,document.Id);
+        }
+
+        [Test]
+        public void TestIdReturnsNullIfNotSet(){
+            var document = new Document();
+            Assert.IsNull(document.Id);
+        }
+
+        [Test]
+        public void TestDocumentCanCreatedFromDictionary(){
+            var dictionary = new Dictionary<string, object>{{"value1", "test"}, {"value2", 10}};
+            var document = new Document(dictionary);
+            Assert.AreEqual(2,document.Count);
+            Assert.AreEqual("test", document["value1"]);
+            Assert.AreEqual(10, document["value2"]);
         }
 
         private void AreEqual(Document d1, Document d2) {

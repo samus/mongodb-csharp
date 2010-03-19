@@ -16,7 +16,7 @@ namespace MongoDB.Driver{
             this.db = db;
             this.js = db["system.js"];
             //Needed for some versions of the db to retrieve the functions.
-            js.MetaData.CreateIndex(new Document().Append("_id",1),true);
+            js.MetaData.CreateIndex(new Document().Add("_id", 1), true);
         }
         
         public Document this[ String name ]  {
@@ -38,7 +38,7 @@ namespace MongoDB.Driver{
         /// A <see cref="Document"/>
         /// </returns>
         public Document GetFunction(string name){
-            return js.FindOne(new Document().Append("_id", name));
+            return js.FindOne(new Document().Add("_id", name));
         }
         
         /// <summary>
@@ -57,7 +57,7 @@ namespace MongoDB.Driver{
         }
 
         public void Add (string name, Code func){
-            Add(new Document().Append("_id", name).Append("value", func));
+            Add(new Document().Add("_id", name).Add("value", func));
         }
         
         /// <summary>
@@ -69,14 +69,14 @@ namespace MongoDB.Driver{
         /// up to date.
         /// </remarks>
         public void Add(string name, Code func, float version){
-            Add(new Document().Append("_id", name).Append("value", func).Append("version",version));
+            Add(new Document().Add("_id", name).Add("value", func).Add("version", version));
         }
         
         /// <summary>
         /// Stores a function in the database.
         /// </summary>
         public void Add (Document item){
-            if(js.FindOne(new Document().Append("_id", item["_id"])) != null){
+            if(js.FindOne(new Document().Add("_id", item["_id"])) != null){
                 throw new ArgumentException(String.Format("Function {0} already exists in the database.", item["_id"]));
             }
             js.Insert(item);
@@ -116,7 +116,7 @@ namespace MongoDB.Driver{
         /// A <see cref="System.Int32"/>
         /// </param>
         public void CopyTo (Document[] array, int arrayIndex){
-            Document query = new Document().Append("$orderby", new Document().Append("_id", 1));
+            Document query = new Document().Add("$orderby", new Document().Add("_id", 1));
             int idx = arrayIndex;
             foreach(Document doc in js.Find(query,array.Length - 1,arrayIndex).Documents){
                 array[idx] = doc;
@@ -133,7 +133,7 @@ namespace MongoDB.Driver{
         }
         
         public bool Remove (string name){
-            js.Delete(new Document().Append("_id", name));
+            js.Delete(new Document().Add("_id", name));
             return true;
         }
         

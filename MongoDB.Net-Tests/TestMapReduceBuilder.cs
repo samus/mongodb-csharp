@@ -31,10 +31,10 @@ namespace MongoDB.Driver
 
         public override void OnInit (){
             mrcol = DB["mr"];
-            mrcol.Insert(new Document().Append("_id", 1).Append("tags", new String[]{"dog", "cat"}));
-            mrcol.Insert(new Document().Append("_id", 2).Append("tags", new String[]{"dog"}));
-            mrcol.Insert(new Document().Append("_id", 3).Append("tags", new String[]{"mouse", "cat", "dog"}));
-            mrcol.Insert(new Document().Append("_id", 4).Append("tags", new String[]{}));
+            mrcol.Insert(new Document().Add("_id", 1).Add("tags", new String[] { "dog", "cat" }));
+            mrcol.Insert(new Document().Add("_id", 2).Add("tags", new String[] { "dog" }));
+            mrcol.Insert(new Document().Add("_id", 3).Add("tags", new String[] { "mouse", "cat", "dog" }));
+            mrcol.Insert(new Document().Add("_id", 4).Add("tags", new String[] { }));
         }
         
         [Test()]
@@ -48,9 +48,9 @@ namespace MongoDB.Driver
         }
         [Test()]
         public void TestBuilderSetsAllProperties(){
-            Document query = new Document().Append("x",1);
-            Document scope = new Document().Append("y",2);
-            Document sort = new Document().Append("z",3);
+            Document query = new Document().Add("x",1);
+            Document scope = new Document().Add("y",2);
+            Document sort = new Document().Add("z",3);
             MapReduceBuilder mrb = mrcol.MapReduceBuilder();
             mrb.Map(mapfunction)
                     .Reduce(reducefunction)

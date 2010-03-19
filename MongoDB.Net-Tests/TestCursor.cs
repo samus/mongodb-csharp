@@ -98,7 +98,7 @@ namespace MongoDB.Driver
             IMongoCollection<Document> sorts = DB["sorts"];
             int[] randoms = new int[]{4,6,8,9,1,3,2,5,7,0};
             foreach(int x in randoms){
-                sorts.Insert(new Document().Append("x", randoms[x]));
+                sorts.Insert(new Document().Add("x", randoms[x]));
             }
             Assert.AreEqual(randoms.Length, sorts.Count());
             
@@ -126,7 +126,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestHint(){
             IMongoCollection<Document> reads = DB["reads"];
-            Document hint = new Document().Append("x",IndexOrder.Ascending);
+            Document hint = new Document().Add("x",IndexOrder.Ascending);
             
             Document exp = reads.FindAll().Hint(hint).Explain();
             Assert.IsTrue(exp.Contains("$err"), "No error found");
