@@ -5,11 +5,27 @@ namespace MongoDB.Driver.Bson
 {
     public class BsonDocumentDescriptor : IBsonObjectDescriptor
     {
-        public IEnumerable<BsonObjectProperty> GetPropertys(object obj){
-            var document = (Document)obj;
-            foreach(string key in document.Keys){
-                yield return new BsonObjectProperty(key, document[key]);
-            }
+        public object BeginObject(object instance){
+            return instance;
+        }
+
+        public IEnumerable<object> GetPropertys(object instance){
+            var document = (Document)instance;
+            foreach(string key in document.Keys)
+                yield return new KeyValuePair<string,object>(key,document[key]);
+        }
+
+        public string GetPropertyName(object instance, object property){
+            var propertyEntry = (KeyValuePair<string, object>)property;
+            return propertyEntry.Key;
+        }
+
+        public object GetPropertyValue(object instance, object property){
+            var propertyEntry = (KeyValuePair<string, object>)property;
+            return propertyEntry.Value;
+        }
+       
+        public void EndObject(object obj){
         }
 
         public bool IsArray(object obj){

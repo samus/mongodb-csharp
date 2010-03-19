@@ -141,18 +141,22 @@ namespace MongoDB.Driver.Bson
         }
 
         public void WriteObject(object obj){
+            obj = _descriptor.BeginObject(obj);
             var propertys = _descriptor.GetPropertys(obj);
-            var size = CalculateSizeObject(propertys);
+            var size = CalculateSizeObject(obj,propertys);
             if(size >= BsonInfo.MaxDocumentSize) 
                 throw new ArgumentException("Maximum document size exceeded.");
             _writer.Write(size);
             foreach(var property in propertys){
-                var type = TranslateToBsonType(property.Value);
+                var name = _descriptor.GetPropertyName(obj, property);
+                var value = _descriptor.GetPropertyValue(obj, property);
+                var type = TranslateToBsonType(value);
                 _writer.Write((byte)type);
-                Write(property.Name,false);
-                WriteValue(type, property.Value);
+                Write(name, false);
+                WriteValue(type, value);
             }
             _writer.Write((byte)0);
+            _descriptor.EndObject(obj);
         }
 
         public void WriteEnumerable(IEnumerable enumerable){
@@ -279,16 +283,26 @@ namespace MongoDB.Driver.Bson
         
 
         public int CalculateSizeObject(object obj){
+            obj = _descriptor.BeginObject(obj);
             var propertys = _descriptor.GetPropertys(obj);
-            return CalculateSizeObject(propertys);
+
+            var size = CalculateSizeObject(obj, propertys);
+
+            _descriptor.EndObject(obj);
+
+            return size;
         }
 
-        private int CalculateSizeObject(IEnumerable<BsonObjectProperty> propertys){
+        private int CalculateSizeObject(object obj, IEnumerable<object> propertys)
+        {
             var size = 4;
-            foreach(var property in propertys){
+            foreach(var property in propertys)
+            {
                 var elsize = 1; //type
-                elsize += CalculateSize(property.Name, false);
-                elsize += CalculateSize(property.Value);
+                var name = _descriptor.GetPropertyName(obj, property);
+                elsize += CalculateSize(name, false);
+                var value = _descriptor.GetPropertyValue(obj, property);
+                elsize += CalculateSize(value);
                 size += elsize;
             }
             size += 1; //terminator

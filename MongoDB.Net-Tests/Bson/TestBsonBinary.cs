@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using MongoDB.Driver.Serialization;
 using NUnit.Framework;
 
 namespace MongoDB.Driver.Bson

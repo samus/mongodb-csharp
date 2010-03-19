@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using MongoDB.Driver.Bson;
+using MongoDB.Driver.Serialization.Descriptors;
 
 namespace MongoDB.Driver.Serialization
 {
@@ -16,19 +16,34 @@ namespace MongoDB.Driver.Serialization
             _serializationFactory = serializationFactory;
         }
 
-        public IEnumerable<BsonObjectProperty> GetPropertys(object obj)
-        {
-            if(obj is Document){
-                var document = (Document)obj;
-                foreach(string key in document.Keys){
-                    var value = document[key];
-                    yield return new BsonObjectProperty(key,value);
-                }
-            }else{
-                var type = obj.GetType();
-                foreach(PropertyDescriptor property in TypeDescriptor.GetProperties(type))
-                    yield return new BsonObjectProperty(property.Name, property.GetValue(obj));
+        public object BeginObject(object instance){
+            if(instance is Document){
+                return new DocumentDescriptor((Document)instance);
             }
+            
+            var type = instance.GetType();
+            var entry = _serializationFactory.Registry.GetOrCreate(type);
+            
+            return new ObjectDescriptor(instance,entry);
+        }
+
+        public IEnumerable<object> GetPropertys(object instance){
+            var descriptor = (IObjectDescriptor2)instance;
+            return descriptor.GetPropertys();
+        }
+
+        public string GetPropertyName(object instance, object property)
+        {
+            var descriptor = (IObjectDescriptor2)instance;
+            return descriptor.GetPropertyName(property);
+        }
+
+        public object GetPropertyValue(object instance, object property){
+            var descriptor = (IObjectDescriptor2)instance;
+            return descriptor.GetPropertyValue(property);
+        }
+
+        public void EndObject(object obj){
         }
 
         public bool IsArray(object obj)

@@ -4,10 +4,18 @@ namespace MongoDB.Driver.Bson
 {
     public interface IBsonObjectDescriptor
     {
-        IEnumerable<BsonObjectProperty> GetPropertys(object obj);
+        object BeginObject(object instance);
 
-        bool IsArray(object obj);
+        IEnumerable<object> GetPropertys(object instance);
 
-        bool IsObject(object obj);
+        string GetPropertyName(object instance, object property);
+
+        object GetPropertyValue(object instance, object property);
+
+        void EndObject(object instance);
+
+        bool IsArray(object instance);
+
+        bool IsObject(object instance);
     }
 }
