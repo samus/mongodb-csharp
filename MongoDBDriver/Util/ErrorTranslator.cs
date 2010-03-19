@@ -30,7 +30,7 @@ namespace MongoDB.Driver
         /// 	<c>true</c> if the specified document is error; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsError(Document document){
-            if(document.Contains("err") && document["err"] != DBNull.Value)
+            if(document.Contains("err") && document["err"] != null)
                 return true;
             return false;
         }

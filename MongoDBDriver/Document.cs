@@ -182,8 +182,6 @@ namespace MongoDB.Driver
         public Document Set(string key, object value){
             if(key == null)
                 throw new ArgumentNullException("key");
-            if(value == null)
-                throw new ArgumentNullException("value");
 
             if(!_orderedKeys.Contains(key))
                 _orderedKeys.Add(key);

@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text;
-using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Bson
 {
@@ -21,10 +20,6 @@ namespace MongoDB.Driver.Bson
 
         private byte[] _byteBuffer;
         private char[] _charBuffer;
-
-        /*public BsonReader(Stream stream)
-            : this(stream, new BsonReflectionBuilder(typeof(Document))){
-        }*/
 
         public BsonReader(Stream stream, IBsonObjectBuilder builder){
             _builder = builder;
@@ -81,7 +76,7 @@ namespace MongoDB.Driver.Bson
             switch((BsonDataType)typeNumber){
                 case BsonDataType.Null:
                 case BsonDataType.Undefined:
-                    return DBNull.Value;
+                    return null;
                 case BsonDataType.MinKey:
                     return MongoMinKey.Value;
                 case BsonDataType.MaxKey:

@@ -188,6 +188,14 @@ namespace MongoDB.Driver
             Assert.AreEqual(10, document["value2"]);
         }
 
+        [Test]
+        public void TestSetNullValue(){
+            var document = new Document();
+            document.Add("value", null);
+            Assert.AreEqual(1,document.Count);
+            Assert.IsNull(document["value"]);
+        }
+
         private void AreEqual(Document d1, Document d2) {
             if (!d1.Equals(d2)) {
                 Assert.Fail(string.Format("Documents don't match\r\nExpected: {0}\r\nActual:   {1}", d1, d2));

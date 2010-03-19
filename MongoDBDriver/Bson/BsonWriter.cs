@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Bson
 {
@@ -18,10 +17,6 @@ namespace MongoDB.Driver.Bson
         private readonly Stream _stream;
         private readonly IBsonObjectDescriptor _descriptor;
         private readonly BinaryWriter _writer;
-
-        /*public BsonWriter(Stream stream)
-            : this(stream, new BsonReflectionDescriptor()){
-        }*/
 
         public BsonWriter(Stream stream, IBsonObjectDescriptor descriptor){
             _stream = stream;

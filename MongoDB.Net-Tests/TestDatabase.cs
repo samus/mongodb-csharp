@@ -91,7 +91,7 @@ namespace MongoDB.Driver
         public void TestGetLastErrorNoError(){
             DB["noerror"].Insert(new Document(){{"a",1},{"b",2}});
             Document error = DB.GetLastError();
-            Assert.AreEqual(DBNull.Value, error["err"]);
+            Assert.AreEqual(null, error["err"]);
         }
         
         [Test]
@@ -101,12 +101,12 @@ namespace MongoDB.Driver
             Document dup = new Document(){{"x",1},{"y",2}};
             errcol.Insert(dup);
             Document error = DB.GetLastError();
-            Assert.AreEqual(DBNull.Value, error["err"]);
+            Assert.AreEqual(null, error["err"]);
             
             errcol.Insert(dup);
             error = DB.GetLastError();
 
-            Assert.IsFalse(DBNull.Value == error["err"]);
+            Assert.IsFalse(null == error["err"]);
             
         }
         
@@ -120,12 +120,12 @@ namespace MongoDB.Driver
             }
             docs.Add(new Document(){{"x",1},{"y",4}}); //the dupe
             DB.ResetError();
-            Assert.AreEqual(DBNull.Value, DB.GetLastError()["err"]);
+            Assert.AreEqual(null, DB.GetLastError()["err"]);
             
             col.Insert(docs);
             Document error = DB.GetLastError();
             
-            Assert.IsFalse(DBNull.Value == error["err"]);
+            Assert.IsFalse(null == error["err"]);
 
         }
     }

@@ -52,7 +52,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestFindNulls(){
-            Document query = new Document().Add("n", DBNull.Value);
+            Document query = new Document().Add("n", null);
             long numnulls = DB["finds"].Count(query);
             Assert.AreEqual(99,numnulls);
         }
