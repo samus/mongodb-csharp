@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using MongoDB.Driver.CommandResults;
 using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
@@ -203,9 +204,7 @@ namespace MongoDB.Driver
         /// <param name="commandName">The command name.</param>
         /// <returns></returns>
         public Document SendCommand(string commandName){
-            AuthenticateIfRequired();
-            var cmd = new Document().Append(commandName, 1.0);
-            return SendCommandCore(cmd);
+            return SendCommand(new Document().Append(commandName, 1.0));
         }
 
         /// <summary>
@@ -221,19 +220,48 @@ namespace MongoDB.Driver
         /// <summary>
         /// Sends the command core.
         /// </summary>
-        /// <param name="cmd">The CMD.</param>
+        /// <remarks>Required only for auth.</remarks>
+        /// <param name="command">The command.</param>
         /// <returns></returns>
-        private Document SendCommandCore(Document cmd){
-            var result = FindOneCommand<Document>(cmd);
+        private Document SendCommandCore(Document command){
+            var result = FindOneCommand<Document>(command);
             var ok = (double)result["ok"];
-            if(ok != 1.0){
+            if(ok != 1.0)
+            {
                 var msg = string.Empty;
                 if(result.Contains("msg"))
                     msg = (string)result["msg"];
                 else if(result.Contains("errmsg"))
                     msg = (string)result["errmsg"];
-                throw new MongoCommandException(msg, result, cmd);
+                throw new MongoCommandException(msg, result, command);
             }
+            return result;
+        }
+
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="commandName">Name of the command.</param>
+        /// <returns></returns>
+        public T SendCommand<T>(string commandName) where T : CommandResultBase{
+            return SendCommand<T>(new Document().Append(commandName, 1.0));
+        }
+
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        public T SendCommand<T>(object command) where T : CommandResultBase{
+            AuthenticateIfRequired();
+
+            var result = FindOneCommand<T>(command);
+            if(!result.Success){
+                throw new MongoCommandException(result.ErrorMessage, null, null);
+            }
+
             return result;
         }
 
@@ -243,7 +271,7 @@ namespace MongoDB.Driver
         /// <typeparam name="T"></typeparam>
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
-        private T FindOneCommand<T>(Document spec) where T:class{
+        private T FindOneCommand<T>(object spec) where T:class{
             var cursor = new Cursor<T>(_connection, Name + ".$cmd", spec??new Document(), -1, 0, null);
             
             foreach(var document in cursor.Documents)
