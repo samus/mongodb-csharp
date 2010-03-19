@@ -141,6 +141,12 @@ namespace MongoDB.Driver.Serialization
         /// <param name="mongoName">Name of the mongo.</param>
         /// <returns></returns>
         object IObjectDescriptor.GetPropertyValue(object instance, string mongoName){
+            if(instance is Document){
+                var document = (Document)instance;
+                return document[mongoName];
+
+            }
+
             var property = GetProperty(mongoName);
             return property.GetValue(instance);
         }
@@ -152,8 +158,13 @@ namespace MongoDB.Driver.Serialization
         /// <param name="mongoName">Name of the mongo.</param>
         /// <param name="value">The value.</param>
         void IObjectDescriptor.SetPropertyValue(object instance, string mongoName, object value){
-            var property = GetProperty(mongoName);
-            property.SetValue(instance,value);
+            if(instance is Document){
+                var document = (Document)instance;
+                document[mongoName] = value;
+            }else{
+                var property = GetProperty(mongoName);
+                property.SetValue(instance, value);
+            }
         }
 
         /// <summary>
