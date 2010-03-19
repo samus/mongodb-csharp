@@ -27,9 +27,8 @@ namespace MongoDB.Driver
             if(dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
-            foreach(var entry in dictionary){
-                Add(entry);
-            }
+            foreach(var entry in dictionary)
+                Add(entry.Key, entry.Value);
         }
 
         /// <summary>
@@ -265,18 +264,6 @@ namespace MongoDB.Driver
         /// <exception cref="T:System.NotSupportedException">
         /// The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
         /// </exception>
-        public Document Add(KeyValuePair<string, object> item){
-            Add(item.Key, item.Value);
-            return this;
-        }
-
-        /// <summary>
-        /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
-        /// </summary>
-        /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
-        /// <exception cref="T:System.NotSupportedException">
-        /// The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
-        /// </exception>
         void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
         {
             Add(item.Key, item.Value);
@@ -300,7 +287,7 @@ namespace MongoDB.Driver
         /// <returns>
         /// true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
         /// </returns>
-        public bool Contains(KeyValuePair<string, object> item){
+        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item){
             return ((IDictionary<string, object>)_dictionary).Contains(item);
         }
 
@@ -324,7 +311,7 @@ namespace MongoDB.Driver
         /// -or-
         /// Type <paramref name="T"/> cannot be cast automatically to the type of the destination <paramref name="array"/>.
         /// </exception>
-        public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex){
+        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex){
             ((ICollection<KeyValuePair<string, object>>)_dictionary).CopyTo(array,arrayIndex);
         }
 
