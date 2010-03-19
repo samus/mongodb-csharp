@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Serialization.Handlers
+namespace MongoDB.Driver.Serialization.Builders
 {
-    public class DocumentBuilderHandler : IBsonBuilderHandler
+    public class DocumentBuilder : IObjectBuilder
     {
         private readonly Document _document = new Document();
         private string _currentKeyName;

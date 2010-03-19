@@ -305,7 +305,7 @@ namespace MongoDB.Driver
         ///   Retrieves the data.
         /// </summary>
         private void RetrieveData(){
-            var descriptor = _serializationFactory.GetBsonDescriptor(null, _connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
 
             var query = new QueryMessage<T>(descriptor){
                 FullCollectionName = FullCollectionName,

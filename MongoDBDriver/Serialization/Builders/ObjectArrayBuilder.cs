@@ -2,15 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver.Serialization.Handlers
+namespace MongoDB.Driver.Serialization.Builders
 {
-    public class ObjectArrayBuilderHandler : IBsonBuilderHandler
+    public class ObjectArrayBuilder : IObjectBuilder
     {
         private readonly Type _type;
         private readonly Type _containingType;
         private readonly IList _list;
 
-        public ObjectArrayBuilderHandler(Type type){
+        public ObjectArrayBuilder(Type type){
             if(type == null)
                 throw new ArgumentNullException("type");
 

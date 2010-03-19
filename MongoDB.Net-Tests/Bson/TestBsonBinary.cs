@@ -29,11 +29,11 @@ namespace MongoDB.Driver.Bson
 
             var data = DecodeHex(hex);
             var inmem = new MemoryStream(data);
-            var inreader = new BsonReader(inmem,new DocumentBuilder());
+            var inreader = new BsonReader(inmem,new BsonDocumentBuilder());
             var indoc = inreader.Read();
 
             var outmem = new MemoryStream();
-            var outwriter = new BsonWriter(outmem, new DocumentDescriptor());
+            var outwriter = new BsonWriter(outmem, new BsonDocumentDescriptor());
             outwriter.WriteObject(indoc);
             var outdata = outmem.ToArray();
             var outhex = BitConverter.ToString(outdata);
@@ -47,11 +47,11 @@ namespace MongoDB.Driver.Bson
             var idoc = new Document{{"b", new Binary(new[]{(byte)1, (byte)2})}};
 
             var stream = new MemoryStream();
-            var writer = new BsonWriter(stream, new DocumentDescriptor());
+            var writer = new BsonWriter(stream, new BsonDocumentDescriptor());
             writer.WriteObject(idoc);
 
             stream.Seek(0, SeekOrigin.Begin);
-            var reader = new BsonReader(stream,new DocumentBuilder());
+            var reader = new BsonReader(stream,new BsonDocumentBuilder());
             var odoc = reader.Read();
 
             Assert.AreEqual(idoc.ToString(), odoc.ToString());

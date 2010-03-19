@@ -70,7 +70,7 @@ namespace MongoDB.Driver.Connections
         /// <param name="message">The MSG.</param>
         /// <returns></returns>
         public ReplyMessage<Document> SendTwoWayMessage(IRequestMessage message){
-            return SendTwoWayMessage<Document>(message,new DocumentBuilder());
+            return SendTwoWayMessage<Document>(message,new BsonDocumentBuilder());
         }
 
         /// <summary>

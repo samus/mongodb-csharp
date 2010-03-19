@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Bson
 {
-    public class DocumentDescriptor : IBsonObjectDescriptor
+    public class BsonDocumentDescriptor : IBsonObjectDescriptor
     {
         public IEnumerable<BsonObjectProperty> GetPropertys(object obj){
             var document = (Document)obj;

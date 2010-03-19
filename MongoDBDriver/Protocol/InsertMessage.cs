@@ -44,7 +44,7 @@ namespace MongoDB.Driver.Protocol
         /// <param name="stream">The stream.</param>
         public void Write(Stream stream){
             var bstream = new BufferedStream(stream);
-            var bwriter = new BsonWriter(bstream, new DocumentDescriptor());
+            var bwriter = new BsonWriter(bstream, new BsonDocumentDescriptor());
 
             ChunkMessage(bwriter);
 
@@ -98,7 +98,7 @@ namespace MongoDB.Driver.Protocol
         protected void WriteChunk(Stream stream, MessageChunk chunk){
             WriteHeader(new BinaryWriter(stream), chunk.Size);
 
-            var writer = new BsonWriter(stream, new DocumentDescriptor());
+            var writer = new BsonWriter(stream, new BsonDocumentDescriptor());
             writer.WriteValue(BsonDataType.Integer, 0);
             writer.Write(FullCollectionName, false);
 

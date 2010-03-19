@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Serialization.Handlers
+namespace MongoDB.Driver.Serialization.Builders
 {
-    public class ObjectBuilderHandler : IBsonBuilderHandler
+    public class ObjectBuilder : IObjectBuilder
     {
         private readonly SerializationFactory _serializationFactory;
         private readonly Type _type;
@@ -10,7 +10,7 @@ namespace MongoDB.Driver.Serialization.Handlers
         private readonly TypeEntry _typeEntry;
         private TypeProperty _currentProperty;
 
-        public ObjectBuilderHandler(SerializationFactory serializationFactory, Type type){
+        public ObjectBuilder(SerializationFactory serializationFactory, Type type){
             if(serializationFactory == null)
                 throw new ArgumentNullException("serializationFactory");
             if(type == null)

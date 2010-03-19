@@ -16,7 +16,7 @@ namespace MongoDB.Driver.Bson
         public void TestReadString(){
             byte[] buf = HexToBytes("7465737400");
             MemoryStream ms = new MemoryStream(buf);
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             
             String s = reader.ReadString();
             Assert.AreEqual("test",s);
@@ -71,7 +71,7 @@ namespace MongoDB.Driver.Bson
             byte[] buf = Encoding.UTF8.GetBytes(val + '\0');
             
             MemoryStream ms = new MemoryStream(buf);
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             return reader.ReadString();            
         }
         
@@ -155,13 +155,13 @@ namespace MongoDB.Driver.Bson
         
         private string WriteAndReadLenString(string val){
             MemoryStream ms = new MemoryStream();
-            BsonWriter bs = new BsonWriter(ms, new DocumentDescriptor());            
+            BsonWriter bs = new BsonWriter(ms, new BsonDocumentDescriptor());            
             BinaryWriter w = new BinaryWriter(ms);
             int byteCount = bs.CalculateSize(val,false);           
             w.Write(byteCount);
             bs.Write(val,false);
             ms.Seek(0,SeekOrigin.Begin);
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             return reader.ReadLengthString();
         }
         
@@ -170,7 +170,7 @@ namespace MongoDB.Driver.Bson
         public void TestReadEmptyDocument(){
             byte[] buf = HexToBytes("0500000000");
             MemoryStream ms = new MemoryStream(buf);
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             
             Document doc = (Document)reader.ReadObject();
             
@@ -181,7 +181,7 @@ namespace MongoDB.Driver.Bson
         public void TestReadSimpleDocument(){
             byte[] buf = HexToBytes("1400000002746573740005000000746573740000");
             MemoryStream ms = new MemoryStream(buf);
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             
             Document doc = reader.Read();
             
@@ -194,7 +194,7 @@ namespace MongoDB.Driver.Bson
         public void TestReadMultiElementDocument(){
             byte[] buf = HexToBytes("2D000000075F6964004A753AD8FAC16EA58B290351016100000000000000F03F02620005000000746573740000");
             MemoryStream ms = new MemoryStream(buf);
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             
             Document doc = (Document)reader.ReadObject();
             
@@ -213,7 +213,7 @@ namespace MongoDB.Driver.Bson
 //            Console.WriteLine(ConvertDocToHex(doc));
             byte[] buf = HexToBytes("1D000000036100150000000362000D0000000363000500000000000000");
             MemoryStream ms = new MemoryStream(buf);
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             
             Document doc = (Document)reader.ReadObject();
             Assert.IsNotNull(doc, "Document was null");
@@ -225,7 +225,7 @@ namespace MongoDB.Driver.Bson
         [Test]
         public void TestReadBigDocument(){
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms, new DocumentDescriptor());
+            BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             
             Document expected = new Document();
             expected.Append("str", "test")
@@ -247,7 +247,7 @@ namespace MongoDB.Driver.Bson
             writer.Flush();
             ms.Seek(0,SeekOrigin.Begin);           
             
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             Document doc = reader.Read();
             
             Assert.IsNotNull(doc);
@@ -255,7 +255,7 @@ namespace MongoDB.Driver.Bson
         
         private String ConvertDocToHex(Document doc){
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms, new DocumentDescriptor());
+            BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             
             writer.WriteObject(doc);
             return BitConverter.ToString(ms.ToArray()).Replace("-","");

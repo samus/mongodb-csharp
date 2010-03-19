@@ -15,7 +15,7 @@ namespace MongoDB.Driver.Protocol
     public class MsgMessage : RequestMessageBase
     {
         public MsgMessage()
-            : base(new DocumentDescriptor()){
+            : base(new BsonDocumentDescriptor()){
             Header = new MessageHeader(OpCode.Msg);
         }
 

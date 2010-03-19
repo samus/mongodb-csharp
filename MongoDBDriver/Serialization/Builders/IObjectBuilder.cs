@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Serialization.Handlers
+namespace MongoDB.Driver.Serialization.Builders
 {
-    public interface IBsonBuilderHandler
+    public interface IObjectBuilder
     {
         /// <summary>
         /// Completes this instance.

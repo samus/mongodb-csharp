@@ -60,7 +60,7 @@ namespace MongoDB.Driver.Connections
             Document qdoc = new Document();
             qdoc.Add("listDatabases", 1.0);
             //QueryMessage qmsg = new QueryMessage(qdoc,"system.namespaces");
-            var qmsg = new QueryMessage<Document>(new DocumentDescriptor(), qdoc, "admin.$cmd");
+            var qmsg = new QueryMessage<Document>(new BsonDocumentDescriptor(), qdoc, "admin.$cmd");
             qmsg.NumberToReturn = -1;
             
             return qmsg;

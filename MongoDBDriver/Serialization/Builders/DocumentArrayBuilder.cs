@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver.Serialization.Handlers
+namespace MongoDB.Driver.Serialization.Builders
 {
-    public class DocumentArrayBuilderHandler : IBsonBuilderHandler
+    public class DocumentArrayBuilder : IObjectBuilder
     {
         private readonly List<object> _list = new List<object>();
         

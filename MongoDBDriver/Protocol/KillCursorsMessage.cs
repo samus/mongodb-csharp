@@ -18,7 +18,7 @@ namespace MongoDB.Driver.Protocol
     public class KillCursorsMessage : RequestMessageBase
     {
         public KillCursorsMessage()
-            :base(new DocumentDescriptor()){
+            :base(new BsonDocumentDescriptor()){
             Header = new MessageHeader(OpCode.KillCursors);
         }
 

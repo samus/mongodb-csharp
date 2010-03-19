@@ -148,13 +148,13 @@ namespace MongoDB.Driver.Bson
         
         protected Document WriteAndRead(Document source){
             MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms, new DocumentDescriptor());
+            BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
 
             writer.WriteObject(source);
             writer.Flush();
             ms.Seek(0, SeekOrigin.Begin);
 
-            BsonReader reader = new BsonReader(ms,new DocumentBuilder());
+            BsonReader reader = new BsonReader(ms,new BsonDocumentBuilder());
             return reader.Read();
         }   
     }

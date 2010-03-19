@@ -10,7 +10,7 @@ namespace MongoDB.Driver.Serialization
         {
             using(var mem = new MemoryStream())
             {
-                var writer = new BsonWriter(mem, new DocumentDescriptor());
+                var writer = new BsonWriter(mem, new BsonDocumentDescriptor());
                 writer.WriteObject(document);
                 writer.Flush();
                 return Convert.ToBase64String(mem.ToArray());
@@ -41,7 +41,7 @@ namespace MongoDB.Driver.Serialization
         {
             using(var mem = new MemoryStream(Convert.FromBase64String(base64)))
             {
-                var reader = new BsonReader(mem,new DocumentBuilder());
+                var reader = new BsonReader(mem,new BsonDocumentBuilder());
                 return (Document)reader.ReadObject();
             }
         }

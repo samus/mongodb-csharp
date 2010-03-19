@@ -326,11 +326,10 @@ namespace MongoDB.Driver
             };
 
             var insertDocument = new List<object>();
+            var descriotor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
             foreach(var document in documents)
             {
-                var descriotor = _serializationFactory.GetObjectDescriptor(document.GetType());
-                
                 var id = descriotor.GetPropertyValue(document, "_id");
 
                 if(id == null)
@@ -397,7 +396,7 @@ namespace MongoDB.Driver
         /// </remarks>
         public void Delete(object selector)
         {
-            var descriptor = _serializationFactory.GetBsonDescriptor(selector.GetType(),_connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T),_connection);
 
             var deleteMessage = new DeleteMessage(descriptor)
             {
@@ -465,7 +464,7 @@ namespace MongoDB.Driver
             var selector = new Document();
             var upsert = UpdateFlags.Upsert;
 
-            var descriptor = _serializationFactory.GetObjectDescriptor(document.GetType());
+            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
             var value = descriptor.GetPropertyValue(document, "_id");
 
@@ -565,7 +564,7 @@ namespace MongoDB.Driver
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(object document, object selector, UpdateFlags flags)
         {
-            var descriptor = _serializationFactory.GetBsonDescriptor(document.GetType(), _connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
 
             var updateMessage = new UpdateMessage(descriptor)
             {
@@ -606,7 +605,7 @@ namespace MongoDB.Driver
         {
             var foundOp = false;
 
-            var descriptor = _serializationFactory.GetObjectDescriptor(document.GetType());
+            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
             foreach(var name in descriptor.GetMongoPropertyNames())
                 if(name.IndexOf('$') == 0){

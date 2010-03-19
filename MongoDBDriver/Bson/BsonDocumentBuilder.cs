@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Bson
 {
-    public class DocumentBuilder : IBsonObjectBuilder
+    public class BsonDocumentBuilder : IBsonObjectBuilder
     {
         /// <summary>
         /// Begins the object.
