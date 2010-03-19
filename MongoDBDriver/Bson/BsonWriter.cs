@@ -296,8 +296,8 @@ namespace MongoDB.Driver.Bson
                 var elsize = 1; //type
                 var value = _descriptor.BeginProperty(obj, name);
                 elsize += CalculateSize(name, false);
-                _descriptor.EndProperty(obj, name, value);
                 elsize += CalculateSize(value);
+                _descriptor.EndProperty(obj, name, value);
                 size += elsize;
             }
             size += 1; //terminator
