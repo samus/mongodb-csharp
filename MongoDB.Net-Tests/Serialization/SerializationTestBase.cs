@@ -17,11 +17,15 @@ namespace MongoDB.Driver.Serialization
             }
         }
 
-        protected string Serialize(object instance)
+        protected string Serialize(object instance){
+            return Serialize(instance, instance.GetType());
+        }
+
+        protected string Serialize(object instance,Type rootType)
         {
             using(var mem = new MemoryStream())
             {
-                var writer = new BsonWriter(mem, new BsonReflectionDescriptor(SerializationFactory.Default));
+                var writer = new BsonWriter(mem, new BsonReflectionDescriptor(SerializationFactory.Default, rootType));
                 writer.WriteObject(instance);
                 writer.Flush();
                 return Convert.ToBase64String(mem.ToArray());

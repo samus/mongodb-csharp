@@ -13,7 +13,8 @@ namespace MongoDB.Driver.Serialization
         public delegate object CreateInstanceFunc(Type type);
 
         private const string DefaultIdProperty = "Id";
-        private readonly Dictionary<string, TypeProperty> _propertys = new Dictionary<string, TypeProperty>();
+        private readonly Dictionary<string, TypeProperty> _mongoPropertys = new Dictionary<string, TypeProperty>();
+        private readonly Dictionary<string, TypeProperty> _typePropertys = new Dictionary<string, TypeProperty>();
         private readonly CreateInstanceFunc _createInstance;
 
         /// <summary>
@@ -69,20 +70,25 @@ namespace MongoDB.Driver.Serialization
         /// </summary>
         /// <value>The propertys.</value>
         public IEnumerable<TypeProperty> Propertys{
-            get{return _propertys.Values;}
+            get{return _mongoPropertys.Values;}
         }
 
-        /// <summary>
-        /// Gets the property.
-        /// </summary>
-        /// <param name="mongoName">Name of the mongo.</param>
-        /// <returns></returns>
-        public TypeProperty GetProperty(string mongoName){
+        public TypeProperty GetPropertyFromMongoName(string mongoName){
             TypeProperty property;
 
-            if(!_propertys.TryGetValue(mongoName, out property))
+            if(!_mongoPropertys.TryGetValue(mongoName, out property))
                 //Todo: custom exception type
                 throw new MongoException(string.Format("Mongo property \"{0}\" was not found on type \"{1}\"", mongoName, Type.FullName));
+
+            return property;
+        }
+
+        public TypeProperty GetProperty(string propertyName){
+            TypeProperty property;
+
+            if(!_typePropertys.TryGetValue(propertyName, out property))
+                //Todo: custom exception type
+                throw new MongoException(string.Format("Type property \"{0}\" was not found on type \"{1}\"", propertyName, Type.FullName));
 
             return property;
         }
@@ -100,12 +106,14 @@ namespace MongoDB.Driver.Serialization
         /// </summary>
         private void GeneratePropertys(){
             foreach(var propertyInfo in Type.GetProperties()){
-                var name = GetPropertyName(propertyInfo);
+                var mongoName = GetPropertyName(propertyInfo);
 
                 if(GetPropertyAttribute<MongoIgnoreAttribute>(propertyInfo)!=null)
                     continue;
 
-                _propertys.Add(name, new TypeProperty(name, Type, propertyInfo));
+                var typeProperty = new TypeProperty(mongoName, Type, propertyInfo);
+                _mongoPropertys.Add(mongoName, typeProperty);
+                _typePropertys.Add(typeProperty.PropertyName , typeProperty);
             }
         }
 
@@ -147,7 +155,7 @@ namespace MongoDB.Driver.Serialization
 
             }
 
-            var property = GetProperty(mongoName);
+            var property = GetPropertyFromMongoName(mongoName);
             return property.GetValue(instance);
         }
 
@@ -162,7 +170,7 @@ namespace MongoDB.Driver.Serialization
                 var document = (Document)instance;
                 document[mongoName] = value;
             }else{
-                var property = GetProperty(mongoName);
+                var property = GetPropertyFromMongoName(mongoName);
                 property.SetValue(instance, value);
             }
         }
@@ -175,6 +183,16 @@ namespace MongoDB.Driver.Serialization
             foreach(var typeProperty in Propertys){
                 yield return typeProperty.MongoName;
             }
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString(){
+            return Type.FullName;
         }
     }
 }

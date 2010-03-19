@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    public class DocumentDescriptor : IObjectDescriptor2
+    public class DocumentDescriptor : IPropertyDescriptor
     {
         private readonly Document _document;
 
@@ -18,8 +18,9 @@ namespace MongoDB.Driver.Serialization.Descriptors
                 yield return key;
         }
 
-        public object GetPropertyValue(string name){
-            return _document[name];
+        public KeyValuePair<Type, object> GetPropertyValue(string name){
+            var value = _document[name];
+            return new KeyValuePair<Type, object>(typeof(Document),value);
         }
     }
 }

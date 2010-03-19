@@ -23,7 +23,7 @@ namespace MongoDB.Driver.Serialization.Builders
         }
 
         public Type BeginProperty(string name){
-            _currentProperty = _typeEntry.GetProperty(name);
+            _currentProperty = _typeEntry.GetPropertyFromMongoName(name);
             return _currentProperty.PropertyType;
         }
 

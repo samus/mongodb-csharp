@@ -138,7 +138,8 @@
     <Compile Include="Protocol\UpdateMessage.cs" />
     <Compile Include="QueryOptions.cs" />
     <Compile Include="Serialization\Descriptors\DocumentDescriptor.cs" />
-    <Compile Include="Serialization\Descriptors\IObjectDescriptor2.cs" />
+    <Compile Include="Serialization\Descriptors\IPropertyDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\MappingObjectDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\ObjectDescriptor.cs" />
     <Compile Include="Serialization\IObjectDescriptor.cs" />
     <Compile Include="Serialization\QualifiedNameTypeNameProvider.cs" />

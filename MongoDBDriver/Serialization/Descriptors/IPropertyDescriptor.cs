@@ -1,11 +1,12 @@
+using System;
 using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    public interface IObjectDescriptor2
+    public interface IPropertyDescriptor
     {
         IEnumerable<string> GetPropertyNames();
 
-        object GetPropertyValue(string name);
+        KeyValuePair<Type,object> GetPropertyValue(string name);
     }
 }

@@ -26,6 +26,7 @@ namespace MongoDB.Driver.Serialization
                 throw new ArgumentNullException("propertyInfo");
 
             MongoName = name;
+            PropertyName = propertyInfo.Name;
             OwnerType = ownerType;
             PropertyType = propertyInfo.PropertyType;
             //Todo: replace with reflection emit one
@@ -33,6 +34,12 @@ namespace MongoDB.Driver.Serialization
             //Todo: replace with reflection emit one
             _setValue = (i, o) => SetAndConvertPropertyValue(propertyInfo,i,o);
         }
+
+        /// <summary>
+        /// Gets or sets the name of the property.
+        /// </summary>
+        /// <value>The name of the property.</value>
+        public string PropertyName { get; private set; }
 
         /// <summary>
         /// Gets or sets the type of the property.
@@ -87,6 +94,17 @@ namespace MongoDB.Driver.Serialization
             }
 
             propertyInfo.SetValue(instance, value, null);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format("{0}: {1}({2})", OwnerType.Name, PropertyName, MongoName);
         }
     }
 }

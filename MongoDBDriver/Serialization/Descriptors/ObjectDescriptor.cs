@@ -1,43 +1,27 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    public class ObjectDescriptor : IObjectDescriptor2
+    public class ObjectDescriptor : IPropertyDescriptor
     {
         private readonly object _instance;
         private readonly TypeEntry _entry;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ObjectDescriptor"/> class.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="entry">The entry.</param>
-        public ObjectDescriptor(object instance,TypeEntry entry){
-            if(instance == null)
-                throw new ArgumentNullException("instance");
-            if(entry == null)
-                throw new ArgumentNullException("entry");
+        public ObjectDescriptor(object instance, TypeRegistry registry){
             _instance = instance;
-            _entry = entry;
+            var type = _instance.GetType();
+            _entry = registry.GetOrCreate(type);
         }
 
-        /// <summary>
-        /// Gets the property names.
-        /// </summary>
-        /// <returns></returns>
         public IEnumerable<string> GetPropertyNames(){
-            foreach(var typeProperty in _entry.Propertys)
-                yield return typeProperty.MongoName;
+            return _entry.GetMongoPropertyNames();
         }
 
-        /// <summary>
-        /// Gets the property value.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        public object GetPropertyValue(string name){
-            return _entry.GetProperty(name).GetValue(_instance);
+        public KeyValuePair<Type, object> GetPropertyValue(string name){
+            var property = _entry.GetPropertyFromMongoName(name);
+            var value = property.GetValue(_instance);
+            return new KeyValuePair<Type, object>(property.PropertyType,value);
         }
     }
 }

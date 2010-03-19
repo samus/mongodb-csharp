@@ -38,7 +38,7 @@ namespace MongoDB.Driver.Serialization
         /// <param name="connection">The connection.</param>
         /// <returns></returns>
         IBsonObjectBuilder ISerializationFactory.GetBsonBuilder(Type rootType, Connection connection){
-            return new BsonReflectionBuilder(this,rootType);
+            return new BsonReflectionBuilder(this, rootType);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace MongoDB.Driver.Serialization
         /// <param name="connection">The connection.</param>
         /// <returns></returns>
         IBsonObjectDescriptor ISerializationFactory.GetBsonDescriptor(Type rootType, Connection connection){
-            return new BsonReflectionDescriptor(this);
+            return new BsonReflectionDescriptor(this, rootType);
         }
 
         /// <summary>
