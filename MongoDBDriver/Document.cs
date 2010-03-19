@@ -480,6 +480,14 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
+        /// Toes the dictionary.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string,object> ToDictionary(){
+            return new Dictionary<string, object>(this);
+        }
+
+        /// <summary>
         /// Returns a <see cref="System.String"/> that represents this instance.
         /// </summary>
         /// <returns>
