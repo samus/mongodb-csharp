@@ -42,6 +42,9 @@
     <Compile Include="GridFileStreamTest.cs" />
     <Compile Include="GridFileTest.cs" />
     <Compile Include="GridTestBase.cs" />
+    <None Include="..\MongoDB.Net-Tests\App.config">
+      <Link>App.config</Link>
+    </None>
     <None Include="MongoDB.GridFS.Tests.csproj" />
   </ItemGroup>
   <ItemGroup>
