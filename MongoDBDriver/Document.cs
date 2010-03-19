@@ -20,6 +20,16 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Document"/> class and
+        /// add's the given values to it.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        public Document(string key,object value){
+            Add(key, value);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Document"/> class.
         /// </summary>
         /// <param name="dictionary">The dictionary.</param>

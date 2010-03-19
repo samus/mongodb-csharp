@@ -24,7 +24,8 @@ namespace MongoDB.Driver
 
         public override string ToString (){
             return String.Format(@"{{ ""$binary"": ""{0}"", ""$type"" : {1} }}",
-                        Convert.ToBase64String(Bytes), (int)Subtype);
+                Convert.ToBase64String(Bytes),
+                (int)Subtype);
         }
     }
 }
