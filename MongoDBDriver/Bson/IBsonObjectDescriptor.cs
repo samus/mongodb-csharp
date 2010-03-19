@@ -6,11 +6,11 @@ namespace MongoDB.Driver.Bson
     {
         object BeginObject(object instance);
 
-        IEnumerable<object> GetPropertys(object instance);
+        IEnumerable<string> GetPropertyNames(object instance);
 
-        string GetPropertyName(object instance, object property);
+        object BeginProperty(object instance, string name);
 
-        object GetPropertyValue(object instance, object property);
+        void EndProperty(object instance, string name, object value);
 
         void EndObject(object instance);
 

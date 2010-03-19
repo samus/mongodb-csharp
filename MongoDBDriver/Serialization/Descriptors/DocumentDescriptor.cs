@@ -13,19 +13,13 @@ namespace MongoDB.Driver.Serialization.Descriptors
             _document = document;
         }
 
-        public IEnumerable<object> GetPropertys(){
-            foreach(string key in _document.Keys)
-                yield return new KeyValuePair<string, object>(key, _document[key]);
+        public IEnumerable<string> GetPropertyNames(){
+            foreach(var key in _document.Keys)
+                yield return key;
         }
 
-        public string GetPropertyName(object property){
-            var entry = (KeyValuePair<string, object>)property;
-            return Convert.ToString(entry.Key);
-        }
-
-        public object GetPropertyValue(object property){
-            var entry = (KeyValuePair<string, object>)property;
-            return entry.Value;
+        public object GetPropertyValue(string name){
+            return _document[name];
         }
     }
 }

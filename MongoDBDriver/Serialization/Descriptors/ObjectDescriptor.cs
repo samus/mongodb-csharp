@@ -8,6 +8,11 @@ namespace MongoDB.Driver.Serialization.Descriptors
         private readonly object _instance;
         private readonly TypeEntry _entry;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectDescriptor"/> class.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="entry">The entry.</param>
         public ObjectDescriptor(object instance,TypeEntry entry){
             if(instance == null)
                 throw new ArgumentNullException("instance");
@@ -17,20 +22,22 @@ namespace MongoDB.Driver.Serialization.Descriptors
             _entry = entry;
         }
 
-        public IEnumerable<object> GetPropertys(){
-            foreach(var typeProperty in _entry.Propertys){
-                yield return typeProperty;
-            }
+        /// <summary>
+        /// Gets the property names.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetPropertyNames(){
+            foreach(var typeProperty in _entry.Propertys)
+                yield return typeProperty.MongoName;
         }
 
-        public string GetPropertyName(object property){
-            var typeProprety = (TypeProperty)property;
-            return typeProprety.MongoName;
-        }
-
-        public object GetPropertyValue(object property){
-            var typeProprety = (TypeProperty)property;
-            return typeProprety.GetValue(_instance);
+        /// <summary>
+        /// Gets the property value.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public object GetPropertyValue(string name){
+            return _entry.GetProperty(name).GetValue(_instance);
         }
     }
 }

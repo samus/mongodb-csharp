@@ -4,10 +4,8 @@ namespace MongoDB.Driver.Serialization.Descriptors
 {
     public interface IObjectDescriptor2
     {
-        IEnumerable<object> GetPropertys();
+        IEnumerable<string> GetPropertyNames();
 
-        string GetPropertyName(object property);
-
-        object GetPropertyValue(object property);
+        object GetPropertyValue(string name);
     }
 }

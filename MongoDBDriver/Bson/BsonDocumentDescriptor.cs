@@ -9,20 +9,18 @@ namespace MongoDB.Driver.Bson
             return instance;
         }
 
-        public IEnumerable<object> GetPropertys(object instance){
+        public IEnumerable<string> GetPropertyNames(object instance){
             var document = (Document)instance;
-            foreach(string key in document.Keys)
-                yield return new KeyValuePair<string,object>(key,document[key]);
+            foreach(var key in document.Keys)
+                yield return key;
         }
 
-        public string GetPropertyName(object instance, object property){
-            var propertyEntry = (KeyValuePair<string, object>)property;
-            return propertyEntry.Key;
+        public object BeginProperty(object instance, string name){
+            var document = (Document)instance;
+            return document[name];
         }
 
-        public object GetPropertyValue(object instance, object property){
-            var propertyEntry = (KeyValuePair<string, object>)property;
-            return propertyEntry.Value;
+        public void EndProperty(object instance, string name, object value){
         }
        
         public void EndObject(object obj){

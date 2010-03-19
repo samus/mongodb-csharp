@@ -27,20 +27,15 @@ namespace MongoDB.Driver.Serialization
             return new ObjectDescriptor(instance,entry);
         }
 
-        public IEnumerable<object> GetPropertys(object instance){
-            var descriptor = (IObjectDescriptor2)instance;
-            return descriptor.GetPropertys();
+        public IEnumerable<string> GetPropertyNames(object instance){
+            return ((IObjectDescriptor2)instance).GetPropertyNames();
         }
 
-        public string GetPropertyName(object instance, object property)
-        {
-            var descriptor = (IObjectDescriptor2)instance;
-            return descriptor.GetPropertyName(property);
+        public object BeginProperty(object instance, string name){
+            return ((IObjectDescriptor2)instance).GetPropertyValue(name);
         }
 
-        public object GetPropertyValue(object instance, object property){
-            var descriptor = (IObjectDescriptor2)instance;
-            return descriptor.GetPropertyValue(property);
+        public void EndProperty(object instance, string name, object value){
         }
 
         public void EndObject(object obj){
