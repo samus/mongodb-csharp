@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Serialization
+namespace MongoDB.Driver.Tests.Serialization
 {
     [TestFixture]
     public class ArrayFactoryTests

@@ -9,6 +9,16 @@ namespace MongoDB.Driver.Bson
             return instance;
         }
 
+        public object BeginArray(object instance){
+            var document = new Document();
+
+            var i = 0;
+            foreach(var item in (IEnumerable)instance)
+                document.Add((i++).ToString(), item);
+
+            return document;
+        }
+
         public IEnumerable<string> GetPropertyNames(object instance){
             var document = (Document)instance;
             foreach(var key in document.Keys)
@@ -22,7 +32,10 @@ namespace MongoDB.Driver.Bson
 
         public void EndProperty(object instance, string name, object value){
         }
-       
+
+        public void EndArray(object instance){
+        }
+
         public void EndObject(object obj){
         }
 

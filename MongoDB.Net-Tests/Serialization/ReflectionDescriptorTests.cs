@@ -1,7 +1,8 @@
+using MongoDB.Driver.Serialization;
 using MongoDB.Driver.Serialization.Attributes;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Serialization
+namespace MongoDB.Driver.Tests.Serialization
 {
     [TestFixture]
     public class ReflectionDescriptorTests : SerializationTestBase

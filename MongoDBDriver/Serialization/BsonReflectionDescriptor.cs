@@ -35,6 +35,10 @@ namespace MongoDB.Driver.Serialization
             return new ObjectDescriptor(instance, _serializationFactory.Registry);
         }
 
+        public object BeginArray(object instance){
+            return new ArrayDescriptor((IEnumerable)instance);
+        }
+
         public IEnumerable<string> GetPropertyNames(object instance){
             return ((IPropertyDescriptor)instance).GetPropertyNames();
         }
@@ -49,6 +53,9 @@ namespace MongoDB.Driver.Serialization
 
         public void EndProperty(object instance, string name, object value){
             _type.Pop();
+        }
+
+        public void EndArray(object instance){
         }
 
         public void EndObject(object obj){

@@ -61,7 +61,7 @@ namespace MongoDB.Driver.Bson
                         WriteObject(obj);
                     return;
                 case BsonDataType.Array:
-                    WriteEnumerable((IEnumerable)obj);
+                    WriteArray((IEnumerable)obj);
                     return;
                 case BsonDataType.Regex:{
                     Write((MongoRegex)obj);
@@ -137,6 +137,11 @@ namespace MongoDB.Driver.Bson
 
         public void WriteObject(object obj){
             obj = _descriptor.BeginObject(obj);
+            WriteElements(obj);
+            _descriptor.EndObject(obj);
+        }
+
+        private void WriteElements(object obj){
             var propertys = _descriptor.GetPropertyNames(obj);
             var size = CalculateSizeObject(obj,propertys);
             if(size >= BsonInfo.MaxDocumentSize) 
@@ -144,28 +149,19 @@ namespace MongoDB.Driver.Bson
             _writer.Write(size);
             foreach(var name in propertys){
                 var value = _descriptor.BeginProperty(obj, name);
-                var type = TranslateToBsonType(value);
-                _writer.Write((byte)type);
+                var bsonType = TranslateToBsonType(value);
+                _writer.Write((byte)bsonType);
                 Write(name, false);
-                WriteValue(type, value);
+                WriteValue(bsonType, value);
                 _descriptor.EndProperty(obj,name,value);
             }
             _writer.Write((byte)0);
-            _descriptor.EndObject(obj);
         }
 
-        public void WriteEnumerable(IEnumerable enumerable){
-            var size = CalculateSize(enumerable);
-            _writer.Write(size);
-            var keyname = 0;
-            foreach(var val in enumerable){
-                var bsonType = TranslateToBsonType(val);
-                _writer.Write((byte)bsonType);
-                Write(keyname.ToString(),false);
-                WriteValue(bsonType, val);
-                keyname++;
-            }
-            _writer.Write((byte)0);
+        public void WriteArray(IEnumerable enumerable){
+            var obj = _descriptor.BeginArray(enumerable);
+            WriteElements(obj);
+            _descriptor.EndArray(obj);
         }
 
         private void Write(string value)
@@ -305,15 +301,13 @@ namespace MongoDB.Driver.Bson
         }
         
         public int CalculateSize(IEnumerable enumerable){
-            var size = 4; //base size for the object
-            var keyname = 0;
-            foreach(var o in enumerable){
-                size += CalculateSize(keyname.ToString(), false); //element name
-                size += CalculateSize(o);
-                size += 1; // elsize
-                keyname++;
-            }
-            size += 1; //terminator
+            var obj = _descriptor.BeginArray(enumerable);
+            var propertys = _descriptor.GetPropertyNames(obj);
+
+            var size = CalculateSizeObject(obj, propertys);
+
+            _descriptor.EndArray(obj);
+
             return size;
         }
         

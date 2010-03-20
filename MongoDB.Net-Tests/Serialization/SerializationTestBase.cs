@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using MongoDB.Driver.Bson;
+using MongoDB.Driver.Serialization;
 
-namespace MongoDB.Driver.Serialization
+namespace MongoDB.Driver.Tests.Serialization
 {
     public abstract class SerializationTestBase
     {
