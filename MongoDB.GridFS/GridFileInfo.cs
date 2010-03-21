@@ -92,7 +92,7 @@ namespace MongoDB.GridFS
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
 
-        public GridFileInfo(MongoDatabase db, string filename){
+        public GridFileInfo(Database db, string filename){
             this.db = db;
             this.bucket = "fs";
             this.gridFile = new GridFile(db);

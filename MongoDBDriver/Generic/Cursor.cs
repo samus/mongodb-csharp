@@ -42,7 +42,8 @@ namespace MongoDB.Driver.Generic
         /// <param name = "limit">The limit.</param>
         /// <param name = "skip">The skip.</param>
         /// <param name = "fields">The fields.</param>
-        public Cursor(Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields) : this(connection, fullCollectionName)
+        public Cursor(Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields)
+            : this(connection, fullCollectionName)
         {
             //Todo: should be internal
             if (spec == null)
@@ -292,7 +293,8 @@ namespace MongoDB.Driver.Generic
         private void RetrieveData(){
             var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
             
-            var query = new QueryMessage<T>(descriptor) { FullCollectionName = FullCollectionName, Query = BuildSpec(), NumberToReturn = _limit, NumberToSkip = _skip, Options = _options };
+            var query = new QueryMessage<T>(descriptor) { FullCollectionName = FullCollectionName, Query = BuildSpec(),
+                                NumberToReturn = _limit, NumberToSkip = _skip, Options = _options };
             
             if (_fields != null)
                 query.ReturnFieldSelector = _fields;

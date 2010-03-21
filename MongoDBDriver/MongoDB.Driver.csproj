@@ -83,7 +83,6 @@
     <Compile Include="CommandResults\CommandResultBase.cs" />
     <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="IMongoDatabase.cs" />
-    <Compile Include="MongoCollection.cs" />
     <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connections\Connection.cs" />
     <Compile Include="Connections\ConnectionFactory.cs" />
@@ -92,7 +91,6 @@
     <Compile Include="Connections\IConnectionFactory.cs" />
     <Compile Include="Connections\PooledConnectionFactory.cs" />
     <Compile Include="Connections\SimpleConnectionFactory.cs" />
-    <Compile Include="MongoDatabase.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
     <Compile Include="DatabaseMetaData.cs" />
@@ -170,7 +168,9 @@
     <Compile Include="Generic\IMongoCollection.cs" />
     <Compile Include="Generic\ICursor.cs" />
     <Compile Include="Generic\Cursor.cs" />
-    <Compile Include="Generic\MongoCollection.cs" />
+    <Compile Include="Collection.cs" />
+    <Compile Include="Generic\Collection.cs" />
+    <Compile Include="Database.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

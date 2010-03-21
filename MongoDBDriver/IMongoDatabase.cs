@@ -95,7 +95,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="sisterDatabaseName">Name of the sister database.</param>
         /// <returns></returns>
-        MongoDatabase GetSisterDatabase(string sisterDatabaseName);
+        Database GetSisterDatabase(string sisterDatabaseName);
 
         /// <summary>
         ///   Resets last error.  This is good to call before a bulk operation.

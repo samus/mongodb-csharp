@@ -10,12 +10,12 @@ namespace MongoDB.Driver
     {        
         private Connection connection;  
         private string name;
-        private MongoDatabase db;
+        private Database db;
         
         public DatabaseMetaData(string name, Connection conn){
             this.connection = conn;
             this.name = name;
-            this.db = new MongoDatabase(conn, name);
+            this.db = new Database(conn, name);
         }
         
         public IMongoCollection CreateCollection(String name){
@@ -27,11 +27,11 @@ namespace MongoDB.Driver
             Document cmd = new Document();
             cmd.Add("create", name).Merge(options);
             db.SendCommand(cmd);
-            return new MongoCollection(connection, this.name, name);
+            return new Collection(connection, this.name, name);
         }
 
 
-        public Boolean DropCollection(MongoCollection col)
+        public Boolean DropCollection(Collection col)
         {
             return this.DropCollection(col.Name);
         }
@@ -48,7 +48,7 @@ namespace MongoDB.Driver
         
         public void AddUser(string username, string password){
             IMongoCollection users = db["system.users"];
-            string pwd = MongoDatabase.Hash(username + ":mongo:" + password);
+            string pwd = Database.Hash(username + ":mongo:" + password);
             Document user = new Document().Add("user", username).Add("pwd", pwd);
             
             if (FindUser(username) != null){

@@ -9,7 +9,7 @@ using MongoDB.Driver.Generic;
 
 namespace MongoDB.Driver
 {
-    public class MongoDatabase : IMongoDatabase
+    public class Database : IMongoDatabase
     {
         private readonly Connection _connection;
         private DatabaseJavascript _javascript;
@@ -20,7 +20,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="name">The name.</param>
-        public MongoDatabase(string connectionString, String name)
+        public Database(string connectionString, String name)
             :this(ConnectionFactory.GetConnection(connectionString),name)
         {
             if(name == null)
@@ -32,7 +32,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
-        public MongoDatabase(Connection connection, String name){
+        public Database(Connection connection, String name){
             //Todo: should be internal
             Name = name;
             _connection = connection;
@@ -87,7 +87,7 @@ namespace MongoDB.Driver
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public IMongoCollection GetCollection(String name){
-            return new MongoCollection(_connection, Name, name);
+            return new Collection(_connection, Name, name);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace MongoDB.Driver
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public IMongoCollection<T> GetCollection<T>(String name) where T : class{
-            return new MongoCollection<T>(_connection, Name, name);
+            return new Collection<T>(_connection, Name, name);
         }
 
         /// <summary>
@@ -160,8 +160,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="sisterDatabaseName">Name of the sister database.</param>
         /// <returns></returns>
-        public MongoDatabase GetSisterDatabase(string sisterDatabaseName){
-            return new MongoDatabase(_connection, sisterDatabaseName);
+        public Database GetSisterDatabase(string sisterDatabaseName){
+            return new Database(_connection, sisterDatabaseName);
         }
 
         /// <summary>

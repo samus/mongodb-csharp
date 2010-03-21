@@ -12,9 +12,9 @@ namespace MongoDB.Driver
     /// <summary>
     /// <see cref = "IMongoCollection" />
     /// </summary>
-    public class MongoCollection : IMongoCollection
+    public class Collection : IMongoCollection
     {
-        MongoCollection<Document> _collection;
+        Collection<Document> _collection;
 
         public string Database {
             get { return _collection.DatabaseName; }
@@ -44,9 +44,9 @@ namespace MongoDB.Driver
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        public MongoCollection(Connection connection, string databaseName, string name)
+        public Collection(Connection connection, string databaseName, string name)
         {
-            _collection = new MongoCollection<Document>(connection, databaseName, name);
+            _collection = new Collection<Document>(connection, databaseName, name);
         }
 
         public Document FindOne(Document spec){

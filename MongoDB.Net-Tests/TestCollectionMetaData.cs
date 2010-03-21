@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     [TestFixture]
     public class TestCollectionMetaData : MongoTestBase
     {
-        MongoDatabase adminDb;
+        Database adminDb;
 
         public override string TestCollections {
             get {
