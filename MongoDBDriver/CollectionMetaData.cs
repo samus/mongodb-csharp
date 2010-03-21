@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using MongoDB.Driver.Connections;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver
 {
@@ -14,10 +15,10 @@ namespace MongoDB.Driver
         private string name;
         private Database db;
 
-        public CollectionMetaData (string dbName, string name, Connection conn){
+        public CollectionMetaData (ISerializationFactory serializationFactory, string dbName, string name, Connection conn){
             this.fullName = dbName + "." + name;
             this.name = name;
-            this.db = new Database (conn, dbName);
+            this.db = new Database (serializationFactory, conn, dbName);
         }
 
         private Document options = null;

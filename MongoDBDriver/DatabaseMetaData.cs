@@ -1,5 +1,6 @@
 using System;
 using MongoDB.Driver.Connections;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver
 {
@@ -7,15 +8,17 @@ namespace MongoDB.Driver
     /// Administration of metadata for a database.
     /// </summary>
     public class DatabaseMetaData
-    {        
+    {
+        private ISerializationFactory serializationFactory;
         private Connection connection;  
         private string name;
         private Database db;
         
-        public DatabaseMetaData(string name, Connection conn){
+        public DatabaseMetaData(ISerializationFactory serializationFactory, string name, Connection conn){
+            this.serializationFactory = serializationFactory;
             this.connection = conn;
             this.name = name;
-            this.db = new Database(conn, name);
+            this.db = new Database(serializationFactory, conn, name);
         }
         
         public IMongoCollection CreateCollection(String name){
@@ -27,7 +30,7 @@ namespace MongoDB.Driver
             Document cmd = new Document();
             cmd.Add("create", name).Merge(options);
             db.SendCommand(cmd);
-            return new Collection(connection, this.name, name);
+            return new Collection(serializationFactory, connection, this.name, name);
         }
 
 

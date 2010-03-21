@@ -1,5 +1,6 @@
 using System;
 using MongoDB.Driver.Connections;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver
 {
@@ -9,22 +10,39 @@ namespace MongoDB.Driver
     public class Mongo : IDisposable
     {
         private Connection connection;
+        private readonly ISerializationFactory serializationFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mongo"/> class.
         /// </summary>
-        public Mongo () : this(string.Empty){
-        }
+        public Mongo () 
+            : this(null, null)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mongo"/> class.
+        /// </summary>
+        /// <param name="serializationFactory">The serialization factory.</param>
+        public Mongo(ISerializationFactory serializationFactory)
+            : this(null, serializationFactory)
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mongo"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
-        public Mongo (string connectionString){
-            if (connectionString == null)
-                throw new ArgumentNullException ("connectionString");
-            
-            connection = ConnectionFactory.GetConnection (connectionString);
+        public Mongo(string connectionString)
+            : this(connectionString, null)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mongo"/> class.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        public Mongo (string connectionString, ISerializationFactory serializationFactory)
+        {
+            this.connection = ConnectionFactory.GetConnection(connectionString);
+            this.serializationFactory = serializationFactory ?? SerializationFactory.Default;
         }
 
         /// <summary>
@@ -41,7 +59,7 @@ namespace MongoDB.Driver
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public Database GetDatabase (String name){
-            return new Database (connection, name);
+            return new Database (serializationFactory, connection, name);
         }
 
         /// <summary>
