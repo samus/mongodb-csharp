@@ -15,7 +15,7 @@ namespace MongoDB.Driver.Generic
         private readonly Connection _connection;
         private Database _database;
         private CollectionMetaData _metaData;
-        private readonly ISerializationFactory _serializationFactory = SerializationFactory.Default;
+        private readonly ISerializationFactory _serializationFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
@@ -23,12 +23,13 @@ namespace MongoDB.Driver.Generic
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        public Collection(Connection connection, string databaseName, string name)
+        public Collection(ISerializationFactory serializationFactory, Connection connection, string databaseName, string name)
         {
             //Todo: This should be internal
             Name = name;
             DatabaseName = databaseName;
             _connection = connection;
+            _serializationFactory = serializationFactory;
         }
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <value>The database.</value>
         public IMongoDatabase Database {
-            get { return _database ?? (_database = new Database(_connection, DatabaseName)); }
+            get { return _database ?? (_database = new Database(_serializationFactory, _connection, DatabaseName)); }
         }
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <value>The meta data.</value>
         public CollectionMetaData MetaData {
-            get { return _metaData ?? (_metaData = new CollectionMetaData(DatabaseName, Name, _connection)); }
+            get { return _metaData ?? (_metaData = new CollectionMetaData(_serializationFactory, DatabaseName, Name, _connection)); }
         }
 
         /// <summary>
