@@ -16,9 +16,8 @@ namespace MongoDB.Driver.Generic {
         ICursor<T> Sort(object fields);
         ICursor<T> Hint(Document index);
         ICursor<T> Hint(object index);
-        ICursor<T> Snapshot(Document index);
-        ICursor<T> Snapshot(object index);
-        T Explain();
+        ICursor<T> Snapshot();
+        Document Explain();
         bool IsModifiable { get; }
         IEnumerable<T> Documents { get; }
     }

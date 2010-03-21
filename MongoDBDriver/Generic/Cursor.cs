@@ -189,23 +189,12 @@ namespace MongoDB.Driver.Generic
         }
 
         /// <summary>
-        ///   Snapshots the specified index.
-        /// </summary>
-        /// <param name = "index">The index.</param>
-        /// <returns></returns>
-        public ICursor<T> Snapshot(Document index){
-            return Snapshot((object)index);
-        }
-
-        /// <summary>
         /// Snapshots the specified index.
         /// </summary>
-        /// <param name="index">The index.</param>
-        /// <returns></returns>
-        public ICursor<T> Snapshot(object index)
+        public ICursor<T> Snapshot()
         {
             TryModify();
-            AddOrRemoveSpecOpt("$snapshot", index);
+            AddOrRemoveSpecOpt("$snapshot", true);
             return this;
         }
 
@@ -213,8 +202,8 @@ namespace MongoDB.Driver.Generic
         ///   Explains this instance.
         /// </summary>
         /// <returns></returns>
-        public T Explain(){
-            //Todo: i am not sure that this will work now.
+        public Document Explain(){
+            //Fixme Return a single Document and not T
             TryModify();
             _specOpts["$explain"] = true;
 
@@ -222,7 +211,7 @@ namespace MongoDB.Driver.Generic
             
             using((IDisposable)documents){
                 foreach(var document in documents)
-                    return document;
+                    return null; //document;
             }
 
             throw new InvalidOperationException("Explain failed.");
