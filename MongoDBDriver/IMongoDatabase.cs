@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using MongoDB.Driver.Generic;
+
 namespace MongoDB.Driver
 {
     public interface IMongoDatabase
@@ -27,7 +29,7 @@ namespace MongoDB.Driver
         /// Gets the <see cref="MongoDB.Driver.IMongoCollection&lt;MongoDB.Driver.Document&gt;"/> with the specified name.
         /// </summary>
         /// <value></value>
-        IMongoCollection<Document> this[String name] { get; }
+        IMongoCollection this[String name] { get; }
 
         /// <summary>
         /// Gets the collection names.
@@ -40,7 +42,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        IMongoCollection<Document> GetCollection(String name);
+        IMongoCollection GetCollection(String name);
 
         /// <summary>
         /// Gets the collection.

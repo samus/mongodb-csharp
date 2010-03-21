@@ -18,7 +18,7 @@ namespace MongoDB.Driver
    
         [Test]
         public void TestBadInsert(){
-            IMongoCollection<Document> col = InitCollection("safeinsert");
+            IMongoCollection col = InitCollection("safeinsert");
             bool thrown = false;
             try{
                 col.Insert(new Document {{"x",1},{"y",2}},true);
@@ -32,7 +32,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestBadUpdate(){
-            IMongoCollection<Document> col = InitCollection("safeupdate");
+            IMongoCollection col = InitCollection("safeupdate");
             bool thrown = false;
             try{
                 col.Update(new Document {{"x", 1}}, new Document{{"x",2}},true);
@@ -49,7 +49,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestMultiUpdate(){
-            IMongoCollection<Document> col = InitCollection("safemupdate");
+            IMongoCollection col = InitCollection("safemupdate");
             Document newy = new Document(){{"y", 2}};
             col.UpdateAll(newy, new Document(){{"y",1}},true);
             Assert.AreEqual(5, col.Count(newy));
@@ -68,9 +68,9 @@ namespace MongoDB.Driver
             Assert.IsTrue(thrown, "Exception not thrown.");            
         }
 
-        protected IMongoCollection<Document> InitCollection(string name)
+        protected IMongoCollection InitCollection(string name)
         {
-            IMongoCollection<Document> col = DB[name];
+            IMongoCollection col = DB[name];
             col.MetaData.CreateIndex(new Document{{"x", IndexOrder.Ascending}}, true);
             for(int x = 0; x < 5; x++){
                 col.Insert(new Document{{"x", x}, {"y", 1}});

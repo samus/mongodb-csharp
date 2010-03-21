@@ -17,7 +17,7 @@ namespace Simple
     {
         Mongo mongo;
         MongoDatabase simple;
-        IMongoCollection<Document> categories;
+        IMongoCollection categories;
         
         public static void Main (string[] args){
             MainClass main = new MainClass();
@@ -76,7 +76,7 @@ namespace Simple
             //Find(new Document()) is equivalent to FindAll();
             //Specifying the cursor in a using block will close it on the server if we decide not
             //to iterate through the whole thing.
-            using(ICursor<Document> all = categories.Find(new Document()))
+            using(ICursor all = categories.Find(new Document()))
             {
                 foreach(Document doc in all.Documents){
                     Console.WriteLine(doc.ToString());

@@ -19,8 +19,8 @@ namespace MongoDB.GridFS
     public class GridFileStream : Stream
     {
 
-        private IMongoCollection<Document> files;
-        private IMongoCollection<Document> chunks;
+        private IMongoCollection files;
+        private IMongoCollection chunks;
         private Document chunk;
         private bool chunkDirty;
         private long chunkLower = -1;
@@ -65,8 +65,8 @@ namespace MongoDB.GridFS
         }
         #endregion
 
-        public GridFileStream (GridFileInfo gridfileinfo, IMongoCollection<Document> files, 
-                               IMongoCollection<Document> chunks, FileAccess access)
+        public GridFileStream (GridFileInfo gridfileinfo, IMongoCollection files, 
+                               IMongoCollection chunks, FileAccess access)
         {
             switch (access) {
             case FileAccess.Read:
@@ -364,7 +364,7 @@ namespace MongoDB.GridFS
             
             Binary data = new Binary (this.blankBuffer);
             int i = 0;
-            using(ICursor<Document> cur = chunks.Find(new Document().Add("query", query).Add("sort", sort), 0, 0, fields)){
+            using(ICursor cur = chunks.Find(new Document().Add("query", query).Add("sort", sort), 0, 0, fields)){
                 foreach (Document doc in cur.Documents) {
                     int n = Convert.ToInt32 (doc["n"]);
                     if (i < n) {

@@ -9,11 +9,11 @@ namespace MongoDB.Driver
     public class MapReduce : IDisposable
     {
         private readonly Document command;
-        private readonly MongoDatabase database;
+        private readonly IMongoDatabase database;
         private bool canModify = true;
         private bool disposing;
 
-        internal MapReduce(MongoDatabase database, string name){
+        internal MapReduce(IMongoDatabase database, string name){
             this.database = database;
             command = new Document().Add("mapreduce", name);
             Verbose = true;

@@ -5,12 +5,13 @@ using MongoDB.Driver.Connections;
 using MongoDB.Driver.Protocol;
 using MongoDB.Driver.Serialization;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.Generic
 {
     /// <summary>
-    /// <see cref = "IMongoCollection" />
+    /// 
     /// </summary>
-    public class MongoCollection : IMongoCollection
+    public class MongoCollection<T> : IMongoCollection<T>
+        where T : class
     {
         private readonly Connection _connection;
         private MongoDatabase _database;
@@ -34,7 +35,7 @@ namespace MongoDB.Driver
         /// Gets the database.
         /// </summary>
         /// <value>The database.</value>
-        public IMongoDatabase Database{
+        public MongoDatabase Database{
             get { return _database ?? (_database = new MongoDatabase(_connection, DatabaseName)); }
         }
 
@@ -73,7 +74,19 @@ namespace MongoDB.Driver
         /// <returns>
         /// A <see cref="Document"/> from the collection.
         /// </returns>
-        public Document FindOne(Document spec)
+        public T FindOne(Document spec)
+        {
+            return FindOne((object)spec);
+        }
+
+        /// <summary>
+        /// Finds and returns the first document in a query.
+        /// </summary>
+        /// <param name="spec">A <see cref="Document"/> representing the query.</param>
+        /// <returns>
+        /// A <see cref="Document"/> from the collection.
+        /// </returns>
+        public T FindOne(object spec)
         {
             var cursor = Find(spec, -1, 0, null);
             foreach(var document in cursor.Documents)
@@ -89,7 +102,7 @@ namespace MongoDB.Driver
         /// Finds all.
         /// </summary>
         /// <returns></returns>
-        public ICursor FindAll()
+        public ICursor<T> FindAll()
         {
             var spec = new Document();
             return Find(spec, 0, 0, null);
@@ -100,7 +113,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="where">The where.</param>
         /// <returns></returns>
-        public ICursor Find(String where)
+        public ICursor<T> Find(String where)
         {
             var spec = new Document{{"$where", new Code(where)}};
             return Find(spec, 0, 0, null);
@@ -111,22 +124,21 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
-        public ICursor Find(Document spec)
+        public ICursor<T> Find(Document spec)
+        {
+            return Find((object)spec);
+        }
+
+        /// <summary>
+        /// Finds the specified spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <returns></returns>
+        public ICursor<T> Find(object spec)
         {
             return Find(spec, 0, 0, null);
         }
 
-        /// <summary>
-        /// Finds all Documents in the collection matching spec and only returning the fields requested.
-        /// </summary>
-        /// <param name="spec">The spec.</param>
-        /// <returns></returns>
-        public ICursor Find(Document spec, Document fields)
-        {
-            return Find(spec, 0, 0, fields);
-        }
-        
-        
         /// <summary>
         /// Finds the specified spec.
         /// </summary>
@@ -134,7 +146,19 @@ namespace MongoDB.Driver
         /// <param name="limit">The limit.</param>
         /// <param name="skip">The skip.</param>
         /// <returns></returns>
-        public ICursor Find(Document spec, int limit, int skip)
+        public ICursor<T> Find(Document spec, int limit, int skip)
+        {
+            return Find((object)spec, limit, skip, null);
+        }
+
+        /// <summary>
+        /// Finds the specified spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <param name="limit">The limit.</param>
+        /// <param name="skip">The skip.</param>
+        /// <returns></returns>
+        public ICursor<T> Find(object spec, int limit, int skip)
         {
             return Find(spec, limit, skip, null);
         }
@@ -147,11 +171,24 @@ namespace MongoDB.Driver
         /// <param name="skip">The skip.</param>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        public ICursor Find(Document spec, int limit, int skip, Document fields)
+        public ICursor<T> Find(Document spec, int limit, int skip, Document fields)
+        {
+            return Find((object)spec, limit, skip, (object)fields);
+        }
+
+        /// <summary>
+        /// Finds the specified spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <param name="limit">The limit.</param>
+        /// <param name="skip">The skip.</param>
+        /// <param name="fields">The fields.</param>
+        /// <returns></returns>
+        public ICursor<T> Find(object spec, int limit, int skip, object fields)
         {
             if(spec == null)
                 spec = new Document();
-            return new Cursor(_connection, FullName, spec, limit, skip, fields);
+            return new Cursor<T>(_connection, FullName, spec, limit, skip, fields);
         }
 
         /// <summary>
@@ -288,14 +325,14 @@ namespace MongoDB.Driver
             };
 
             var insertDocument = new List<object>();
-            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(Document));
+            var descriotor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
             foreach(var document in documents)
             {
-                var id = descriptor.GetPropertyValue(document, "_id");
+                var id = descriotor.GetPropertyValue(document, "_id");
 
                 if(id == null)
-                    descriptor.SetPropertyValue(document, "_id", Oid.NewOid());
+                    descriotor.SetPropertyValue(document, "_id", Oid.NewOid());
 
                 insertDocument.Add(document);
             }
@@ -358,7 +395,7 @@ namespace MongoDB.Driver
         /// </remarks>
         public void Delete(object selector)
         {
-            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(Document),_connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T),_connection);
 
             var deleteMessage = new DeleteMessage(descriptor)
             {
@@ -426,7 +463,7 @@ namespace MongoDB.Driver
             var selector = new Document();
             var upsert = UpdateFlags.Upsert;
 
-            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(Document));
+            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
             var value = descriptor.GetPropertyValue(document, "_id");
 
@@ -526,7 +563,7 @@ namespace MongoDB.Driver
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(object document, object selector, UpdateFlags flags)
         {
-            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(Document), _connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
 
             var updateMessage = new UpdateMessage(descriptor)
             {
@@ -567,7 +604,7 @@ namespace MongoDB.Driver
         {
             var foundOp = false;
 
-            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(Document));
+            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
             foreach(var name in descriptor.GetMongoPropertyNames())
                 if(name.IndexOf('$') == 0){

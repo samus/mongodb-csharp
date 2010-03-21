@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,9 +13,9 @@ namespace MongoDB.Linq {
             public bool IsFirstCall;
         }
 
-        private readonly IMongoCollection<Document> collection;
+        private readonly IMongoCollection collection;
 
-        public MongoQueryProvider(IMongoCollection<Document> collection)
+        public MongoQueryProvider(IMongoCollection collection)
         {
             this.collection = collection;
         }

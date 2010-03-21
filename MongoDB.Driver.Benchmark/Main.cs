@@ -254,7 +254,7 @@ namespace MongoDB.Driver.Benchmark
 
         static void DoFind(MongoDatabase db, string col, Document spec){
             for(int i = 0; i < perTrial; i++){
-                ICursor<Document> cur = db[col].Find(spec);
+                ICursor cur = db[col].Find(spec);
                 foreach(Document d in cur.Documents){
                 }
             }

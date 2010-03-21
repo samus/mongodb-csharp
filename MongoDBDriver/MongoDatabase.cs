@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+
 using MongoDB.Driver.CommandResults;
 using MongoDB.Driver.Connections;
+using MongoDB.Driver.Generic;
 
 namespace MongoDB.Driver
 {
@@ -62,7 +64,7 @@ namespace MongoDB.Driver
         /// Gets the <see cref="MongoDB.Driver.IMongoCollection&lt;MongoDB.Driver.Document&gt;"/> with the specified name.
         /// </summary>
         /// <value></value>
-        public IMongoCollection<Document> this[String name]{
+        public IMongoCollection this[String name]{
             get { return GetCollection(name); }
         }
 
@@ -84,8 +86,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public IMongoCollection<Document> GetCollection(String name){
-            return new MongoCollection<Document>(_connection, Name, name);
+        public IMongoCollection GetCollection(String name){
+            return new MongoCollection(_connection, Name, name);
         }
 
         /// <summary>
