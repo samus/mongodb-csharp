@@ -95,6 +95,8 @@ namespace MongoDB.GridFS
         /// </summary>
         public override int Read (byte[] array, int offset, int count)
         {
+            ValidateReadState (array, offset, count);
+            
             int bytesLeftToRead = count;
             int bytesRead = 0;
             while (bytesLeftToRead > 0 && this.position < this.Length) {

@@ -79,7 +79,7 @@ namespace MongoDB.GridFS
                             "   }\n" +
                             "   return false;\n" +
                             "}";
-            Document result = db.Eval(func,scope);
+            db.Eval(func,scope);
         }
         
         #region Create
