@@ -35,7 +35,7 @@ namespace MongoDB.Driver.Generic
         /// Gets the database.
         /// </summary>
         /// <value>The database.</value>
-        public MongoDatabase Database{
+        public IMongoDatabase Database{
             get { return _database ?? (_database = new MongoDatabase(_connection, DatabaseName)); }
         }
 
@@ -138,6 +138,27 @@ namespace MongoDB.Driver.Generic
         {
             return Find(spec, 0, 0, null);
         }
+        
+        /// <summary>
+        /// Finds the specified spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <returns></returns>
+        public ICursor<T> Find(Document spec, Document fields)
+        {
+            return Find(spec, 0, 0, fields);
+        }
+
+        /// <summary>
+        /// Finds the specified spec.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <returns></returns>
+        public ICursor<T> Find(object spec, object fields)
+        {
+            return Find(spec, 0, 0, fields);
+        }
+
 
         /// <summary>
         /// Finds the specified spec.

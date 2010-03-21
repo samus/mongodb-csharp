@@ -7,8 +7,7 @@ using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Generic
 {
-    public class Cursor<T> : ICursor<T>
-        where T : class
+    public class Cursor<T> : ICursor<T> where T : class
     {
         private readonly Connection _connection;
         private readonly Document _specOpts = new Document();
@@ -26,7 +25,8 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <param name = "connection">The conn.</param>
         /// <param name = "fullCollectionName">Full name of the collection.</param>
-        public Cursor(Connection connection, string fullCollectionName){
+        public Cursor(Connection connection, string fullCollectionName)
+        {
             //Todo: should be internal
             Id = -1;
             _connection = connection;
@@ -42,10 +42,10 @@ namespace MongoDB.Driver.Generic
         /// <param name = "limit">The limit.</param>
         /// <param name = "skip">The skip.</param>
         /// <param name = "fields">The fields.</param>
-        public Cursor(Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields)
-            : this(connection, fullCollectionName){
+        public Cursor(Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields) : this(connection, fullCollectionName)
+        {
             //Todo: should be internal
-            if(spec == null)
+            if (spec == null)
                 spec = new Document();
             _spec = spec;
             _limit = limit;
@@ -160,8 +160,7 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        public ICursor<T> Sort(object fields)
-        {
+        public ICursor<T> Sort(object fields){
             TryModify();
             AddOrRemoveSpecOpt("$orderby", fields);
             return this;
@@ -181,8 +180,7 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public ICursor<T> Hint(object index)
-        {
+        public ICursor<T> Hint(object index){
             TryModify();
             AddOrRemoveSpecOpt("$hint", index);
             return this;
@@ -191,8 +189,7 @@ namespace MongoDB.Driver.Generic
         /// <summary>
         /// Snapshots the specified index.
         /// </summary>
-        public ICursor<T> Snapshot()
-        {
+        public ICursor<T> Snapshot(){
             TryModify();
             AddOrRemoveSpecOpt("$snapshot", true);
             return this;
@@ -206,22 +203,23 @@ namespace MongoDB.Driver.Generic
             //Fixme Return a single Document and not T
             TryModify();
             _specOpts["$explain"] = true;
-
-            var documents = Documents;
             
-            using((IDisposable)documents){
-                foreach(var document in documents)
-                    return null; //document;
-            }
-
-            throw new InvalidOperationException("Explain failed.");
+//            var documents = Documents;
+            
+            return null;
+//            using((IDisposable)documents){
+//                foreach(var document in documents)
+//                    return document;
+//            }
+            
+//            throw new InvalidOperationException("Explain failed.");
         }
 
         /// <summary>
         ///   Gets a value indicating whether this <see cref = "Cursor&lt;T&gt;" /> is modifiable.
         /// </summary>
         /// <value><c>true</c> if modifiable; otherwise, <c>false</c>.</value>
-        public bool IsModifiable{
+        public bool IsModifiable {
             get { return _isModifiable; }
         }
 
@@ -229,33 +227,31 @@ namespace MongoDB.Driver.Generic
         ///   Gets the documents.
         /// </summary>
         /// <value>The documents.</value>
-        public IEnumerable<T> Documents{
-            get{
-                if(_reply == null)
+        public IEnumerable<T> Documents {
+            get {
+                if (_reply == null)
                     RetrieveData();
-                if(_reply == null)
+                if (_reply == null)
                     throw new InvalidOperationException("Expecting reply but get null");
-
+                
                 var documents = _reply.Documents;
                 var documentCount = 0;
                 var shouldBreak = false;
-
-                while(!shouldBreak){
-                    foreach(var document in documents)
-                        if((_limit == 0) || (_limit != 0 && documentCount < _limit)){
+                
+                while (!shouldBreak) {
+                    foreach (var document in documents)
+                        if ((_limit == 0) || (_limit != 0 && documentCount < _limit)) {
                             documentCount++;
                             yield return document;
-                        }
-                        else
+                        } else
                             yield break;
-
-                    if(Id != 0){
+                    
+                    if (Id != 0) {
                         RetrieveMoreData();
                         documents = _reply.Documents;
-                        if(documents == null)
+                        if (documents == null)
                             shouldBreak = true;
-                    }
-                    else
+                    } else
                         shouldBreak = true;
                 }
             }
@@ -265,16 +261,16 @@ namespace MongoDB.Driver.Generic
         ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose(){
-            if(Id == 0) //All server side resources disposed of.
+            if (Id == 0)
+                //All server side resources disposed of.
                 return;
-
+            
             var killCursorsMessage = new KillCursorsMessage(Id);
-
-            try{
+            
+            try {
                 _connection.SendMessage(killCursorsMessage);
                 Id = 0;
-            }
-            catch(IOException exception){
+            } catch (IOException exception) {
                 throw new MongoCommException("Could not read data, communication failure", _connection, exception);
             }
         }
@@ -295,28 +291,21 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         private void RetrieveData(){
             var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
-
-            var query = new QueryMessage<T>(descriptor){
-                FullCollectionName = FullCollectionName,
-                Query = BuildSpec(),
-                NumberToReturn = _limit,
-                NumberToSkip = _skip,
-                Options = _options
-            };
-
-            if(_fields != null)
+            
+            var query = new QueryMessage<T>(descriptor) { FullCollectionName = FullCollectionName, Query = BuildSpec(), NumberToReturn = _limit, NumberToSkip = _skip, Options = _options };
+            
+            if (_fields != null)
                 query.ReturnFieldSelector = _fields;
-
+            
             var builder = _serializationFactory.GetBsonBuilder(typeof(T), _connection);
-
-            try{
+            
+            try {
                 _reply = _connection.SendTwoWayMessage<T>(query, builder);
                 Id = _reply.CursorId;
-                if(_limit < 0)
-                    _limit = _limit*-1;
+                if (_limit < 0)
+                    _limit = _limit * -1;
                 _isModifiable = false;
-            }
-            catch(IOException exception){
+            } catch (IOException exception) {
                 throw new MongoCommException("Could not read data, communication failure", _connection, exception);
             }
         }
@@ -326,14 +315,13 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         private void RetrieveMoreData(){
             var getMoreMessage = new GetMoreMessage(FullCollectionName, Id, _limit);
-
+            
             var builder = _serializationFactory.GetBsonBuilder(typeof(T), _connection);
-
-            try{
+            
+            try {
                 _reply = _connection.SendTwoWayMessage<T>(getMoreMessage, builder);
                 Id = _reply.CursorId;
-            }
-            catch(IOException exception){
+            } catch (IOException exception) {
                 Id = 0;
                 throw new MongoCommException("Could not read data, communication failure", _connection, exception);
             }
@@ -343,7 +331,7 @@ namespace MongoDB.Driver.Generic
         ///   Tries the modify.
         /// </summary>
         private void TryModify(){
-            if(_isModifiable)
+            if (_isModifiable)
                 return;
             throw new InvalidOperationException("Cannot modify a cursor that has already returned documents.");
         }
@@ -354,7 +342,7 @@ namespace MongoDB.Driver.Generic
         /// <param name = "key">The key.</param>
         /// <param name = "doc">The doc.</param>
         private void AddOrRemoveSpecOpt(string key, object doc){
-            if(doc == null)
+            if (doc == null)
                 _specOpts.Remove(key);
             else
                 _specOpts[key] = doc;
@@ -365,9 +353,9 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <returns></returns>
         private object BuildSpec(){
-            if(_specOpts.Count == 0)
+            if (_specOpts.Count == 0)
                 return _spec;
-
+            
             var document = new Document();
             _specOpts.CopyTo(document);
             document["$query"] = _spec;

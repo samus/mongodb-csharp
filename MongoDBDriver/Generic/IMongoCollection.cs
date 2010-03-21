@@ -3,36 +3,38 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Generic
 {
+    /// <summary>
+    /// A collection is a storage unit for a group of <see cref="Document"/>s.  The documents do not all have to 
+    /// contain the same schema but for efficiency they should all be similar.
+    /// </summary>
+    /// <remarks>Safemode checks the database for any errors that may have occurred during 
+    /// the insert such as a duplicate key constraint violation.</remarks>    
     public interface IMongoCollection<T> where T : class
     {
         /// <summary>
-        ///   Gets the database.
+        /// Reference to the <see cref = "MongoDatabase" /> this collection is in.
         /// </summary>
         /// <value>The database.</value>
-        MongoDatabase Database { get; }
+        IMongoDatabase Database { get; }
 
         /// <summary>
-        ///   Gets or sets the name.
+        /// Name of the collection.
         /// </summary>
-        /// <value>The name.</value>
         string Name { get; }
 
         /// <summary>
-        ///   Gets or sets the name of the database.
+        /// String value of the database name.
         /// </summary>
-        /// <value>The name of the database.</value>
         string DatabaseName { get; }
 
         /// <summary>
-        ///   Gets the full name including database name.
+        /// Full name of the collection databasename . collectionname
         /// </summary>
-        /// <value>The full name.</value>
         string FullName { get; }
 
         /// <summary>
-        ///   Gets the meta data.
+        /// Metadata about the collection such as indexes.
         /// </summary>
-        /// <value>The meta data.</value>
         CollectionMetaData MetaData { get; }
 
         /// <summary>
@@ -54,31 +56,53 @@ namespace MongoDB.Driver.Generic
         T FindOne(object spec);
 
         /// <summary>
-        ///   Finds all.
+        /// Returns a cursor that contains all of the documents in the collection.
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>Cursors load documents from the database in batches instead of all at once.</remarks>
         ICursor<T> FindAll();
 
         /// <summary>
-        ///   Finds the specified where.
+        /// Uses the $where operator to query the collection.  The value of the where is Javascript that will
+        /// produce a true for the documents that match the criteria.
         /// </summary>
-        /// <param name = "where">The where.</param>
-        /// <returns></returns>
+        /// <param name = "where">Javascript</param>
         ICursor<T> Find(String where);
 
         /// <summary>
-        ///   Finds the specified spec.
+        /// Queries the collection using the specification.
         /// </summary>
         /// <param name = "spec">The spec.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// A <see cref="ICursor"/>
+        /// </returns>
         ICursor<T> Find(Document spec);
 
         /// <summary>
-        ///   Finds the specified spec.
+        /// Queries the collection using the specification.
         /// </summary>
         /// <param name = "spec">The spec.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// A <see cref="ICursor"/>
+        /// </returns>
         ICursor<T> Find(object spec);
+        
+        /// <summary>
+        /// Queries the collection using the specification and only returns a subset of fields 
+        /// from the <see cref="Document"/>. 
+        /// </summary>
+        /// <returns>
+        /// A <see cref="ICursor"/>
+        /// </returns>
+        ICursor<T> Find(Document spec, Document fields);
+        
+        /// <summary>
+        /// Queries the collection using the specification and only returns a subset of fields 
+        /// from the <see cref="Document"/>. 
+        /// </summary>
+        /// <returns>
+        /// A <see cref="ICursor"/>
+        /// </returns>
+        ICursor<T> Find(object spec, object fields);
 
         /// <summary>
         ///   Finds the specified spec.
@@ -90,32 +114,21 @@ namespace MongoDB.Driver.Generic
         ICursor<T> Find(Document spec, int limit, int skip);
 
         /// <summary>
-        ///   Finds the specified spec.
+        /// Deprecated.  Use the fluent interface on the cursor to specify a limit and skip value.
         /// </summary>
-        /// <param name = "spec">The spec.</param>
-        /// <param name = "limit">The limit.</param>
-        /// <param name = "skip">The skip.</param>
-        /// <returns></returns>
+        [Obsolete("Use the fluent interface on ICursor for specifying limit and skip Find.Skip(x).Limit(y)")]
         ICursor<T> Find(object spec, int limit, int skip);
 
         /// <summary>
-        ///   Finds the specified spec.
+        /// Queries the collection using the specification and only returns a subset of fields 
         /// </summary>
-        /// <param name = "spec">The spec.</param>
-        /// <param name = "limit">The limit.</param>
-        /// <param name = "skip">The skip.</param>
-        /// <param name = "fields">The fields.</param>
-        /// <returns></returns>
+        [Obsolete("Use the fluent interface on ICursor for specifying limit and skip Find.Skip(x).Limit(y)")]
         ICursor<T> Find(Document spec, int limit, int skip, Document fields);
 
         /// <summary>
-        ///   Finds the specified spec.
+        /// Queries the collection using the specification and only returns a subset of fields 
         /// </summary>
-        /// <param name = "spec">The spec.</param>
-        /// <param name = "limit">The limit.</param>
-        /// <param name = "skip">The skip.</param>
-        /// <param name = "fields">The fields.</param>
-        /// <returns></returns>
+        [Obsolete("Use the fluent interface on ICursor for specifying limit and skip Find.Skip(x).Limit(y)")]
         ICursor<T> Find(object spec, int limit, int skip, object fields);
 
         /// <summary>
@@ -125,7 +138,7 @@ namespace MongoDB.Driver.Generic
         MapReduce MapReduce();
 
         /// <summary>
-        ///   Maps the reduce builder.
+        /// Provides a fluent interface into building a map reduce command against the database.
         /// </summary>
         /// <returns></returns>
         MapReduceBuilder MapReduceBuilder();
@@ -139,7 +152,6 @@ namespace MongoDB.Driver.Generic
         ///   Count all items in a collection that match the query spec.
         /// </summary>
         /// <param name = "spec">The spec.</param>
-        /// <returns></returns>
         /// <remarks>
         ///   It will return 0 if the collection doesn't exist yet.
         /// </remarks>
@@ -149,7 +161,6 @@ namespace MongoDB.Driver.Generic
         ///   Count all items in a collection that match the query spec.
         /// </summary>
         /// <param name = "spec">The spec.</param>
-        /// <returns></returns>
         /// <remarks>
         ///   It will return 0 if the collection doesn't exist yet.
         /// </remarks>
@@ -178,27 +189,25 @@ namespace MongoDB.Driver.Generic
         void Insert(object document);
 
         /// <summary>
-        ///   Inserts the specified documents.
+        /// Bulk inserts the specified documents into the database.
         /// </summary>
-        /// <param name = "documents">The documents.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
         void Insert(IEnumerable<Document> documents, bool safemode);
 
         /// <summary>
-        ///   Inserts the specified documents.
+        /// Bulk inserts the specified documents into the database.
         /// </summary>
-        /// <param name = "documents">The documents.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
         void Insert<TElement>(IEnumerable<TElement> documents, bool safemode);
 
         /// <summary>
-        ///   Inserts the specified documents.
+        /// Bulk inserts the specified documents into the database.
         /// </summary>
         /// <param name = "documents">The documents.</param>
         void Insert(IEnumerable<Document> documents);
 
         /// <summary>
-        ///   Inserts the specified documents.
+        /// Bulk inserts the specified documents into the database.
         /// </summary>
         /// <param name = "documents">The documents.</param>
         void Insert<TElement>(IEnumerable<TElement> documents);
@@ -214,12 +223,12 @@ namespace MongoDB.Driver.Generic
         void Delete(Document selector, bool safemode);
 
         /// <summary>
-        ///   Deletes documents from the collection according to the spec.
+        /// Deletes documents from the collection according to the spec.
         /// </summary>
         /// <param name = "selector">The selector.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>
-        ///   An empty document will match all documents in the collection and effectively truncate it.
+        /// An empty document will match all documents in the collection and effectively truncate it.
+        /// See the safemode description in the class description
         /// </remarks>
         void Delete(object selector, bool safemode);
 
@@ -249,84 +258,87 @@ namespace MongoDB.Driver.Generic
         void Update(Document document, bool safemode);
 
         /// <summary>
-        ///   Updates the specified document.
+        /// Inserts or updates a document in the database.  If the document does not contain an _id one will be
+        /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
+        [Obsolete("Use Save")]
         void Update(object document, bool safemode);
 
         /// <summary>
-        ///   Updates a document with the data in doc as found by the selector.
+        /// Inserts or updates a document in the database.  If the document does not contain an _id one will be
+        /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
-        /// <remarks>
-        ///   _id will be used in the document to create a selector.  If it isn't in
-        ///   the document then it is assumed that the document is new and an upsert is sent to the database
-        ///   instead.
-        /// </remarks>
+        [Obsolete("Use Save")]
         void Update(Document document);
 
         /// <summary>
-        ///   Updates a document with the data in doc as found by the selector.
+        /// Inserts or updates a document in the database.  If the document does not contain an _id one will be
+        /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
-        /// <remarks>
-        ///   _id will be used in the document to create a selector.  If it isn't in
-        ///   the document then it is assumed that the document is new and an upsert is sent to the database
-        ///   instead.
-        /// </remarks>
+        [Obsolete("Use Save")]
         void Update(object document);
 
         /// <summary>
-        ///   Updates the specified document.
+        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
         void Update(Document document, Document selector, bool safemode);
 
         /// <summary>
-        ///   Updates the specified document.
+        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
         void Update(object document, object selector, bool safemode);
 
         /// <summary>
-        ///   Updates a document with the data in doc as found by the selector.
+        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
         void Update(Document document, Document selector);
 
         /// <summary>
-        ///   Updates a document with the data in doc as found by the selector.
+        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
         void Update(object document, object selector);
 
         /// <summary>
-        ///   Updates the specified document.
+        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
         /// <param name = "flags">The flags.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
         void Update(Document document, Document selector, UpdateFlags flags, bool safemode);
 
         /// <summary>
-        ///   Updates the specified document.
+        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
         /// <param name = "flags">The flags.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
         void Update(object document, object selector, UpdateFlags flags, bool safemode);
 
         /// <summary>
-        ///   Updates a document with the data in doc as found by the selector.
+        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
         /// <param name = "document">The <see cref = "Document" /> to update with</param>
         /// <param name = "selector">The query spec to find the document to update.</param>
@@ -334,7 +346,8 @@ namespace MongoDB.Driver.Generic
         void Update(Document document, Document selector, UpdateFlags flags);
 
         /// <summary>
-        ///   Updates a document with the data in doc as found by the selector.
+        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
         /// <param name = "document">The <see cref = "Document" /> to update with</param>
         /// <param name = "selector">The query spec to find the document to update.</param>
@@ -343,7 +356,7 @@ namespace MongoDB.Driver.Generic
 
         /// <summary>
         ///   Runs a multiple update query against the database.  It will wrap any
-        ///   doc with $set if the passed in doc doesn't contain any '$' ops.
+        ///   doc with $set if the passed in doc doesn't contain any '$' modifier ops.
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
@@ -351,30 +364,33 @@ namespace MongoDB.Driver.Generic
 
         /// <summary>
         ///   Runs a multiple update query against the database.  It will wrap any
-        ///   doc with $set if the passed in doc doesn't contain any '$' ops.
+        ///   doc with $set if the passed in doc doesn't contain any '$' modifier ops.
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
         void UpdateAll(object document, object selector);
 
         /// <summary>
-        ///   Updates all.
+        ///   Runs a multiple update query against the database.  It will wrap any
+        ///   doc with $set if the passed in doc doesn't contain any '$' modifier ops.
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
         void UpdateAll(Document document, Document selector, bool safemode);
 
         /// <summary>
-        ///   Updates all.
+        ///   Runs a multiple update query against the database.  It will wrap any
+        ///   doc with $set if the passed in doc doesn't contain any '$' modifier ops.
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "selector">The selector.</param>
-        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>See the safemode description in the class description</remarks>
         void UpdateAll(object document, object selector, bool safemode);
 
         /// <summary>
-        ///   Saves a document to the database using an upsert.
+        /// Inserts or updates a document in the database.  If the document does not contain an _id one will be
+        /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <remarks>
@@ -384,7 +400,8 @@ namespace MongoDB.Driver.Generic
         void Save(Document document);
 
         /// <summary>
-        ///   Saves a document to the database using an upsert.
+        /// Inserts or updates a document in the database.  If the document does not contain an _id one will be
+        /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <remarks>
