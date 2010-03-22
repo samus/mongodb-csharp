@@ -77,6 +77,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bson\BsonTestBase.cs" />
     <Compile Include="Bson\TestBsonBinary.cs" />
     <Compile Include="Bson\TestRoundTrips.cs" />
     <Compile Include="Connections\TestConnection.cs" />
