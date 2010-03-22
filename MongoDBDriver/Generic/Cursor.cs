@@ -21,11 +21,12 @@ namespace MongoDB.Driver.Generic
         private readonly ISerializationFactory _serializationFactory = SerializationFactory.Default;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "Cursor&lt;T&gt;" /> class.
+        /// Initializes a new instance of the <see cref="Cursor&lt;T&gt;"/> class.
         /// </summary>
-        /// <param name = "connection">The conn.</param>
-        /// <param name = "fullCollectionName">Full name of the collection.</param>
-        public Cursor(Connection connection, string fullCollectionName)
+        /// <param name="serializationFactory">The serialization factory.</param>
+        /// <param name="connection">The conn.</param>
+        /// <param name="fullCollectionName">Full name of the collection.</param>
+        public Cursor(ISerializationFactory serializationFactory, Connection connection, string fullCollectionName)
         {
             //Todo: should be internal
             Id = -1;
@@ -42,8 +43,8 @@ namespace MongoDB.Driver.Generic
         /// <param name = "limit">The limit.</param>
         /// <param name = "skip">The skip.</param>
         /// <param name = "fields">The fields.</param>
-        public Cursor(Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields)
-            : this(connection, fullCollectionName)
+        public Cursor(ISerializationFactory serializationFactory, Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields)
+            : this(serializationFactory, connection, fullCollectionName)
         {
             //Todo: should be internal
             if (spec == null)

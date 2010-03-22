@@ -150,10 +150,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.config">
+    <Resource Include="App.config">
       <DeployService-Deploy>true</DeployService-Deploy>
       <DeployService-RelativeDeployPath>MongoDB.Driver.Tests.dll.config</DeployService-RelativeDeployPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </ApplicationDefinition>
+    </Resource>
   </ItemGroup>
 </Project>
