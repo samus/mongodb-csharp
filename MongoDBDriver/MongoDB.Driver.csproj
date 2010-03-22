@@ -124,6 +124,7 @@
     <Compile Include="DatabaseJavascript.cs" />
     <Compile Include="MapReduce.cs" />
     <Compile Include="MapReduceBuilder.cs" />
+    <Compile Include="Op.cs" />
     <Compile Include="Protocol\DeleteMessage.cs" />
     <Compile Include="Protocol\GetMoreMessage.cs" />
     <Compile Include="Protocol\InsertMessage.cs" />
