@@ -93,7 +93,7 @@ namespace MongoDB.Driver.Bson
                 case BsonDataType.Date:
                     Position += 8;
                     var milliseconds = _reader.ReadInt64();
-                    return BsonInfo.Epoch.AddMilliseconds(milliseconds);
+                    return BsonInfo.Epoch.AddMilliseconds(milliseconds).ToUniversalTime();
                 case BsonDataType.Oid:
                     Position += 12;
                     return new Oid(_reader.ReadBytes(12));

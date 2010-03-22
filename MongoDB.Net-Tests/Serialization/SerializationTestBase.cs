@@ -2,22 +2,12 @@
 using System.IO;
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.Serialization;
+using MongoDB.Driver.Tests.Bson;
 
 namespace MongoDB.Driver.Tests.Serialization
 {
-    public abstract class SerializationTestBase
+    public abstract class SerializationTestBase : BsonTestBase
     {
-        protected string Serialize(Document document)
-        {
-            using(var mem = new MemoryStream())
-            {
-                var writer = new BsonWriter(mem, new BsonDocumentDescriptor());
-                writer.WriteObject(document);
-                writer.Flush();
-                return Convert.ToBase64String(mem.ToArray());
-            }
-        }
-
         protected string Serialize(object instance){
             return Serialize(instance, instance.GetType());
         }
@@ -39,15 +29,6 @@ namespace MongoDB.Driver.Tests.Serialization
             {
                 var reader = new BsonReader(mem, new BsonReflectionBuilder(SerializationFactory.Default,typeof(T)));
                 return (T)reader.ReadObject();
-            }
-        }
-
-        protected Document DeserializeDocument(string base64)
-        {
-            using(var mem = new MemoryStream(Convert.FromBase64String(base64)))
-            {
-                var reader = new BsonReader(mem,new BsonDocumentBuilder());
-                return (Document)reader.ReadObject();
             }
         }
     }
