@@ -151,7 +151,7 @@ namespace MongoDB.Driver.Bson
         public void TestWriteDateTimeFromOtherTimeZone(){
             var europeStd = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
 
-            var referenceTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Utc), europeStd);
+            var referenceTime = TimeZoneInfo.ConvertTime(new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Utc), europeStd);
 
             var bson = Serialize(new Document("Value", referenceTime));
 
