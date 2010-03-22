@@ -278,7 +278,7 @@ namespace MongoDB.Driver
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
         private T FindOneCommand<T>(object spec) where T:class{
-            var cursor = new Cursor<T>(_connection, Name + ".$cmd", spec??new Document(), -1, 0, null);
+            var cursor = new Cursor<T>(_serializationFactory, _connection, Name + ".$cmd", spec??new Document(), -1, 0, null);
             
             foreach(var document in cursor.Documents)
             {

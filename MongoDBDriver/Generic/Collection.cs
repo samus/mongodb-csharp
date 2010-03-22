@@ -198,7 +198,7 @@ namespace MongoDB.Driver.Generic
         public ICursor<T> Find(object spec, int limit, int skip, object fields){
             if (spec == null)
                 spec = new Document();
-            return new Cursor<T>(_connection, FullName, spec, limit, skip, fields);
+            return new Cursor<T>(_serializationFactory, _connection, FullName, spec, limit, skip, fields);
         }
 
         /// <summary>
