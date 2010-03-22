@@ -105,7 +105,7 @@ namespace MongoDB.Driver.Serialization
         /// Generates the id.
         /// </summary>
         /// <returns></returns>
-        public object GenerateId()
+        public object GenerateId(object instance)
         {
             return Oid.NewOid();
         }

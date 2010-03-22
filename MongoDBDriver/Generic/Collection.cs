@@ -338,7 +338,7 @@ namespace MongoDB.Driver.Generic
                 var id = descriptor.GetPropertyValue(document, "_id");
                 
                 if (id == null)
-                    descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId());
+                    descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId(document));
                 
                 insertDocument.Add(document);
             }
@@ -462,7 +462,7 @@ namespace MongoDB.Driver.Generic
                 selector["_id"] = value;
             } else {
                 //Likely a new document
-                descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId());
+                descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId(document));
                 upsert = UpdateFlags.Upsert;
             }
             
@@ -660,7 +660,7 @@ namespace MongoDB.Driver.Generic
             else
             {
                 //Likely a new document
-                descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId());
+                descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId(document));
                 upsert = UpdateFlags.Upsert;
             }
 

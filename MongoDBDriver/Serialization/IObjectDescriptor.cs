@@ -10,8 +10,9 @@ namespace MongoDB.Driver.Serialization
         /// <summary>
         /// Generates the id.
         /// </summary>
+        /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        object GenerateId();
+        object GenerateId(object instance);
 
         /// <summary>
         /// Gets the property value.
