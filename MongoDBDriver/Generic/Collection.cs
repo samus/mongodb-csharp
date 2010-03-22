@@ -18,8 +18,9 @@ namespace MongoDB.Driver.Generic
         private readonly ISerializationFactory _serializationFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
+        /// Initializes a new instance of the <see cref="Collection&lt;T&gt;"/> class.
         /// </summary>
+        /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
@@ -138,7 +139,8 @@ namespace MongoDB.Driver.Generic
         /// Finds the specified spec.
         /// </summary>
         /// <param name="spec">The spec.</param>
-        /// <returns></returns>
+        /// <param name="fields"></param>
+        /// <returns>A <see cref="ICursor"/></returns>
         public ICursor<T> Find(Document spec, Document fields){
             return Find(spec, 0, 0, fields);
         }
@@ -147,7 +149,8 @@ namespace MongoDB.Driver.Generic
         /// Finds the specified spec.
         /// </summary>
         /// <param name="spec">The spec.</param>
-        /// <returns></returns>
+        /// <param name="fields"></param>
+        /// <returns>A <see cref="ICursor"/></returns>
         public ICursor<T> Find(object spec, object fields){
             return Find(spec, 0, 0, fields);
         }
@@ -320,10 +323,16 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <param name="documents">The documents.</param>
         public void Insert<TElement>(IEnumerable<TElement> documents){
-            var insertMessage = new InsertMessage { FullCollectionName = FullName };
-            
+            var rootType = typeof(T);
+            var bsonDescriptor = _serializationFactory.GetBsonDescriptor(rootType, _connection);
+
+            var insertMessage = new InsertMessage(bsonDescriptor)
+            {
+                FullCollectionName = FullName
+            };
+
+            var descriotor = _serializationFactory.GetObjectDescriptor(rootType);
             var insertDocument = new List<object>();
-            var descriotor = _serializationFactory.GetObjectDescriptor(typeof(T));
             
             foreach (var document in documents) {
                 var id = descriotor.GetPropertyValue(document, "_id");

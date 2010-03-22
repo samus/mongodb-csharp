@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using MongoDB.Driver.Bson;
@@ -17,12 +18,16 @@ namespace MongoDB.Driver.Protocol
     /// </remarks>
     public class InsertMessage : MessageBase, IRequestMessage
     {
+        private readonly IBsonObjectDescriptor _objectDescriptor;
         private readonly List<MessageChunk> _chunks = new List<MessageChunk>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InsertMessage"/> class.
         /// </summary>
-        public InsertMessage(){
+        public InsertMessage(IBsonObjectDescriptor objectDescriptor){
+            if(objectDescriptor == null)
+                throw new ArgumentNullException("objectDescriptor");
+            _objectDescriptor = objectDescriptor;
             Header = new MessageHeader(OpCode.Insert);
         }
 
@@ -44,7 +49,7 @@ namespace MongoDB.Driver.Protocol
         /// <param name="stream">The stream.</param>
         public void Write(Stream stream){
             var bstream = new BufferedStream(stream);
-            var bwriter = new BsonWriter(bstream, new BsonDocumentDescriptor());
+            var bwriter = new BsonWriter(bstream, _objectDescriptor);
 
             ChunkMessage(bwriter);
 
