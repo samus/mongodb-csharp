@@ -634,7 +634,7 @@ namespace MongoDB.Driver.Generic
             //Try to generate a selector using _id for an existing document.
             //otherwise just set the upsert flag to 1 to insert and send onward.
             var selector = new Document();
-            var upsert = UpdateFlags.Upsert;
+            var upsert = UpdateFlags.None;
 
             var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
