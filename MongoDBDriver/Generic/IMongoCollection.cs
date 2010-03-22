@@ -256,6 +256,7 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        [Obsolete("Use Save instead")]
         void Update(Document document, bool safemode);
 
         /// <summary>
@@ -265,7 +266,7 @@ namespace MongoDB.Driver.Generic
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
-        [Obsolete("Use Save")]
+        [Obsolete("Use Save instead")]
         void Update(object document, bool safemode);
 
         /// <summary>
@@ -273,7 +274,7 @@ namespace MongoDB.Driver.Generic
         /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
-        [Obsolete("Use Save")]
+        [Obsolete("Use Save instead")]
         void Update(Document document);
 
         /// <summary>
@@ -281,7 +282,7 @@ namespace MongoDB.Driver.Generic
         /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
-        [Obsolete("Use Save")]
+        [Obsolete("Use Save instead")]
         void Update(object document);
 
         /// <summary>
