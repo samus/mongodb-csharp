@@ -12,7 +12,7 @@ namespace MongoDB.Driver.Generic
     public interface IMongoCollection<T> where T : class
     {
         /// <summary>
-        /// Reference to the <see cref = "MongoDatabase" /> this collection is in.
+        /// Gets the database.
         /// </summary>
         /// <value>The database.</value>
         IMongoDatabase Database { get; }
@@ -225,7 +225,8 @@ namespace MongoDB.Driver.Generic
         /// <summary>
         /// Deletes documents from the collection according to the spec.
         /// </summary>
-        /// <param name = "selector">The selector.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// See the safemode description in the class description
@@ -261,7 +262,8 @@ namespace MongoDB.Driver.Generic
         /// Inserts or updates a document in the database.  If the document does not contain an _id one will be
         /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
-        /// <param name = "document">The document.</param>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
         [Obsolete("Use Save")]
         void Update(object document, bool safemode);
@@ -283,20 +285,22 @@ namespace MongoDB.Driver.Generic
         void Update(object document);
 
         /// <summary>
-        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// Updates the specified document with the current document.  In order to only do a partial update use a
         /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
-        /// <param name = "document">The document.</param>
-        /// <param name = "selector">The selector.</param>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
         void Update(Document document, Document selector, bool safemode);
 
         /// <summary>
-        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// Updates the specified document with the current document.  In order to only do a partial update use a
         /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
-        /// <param name = "document">The document.</param>
-        /// <param name = "selector">The selector.</param>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
         void Update(object document, object selector, bool safemode);
 
@@ -317,22 +321,24 @@ namespace MongoDB.Driver.Generic
         void Update(object document, object selector);
 
         /// <summary>
-        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// Updates the specified document with the current document.  In order to only do a partial update use a
         /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
-        /// <param name = "document">The document.</param>
-        /// <param name = "selector">The selector.</param>
-        /// <param name = "flags">The flags.</param>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="flags">The flags.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
         void Update(Document document, Document selector, UpdateFlags flags, bool safemode);
 
         /// <summary>
-        /// Updates the specified document with the current document.  In order to only do a partial update use a 
+        /// Updates the specified document with the current document.  In order to only do a partial update use a
         /// document containing modifier operations ($set, $unset, $inc, etc.)
         /// </summary>
-        /// <param name = "document">The document.</param>
-        /// <param name = "selector">The selector.</param>
-        /// <param name = "flags">The flags.</param>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="flags">The flags.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
         void Update(object document, object selector, UpdateFlags flags, bool safemode);
 
@@ -371,20 +377,22 @@ namespace MongoDB.Driver.Generic
         void UpdateAll(object document, object selector);
 
         /// <summary>
-        ///   Runs a multiple update query against the database.  It will wrap any
-        ///   doc with $set if the passed in doc doesn't contain any '$' modifier ops.
+        /// Runs a multiple update query against the database.  It will wrap any
+        /// doc with $set if the passed in doc doesn't contain any '$' modifier ops.
         /// </summary>
-        /// <param name = "document">The document.</param>
-        /// <param name = "selector">The selector.</param>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
         void UpdateAll(Document document, Document selector, bool safemode);
 
         /// <summary>
-        ///   Runs a multiple update query against the database.  It will wrap any
-        ///   doc with $set if the passed in doc doesn't contain any '$' modifier ops.
+        /// Runs a multiple update query against the database.  It will wrap any
+        /// doc with $set if the passed in doc doesn't contain any '$' modifier ops.
         /// </summary>
-        /// <param name = "document">The document.</param>
-        /// <param name = "selector">The selector.</param>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
         void UpdateAll(object document, object selector, bool safemode);
 

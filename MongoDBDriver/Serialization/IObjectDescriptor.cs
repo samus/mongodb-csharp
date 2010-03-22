@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IObjectDescriptor
     {
         /// <summary>

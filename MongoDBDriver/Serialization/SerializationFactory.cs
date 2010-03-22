@@ -4,6 +4,9 @@ using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SerializationFactory : ISerializationFactory
     {
         /// <summary>
