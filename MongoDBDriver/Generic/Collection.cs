@@ -412,6 +412,7 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        [Obsolete("Use Save instead")]
         public void Update(Document document, bool safemode){
             Save((object)document, safemode);
         }
@@ -421,7 +422,9 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        public void Update(object document, bool safemode){
+        [Obsolete("Use Save instead")]
+        public void Update(object document, bool safemode)
+        {
             Save(document, safemode);
         }
 
@@ -434,7 +437,9 @@ namespace MongoDB.Driver.Generic
         /// the document then it is assumed that the document is new and an upsert is sent to the database
         /// instead.
         /// </remarks>
-        public void Update(Document document){
+        [Obsolete("Use Save instead")]
+        public void Update(Document document)
+        {
             Save((object)document);
         }
 
@@ -447,7 +452,9 @@ namespace MongoDB.Driver.Generic
         /// the document then it is assumed that the document is new and an upsert is sent to the database
         /// instead.
         /// </remarks>
-        public void Update(object document){
+        [Obsolete("Use Save instead")]
+        public void Update(object document)
+        {
             Save(document);
         }
 
@@ -530,7 +537,12 @@ namespace MongoDB.Driver.Generic
         public void Update(object document, object selector, UpdateFlags flags){
             var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
             
-            var updateMessage = new UpdateMessage(descriptor) { FullCollectionName = FullName, Selector = selector, Document = document, Flags = (int)flags };
+            var updateMessage = new UpdateMessage(descriptor){
+                FullCollectionName = FullName, 
+                Selector = selector, 
+                Document = document, 
+                Flags = (int)flags
+            };
             
             try {
                 _connection.SendMessage(updateMessage);
@@ -642,14 +654,14 @@ namespace MongoDB.Driver.Generic
 
             if(value != null)
             {
-                selector["_id"] = value;
             }
             else
             {
                 //Likely a new document
-                descriptor.SetPropertyValue(document, "_id", Oid.NewOid());
+                descriptor.SetPropertyValue(document, "_id", value = Oid.NewOid());
                 upsert = UpdateFlags.Upsert;
             }
+            selector["_id"] = value;
 
             Update(document, selector, upsert);
         }

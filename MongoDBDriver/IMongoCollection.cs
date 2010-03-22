@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-using MongoDB.Driver.Generic;
-
 namespace MongoDB.Driver
 {
     /// <summary>
-    /// <see cref="IMongoCollection<T>"/> 
+    /// 
     /// </summary>
     public interface IMongoCollection{
         string Name { get; }

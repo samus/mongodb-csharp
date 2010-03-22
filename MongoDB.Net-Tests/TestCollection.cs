@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
+using System.Linq;
 
 namespace MongoDB.Driver
 {
@@ -289,6 +290,42 @@ namespace MongoDB.Driver
             Document result = updates.FindOne(selector);
             Assert.IsNotNull(result);
             Assert.AreEqual("Sam", result["First"]);
+        }
+
+        [Test]
+        public void TestSaveInsertDocumentIfNotExists(){
+            var saves = DB["updates"];
+            saves.Delete(new Document());
+
+            saves.Save(new Document("name", "Sam"));
+            saves.Save(new Document("name", "Steve"));
+
+            var array = saves.FindAll().Documents.ToArray();
+            Assert.AreEqual(2,array.Length);
+            Assert.AreEqual("Sam", array[0]["name"]);
+            Assert.AreEqual("Steve", array[1]["name"]);
+        }
+
+        [Test]
+        public void TestSaveInsertDocumentIfExists()
+        {
+            var saves = DB["updates"];
+            saves.Delete(new Document());
+
+            var document1 = new Document("name", "Alien1");
+            saves.Insert(document1);
+            var document2 = new Document("name", "Alien2");
+            saves.Insert(document2);
+
+            document1["name"] = "Sam";
+            saves.Save(document1);
+            document2["name"] = "Steve";
+            saves.Save(document2);
+
+            var array = saves.FindAll().Documents.ToArray();
+            Assert.AreEqual(2, array.Length);
+            Assert.AreEqual("Sam", array[0]["name"]);
+            Assert.AreEqual("Steve", array[1]["name"]);
         }
 
         [Test]

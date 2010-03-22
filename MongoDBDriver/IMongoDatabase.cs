@@ -26,7 +26,7 @@ namespace MongoDB.Driver
         DatabaseJavascript Javascript { get; }
 
         /// <summary>
-        /// Gets the <see cref="MongoDB.Driver.IMongoCollection&lt;MongoDB.Driver.Document&gt;"/> with the specified name.
+        /// Gets the <see cref="MongoDB.Driver.IMongoCollection"/> with the specified name.
         /// </summary>
         /// <value></value>
         IMongoCollection this[String name] { get; }
