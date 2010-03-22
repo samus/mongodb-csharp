@@ -43,7 +43,6 @@ namespace MongoDB.Driver
                 json.Append("null");
                 return;
             }
-            var t = value.GetType();
             if (value is bool) {
                 json.Append(((bool)value) ? "true" : "false");
             } else if(value is Document ||

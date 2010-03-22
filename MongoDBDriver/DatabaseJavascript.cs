@@ -8,12 +8,9 @@ namespace MongoDB.Driver{
     /// </summary>
     public class DatabaseJavascript : ICollection<Document>
     {   
-        //private Connection connection;
-        private MongoDatabase db;
-        private IMongoCollection<Document> js;
+        private IMongoCollection js;
         
-        internal DatabaseJavascript (MongoDatabase db){
-            this.db = db;
+        internal DatabaseJavascript (Database db){
             this.js = db["system.js"];
             //Needed for some versions of the db to retrieve the functions.
             js.MetaData.CreateIndex(new Document().Add("_id", 1), true);

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -50,11 +50,12 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <GenerateDocumentation>true</GenerateDocumentation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
@@ -82,7 +83,6 @@
     <Compile Include="CommandResults\CommandResultBase.cs" />
     <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="IMongoDatabase.cs" />
-    <Compile Include="MongoCollection.cs" />
     <Compile Include="CollectionMetaData.cs" />
     <Compile Include="Connections\Connection.cs" />
     <Compile Include="Connections\ConnectionFactory.cs" />
@@ -91,7 +91,6 @@
     <Compile Include="Connections\IConnectionFactory.cs" />
     <Compile Include="Connections\PooledConnectionFactory.cs" />
     <Compile Include="Connections\SimpleConnectionFactory.cs" />
-    <Compile Include="MongoDatabase.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
     <Compile Include="DatabaseMetaData.cs" />
@@ -166,6 +165,12 @@
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="Configuration\ConnectionElement.cs" />
     <Compile Include="Configuration\ConnectionCollection.cs" />
+    <Compile Include="Generic\IMongoCollection.cs" />
+    <Compile Include="Generic\ICursor.cs" />
+    <Compile Include="Generic\Cursor.cs" />
+    <Compile Include="Collection.cs" />
+    <Compile Include="Generic\Collection.cs" />
+    <Compile Include="Database.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -190,4 +195,7 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Generic\" />
+  </ItemGroup>
 </Project>

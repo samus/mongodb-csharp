@@ -15,7 +15,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestFollowReference(){
-            IMongoCollection<Document> refs = DB["refs"];
+            IMongoCollection refs = DB["refs"];
             Oid id = new Oid("4a7067c30a57000000008ecb");
             string msg = "this has an oid key";
             Document doc = new Document(){{"_id", id},{"msg", msg}};
@@ -40,7 +40,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestReferenceNonOid(){
-            IMongoCollection<Document> refs = DB["refs"];
+            IMongoCollection refs = DB["refs"];
             
             Document doc = new Document().Add("_id",123).Add("msg", "this has a non oid key");
             refs.Insert(doc);
@@ -96,7 +96,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestGetLastError(){
-            IMongoCollection<Document> errcol = DB["errcol"];
+            IMongoCollection errcol = DB["errcol"];
             errcol.MetaData.CreateIndex(new Document(){{"x", IndexOrder.Ascending}}, true);
             Document dup = new Document(){{"x",1},{"y",2}};
             errcol.Insert(dup);
@@ -112,7 +112,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestGetPrevError(){
-            IMongoCollection<Document> col = DB["preverror"];
+            IMongoCollection col = DB["preverror"];
             col.MetaData.CreateIndex(new Document(){{"x", IndexOrder.Ascending}},true);
             List<Document> docs = new List<Document>();
             for(int x = 0; x < 10; x++){

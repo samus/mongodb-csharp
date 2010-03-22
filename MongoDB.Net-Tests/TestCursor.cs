@@ -18,13 +18,13 @@ namespace MongoDB.Driver
         
         public override void OnInit (){
             //smallreads
-            IMongoCollection<Document> smallreads = DB["smallreads"];
+            IMongoCollection smallreads = DB["smallreads"];
             for(int j = 1; j < 5; j++){
                 smallreads.Insert(new Document(){{"x", 4},{"j", j}});
             }
             smallreads.Insert(new Document(){{"x", 4}, {"j", 5}, {"n", 1}});
 
-            IMongoCollection<Document> reads = DB["reads"];
+            IMongoCollection reads = DB["reads"];
             for(int j = 1; j < 10000; j++){
                 reads.Insert(new Document(){{"x", 4},{"h", "hi"},{"j", j}});
             }
@@ -34,7 +34,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCanReadSmall()
         {
-            ICursor<Document> c = DB["smallreads"].FindAll();
+            ICursor c = DB["smallreads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
@@ -47,7 +47,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCanReadMore(){
-            Cursor<Document> c = (Cursor<Document>)DB["reads"].FindAll();
+            Cursor c = (Cursor)DB["reads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
@@ -70,7 +70,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCanReadAndKillCursor()
         {
-            var c = (Cursor<Document>)DB["reads"].FindAll();
+            var c = (Cursor)DB["reads"].FindAll();
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             foreach(Document doc in c.Documents){
@@ -82,7 +82,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCanLimit(){
-            ICursor<Document> c = DB["reads"].FindAll().Limit(5);
+            ICursor c = DB["reads"].FindAll().Limit(5);
             
             Assert.IsNotNull(c,"Cursor shouldn't be null");
             int reads = 0;
@@ -95,7 +95,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestSort(){
-            IMongoCollection<Document> sorts = DB["sorts"];
+            IMongoCollection sorts = DB["sorts"];
             int[] randoms = new int[]{4,6,8,9,1,3,2,5,7,0};
             foreach(int x in randoms){
                 sorts.Insert(new Document().Add("x", randoms[x]));
@@ -125,7 +125,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestHint(){
-            IMongoCollection<Document> reads = DB["reads"];
+            IMongoCollection reads = DB["reads"];
             Document hint = new Document().Add("x",IndexOrder.Ascending);
             
             Document exp = reads.FindAll().Hint(hint).Explain();

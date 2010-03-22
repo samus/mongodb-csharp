@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+
 using MongoDB.Driver.CommandResults;
 using MongoDB.Driver.Connections;
+using MongoDB.Driver.Generic;
 
 namespace MongoDB.Driver
 {
-    public class MongoDatabase : IMongoDatabase
+    public class Database : IMongoDatabase
     {
         private readonly Connection _connection;
         private DatabaseJavascript _javascript;
@@ -18,7 +20,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="name">The name.</param>
-        public MongoDatabase(string connectionString, String name)
+        public Database(string connectionString, String name)
             :this(ConnectionFactory.GetConnection(connectionString),name)
         {
             if(name == null)
@@ -30,7 +32,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
-        public MongoDatabase(Connection connection, String name){
+        public Database(Connection connection, String name){
             //Todo: should be internal
             Name = name;
             _connection = connection;
@@ -62,7 +64,7 @@ namespace MongoDB.Driver
         /// Gets the <see cref="MongoDB.Driver.IMongoCollection&lt;MongoDB.Driver.Document&gt;"/> with the specified name.
         /// </summary>
         /// <value></value>
-        public IMongoCollection<Document> this[String name]{
+        public IMongoCollection this[String name]{
             get { return GetCollection(name); }
         }
 
@@ -84,8 +86,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public IMongoCollection<Document> GetCollection(String name){
-            return new MongoCollection<Document>(_connection, Name, name);
+        public IMongoCollection GetCollection(String name){
+            return new Collection(_connection, Name, name);
         }
 
         /// <summary>
@@ -95,7 +97,7 @@ namespace MongoDB.Driver
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public IMongoCollection<T> GetCollection<T>(String name) where T : class{
-            return new MongoCollection<T>(_connection, Name, name);
+            return new Collection<T>(_connection, Name, name);
         }
 
         /// <summary>
@@ -158,8 +160,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="sisterDatabaseName">Name of the sister database.</param>
         /// <returns></returns>
-        public MongoDatabase GetSisterDatabase(string sisterDatabaseName){
-            return new MongoDatabase(_connection, sisterDatabaseName);
+        public Database GetSisterDatabase(string sisterDatabaseName){
+            return new Database(_connection, sisterDatabaseName);
         }
 
         /// <summary>

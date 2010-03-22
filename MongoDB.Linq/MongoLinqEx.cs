@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using MongoDB.Driver;
 
 namespace MongoDB.Linq
 {
 	public static class MongoLinqEx
 	{
-        public static IMongoQuery AsQueryable<T>(this T collection) where T : IMongoCollection<Document>
+        public static IMongoQuery AsQueryable<T>(this T collection) where T : IMongoCollection
 		{
 			return new MongoQuery(new MongoQueryProvider(collection));
 		}

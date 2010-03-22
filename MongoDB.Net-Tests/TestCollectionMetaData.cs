@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     [TestFixture]
     public class TestCollectionMetaData : MongoTestBase
     {
-        MongoDatabase adminDb;
+        Database adminDb;
 
         public override string TestCollections {
             get {
@@ -18,7 +18,7 @@ namespace MongoDB.Driver
         }
         
         public override void OnInit (){
-            IMongoCollection<Document> its = DB["indextests"];
+            IMongoCollection its = DB["indextests"];
             its.Insert(createDoc("S","A","Anderson","OH"));
             its.Insert(createDoc("T","B","Delhi","OH"));
             its.Insert(createDoc("F","B","Cincinnati","OH"));

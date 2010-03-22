@@ -10,28 +10,28 @@ namespace MongoDB.Driver
     {        
         private Connection connection;  
         private string name;
-        private MongoDatabase db;
+        private Database db;
         
         public DatabaseMetaData(string name, Connection conn){
             this.connection = conn;
             this.name = name;
-            this.db = new MongoDatabase(conn, name);
+            this.db = new Database(conn, name);
         }
         
-        public MongoCollection<Document> CreateCollection(String name){
+        public IMongoCollection CreateCollection(String name){
             return this.CreateCollection(name,null);
         }
 
-        public MongoCollection<Document> CreateCollection(String name, Document options)
+        public IMongoCollection CreateCollection(String name, Document options)
         {
             Document cmd = new Document();
             cmd.Add("create", name).Merge(options);
             db.SendCommand(cmd);
-            return new MongoCollection<Document>(connection, this.name, name);
+            return new Collection(connection, this.name, name);
         }
 
 
-        public Boolean DropCollection(MongoCollection<Document> col)
+        public Boolean DropCollection(Collection col)
         {
             return this.DropCollection(col.Name);
         }
@@ -42,13 +42,13 @@ namespace MongoDB.Driver
         }
         
         public Boolean DropDatabase(){
-			Document result = db.SendCommand("dropDatabase");
-			return result.Contains("ok") && ((double)result["ok"] == 1);
+            Document result = db.SendCommand("dropDatabase");
+            return result.Contains("ok") && ((double)result["ok"] == 1);
         }
         
         public void AddUser(string username, string password){
-            IMongoCollection<Document> users = db["system.users"];
-            string pwd = MongoDatabase.Hash(username + ":mongo:" + password);
+            IMongoCollection users = db["system.users"];
+            string pwd = Database.Hash(username + ":mongo:" + password);
             Document user = new Document().Add("user", username).Add("pwd", pwd);
             
             if (FindUser(username) != null){
@@ -58,12 +58,12 @@ namespace MongoDB.Driver
         }
 
         public void RemoveUser(string username){
-            IMongoCollection<Document> users = db["system.users"];
+            IMongoCollection users = db["system.users"];
             users.Delete(new Document().Add("user", username));
         }
 
-        public ICursor<Document> ListUsers(){
-            IMongoCollection<Document> users = db["system.users"];
+        public ICursor ListUsers(){
+            IMongoCollection users = db["system.users"];
             return users.FindAll();
         }
 

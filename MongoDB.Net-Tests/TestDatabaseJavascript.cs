@@ -20,7 +20,7 @@ namespace MongoDB.Driver{
             DB["system.js"].Delete(new Document());
             js = DB.Javascript;
 
-            IMongoCollection<Document> jsreads = DB["jsreads"];
+            IMongoCollection jsreads = DB["jsreads"];
             for(int j = 1; j < 10; j++){
                 jsreads.Insert(new Document(){{"j", j}});
             }

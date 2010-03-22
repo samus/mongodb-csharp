@@ -13,14 +13,14 @@ namespace MongoDB.GridFS
             get { return name; }
         }
 
-        private IMongoCollection<Document> files;
-        public IMongoCollection<Document> Files
+        private IMongoCollection files;
+        public IMongoCollection Files
         {
             get { return this.files; }
         }
 
-        private IMongoCollection<Document> chunks;
-        public IMongoCollection<Document> Chunks
+        private IMongoCollection chunks;
+        public IMongoCollection Chunks
         {
             get { return this.chunks; }
         }        
@@ -35,11 +35,11 @@ namespace MongoDB.GridFS
             this.name = bucket;
         }
         
-        public ICursor<Document> ListFiles(){
+        public ICursor ListFiles(){
             return this.ListFiles(new Document());
         }
 
-        public ICursor<Document> ListFiles(Document query)
+        public ICursor ListFiles(Document query)
         {
             return this.files.Find(new Document().Add("query", query)
                                                 .Add("orderby", new Document()
@@ -79,7 +79,7 @@ namespace MongoDB.GridFS
                             "   }\n" +
                             "   return false;\n" +
                             "}";
-            Document result = db.Eval(func,scope);
+            db.Eval(func,scope);
         }
         
         #region Create
