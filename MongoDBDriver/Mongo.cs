@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     /// </summary>
     public class Mongo : IDisposable
     {
-        private Connection connection;
+        private readonly Connection connection;
         private readonly ISerializationFactory serializationFactory;
 
         /// <summary>
@@ -39,6 +39,7 @@ namespace MongoDB.Driver
         /// Initializes a new instance of the <see cref="Mongo"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
+        /// <param name="serializationFactory">The serialization factory.</param>
         public Mongo (string connectionString, ISerializationFactory serializationFactory)
         {
             this.connection = ConnectionFactory.GetConnection(connectionString);
