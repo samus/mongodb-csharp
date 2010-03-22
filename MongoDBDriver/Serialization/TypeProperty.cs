@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace MongoDB.Driver.Serialization
@@ -85,11 +86,21 @@ namespace MongoDB.Driver.Serialization
         private void SetAndConvertPropertyValue(PropertyInfo propertyInfo,object instance,object value){
             if(value!=null){
                 var type = value.GetType();
-                if(PropertyType!=type){
+                if(PropertyType != type){
                     var code = Convert.GetTypeCode(value);
 
-                    if(code != TypeCode.Object)
-                        value = Convert.ChangeType(value, PropertyType);
+                    if(code != TypeCode.Object){
+                        if(PropertyType.IsGenericType &&
+                           PropertyType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                        {
+                            var nullableConverter = new NullableConverter(PropertyType);
+                            value = Convert.ChangeType(value, nullableConverter.UnderlyingType);
+                        }
+                        else
+                        {
+                            value = Convert.ChangeType(value, PropertyType);
+                        }
+                    }
                 }
             }
 

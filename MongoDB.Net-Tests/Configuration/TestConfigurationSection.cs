@@ -1,9 +1,6 @@
-using System;
 using System.Configuration;
 
 using NUnit.Framework;
-
-using MongoDB.Driver;
 
 namespace MongoDB.Driver.Configuration
 {

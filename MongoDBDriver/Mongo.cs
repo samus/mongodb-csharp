@@ -9,14 +9,14 @@ namespace MongoDB.Driver
     /// </summary>
     public class Mongo : IDisposable
     {
-        private Connection connection;
+        private readonly Connection connection;
         private readonly ISerializationFactory serializationFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mongo"/> class.
         /// </summary>
-        public Mongo () 
-            : this(null, null)
+        public Mongo ()
+            : this(string.Empty, SerializationFactory.Default)
         { }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="serializationFactory">The serialization factory.</param>
         public Mongo(ISerializationFactory serializationFactory)
-            : this(null, serializationFactory)
+            : this(string.Empty, serializationFactory)
         { }
 
         /// <summary>
@@ -32,17 +32,22 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         public Mongo(string connectionString)
-            : this(connectionString, null)
+            : this(connectionString, SerializationFactory.Default)
         { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mongo"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
+        /// <param name="serializationFactory">The serialization factory.</param>
         public Mongo (string connectionString, ISerializationFactory serializationFactory)
         {
+            if(connectionString == null)
+                throw new ArgumentNullException("connectionString");
+            if(serializationFactory == null)
+                throw new ArgumentNullException("serializationFactory");
             this.connection = ConnectionFactory.GetConnection(connectionString);
-            this.serializationFactory = serializationFactory ?? SerializationFactory.Default;
+            this.serializationFactory = serializationFactory;
         }
 
         /// <summary>

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    public class ArrayDescriptor : IPropertyDescriptor
+    public class ObjectArrayDescriptor : IPropertyDescriptor
     {
         private readonly Dictionary<string,object> _items = new Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ArrayDescriptor"/> class.
+        /// Initializes a new instance of the <see cref="ObjectArrayDescriptor"/> class.
         /// </summary>
         /// <param name="enumerable">The enumerable.</param>
-        public ArrayDescriptor(IEnumerable enumerable){
+        public ObjectArrayDescriptor(IEnumerable enumerable){
             if(enumerable == null)
                 throw new ArgumentNullException("enumerable");
 

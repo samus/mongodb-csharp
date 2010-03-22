@@ -20,6 +20,7 @@ namespace MongoDB.Driver.Generic
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
         /// </summary>
+        /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
@@ -138,7 +139,8 @@ namespace MongoDB.Driver.Generic
         /// Finds the specified spec.
         /// </summary>
         /// <param name="spec">The spec.</param>
-        /// <returns></returns>
+        /// <param name="fields"></param>
+        /// <returns>A <see cref="ICursor"/></returns>
         public ICursor<T> Find(Document spec, Document fields){
             return Find(spec, 0, 0, fields);
         }
@@ -147,7 +149,8 @@ namespace MongoDB.Driver.Generic
         /// Finds the specified spec.
         /// </summary>
         /// <param name="spec">The spec.</param>
-        /// <returns></returns>
+        /// <param name="fields"></param>
+        /// <returns>A <see cref="ICursor"/></returns>
         public ICursor<T> Find(object spec, object fields){
             return Find(spec, 0, 0, fields);
         }
@@ -320,10 +323,16 @@ namespace MongoDB.Driver.Generic
         /// </summary>
         /// <param name="documents">The documents.</param>
         public void Insert<TElement>(IEnumerable<TElement> documents){
-            var insertMessage = new InsertMessage { FullCollectionName = FullName };
-            
+            var rootType = typeof(T);
+            var bsonDescriptor = _serializationFactory.GetBsonDescriptor(rootType, _connection);
+
+            var insertMessage = new InsertMessage(bsonDescriptor)
+            {
+                FullCollectionName = FullName
+            };
+
+            var descriotor = _serializationFactory.GetObjectDescriptor(rootType);
             var insertDocument = new List<object>();
-            var descriotor = _serializationFactory.GetObjectDescriptor(typeof(T));
             
             foreach (var document in documents) {
                 var id = descriotor.GetPropertyValue(document, "_id");
@@ -616,6 +625,16 @@ namespace MongoDB.Driver.Generic
         public void Save(Document document){
             Save((object)document);
         }
+
+        /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Save(Document document, bool safemode){
+            Save((object)document, safemode);
+        }
+
         /// <summary>
         /// Saves a document to the database using an upsert.
         /// </summary>
@@ -625,7 +644,37 @@ namespace MongoDB.Driver.Generic
         /// to Update(Document) to maintain consistency between drivers.
         /// </remarks>
         public void Save(object document){
-            Update(document);
+            //Try to generate a selector using _id for an existing document.
+            //otherwise just set the upsert flag to 1 to insert and send onward.
+            var selector = new Document();
+            var upsert = UpdateFlags.Upsert;
+
+            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
+
+            var value = descriptor.GetPropertyValue(document, "_id");
+
+            if(value != null)
+            {
+                selector["_id"] = value;
+            }
+            else
+            {
+                //Likely a new document
+                descriptor.SetPropertyValue(document, "_id", Oid.NewOid());
+                upsert = UpdateFlags.Upsert;
+            }
+
+            Update(document, selector, upsert);
+        }
+
+        /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Save(object document,bool safemode){
+            Save(document);
+            CheckError(safemode);
         }
 
         /// <summary>
