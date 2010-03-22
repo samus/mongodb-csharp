@@ -103,7 +103,7 @@ namespace MongoDB.Driver.Protocol
         protected void WriteChunk(Stream stream, MessageChunk chunk){
             WriteHeader(new BinaryWriter(stream), chunk.Size);
 
-            var writer = new BsonWriter(stream, new BsonDocumentDescriptor());
+            var writer = new BsonWriter(stream, _objectDescriptor);
             writer.WriteValue(BsonDataType.Integer, 0);
             writer.Write(FullCollectionName, false);
 
