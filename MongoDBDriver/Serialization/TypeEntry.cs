@@ -102,6 +102,15 @@ namespace MongoDB.Driver.Serialization
         }
 
         /// <summary>
+        /// Generates the id.
+        /// </summary>
+        /// <returns></returns>
+        public object GenerateId()
+        {
+            return Oid.NewOid();
+        }
+
+        /// <summary>
         /// Generates the propertys.
         /// </summary>
         private void GeneratePropertys(){
