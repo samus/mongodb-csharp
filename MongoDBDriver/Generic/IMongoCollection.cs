@@ -417,5 +417,19 @@ namespace MongoDB.Driver.Generic
         ///   to Update(Document) to maintain consistency between drivers.
         /// </remarks>
         void Save(object document);
+
+        /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        void Save(Document document, bool safemode);
+
+        /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        void Save(object document,bool safemode);
     }
 }
