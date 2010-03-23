@@ -256,6 +256,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name = "document">The document.</param>
         /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        [Obsolete("Use Save instead")]
         void Update(Document document, bool safemode);
 
         /// <summary>
@@ -265,7 +266,7 @@ namespace MongoDB.Driver
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         /// <remarks>See the safemode description in the class description</remarks>
-        [Obsolete("Use Save")]
+        [Obsolete("Use Save instead")]
         void Update(object document, bool safemode);
 
         /// <summary>
@@ -273,7 +274,7 @@ namespace MongoDB.Driver
         /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
-        [Obsolete("Use Save")]
+        [Obsolete("Use Save instead")]
         void Update(Document document);
 
         /// <summary>
@@ -281,7 +282,7 @@ namespace MongoDB.Driver
         /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
         /// <param name = "document">The document.</param>
-        [Obsolete("Use Save")]
+        [Obsolete("Use Save instead")]
         void Update(object document);
 
         /// <summary>
@@ -400,10 +401,9 @@ namespace MongoDB.Driver
         /// Inserts or updates a document in the database.  If the document does not contain an _id one will be
         /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
-        /// <param name = "document">The document.</param>
+        /// <param name="document">The document.</param>
         /// <remarks>
-        ///   The document will contain the _id that is saved to the database.  This is really just an alias
-        ///   to Update(Document) to maintain consistency between drivers.
+        /// The document will contain the _id that is saved to the database.
         /// </remarks>
         void Save(Document document);
 
@@ -411,10 +411,9 @@ namespace MongoDB.Driver
         /// Inserts or updates a document in the database.  If the document does not contain an _id one will be
         /// generated and an upsert sent.  Otherwise the document matching the _id of the document will be updated.
         /// </summary>
-        /// <param name = "document">The document.</param>
+        /// <param name="document">The document.</param>
         /// <remarks>
-        ///   The document will contain the _id that is saved to the database.  This is really just an alias
-        ///   to Update(Document) to maintain consistency between drivers.
+        /// The document will contain the _id that is saved to the database.
         /// </remarks>
         void Save(object document);
 
@@ -423,6 +422,9 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>
+        /// The document will contain the _id that is saved to the database.
+        /// </remarks>
         void Save(Document document, bool safemode);
 
         /// <summary>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace MongoDB.Driver
 {
     /// <summary>
-    /// <see cref="IMongoCollection<T>"/> 
+    /// 
     /// </summary>
     public interface IMongoCollection{
         string Name { get; }

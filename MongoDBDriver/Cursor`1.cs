@@ -35,14 +35,15 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "Cursor&lt;T&gt;" /> class.
+        /// Initializes a new instance of the <see cref="Cursor&lt;T&gt;"/> class.
         /// </summary>
-        /// <param name = "connection">The conn.</param>
-        /// <param name = "fullCollectionName">Full name of the collection.</param>
-        /// <param name = "spec">The spec.</param>
-        /// <param name = "limit">The limit.</param>
-        /// <param name = "skip">The skip.</param>
-        /// <param name = "fields">The fields.</param>
+        /// <param name="serializationFactory">The serialization factory.</param>
+        /// <param name="connection">The conn.</param>
+        /// <param name="fullCollectionName">Full name of the collection.</param>
+        /// <param name="spec">The spec.</param>
+        /// <param name="limit">The limit.</param>
+        /// <param name="skip">The skip.</param>
+        /// <param name="fields">The fields.</param>
         public Cursor(ISerializationFactory serializationFactory, Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields)
             : this(serializationFactory, connection, fullCollectionName)
         {

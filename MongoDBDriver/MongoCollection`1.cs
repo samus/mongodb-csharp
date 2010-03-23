@@ -412,8 +412,9 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        [Obsolete("Use Save instead")]
         public void Update(Document document, bool safemode){
-            Update((object)document, safemode);
+            Save((object)document, safemode);
         }
 
         /// <summary>
@@ -421,9 +422,10 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        public void Update(object document, bool safemode){
-            Update(document);
-            CheckError(safemode);
+        [Obsolete("Use Save instead")]
+        public void Update(object document, bool safemode)
+        {
+            Save(document, safemode);
         }
 
         /// <summary>
@@ -533,7 +535,12 @@ namespace MongoDB.Driver
         public void Update(object document, object selector, UpdateFlags flags){
             var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
             
-            var updateMessage = new UpdateMessage(descriptor) { FullCollectionName = FullName, Selector = selector, Document = document, Flags = (int)flags };
+            var updateMessage = new UpdateMessage(descriptor){
+                FullCollectionName = FullName, 
+                Selector = selector, 
+                Document = document, 
+                Flags = (int)flags
+            };
             
             try {
                 _connection.SendMessage(updateMessage);
@@ -616,7 +623,12 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        public void Save(Document document, bool safemode){
+        /// <remarks>
+        /// The document will contain the _id that is saved to the database.  This is really just an alias
+        /// to Update(Document) to maintain consistency between drivers.
+        /// </remarks>
+        public void Save(Document document, bool safemode)
+        {
             Save((object)document, safemode);
         }
 
@@ -632,24 +644,18 @@ namespace MongoDB.Driver
             //Try to generate a selector using _id for an existing document.
             //otherwise just set the upsert flag to 1 to insert and send onward.
             var selector = new Document();
-            var upsert = UpdateFlags.Upsert;
+            var upsert = UpdateFlags.None;
 
             var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
             var value = descriptor.GetPropertyValue(document, "_id");
 
-            if(value != null)
-            {
-                selector["_id"] = value;
-            }
-            else
-            {
+            if(value == null){
                 //Likely a new document
-                var id = descriptor.GenerateId(document);
-                descriptor.SetPropertyValue(document, "_id", id);
-                selector["_id"] = id;
+                descriptor.SetPropertyValue(document, "_id", value = Oid.NewOid());
                 upsert = UpdateFlags.Upsert;
             }
+            selector["_id"] = value;
 
             Update(document, selector, upsert);
         }
@@ -659,7 +665,12 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        public void Save(object document,bool safemode){
+        /// <remarks>
+        /// The document will contain the _id that is saved to the database.  This is really just an alias
+        /// to Update(Document) to maintain consistency between drivers.
+        /// </remarks>
+        public void Save(object document, bool safemode)
+        {
             Save(document);
             CheckError(safemode);
         }

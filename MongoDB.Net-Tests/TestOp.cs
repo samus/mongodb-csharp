@@ -6,7 +6,7 @@ using System.Text;
 using NUnit.Framework;
 using MongoDB.Driver.Bson;
 
-namespace MongoDB.Driver.Tests
+namespace MongoDB.Driver
 {
     [TestFixture]
     public class TestOp
