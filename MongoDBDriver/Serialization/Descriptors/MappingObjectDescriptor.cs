@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MappingObjectDescriptor : IPropertyDescriptor
     {
         private readonly TypeEntry _expectedEntry;

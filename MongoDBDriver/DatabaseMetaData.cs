@@ -1,81 +1,141 @@
-using System;
 using MongoDB.Driver.Connections;
 using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver
 {
     /// <summary>
-    /// Administration of metadata for a database.
+    ///   Administration of metadata for a database.
     /// </summary>
     public class DatabaseMetaData
     {
-        private ISerializationFactory serializationFactory;
-        private Connection connection;  
-        private string name;
-        private MongoDatabase db;
-        
-        public DatabaseMetaData(ISerializationFactory serializationFactory, string name, Connection conn){
-            this.serializationFactory = serializationFactory;
-            this.connection = conn;
-            this.name = name;
-            this.db = new MongoDatabase(serializationFactory, conn, name);
-        }
-        
-        public IMongoCollection CreateCollection(String name){
-            return this.CreateCollection(name,null);
+        private readonly Connection _connection;
+        private readonly MongoDatabase _database;
+        private readonly string _name;
+        private readonly ISerializationFactory _serializationFactory;
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "DatabaseMetaData" /> class.
+        /// </summary>
+        /// <param name = "serializationFactory">The serialization factory.</param>
+        /// <param name = "name">The name.</param>
+        /// <param name = "conn">The conn.</param>
+        public DatabaseMetaData(ISerializationFactory serializationFactory, string name, Connection conn)
+        {
+            this._serializationFactory = serializationFactory;
+            _connection = conn;
+            this._name = name;
+            _database = new MongoDatabase(serializationFactory, conn, name);
         }
 
-        public IMongoCollection CreateCollection(String name, Document options)
+        /// <summary>
+        /// Creates the collection.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public IMongoCollection CreateCollection(string name)
         {
-            Document cmd = new Document();
+            return CreateCollection(name, null);
+        }
+
+        /// <summary>
+        /// Creates the collection.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="options">The options.</param>
+        /// <returns></returns>
+        public IMongoCollection CreateCollection(string name, Document options)
+        {
+            var cmd = new Document();
             cmd.Add("create", name).Merge(options);
-            db.SendCommand(cmd);
-            return new MongoCollection(serializationFactory, connection, this.name, name);
+            _database.SendCommand(cmd);
+            return new MongoCollection(_serializationFactory, _connection, this._name, name);
         }
 
-
-        public Boolean DropCollection(MongoCollection col)
+        /// <summary>
+        /// Drops the collection.
+        /// </summary>
+        /// <param name="collection">The col.</param>
+        /// <returns></returns>
+        public bool DropCollection(MongoCollection collection)
         {
-            return this.DropCollection(col.Name);
+            return DropCollection(collection.Name);
         }
 
-        public Boolean DropCollection(String name){
-            Document result = db.SendCommand(new Document().Add("drop", name));
+        /// <summary>
+        /// Drops the collection.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public bool DropCollection(string name)
+        {
+            var result = _database.SendCommand(new Document().Add("drop", name));
             return result.Contains("ok") && ((double)result["ok"] == 1);
         }
-        
-        public Boolean DropDatabase(){
-            Document result = db.SendCommand("dropDatabase");
+
+        /// <summary>
+        /// Drops the database.
+        /// </summary>
+        /// <returns></returns>
+        public bool DropDatabase()
+        {
+            var result = _database.SendCommand("dropDatabase");
             return result.Contains("ok") && ((double)result["ok"] == 1);
         }
-        
-        public void AddUser(string username, string password){
-            IMongoCollection users = db["system.users"];
-            string pwd = MongoDatabase.Hash(username + ":mongo:" + password);
-            Document user = new Document().Add("user", username).Add("pwd", pwd);
-            
-            if (FindUser(username) != null){
+
+        /// <summary>
+        /// Adds the user.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        public void AddUser(string username, string password)
+        {
+            var users = _database["system.users"];
+            var pwd = MongoDatabase.Hash(username + ":mongo:" + password);
+            var user = new Document().Add("user", username).Add("pwd", pwd);
+
+            if(FindUser(username) != null)
                 throw new MongoException("A user with the name " + username + " already exists in this database.", null);
-            }
             users.Insert(user);
         }
 
-        public void RemoveUser(string username){
-            IMongoCollection users = db["system.users"];
+        /// <summary>
+        /// Removes the user.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        public void RemoveUser(string username)
+        {
+            var users = _database["system.users"];
             users.Delete(new Document().Add("user", username));
         }
 
-        public ICursor ListUsers(){
-            IMongoCollection users = db["system.users"];
+        /// <summary>
+        /// Lists the users.
+        /// </summary>
+        /// <returns></returns>
+        public ICursor ListUsers()
+        {
+            var users = _database["system.users"];
             return users.FindAll();
         }
 
-        public Document FindUser(string username){
+        /// <summary>
+        /// Finds the user.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <returns></returns>
+        public Document FindUser(string username)
+        {
             return FindUser(new Document().Add("user", username));
         }
 
-        public Document FindUser(Document spec){
-            return db["system.users"].FindOne(spec);
+        /// <summary>
+        /// Finds the user.
+        /// </summary>
+        /// <param name="spec">The spec.</param>
+        /// <returns></returns>
+        public Document FindUser(Document spec)
+        {
+            return _database["system.users"].FindOne(spec);
         }
     }
 }

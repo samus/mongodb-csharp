@@ -9,14 +9,25 @@ namespace MongoDB.Driver
     {
         private readonly MapReduce _mapReduce;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapReduceBuilder"/> class.
+        /// </summary>
+        /// <param name="mapReduce">The map reduce.</param>
         public MapReduceBuilder(MapReduce mapReduce){
             _mapReduce = mapReduce;
         }
 
+        /// <summary>
+        /// Gets the map reduce.
+        /// </summary>
+        /// <value>The map reduce.</value>
         public MapReduce MapReduce{
             get { return _mapReduce; }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose(){
             _mapReduce.Dispose();
         }
@@ -133,6 +144,10 @@ namespace MongoDB.Driver
             return this;
         }
 
+        /// <summary>
+        /// Executes this instance.
+        /// </summary>
+        /// <returns></returns>
         public MapReduce Execute(){
             _mapReduce.Execute();
             return _mapReduce;

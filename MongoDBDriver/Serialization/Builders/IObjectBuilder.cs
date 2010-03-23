@@ -2,6 +2,9 @@
 
 namespace MongoDB.Driver.Serialization.Builders
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IObjectBuilder
     {
         /// <summary>

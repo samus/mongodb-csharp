@@ -10,6 +10,9 @@ namespace MongoDB.Driver.Serialization
     /// </summary>
     public class TypeEntry : IObjectDescriptor
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public delegate object CreateInstanceFunc(Type type);
 
         private const string DefaultIdProperty = "Id";
@@ -73,6 +76,11 @@ namespace MongoDB.Driver.Serialization
             get{return _mongoPropertys.Values;}
         }
 
+        /// <summary>
+        /// Gets the name of the property from mongo.
+        /// </summary>
+        /// <param name="mongoName">Name of the mongo.</param>
+        /// <returns></returns>
         public TypeProperty GetPropertyFromMongoName(string mongoName){
             TypeProperty property;
 
@@ -83,6 +91,11 @@ namespace MongoDB.Driver.Serialization
             return property;
         }
 
+        /// <summary>
+        /// Gets the property.
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        /// <returns></returns>
         public TypeProperty GetProperty(string propertyName){
             TypeProperty property;
 

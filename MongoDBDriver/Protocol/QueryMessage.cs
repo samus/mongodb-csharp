@@ -17,22 +17,49 @@ namespace MongoDB.Driver.Protocol
     ///     [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
     /// }
     /// </remarks>
-    public class QueryMessage<T> : RequestMessageBase
+    public class QueryMessage : RequestMessageBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryMessage"/> class.
+        /// </summary>
+        /// <param name="objectDescriptor">The object descriptor.</param>
         public QueryMessage(IBsonObjectDescriptor objectDescriptor)
             : base(objectDescriptor){
             Header = new MessageHeader(OpCode.Query);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryMessage"/> class.
+        /// </summary>
+        /// <param name="objectDescriptor">The object descriptor.</param>
+        /// <param name="query">The query.</param>
+        /// <param name="fullCollectionName">Full name of the collection.</param>
         public QueryMessage(IBsonObjectDescriptor objectDescriptor, object query, String fullCollectionName)
             : this(objectDescriptor, query, fullCollectionName, 0, 0){
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryMessage"/> class.
+        /// </summary>
+        /// <param name="objectDescriptor">The object descriptor.</param>
+        /// <param name="query">The query.</param>
+        /// <param name="fullCollectionName">Full name of the collection.</param>
+        /// <param name="numberToReturn">The number to return.</param>
+        /// <param name="numberToSkip">The number to skip.</param>
         public QueryMessage(IBsonObjectDescriptor objectDescriptor, object query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
             : this(objectDescriptor, query, fullCollectionName, numberToReturn, numberToSkip, null)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryMessage"/> class.
+        /// </summary>
+        /// <param name="objectDescriptor">The object descriptor.</param>
+        /// <param name="query">The query.</param>
+        /// <param name="fullCollectionName">Full name of the collection.</param>
+        /// <param name="numberToReturn">The number to return.</param>
+        /// <param name="numberToSkip">The number to skip.</param>
+        /// <param name="returnFieldSelector">The return field selector.</param>
         public QueryMessage(IBsonObjectDescriptor objectDescriptor,
             object query,
             String fullCollectionName,
@@ -49,18 +76,46 @@ namespace MongoDB.Driver.Protocol
             ReturnFieldSelector = returnFieldSelector;
         }
 
+        /// <summary>
+        /// Gets or sets the options.
+        /// </summary>
+        /// <value>The options.</value>
         public QueryOptions Options { get; set; }
 
+        /// <summary>
+        /// Gets or sets the full name of the collection.
+        /// </summary>
+        /// <value>The full name of the collection.</value>
         public string FullCollectionName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number to skip.
+        /// </summary>
+        /// <value>The number to skip.</value>
         public int NumberToSkip { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number to return.
+        /// </summary>
+        /// <value>The number to return.</value>
         public int NumberToReturn { get; set; }
 
+        /// <summary>
+        /// Gets or sets the query.
+        /// </summary>
+        /// <value>The query.</value>
         public object Query { get; set; }
 
+        /// <summary>
+        /// Gets or sets the return field selector.
+        /// </summary>
+        /// <value>The return field selector.</value>
         public object ReturnFieldSelector { get; set; }
 
+        /// <summary>
+        /// Writes the body.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
         protected override void WriteBody(BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer, (int)Options);
             writer.Write(FullCollectionName, false);
@@ -71,6 +126,11 @@ namespace MongoDB.Driver.Protocol
                 writer.WriteObject(ReturnFieldSelector);
         }
 
+        /// <summary>
+        /// Calculates the size of the body.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        /// <returns></returns>
         protected override int CalculateBodySize(BsonWriter writer){
             var size = 12; //options, numbertoskip, numbertoreturn
             size += writer.CalculateSize(FullCollectionName, false);

@@ -1,5 +1,8 @@
 namespace MongoDB.Driver
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MongoRegex
     {   
         /// <summary>

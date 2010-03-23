@@ -3,12 +3,25 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Bson
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class BsonDocumentDescriptor : IBsonObjectDescriptor
     {
+        /// <summary>
+        /// Begins the object.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns></returns>
         public object BeginObject(object instance){
             return instance;
         }
 
+        /// <summary>
+        /// Begins the array.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns></returns>
         public object BeginArray(object instance){
             var document = new Document();
 
@@ -19,26 +32,58 @@ namespace MongoDB.Driver.Bson
             return document;
         }
 
+        /// <summary>
+        /// Gets the property names.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns></returns>
         public IEnumerable<string> GetPropertyNames(object instance){
             var document = (Document)instance;
             foreach(var key in document.Keys)
                 yield return key;
         }
 
+        /// <summary>
+        /// Begins the property.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public object BeginProperty(object instance, string name){
             var document = (Document)instance;
             return document[name];
         }
 
+        /// <summary>
+        /// Ends the property.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public void EndProperty(object instance, string name, object value){
         }
 
+        /// <summary>
+        /// Ends the array.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
         public void EndArray(object instance){
         }
 
+        /// <summary>
+        /// Ends the object.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
         public void EndObject(object obj){
         }
 
+        /// <summary>
+        /// Determines whether the specified obj is array.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified obj is array; otherwise, <c>false</c>.
+        /// </returns>
         public bool IsArray(object obj){
             if(obj is Document)
                 return false;
@@ -46,6 +91,13 @@ namespace MongoDB.Driver.Bson
             return obj is IEnumerable;
         }
 
+        /// <summary>
+        /// Determines whether the specified obj is object.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified obj is object; otherwise, <c>false</c>.
+        /// </returns>
         public bool IsObject(object obj){
             return obj is Document;
         }

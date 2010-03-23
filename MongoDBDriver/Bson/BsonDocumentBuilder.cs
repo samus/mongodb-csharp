@@ -4,22 +4,26 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Bson
 {
+    /// <summary>
+    /// </summary>
     public class BsonDocumentBuilder : IBsonObjectBuilder
     {
         /// <summary>
-        /// Begins the object.
+        ///   Begins the object.
         /// </summary>
         /// <returns></returns>
-        public object BeginObject(){
+        public object BeginObject()
+        {
             return new Document();
         }
 
         /// <summary>
-        /// Ends the object.
+        ///   Ends the object.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name = "instance">The instance.</param>
         /// <returns></returns>
-        public object EndObject(object instance){
+        public object EndObject(object instance)
+        {
             var document = (Document)instance;
 
             if(DBRef.IsDocumentDBRef(document))
@@ -29,53 +33,57 @@ namespace MongoDB.Driver.Bson
         }
 
         /// <summary>
-        /// Begins the array.
+        ///   Begins the array.
         /// </summary>
         /// <returns></returns>
-        public object BeginArray(){
+        public object BeginArray()
+        {
             return BeginObject();
         }
 
         /// <summary>
-        /// Ends the array.
+        ///   Ends the array.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name = "instance">The instance.</param>
         /// <returns></returns>
-        public object EndArray(object instance){
+        public object EndArray(object instance)
+        {
             var document = (Document)EndObject(instance);
             return ConvertToArray(document);
         }
 
         /// <summary>
-        /// Begins the property.
+        ///   Begins the property.
         /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="name">The name.</param>
-        public void BeginProperty(object instance, string name){
+        /// <param name = "instance">The instance.</param>
+        /// <param name = "name">The name.</param>
+        public void BeginProperty(object instance, string name)
+        {
         }
 
         /// <summary>
-        /// Ends the property.
+        ///   Ends the property.
         /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        public void EndProperty(object instance, string name, object value){
+        /// <param name = "instance">The instance.</param>
+        /// <param name = "name">The name.</param>
+        /// <param name = "value">The value.</param>
+        public void EndProperty(object instance, string name, object value)
+        {
             var document = (Document)instance;
             document.Add(name, value);
         }
 
         /// <summary>
-        /// Gets the type for IEnumerable.
+        ///   Gets the type for IEnumerable.
         /// </summary>
-        /// <param name="doc">The doc.</param>
+        /// <param name = "doc">The doc.</param>
         /// <returns></returns>
         private Type GetTypeForIEnumerable(Document doc)
         {
             if(doc.Keys.Count < 1)
                 return typeof(Object);
             Type comp = null;
-            foreach(String key in doc.Keys)
+            foreach(var key in doc.Keys)
             {
                 var obj = doc[key];
                 var test = obj.GetType();
@@ -88,9 +96,9 @@ namespace MongoDB.Driver.Bson
         }
 
         /// <summary>
-        /// Converts to array.
+        ///   Converts to array.
         /// </summary>
-        /// <param name="doc">The doc.</param>
+        /// <param name = "doc">The doc.</param>
         /// <returns></returns>
         private IEnumerable ConvertToArray(Document doc)
         {
@@ -100,11 +108,10 @@ namespace MongoDB.Driver.Bson
 
             var list = (IList)Activator.CreateInstance(listType);
 
-            foreach(String key in doc.Keys)
+            foreach(var key in doc.Keys)
                 list.Add(doc[key]);
 
             return list;
         }
-
     }
 }

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ObjectArrayDescriptor : IPropertyDescriptor
     {
         private readonly Dictionary<string,object> _items = new Dictionary<string, object>();

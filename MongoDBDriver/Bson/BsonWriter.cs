@@ -18,6 +18,11 @@ namespace MongoDB.Driver.Bson
         private readonly IBsonObjectDescriptor _descriptor;
         private readonly BinaryWriter _writer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BsonWriter"/> class.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="descriptor">The descriptor.</param>
         public BsonWriter(Stream stream, IBsonObjectDescriptor descriptor){
             _stream = stream;
             _descriptor = descriptor;
@@ -25,7 +30,12 @@ namespace MongoDB.Driver.Bson
             _buffer = new byte[BufferLength];
             _maxChars = BufferLength/Encoding.UTF8.GetMaxByteCount(1);
         }
-       
+
+        /// <summary>
+        /// Writes the value.
+        /// </summary>
+        /// <param name="dataType">Type of the data.</param>
+        /// <param name="obj">The obj.</param>
         public void WriteValue(BsonDataType dataType, Object obj){
             switch(dataType){
                 case BsonDataType.MinKey:
@@ -86,11 +96,19 @@ namespace MongoDB.Driver.Bson
                     throw new NotImplementedException(String.Format("Writing {0} types not implemented.", obj.GetType().Name));
             }
         }
-        
+
+        /// <summary>
+        /// Writes the specified id.
+        /// </summary>
+        /// <param name="id">The id.</param>
         private void Write(Oid id){
             _writer.Write(id.ToByteArray());
         }
 
+        /// <summary>
+        /// Writes the specified binary.
+        /// </summary>
+        /// <param name="binary">The binary.</param>
         private void Write(Binary binary){
             if(binary.Subtype == Binary.TypeCode.General){
                 _writer.Write(binary.Bytes.Length + 4);
@@ -104,43 +122,75 @@ namespace MongoDB.Driver.Bson
             _writer.Write(binary.Bytes);
         }
 
+        /// <summary>
+        /// Writes the specified GUID.
+        /// </summary>
+        /// <param name="guid">The GUID.</param>
         private void Write(Guid guid){
             _writer.Write(16);
             _writer.Write((byte)3);
             _writer.Write(guid.ToByteArray());
         }
 
+        /// <summary>
+        /// Writes the specified code scope.
+        /// </summary>
+        /// <param name="codeScope">The code scope.</param>
         private void Write(CodeWScope codeScope){
             _writer.Write(CalculateSize(codeScope));
             WriteValue(BsonDataType.String, codeScope.Value);
             WriteValue(BsonDataType.Obj, codeScope.Scope);
         }
 
+        /// <summary>
+        /// Writes the specified code.
+        /// </summary>
+        /// <param name="code">The code.</param>
         private void Write(Code code){
             WriteValue(BsonDataType.String, code.Value);
         }
 
+        /// <summary>
+        /// Writes the specified regex.
+        /// </summary>
+        /// <param name="regex">The regex.</param>
         private void Write(MongoRegex regex){
             Write(regex.Expression,false);
             Write(regex.Options,false);
         }
 
+        /// <summary>
+        /// Writes the specified reference.
+        /// </summary>
+        /// <param name="reference">The reference.</param>
         public void Write(DBRef reference){
             WriteObject((Document)reference);
         }
 
+        /// <summary>
+        /// Writes the specified data time.
+        /// </summary>
+        /// <param name="dataTime">The data time.</param>
         private void Write(DateTime dataTime){
             var diff = dataTime.ToUniversalTime() - BsonInfo.Epoch;
             var time = Math.Floor(diff.TotalMilliseconds);
             _writer.Write((long)time);
         }
 
+        /// <summary>
+        /// Writes the object.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
         public void WriteObject(object obj){
             obj = _descriptor.BeginObject(obj);
             WriteElements(obj);
             _descriptor.EndObject(obj);
         }
 
+        /// <summary>
+        /// Writes the elements.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
         private void WriteElements(object obj){
             var propertys = _descriptor.GetPropertyNames(obj);
             var size = CalculateSizeObject(obj,propertys);
@@ -158,17 +208,30 @@ namespace MongoDB.Driver.Bson
             _writer.Write((byte)0);
         }
 
+        /// <summary>
+        /// Writes the array.
+        /// </summary>
+        /// <param name="enumerable">The enumerable.</param>
         public void WriteArray(IEnumerable enumerable){
             var obj = _descriptor.BeginArray(enumerable);
             WriteElements(obj);
             _descriptor.EndArray(obj);
         }
 
+        /// <summary>
+        /// Writes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
         private void Write(string value)
         {
             Write(value,true);
         }
 
+        /// <summary>
+        /// Writes the specified value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="includeLength">if set to <c>true</c> [include length].</param>
         public void Write(string value, bool includeLength){
             if(includeLength)
                 _writer.Write(CalculateSize(value, false));
@@ -190,7 +253,12 @@ namespace MongoDB.Driver.Bson
             }
             _writer.Write((byte)0);
         }
-      
+
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
+        /// <returns></returns>
         public int CalculateSize(Object obj){
             if(obj == null)
                 return 0;
@@ -237,17 +305,32 @@ namespace MongoDB.Driver.Bson
 
             throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.", obj.GetType().Name));
         }
-        
+
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="code">The code.</param>
+        /// <returns></returns>
         private int CalculateSize(Code code){
             return CalculateSize(code.Value, true);
         }
 
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="regex">The regex.</param>
+        /// <returns></returns>
         public int CalculateSize(MongoRegex regex){
             var size = CalculateSize(regex.Expression, false);
             size += CalculateSize(regex.Options, false);
             return size;
         }
 
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="codeScope">The code scope.</param>
+        /// <returns></returns>
         public int CalculateSize(CodeWScope codeScope){
             var size = 4;
             size += CalculateSize(codeScope.Value, true);
@@ -255,6 +338,11 @@ namespace MongoDB.Driver.Bson
             return size;
         }
 
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="binary">The binary.</param>
+        /// <returns></returns>
         public int CalculateSize(Binary binary){
             var size = 4; //size int
             size += 1; //subtype
@@ -264,15 +352,29 @@ namespace MongoDB.Driver.Bson
             return size;
         }
 
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="guid">The GUID.</param>
+        /// <returns></returns>
         public int CalculateSize(Guid guid){
             return 21;
         }
 
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="reference">The reference.</param>
+        /// <returns></returns>
         public int CalculateSize(DBRef reference){
             return CalculateSizeObject((Document)reference);
         }
-        
 
+        /// <summary>
+        /// Calculates the size object.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
+        /// <returns></returns>
         public int CalculateSizeObject(object obj){
             obj = _descriptor.BeginObject(obj);
             var propertys = _descriptor.GetPropertyNames(obj);
@@ -284,6 +386,12 @@ namespace MongoDB.Driver.Bson
             return size;
         }
 
+        /// <summary>
+        /// Calculates the size object.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
+        /// <param name="propertys">The propertys.</param>
+        /// <returns></returns>
         private int CalculateSizeObject(object obj, IEnumerable<string> propertys)
         {
             var size = 4;
@@ -299,7 +407,12 @@ namespace MongoDB.Driver.Bson
             size += 1; //terminator
             return size;
         }
-        
+
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="enumerable">The enumerable.</param>
+        /// <returns></returns>
         public int CalculateSize(IEnumerable enumerable){
             var obj = _descriptor.BeginArray(enumerable);
             var propertys = _descriptor.GetPropertyNames(obj);
@@ -310,11 +423,22 @@ namespace MongoDB.Driver.Bson
 
             return size;
         }
-        
+
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
         public int CalculateSize(String value){
             return CalculateSize(value, true);
         }
 
+        /// <summary>
+        /// Calculates the size.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="includeLength">if set to <c>true</c> [include length].</param>
+        /// <returns></returns>
         public int CalculateSize(String value, bool includeLength){
             var size = 1; //terminator
             if(includeLength)
@@ -324,10 +448,18 @@ namespace MongoDB.Driver.Bson
             return size;
         }
 
+        /// <summary>
+        /// Flushes this instance.
+        /// </summary>
         public void Flush(){
             _writer.Flush();
         }
-        
+
+        /// <summary>
+        /// Translates the type of to bson.
+        /// </summary>
+        /// <param name="obj">The obj.</param>
+        /// <returns></returns>
         protected BsonDataType TranslateToBsonType(object obj){
             if(obj == null)
                 return BsonDataType.Null;

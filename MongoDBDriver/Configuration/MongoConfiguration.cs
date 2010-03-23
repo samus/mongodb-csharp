@@ -1,13 +1,16 @@
-using System;
 using System.Configuration;
 
 namespace MongoDB.Driver.Configuration
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MongoConfiguration : ConfigurationSection
     {
-
-        public MongoConfiguration() { }
-
+        /// <summary>
+        /// Gets the connections.
+        /// </summary>
+        /// <value>The connections.</value>
         [ConfigurationProperty("connections", IsDefaultCollection = false)]
         [ConfigurationCollection(typeof(ConnectionCollection),
             AddItemName = "add",

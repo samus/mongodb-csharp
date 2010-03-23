@@ -13,8 +13,19 @@ namespace MongoDB.Driver
     /// </remarks>
     public class DBRef
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public const string IdName = "$id";
+
+        /// <summary>
+        /// 
+        /// </summary>
         public const string MetaName = "metadata";
+
+        /// <summary>
+        /// 
+        /// </summary>
         public const string RefName = "$ref";
 
         private readonly Document _document;
@@ -135,15 +146,14 @@ namespace MongoDB.Driver
         /// </summary>
         public static DBRef FromDocument(Document document){
             return new DBRef(document);
-            ;
         }
 
         /// <summary>
-        ///   Determines whether [is document DB ref] [the specified document].
+        /// Determines whether [is document DB ref] [the specified document].
         /// </summary>
-        /// <param name = "document">The document.</param>
+        /// <param name="document">The document.</param>
         /// <returns>
-        ///   <c>true</c> if [is document DB ref] [the specified document]; otherwise, <c>false</c>.
+        /// 	<c>true</c> if [is document DB ref] [the specified document]; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsDocumentDBRef(Document document){
             return document != null && document.Contains(RefName) && document.Contains(IdName);

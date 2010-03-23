@@ -5,11 +5,19 @@ using MongoDB.Driver.Serialization.Builders;
 
 namespace MongoDB.Driver.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class BsonReflectionBuilder : IBsonObjectBuilder
     {
         private readonly SerializationFactory _serializationFactory;
         readonly Stack<Type> _type = new Stack<Type>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BsonReflectionBuilder"/> class.
+        /// </summary>
+        /// <param name="serializationFactory">The serialization factory.</param>
+        /// <param name="rootType">Type of the root.</param>
         public BsonReflectionBuilder(SerializationFactory serializationFactory, Type rootType){
             if(serializationFactory == null)
                 throw new ArgumentNullException("serializationFactory");
@@ -20,6 +28,10 @@ namespace MongoDB.Driver.Serialization
             _type.Push(rootType);
         }
 
+        /// <summary>
+        /// Begins the object.
+        /// </summary>
+        /// <returns></returns>
         public object BeginObject()
         {
             var type = _type.Peek();
@@ -30,6 +42,11 @@ namespace MongoDB.Driver.Serialization
             return new ObjectBuilder(_serializationFactory, type);
         }
 
+        /// <summary>
+        /// Begins the property.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="name">The name.</param>
         public void BeginProperty(object instance, string name)
         {
             var handler = ((IObjectBuilder)instance);
@@ -37,6 +54,10 @@ namespace MongoDB.Driver.Serialization
             _type.Push(handler.BeginProperty(name));
         }
 
+        /// <summary>
+        /// Begins the array.
+        /// </summary>
+        /// <returns></returns>
         public object BeginArray()
         {
             var type = _type.Peek();
@@ -47,6 +68,11 @@ namespace MongoDB.Driver.Serialization
             return new ObjectArrayBuilder(type);
         }
 
+        /// <summary>
+        /// Ends the object.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns></returns>
         public object EndObject(object instance)
         {
             var handler = ((IObjectBuilder)instance);
@@ -54,6 +80,11 @@ namespace MongoDB.Driver.Serialization
             return handler.Complete();
         }
 
+        /// <summary>
+        /// Ends the array.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns></returns>
         public object EndArray(object instance)
         {
             var handler = ((IObjectBuilder)instance);
@@ -61,6 +92,12 @@ namespace MongoDB.Driver.Serialization
             return handler.Complete();
         }
 
+        /// <summary>
+        /// Ends the property.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         public void EndProperty(object instance, string name, object value)
         {
             var handler = ((IObjectBuilder)instance);

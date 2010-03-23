@@ -167,6 +167,10 @@ namespace MongoDB.Driver.Connections
             _connection = _factory.Open();
         }
 
+        /// <summary>
+        /// Gets the stream.
+        /// </summary>
+        /// <returns></returns>
         public Stream GetStream (){
             return _connection.GetStream ();
         }

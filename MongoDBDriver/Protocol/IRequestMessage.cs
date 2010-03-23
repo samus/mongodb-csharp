@@ -7,6 +7,10 @@ namespace MongoDB.Driver.Protocol
     /// </summary>
     public interface IRequestMessage
     {
+        /// <summary>
+        /// Writes the specified stream.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
         void Write (Stream stream);
     }
 }

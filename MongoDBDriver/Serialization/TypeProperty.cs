@@ -4,9 +4,19 @@ using System.Reflection;
 
 namespace MongoDB.Driver.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TypeProperty
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public delegate object GetValueFunc(object instance);
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public delegate void SetValueAction(object instance, object value);
 
         private readonly GetValueFunc _getValue;

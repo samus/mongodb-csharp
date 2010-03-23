@@ -5,13 +5,31 @@ using System.Text.RegularExpressions;
 
 namespace MongoDB.Driver
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
     public class MongoConnectionStringBuilder
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public const int DefaultMaximumPoolSize = 100;
+        /// <summary>
+        /// 
+        /// </summary>
         public const int DefaultMinimumPoolSize = 0;
+        /// <summary>
+        /// 
+        /// </summary>
         public const bool DefaultPooled = true;
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(15);
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.Zero;
 
         private static readonly Regex PairRegex = new Regex ("^\\s*(.*)\\s*=\\s*(.*)\\s*$");

@@ -4,6 +4,9 @@ using System.Threading;
 
 namespace MongoDB.Driver.Connections
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ConnectionFactory
     {
         private static readonly TimeSpan MaintenaceWakeup = TimeSpan.FromSeconds(10);

@@ -154,6 +154,10 @@ namespace MongoDB.Driver
             }
         }
 
+        /// <summary>
+        /// Gets the documents.
+        /// </summary>
+        /// <value>The documents.</value>
         public IEnumerable<Document> Documents{
             get{
                 if(Result == null)
@@ -169,10 +173,19 @@ namespace MongoDB.Driver
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance can modify.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance can modify; otherwise, <c>false</c>.
+        /// </value>
         public Boolean CanModify{
             get { return canModify; }
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose(){
             if(KeepTemp || Out != null || disposing)
                 return;
@@ -185,6 +198,10 @@ namespace MongoDB.Driver
             database.MetaData.DropCollection(Result.CollectionName);
         }
 
+        /// <summary>
+        /// Executes this instance.
+        /// </summary>
+        /// <returns></returns>
         public MapReduce Execute(){
             if(command.Contains("map") == false || command.Contains("reduce") == false)
                 throw new InvalidOperationException("Cannot execute without a map and reduce function");
@@ -204,37 +221,68 @@ namespace MongoDB.Driver
                 throw new InvalidOperationException("Cannot modify a map/reduce that has already executed");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class MapReduceResult
         {
             private readonly Document counts;
             private readonly Document result;
             private TimeSpan span = TimeSpan.MinValue;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="MapReduceResult"/> class.
+            /// </summary>
+            /// <param name="result">The result.</param>
             public MapReduceResult(Document result){
                 this.result = result;
                 counts = (Document)result["counts"];
             }
 
+            /// <summary>
+            /// Gets the name of the collection.
+            /// </summary>
+            /// <value>The name of the collection.</value>
             public string CollectionName{
                 get { return (string)result["result"]; }
             }
 
+            /// <summary>
+            /// Gets the input count.
+            /// </summary>
+            /// <value>The input count.</value>
             public long InputCount{
                 get { return Convert.ToInt64(counts["input"]); }
             }
 
+            /// <summary>
+            /// Gets the emit count.
+            /// </summary>
+            /// <value>The emit count.</value>
             public long EmitCount{
                 get { return Convert.ToInt64(counts["emit"]); }
             }
 
+            /// <summary>
+            /// Gets the output count.
+            /// </summary>
+            /// <value>The output count.</value>
             public long OutputCount{
                 get { return Convert.ToInt64(counts["output"]); }
             }
 
+            /// <summary>
+            /// Gets the time.
+            /// </summary>
+            /// <value>The time.</value>
             public long Time{
                 get { return Convert.ToInt64(result["timeMillis"]); }
             }
 
+            /// <summary>
+            /// Gets the time span.
+            /// </summary>
+            /// <value>The time span.</value>
             public TimeSpan TimeSpan{
                 get{
                     if(span == TimeSpan.MinValue)
@@ -243,10 +291,18 @@ namespace MongoDB.Driver
                 }
             }
 
+            /// <summary>
+            /// Gets a value indicating whether this <see cref="MapReduceResult"/> is ok.
+            /// </summary>
+            /// <value><c>true</c> if ok; otherwise, <c>false</c>.</value>
             public Boolean Ok{
                 get { return (1.0 == Convert.ToDouble(result["ok"])); }
             }
 
+            /// <summary>
+            /// Gets the error message.
+            /// </summary>
+            /// <value>The error message.</value>
             public String ErrorMessage{
                 get{
                     if(result.Contains("msg"))
@@ -255,6 +311,12 @@ namespace MongoDB.Driver
                 }
             }
 
+            /// <summary>
+            /// Returns a <see cref="System.String"/> that represents this instance.
+            /// </summary>
+            /// <returns>
+            /// A <see cref="System.String"/> that represents this instance.
+            /// </returns>
             public override string ToString(){
                 return result.ToString();
             }

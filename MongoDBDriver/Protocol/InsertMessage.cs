@@ -10,10 +10,10 @@ namespace MongoDB.Driver.Protocol
     /// </summary>
     /// <remarks>
     /// struct {
-    ///     MsgHeader header;             // standard message header
-    ///     int32     ZERO;               // 0 - reserved for future use
-    ///     cstring   fullCollectionName; // "dbname.collectionname"
-    ///     BSON[]    documents;          // one or more documents to insert into the collection
+    /// MsgHeader header;             // standard message header
+    /// int32     ZERO;               // 0 - reserved for future use
+    /// cstring   fullCollectionName; // "dbname.collectionname"
+    /// BSON[]    documents;          // one or more documents to insert into the collection
     /// }
     /// </remarks>
     public class InsertMessage : MessageBase, IRequestMessage
@@ -127,9 +127,18 @@ namespace MongoDB.Driver.Protocol
             writer.Flush();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected struct MessageChunk
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public List<object> Documents;
+            /// <summary>
+            /// 
+            /// </summary>
             public int Size;
         }
     }

@@ -2,6 +2,9 @@ using System;
 
 namespace MongoDB.Driver.Connections
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ConnectionFactoryBase : IConnectionFactory
     {
         private int _endPointPointer;

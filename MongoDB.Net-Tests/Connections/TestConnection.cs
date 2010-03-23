@@ -56,11 +56,11 @@ namespace MongoDB.Driver.Connections
             writer.Write((byte)0);
         }
         
-        protected QueryMessage<Document> generateQueryMessage(){
+        protected QueryMessage generateQueryMessage(){
             Document qdoc = new Document();
             qdoc.Add("listDatabases", 1.0);
             //QueryMessage qmsg = new QueryMessage(qdoc,"system.namespaces");
-            var qmsg = new QueryMessage<Document>(new BsonDocumentDescriptor(), qdoc, "admin.$cmd");
+            var qmsg = new QueryMessage(new BsonDocumentDescriptor(), qdoc, "admin.$cmd");
             qmsg.NumberToReturn = -1;
             
             return qmsg;

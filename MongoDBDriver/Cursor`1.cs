@@ -7,6 +7,10 @@ using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Cursor<T> : ICursor<T> where T : class
     {
         private readonly Connection _connection;
@@ -295,7 +299,7 @@ namespace MongoDB.Driver
         private void RetrieveData(){
             var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
             
-            var query = new QueryMessage<T>(descriptor) { FullCollectionName = FullCollectionName, Query = BuildSpec(),
+            var query = new QueryMessage(descriptor) { FullCollectionName = FullCollectionName, Query = BuildSpec(),
                                 NumberToReturn = _limit, NumberToSkip = _skip, Options = _options };
             
             if (_fields != null)

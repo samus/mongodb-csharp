@@ -4,10 +4,17 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Builders
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DocumentArrayBuilder : IObjectBuilder
     {
         private readonly List<object> _list = new List<object>();
-        
+
+        /// <summary>
+        /// Completes this instance.
+        /// </summary>
+        /// <returns></returns>
         public object Complete(){
             var type = GetResultListType();
 
@@ -24,14 +31,27 @@ namespace MongoDB.Driver.Serialization.Builders
             return list;
         }
 
+        /// <summary>
+        /// Begins the property.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public Type BeginProperty(string name){
             return typeof(Document);
         }
 
+        /// <summary>
+        /// Ends the property.
+        /// </summary>
+        /// <param name="value">The value.</param>
         public void EndProperty(object value){
             _list.Add(value);
         }
 
+        /// <summary>
+        /// Gets the type of the result list.
+        /// </summary>
+        /// <returns></returns>
         private Type GetResultListType(){
             //Todo: compare the tree up instead only to object
             if(_list.Count == 0)

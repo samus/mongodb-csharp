@@ -2,6 +2,9 @@ using System;
 
 namespace MongoDB.Driver.Bson
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class BsonInfo
     {
         /// <summary>

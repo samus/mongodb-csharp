@@ -10,6 +10,9 @@ using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MongoDatabase : IMongoDatabase
     {
         private readonly ISerializationFactory _serializationFactory;
@@ -20,6 +23,7 @@ namespace MongoDB.Driver
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
         /// </summary>
+        /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="name">The name.</param>
         public MongoDatabase(ISerializationFactory serializationFactory, string connectionString, String name)
@@ -32,6 +36,7 @@ namespace MongoDB.Driver
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
         /// </summary>
+        /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
         public MongoDatabase(ISerializationFactory serializationFactory, Connection connection, String name)
@@ -65,7 +70,7 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        /// Gets the <see cref="MongoDB.Driver.IMongoCollection&lt;MongoDB.Driver.Document&gt;"/> with the specified name.
+        /// Gets the <see cref="MongoDB.Driver.IMongoCollection"/> with the specified name.
         /// </summary>
         /// <value></value>
         public IMongoCollection this[String name]{

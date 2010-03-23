@@ -16,15 +16,31 @@ namespace MongoDB.Driver.Protocol
     /// </remarks>
     public class DeleteMessage : RequestMessageBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeleteMessage"/> class.
+        /// </summary>
+        /// <param name="objectDescriptor">The object descriptor.</param>
         public DeleteMessage(IBsonObjectDescriptor objectDescriptor) 
             : base(objectDescriptor){
             Header = new MessageHeader(OpCode.Delete);
         }
 
+        /// <summary>
+        /// Gets or sets the full name of the collection.
+        /// </summary>
+        /// <value>The full name of the collection.</value>
         public string FullCollectionName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the selector.
+        /// </summary>
+        /// <value>The selector.</value>
         public object Selector { get; set; }
 
+        /// <summary>
+        /// Writes the body.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
         protected override void WriteBody(BsonWriter writer){
             writer.WriteValue(BsonDataType.Integer, 0);
             writer.Write(FullCollectionName, false);
@@ -32,6 +48,11 @@ namespace MongoDB.Driver.Protocol
             writer.WriteObject(Selector);
         }
 
+        /// <summary>
+        /// Calculates the size of the body.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        /// <returns></returns>
         protected override int CalculateBodySize(BsonWriter writer){
             var size = 8; //first int32, second int32 
             size += writer.CalculateSize(FullCollectionName, false);

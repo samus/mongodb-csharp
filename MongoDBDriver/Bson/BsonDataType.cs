@@ -1,7 +1,13 @@
 namespace MongoDB.Driver.Bson
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum BsonDataType
     {
+        /// <summary>
+        /// 
+        /// </summary>
         Number = 1,
         /// <summary>
         /// int32 

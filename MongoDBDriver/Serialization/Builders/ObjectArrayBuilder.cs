@@ -4,12 +4,19 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Builders
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ObjectArrayBuilder : IObjectBuilder
     {
         private readonly Type _type;
         private readonly Type _containingType;
         private readonly IList _list;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectArrayBuilder"/> class.
+        /// </summary>
+        /// <param name="type">The type.</param>
         public ObjectArrayBuilder(Type type){
             if(type == null)
                 throw new ArgumentNullException("type");
@@ -18,18 +25,35 @@ namespace MongoDB.Driver.Serialization.Builders
             _list = (IList)Create(type, out _containingType);
         }
 
+        /// <summary>
+        /// Completes this instance.
+        /// </summary>
+        /// <returns></returns>
         public object Complete(){
             return _type.IsArray ? CreateArrayFromList() : _list;
         }
 
+        /// <summary>
+        /// Begins the property.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public Type BeginProperty(string name){
             return _containingType;
         }
 
+        /// <summary>
+        /// Ends the property.
+        /// </summary>
+        /// <param name="value">The value.</param>
         public void EndProperty(object value){
             _list.Add(value);
         }
 
+        /// <summary>
+        /// Creates the array from list.
+        /// </summary>
+        /// <returns></returns>
         private object CreateArrayFromList(){
             var array = Array.CreateInstance(_containingType,_list.Count);
 
@@ -42,6 +66,12 @@ namespace MongoDB.Driver.Serialization.Builders
             return array;
         }
 
+        /// <summary>
+        /// Creates the specified array type.
+        /// </summary>
+        /// <param name="arrayType">Type of the array.</param>
+        /// <param name="containingType">Type of the containing.</param>
+        /// <returns></returns>
         private static object Create(Type arrayType, out Type containingType)
         {
             containingType = typeof(object);

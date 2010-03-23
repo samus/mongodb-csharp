@@ -21,6 +21,11 @@ namespace MongoDB.Driver.Bson
         private byte[] _byteBuffer;
         private char[] _charBuffer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BsonReader"/> class.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="builder">The builder.</param>
         public BsonReader(Stream stream, IBsonObjectBuilder builder){
             _builder = builder;
             Position = 0;
@@ -28,26 +33,46 @@ namespace MongoDB.Driver.Bson
             _reader = new BinaryReader(_stream);
         }
 
+        /// <summary>
+        /// Gets or sets the position.
+        /// </summary>
+        /// <value>The position.</value>
         public int Position { get; private set; }
 
+        /// <summary>
+        /// Reads this instance.
+        /// </summary>
+        /// <returns></returns>
         public Document Read(){
             Position = 0;
             var doc = (Document)ReadObject();
             return doc;
         }
 
+        /// <summary>
+        /// Reads the object.
+        /// </summary>
+        /// <returns></returns>
         public object ReadObject(){
             var instance = _builder.BeginObject();
             ReadElements(instance);
             return _builder.EndObject(instance);
         }
 
+        /// <summary>
+        /// Reads the array.
+        /// </summary>
+        /// <returns></returns>
         public object ReadArray(){
             var instance = _builder.BeginArray();
             ReadElements(instance);
             return _builder.EndArray(instance);
         }
 
+        /// <summary>
+        /// Reads the elements.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
         private void ReadElements(object instance){
             var startPosition = Position;
             var size = _reader.ReadInt32();
@@ -63,6 +88,10 @@ namespace MongoDB.Driver.Bson
                     (Position - startPosition)));
         }
 
+        /// <summary>
+        /// Reads the element.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
         private void ReadElement(object instance){
             Position++;
             var typeNumber = (sbyte)_reader.ReadByte();
@@ -72,6 +101,11 @@ namespace MongoDB.Driver.Bson
             _builder.EndProperty(instance, key, element);
         }
 
+        /// <summary>
+        /// Reads the type of the element.
+        /// </summary>
+        /// <param name="typeNumber">The type number.</param>
+        /// <returns></returns>
         public Object ReadElementType(int typeNumber){
             switch((BsonDataType)typeNumber){
                 case BsonDataType.Null:
@@ -119,6 +153,10 @@ namespace MongoDB.Driver.Bson
             }
         }
 
+        /// <summary>
+        /// Reads the string.
+        /// </summary>
+        /// <returns></returns>
         public string ReadString(){
             EnsureBuffers();
 
@@ -158,6 +196,10 @@ namespace MongoDB.Driver.Bson
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Reads the length string.
+        /// </summary>
+        /// <returns></returns>
         public string ReadLengthString(){
             var length = _reader.ReadInt32();
             var str = GetString(length - 1);
@@ -167,6 +209,11 @@ namespace MongoDB.Driver.Bson
             return str;
         }
 
+        /// <summary>
+        /// Gets the string.
+        /// </summary>
+        /// <param name="length">The length.</param>
+        /// <returns></returns>
         private string GetString(int length){
             if(length == 0)
                 return string.Empty;
@@ -209,6 +256,10 @@ namespace MongoDB.Driver.Bson
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Reads the scope.
+        /// </summary>
+        /// <returns></returns>
         private object ReadScope(){
             var startpos = Position;
             var size = _reader.ReadInt32();
@@ -224,10 +275,18 @@ namespace MongoDB.Driver.Bson
             return new CodeWScope(val, scope);
         }
 
+        /// <summary>
+        /// Reads the code.
+        /// </summary>
+        /// <returns></returns>
         private object ReadCode(){
             return new Code{Value = ReadLengthString()};
         }
 
+        /// <summary>
+        /// Reads the regex.
+        /// </summary>
+        /// <returns></returns>
         private object ReadRegex(){
             return new MongoRegex{
                 Expression = ReadString(),
@@ -235,6 +294,10 @@ namespace MongoDB.Driver.Bson
             };
         }
 
+        /// <summary>
+        /// Reads the binary.
+        /// </summary>
+        /// <returns></returns>
         private object ReadBinary(){
             var size = _reader.ReadInt32();
             Position += 4;
@@ -258,6 +321,11 @@ namespace MongoDB.Driver.Bson
             };
         }
 
+        /// <summary>
+        /// Gets the last full char stop.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <returns></returns>
         private int GetLastFullCharStop(int start){
             var lookbackPos = start;
             var bis = 0;
@@ -279,6 +347,11 @@ namespace MongoDB.Driver.Bson
             return bis == start - lookbackPos ? start : lookbackPos;
         }
 
+        /// <summary>
+        /// Byteses the in sequence.
+        /// </summary>
+        /// <param name="b">The b.</param>
+        /// <returns></returns>
         private int BytesInSequence(byte b){
             if(b <= _seqRange1[1])
                 return 1;
@@ -291,6 +364,9 @@ namespace MongoDB.Driver.Bson
             return 0;
         }
 
+        /// <summary>
+        /// Ensures the buffers.
+        /// </summary>
         private void EnsureBuffers(){
             if(_byteBuffer == null)
                 _byteBuffer = new byte[MaxCharBytesSize];

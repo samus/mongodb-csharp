@@ -9,7 +9,13 @@ namespace MongoDB.Driver
     [Serializable]
     public class MongoServerEndPoint : EndPoint
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public const string DefaultHost = "localhost";
+        /// <summary>
+        /// 
+        /// </summary>
         public const int DefaultPort = 27017;
 
         /// <summary>

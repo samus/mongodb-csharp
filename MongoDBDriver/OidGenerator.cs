@@ -7,6 +7,9 @@ using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class OidGenerator
     {
         private int inc;

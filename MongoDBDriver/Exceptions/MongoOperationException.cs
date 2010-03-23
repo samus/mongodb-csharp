@@ -2,6 +2,9 @@
 
 namespace MongoDB.Driver
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MongoOperationException : MongoException
     {
         /// <summary>
