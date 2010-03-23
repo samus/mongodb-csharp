@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IMongoDatabase
     {
         /// <summary>
