@@ -9,146 +9,189 @@ namespace MongoDB.Driver
     /// </summary>
     public class Document : DictionaryBase
     {
-        private List<String> orderedKeys = new List<String> ();
+        private List<String> orderedKeys = new List<String>();
 
-        public Object this[String key] {
+        public Object this[String key]
+        {
             get { return Dictionary[key]; }
-            set {
-                if (orderedKeys.Contains (key) == false) {
-                    orderedKeys.Add (key);
-                }
-                Dictionary[key] = value;
-            }
+            set { Dictionary[key] = value; }
         }
 
-        public ICollection Keys {
+        public ICollection Keys
+        {
             get { return (orderedKeys); }
         }
 
-        public ICollection Values {
+        public ICollection Values
+        {
             get { return (Dictionary.Values); }
         }
 
-        public void Add (String key, Object value)
+        public void Add(String key, Object value)
         {
-            Dictionary.Add (key, value);
-            //Relies on ArgumentException from above if key already exists.
-            orderedKeys.Add (key);
+            Dictionary.Add(key, value);
         }
 
-        public Document Append (String key, Object value)
+        public Document Append(String key, Object value)
         {
-            this.Add (key, value);
+            this.Add(key, value);
             return this;
         }
 
         /// <summary>
         /// Adds an item to the Document at the specified position
         /// </summary>
-        public void Insert (String key, Object value, int Position)
+        public void Insert(String key, Object value, int index)
         {
-            Dictionary.Add (key, value);
-            //Relies on ArgumentException from above if key already exists.
-            orderedKeys.Insert (Position, key);
+            bool alreadyContains = orderedKeys.Contains(key);
+            if (!alreadyContains) orderedKeys.Insert(index, key);
+            else throw new ArgumentException("Key already exists in Document", "key");
+
+            try
+            {
+                Dictionary.Add(key, value);
+            }
+            catch
+            {
+                if (!alreadyContains) orderedKeys.Remove(key);
+                throw;
+            }
         }
-        public Document Prepend (String key, Object value)
+        public Document Prepend(String key, Object value)
         {
-            this.Insert (key, value, 0);
+            this.Insert(key, value, 0);
             return this;
         }
 
-        public Document Update (Document @from)
+        public Document Update(Document @from)
         {
             if (@from == null)
                 return this;
-            foreach (String key in @from.Keys) {
+            foreach (String key in @from.Keys)
+            {
                 this[key] = @from[key];
             }
             return this;
         }
 
-        public bool Contains (String key)
+        public bool Contains(String key)
         {
-            return (orderedKeys.Contains (key));
+            return (orderedKeys.Contains(key));
         }
 
-        public void Remove (String key)
+        public void Remove(String key)
         {
-            Dictionary.Remove (key);
-            orderedKeys.Remove (key);
+            Dictionary.Remove(key);
         }
 
-        public new void Clear ()
+        public new void Clear()
         {
-            Dictionary.Clear ();
-            orderedKeys.Clear ();
+            Dictionary.Clear();
         }
 
         /// <summary>
         /// TODO Fix any accidental reordering issues.
         /// </summary>
         /// <param name="dest"></param>
-        public void CopyTo (Document dest)
+        public void CopyTo(Document dest)
         {
-            foreach (String key in orderedKeys) {
-                if (dest.Contains (key))
-                    dest.Remove (key);
+            foreach (String key in orderedKeys)
+            {
+                if (dest.Contains(key))
+                    dest.Remove(key);
                 dest[key] = this[key];
             }
         }
 
-        public override bool Equals (object obj)
+        public override bool Equals(object obj)
         {
-            if (obj is Document) {
-                return Equals (obj as Document);
+            if (obj is Document)
+            {
+                return Equals(obj as Document);
             }
-            return base.Equals (obj);
+            return base.Equals(obj);
         }
 
-        public bool Equals (Document obj)
+        public bool Equals(Document obj)
         {
             if (obj == null)
                 return false;
-            if (orderedKeys.Count != obj.orderedKeys.Count)
+            if (Keys.Count != obj.Keys.Count)
                 return false;
-            return this.GetHashCode () == obj.GetHashCode ();
+            return this.GetHashCode() == obj.GetHashCode();
         }
 
-        public override int GetHashCode (){
+        public override int GetHashCode()
+        {
             int hash = 27;
-            foreach (var key in orderedKeys) {
-                var valueHashCode = GetValueHashCode (this[key]);
-                unchecked {
-                    hash = (13 * hash) + key.GetHashCode ();
+            foreach (string key in Keys)
+            {
+                var valueHashCode = GetValueHashCode(this[key]);
+                unchecked
+                {
+                    hash = (13 * hash) + key.GetHashCode();
                     hash = (13 * hash) + valueHashCode;
                 }
             }
             return hash;
         }
 
-        private int GetValueHashCode (object value)
+        private int GetValueHashCode(object value)
         {
-            if (value == null) {
+            if (value == null)
+            {
                 return 0;
             }
-            return (value is Array) ? GetArrayHashcode ((Array)value) : value.GetHashCode ();
+            return (value is Array) ? GetArrayHashcode((Array)value) : value.GetHashCode();
         }
 
-        private int GetArrayHashcode (Array array)
+        private int GetArrayHashcode(Array array)
         {
             var hash = 0;
-            foreach (var value in array) {
-                var valueHashCode = GetValueHashCode (value);
-                unchecked {
+            foreach (var value in array)
+            {
+                var valueHashCode = GetValueHashCode(value);
+                unchecked
+                {
                     hash = (13 * hash) + valueHashCode;
                 }
             }
             return hash;
         }
 
-        public override string ToString ()
+        protected override void OnClear()
         {
-            return JsonFormatter.Serialize (this);
+            orderedKeys.Clear();
+            base.OnClear();
+        }
+
+        protected override void OnInsertComplete(object key, object value)
+        {
+            string strKey = key as string;
+            if (!orderedKeys.Contains(strKey))
+                orderedKeys.Add(strKey);
+            base.OnInsertComplete(key, value);
+        }
+
+        protected override void OnRemoveComplete(object key, object value)
+        {
+            string strKey = key as string;
+            orderedKeys.Remove(strKey);
+            base.OnRemoveComplete(key, value);
+        }
+
+        protected override void OnSetComplete(object key, object oldValue, object newValue)
+        {
+            string strKey = key as string;
+            if (!orderedKeys.Contains(strKey))
+                orderedKeys.Add(strKey);
+            base.OnSetComplete(key, oldValue, newValue);
+        }
+
+
+        public override string ToString()
+        {
+            return JsonFormatter.Serialize(this);
         }
     }
 }
