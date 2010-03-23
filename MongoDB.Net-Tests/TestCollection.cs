@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
-using MongoDB.Driver.Bson;
 using System.Linq;
 
 namespace MongoDB.Driver
@@ -14,7 +11,7 @@ namespace MongoDB.Driver
 
         public override string TestCollections {
             get {
-                return "inserts,updates,counts,counts_spec,finds,charreads";
+                return "inserts,updates,counts,counts_spec,finds,charreads,saves";
             }
         }
 
