@@ -165,12 +165,12 @@
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="Configuration\ConnectionElement.cs" />
     <Compile Include="Configuration\ConnectionCollection.cs" />
-    <Compile Include="Generic\IMongoCollection.cs" />
-    <Compile Include="Generic\ICursor.cs" />
-    <Compile Include="Generic\Cursor.cs" />
     <Compile Include="Collection.cs" />
-    <Compile Include="Generic\Collection.cs" />
     <Compile Include="Database.cs" />
+    <Compile Include="Collection`1.cs" />
+    <Compile Include="Cursor`1.cs" />
+    <Compile Include="ICursor`1.cs" />
+    <Compile Include="IMongoCollection`1.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -195,7 +195,4 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Generic\" />
-  </ItemGroup>
 </Project>

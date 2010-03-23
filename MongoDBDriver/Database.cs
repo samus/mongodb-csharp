@@ -5,7 +5,6 @@ using System.Text;
 
 using MongoDB.Driver.CommandResults;
 using MongoDB.Driver.Connections;
-using MongoDB.Driver.Generic;
 
 namespace MongoDB.Driver
 {
