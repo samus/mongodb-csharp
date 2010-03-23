@@ -35,36 +35,94 @@ namespace MongoDB.GridFS
 
         #region Properties
         private GridFileInfo gridFileInfo;
+        /// <summary>
+        /// Gets or sets the grid file info.
+        /// </summary>
+        /// <value>The grid file info.</value>
         public GridFileInfo GridFileInfo {
             get { return gridFileInfo; }
             set { gridFileInfo = value; }
         }
 
         private bool canRead;
+        /// <summary>
+        /// When overridden in a derived class, gets a value indicating whether the current stream supports reading.
+        /// </summary>
+        /// <value></value>
+        /// <returns>true if the stream supports reading; otherwise, false.
+        /// </returns>
         public override bool CanRead {
             get { return canRead; }
         }
 
         private bool canWrite;
+        /// <summary>
+        /// When overridden in a derived class, gets a value indicating whether the current stream supports writing.
+        /// </summary>
+        /// <value></value>
+        /// <returns>true if the stream supports writing; otherwise, false.
+        /// </returns>
         public override bool CanWrite {
             get { return canRead; }
         }
 
+        /// <summary>
+        /// When overridden in a derived class, gets a value indicating whether the current stream supports seeking.
+        /// </summary>
+        /// <value></value>
+        /// <returns>true if the stream supports seeking; otherwise, false.
+        /// </returns>
         public override bool CanSeek {
             get { return true; }
         }
 
+        /// <summary>
+        /// When overridden in a derived class, gets the length in bytes of the stream.
+        /// </summary>
+        /// <value></value>
+        /// <returns>
+        /// A long value representing the length of the stream in bytes.
+        /// </returns>
+        /// <exception cref="T:System.NotSupportedException">
+        /// A class derived from Stream does not support seeking.
+        /// </exception>
+        /// <exception cref="T:System.ObjectDisposedException">
+        /// Methods were called after the stream was closed.
+        /// </exception>
         public override long Length {
             get { return gridFileInfo.Length; }
         }
 
         private long position;
+        /// <summary>
+        /// When overridden in a derived class, gets or sets the position within the current stream.
+        /// </summary>
+        /// <value></value>
+        /// <returns>
+        /// The current position within the stream.
+        /// </returns>
+        /// <exception cref="T:System.IO.IOException">
+        /// An I/O error occurs.
+        /// </exception>
+        /// <exception cref="T:System.NotSupportedException">
+        /// The stream does not support seeking.
+        /// </exception>
+        /// <exception cref="T:System.ObjectDisposedException">
+        /// Methods were called after the stream was closed.
+        /// </exception>
         public override long Position {
             get { return position; }
             set { this.Seek (value, SeekOrigin.Begin); }
         }
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridFileStream"/> class.
+        /// </summary>
+        /// <param name="gridfileinfo">The gridfileinfo.</param>
+        /// <param name="files">The files.</param>
+        /// <param name="chunks">The chunks.</param>
+        /// <param name="access">The access.</param>
         public GridFileStream (GridFileInfo gridfileinfo, IMongoCollection files, 
                                IMongoCollection chunks, FileAccess access)
         {
@@ -139,15 +197,9 @@ namespace MongoDB.GridFS
         /// <summary>
         /// Copies from the source array into the grid file.
         /// </summary>
-        /// <param name="array">
-        /// A <see cref="System.Byte[]"/>  The source array to copy from.
-        /// </param>
-        /// <param name="offset">
-        /// A <see cref="System.Int32"/>  The offset within the source array.
-        /// </param>
-        /// <param name="count">
-        /// A <see cref="System.Int32"/>  The number of bytes from within the source array to copy.
-        /// </param>
+        /// <param name="array">A <see cref="System.Byte[]"/>  The source array to copy from.</param>
+        /// <param name="offset">A <see cref="System.Int32"/>  The offset within the source array.</param>
+        /// <param name="count">A <see cref="System.Int32"/>  The number of bytes from within the source array to copy.</param>
         public override void Write (byte[] array, int offset, int count)
         {
             ValidateWriteState (array, offset, count);
@@ -192,6 +244,9 @@ namespace MongoDB.GridFS
         /// will automatically be called on Close() and when the stream position moves off the bounds of the current
         /// chunk.
         /// </summary>
+        /// <exception cref="T:System.IO.IOException">
+        /// An I/O error occurs.
+        /// </exception>
         public override void Flush ()
         {
             if (chunkDirty == false)
@@ -382,6 +437,10 @@ namespace MongoDB.GridFS
             
         }
 
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="T:System.IO.Stream"/> and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose (bool disposing)
         {
             this.canRead = false;

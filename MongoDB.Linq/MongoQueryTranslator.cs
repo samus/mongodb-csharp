@@ -57,6 +57,10 @@ namespace MongoDB.Linq {
             }
         }
 
+        /// <summary>
+        /// Gets the sort order.
+        /// </summary>
+        /// <value>The sort order.</value>
         protected Document SortOrder {
             get {
                 if (sortOrder == null) {

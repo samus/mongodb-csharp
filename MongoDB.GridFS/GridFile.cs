@@ -4,29 +4,53 @@ using MongoDB.Driver;
 
 namespace MongoDB.GridFS
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class GridFile{
 
         private IMongoDatabase db;
         
         private string name;
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name {
             get { return name; }
         }
 
         private IMongoCollection files;
+        /// <summary>
+        /// Gets the files.
+        /// </summary>
+        /// <value>The files.</value>
         public IMongoCollection Files
         {
             get { return this.files; }
         }
 
         private IMongoCollection chunks;
+        /// <summary>
+        /// Gets the chunks.
+        /// </summary>
+        /// <value>The chunks.</value>
         public IMongoCollection Chunks
         {
             get { return this.chunks; }
-        }        
-        
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridFile"/> class.
+        /// </summary>
+        /// <param name="db">The db.</param>
         public GridFile(IMongoDatabase db):this(db,"fs"){}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridFile"/> class.
+        /// </summary>
+        /// <param name="db">The db.</param>
+        /// <param name="bucket">The bucket.</param>
         public GridFile(IMongoDatabase db, string bucket){
             this.db = db;
             this.files = db[bucket + ".files"];
@@ -34,11 +58,20 @@ namespace MongoDB.GridFS
             this.chunks.MetaData.CreateIndex(new Document().Add("files_id", 1).Add("n", 1), true);
             this.name = bucket;
         }
-        
+
+        /// <summary>
+        /// Lists the files.
+        /// </summary>
+        /// <returns></returns>
         public ICursor ListFiles(){
             return this.ListFiles(new Document());
         }
 
+        /// <summary>
+        /// Lists the files.
+        /// </summary>
+        /// <param name="query">The query.</param>
+        /// <returns></returns>
         public ICursor ListFiles(Document query)
         {
             return this.files.Find(new Document().Add("query", query)
@@ -83,14 +116,32 @@ namespace MongoDB.GridFS
         }
         
         #region Create
+        /// <summary>
+        /// Creates the specified filename.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <returns></returns>
         public GridFileStream Create(String filename){
             return Create(filename, FileMode.Create);
         }
-        
+
+        /// <summary>
+        /// Creates the specified filename.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="mode">The mode.</param>
+        /// <returns></returns>
         public GridFileStream Create(String filename, FileMode mode){
             return Create(filename,mode,FileAccess.ReadWrite);
         }
-        
+
+        /// <summary>
+        /// Creates the specified filename.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="mode">The mode.</param>
+        /// <param name="access">The access.</param>
+        /// <returns></returns>
         public GridFileStream Create(String filename, FileMode mode, FileAccess access){
             //Create is delegated to a GridFileInfo because the stream needs access to the gfi and it
             //is easier to do it this way and only write the implementation once.
@@ -101,15 +152,32 @@ namespace MongoDB.GridFS
         #endregion
 
         #region Opens
+        /// <summary>
+        /// Opens the specified filename.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <param name="mode">The mode.</param>
+        /// <param name="access">The access.</param>
+        /// <returns></returns>
         public GridFileStream Open(string filename, FileMode mode, FileAccess access){
             return new GridFileInfo(this.db, this.name, filename).Open(mode, access);
         }
 
+        /// <summary>
+        /// Opens the read.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <returns></returns>
         public GridFileStream OpenRead(String filename){
             GridFileInfo gfi = new GridFileInfo(this.db, this.name, filename);
             return gfi.OpenRead();
         }
 
+        /// <summary>
+        /// Opens the write.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <returns></returns>
         public GridFileStream OpenWrite(String filename){
             GridFileInfo gfi = new GridFileInfo(this.db, this.name, filename);
             return gfi.OpenWrite();
@@ -160,10 +228,20 @@ namespace MongoDB.GridFS
         #endregion        
         
         #region Move
+        /// <summary>
+        /// Moves the specified SRC.
+        /// </summary>
+        /// <param name="src">The SRC.</param>
+        /// <param name="dest">The dest.</param>
         public void Move(String src, String dest){
             this.files.Update(new Document().Add("$set", new Document().Add("filename", dest)), new Document().Add("filename", src));
         }
-        
+
+        /// <summary>
+        /// Moves the specified id.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="dest">The dest.</param>
         public void Move(Object id, String dest){
             this.files.Update(new Document().Add("$set", new Document().Add("filename", dest)), new Document().Add("_id", id));
         }

@@ -25,17 +25,29 @@ namespace MongoDB.GridFS
         #region "filedata properties"
         private Document filedata = new Document();
 
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
+        /// <value>The id.</value>
         public Object Id{
             get { return filedata["_id"]; }
             set { filedata["_id"] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the name of the file.
+        /// </summary>
+        /// <value>The name of the file.</value>
         public string FileName
         {
             get { return (String)filedata["filename"]; }
             set { filedata["filename"] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the type of the content.
+        /// </summary>
+        /// <value>The type of the content.</value>
         public string ContentType{
             get { return (String)filedata["contentType"]; }
             set { filedata["contentType"] = value; }
@@ -50,6 +62,10 @@ namespace MongoDB.GridFS
             set { filedata["length"] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the aliases.
+        /// </summary>
+        /// <value>The aliases.</value>
         public IList<String> Aliases{
             get {
                 if(filedata.Contains("aliases") == false || filedata["aliases"] == null){
@@ -64,26 +80,48 @@ namespace MongoDB.GridFS
             set { filedata["aliases"] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the chunk.
+        /// </summary>
+        /// <value>The size of the chunk.</value>
         public int ChunkSize{
             get { return Convert.ToInt32(filedata["chunkSize"]); }
             set { filedata["chunkSize"] = value; }
         }
 
+        /// <summary>
+        /// Gets the metadata.
+        /// </summary>
+        /// <value>The metadata.</value>
         public Object Metadata{
             get { return (Document)filedata["metadata"]; }
         }
 
+        /// <summary>
+        /// Gets or sets the upload date.
+        /// </summary>
+        /// <value>The upload date.</value>
         public DateTime? UploadDate{
             get { return Convert.ToDateTime(filedata["uploadDate"]); }
             set { filedata["uploadDate"] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the MD5.
+        /// </summary>
+        /// <value>The MD5.</value>
         public string Md5{
             get { return (String)filedata["md5"]; }
             set { filedata["md5"] = value; }
         }
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridFileInfo"/> class.
+        /// </summary>
+        /// <param name="db">The db.</param>
+        /// <param name="bucket">The bucket.</param>
+        /// <param name="filename">The filename.</param>
         public GridFileInfo(IMongoDatabase db, string bucket, string filename){
             this.db = db;
             this.bucket = bucket;
@@ -92,6 +130,11 @@ namespace MongoDB.GridFS
             if(gridFile.Exists(filename)) this.LoadFileData();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GridFileInfo"/> class.
+        /// </summary>
+        /// <param name="db">The db.</param>
+        /// <param name="filename">The filename.</param>
         public GridFileInfo(MongoDatabase db, string filename){
             this.db = db;
             this.bucket = "fs";
@@ -112,15 +155,27 @@ namespace MongoDB.GridFS
         /// <summary>
         /// Creates the file named FileName and returns the GridFileStream
         /// </summary>
+        /// <returns></returns>
         /// <exception cref="IOEXception">If the file already exists</exception>
         public GridFileStream Create(){
             return Create(FileMode.CreateNew);
         }
-        
+
+        /// <summary>
+        /// Creates the specified mode.
+        /// </summary>
+        /// <param name="mode">The mode.</param>
+        /// <returns></returns>
         public GridFileStream Create(FileMode mode){
             return Create(mode,FileAccess.ReadWrite);
-        }        
-        
+        }
+
+        /// <summary>
+        /// Creates the specified mode.
+        /// </summary>
+        /// <param name="mode">The mode.</param>
+        /// <param name="access">The access.</param>
+        /// <returns></returns>
         public GridFileStream Create(FileMode mode, FileAccess access){
             switch (mode) {
                 case FileMode.CreateNew:
@@ -157,7 +212,13 @@ namespace MongoDB.GridFS
         public GridFileStream OpenWrite(){
             return this.Open(FileMode.Open, FileAccess.Write);
         }
-        
+
+        /// <summary>
+        /// Opens the specified mode.
+        /// </summary>
+        /// <param name="mode">The mode.</param>
+        /// <param name="access">The access.</param>
+        /// <returns></returns>
         public GridFileStream Open(FileMode mode, FileAccess access){
             switch (mode) {
                 case FileMode.Create:
@@ -215,7 +276,7 @@ namespace MongoDB.GridFS
                 return this.gridFile.Exists(this.FileName);
             }
         }
-        
+
         /// <summary>
         /// Deletes all data in a file and sets the length to 0.
         /// </summary>
@@ -226,6 +287,10 @@ namespace MongoDB.GridFS
             this.gridFile.Files.Update(filedata);
         }
 
+        /// <summary>
+        /// Calcs the M d5.
+        /// </summary>
+        /// <returns></returns>
         public string CalcMD5(){
             Document doc = this.db.SendCommand(new Document().Add("filemd5", this.Id).Add("root", this.bucket));
             return (String)doc["md5"];
@@ -261,11 +326,21 @@ namespace MongoDB.GridFS
                 throw new DirectoryNotFoundException(this.gridFile.Name + Path.VolumeSeparatorChar + this.FileName);
             }
         }
-        
+
+        /// <summary>
+        /// Toes the document.
+        /// </summary>
+        /// <returns></returns>
         public Document ToDocument(){
            return this.filedata;
        }
-        
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString(){
             return filedata.ToString();
         }
