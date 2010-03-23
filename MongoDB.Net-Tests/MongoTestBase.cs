@@ -1,6 +1,8 @@
 using System;
 using System.Configuration;
-
+using System.IO;
+using MongoDB.Driver.Bson;
+using MongoDB.Driver.Serialization;
 using NUnit.Framework;
 
 namespace MongoDB.Driver
@@ -30,7 +32,6 @@ namespace MongoDB.Driver
         /// Override to add custom code to invoke during the test end.
         /// </summary>
         public virtual void OnDispose(){}
-        
         
         /// <summary>
         /// Sets up the test environment.  You can either override this OnInit to add custom initialization.

@@ -36,7 +36,7 @@ namespace MongoDB.Driver.Serialization
         }
 
         public object BeginArray(object instance){
-            return new ArrayDescriptor((IEnumerable)instance);
+            return new ObjectArrayDescriptor((IEnumerable)instance);
         }
 
         public IEnumerable<string> GetPropertyNames(object instance){

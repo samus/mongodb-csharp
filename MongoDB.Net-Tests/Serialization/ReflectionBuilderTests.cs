@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using NUnit.Framework;
 
 namespace MongoDB.Driver.Tests.Serialization
@@ -192,7 +194,44 @@ namespace MongoDB.Driver.Tests.Serialization
             var obj = Deserialize<ConvertPropertyValues>(bson);
             Assert.IsNotNull(obj);
             Assert.AreEqual(true, obj.Ok);           
+        }
 
+        public class ConvertPropertyValuesToNullable
+        {
+            public int? Value { get; set; }
+        }
+
+        [Test]
+        public void CanConvertPropertyValuesToNullable(){
+            var bson = Serialize(new Document("Value", 2));
+
+            var obj = Deserialize<ConvertPropertyValuesToNullable>(bson);
+            Assert.IsNotNull(obj);
+            Assert.IsNotNull(obj.Value);
+            Assert.AreEqual(2, obj.Value);
+        }
+
+        [Test]
+        public void CanConvertPropertyValuesToNull()
+        {
+            var bson = Serialize(new Document("Value", null));
+
+            var obj = Deserialize<ConvertPropertyValuesToNullable>(bson);
+            Assert.IsNotNull(obj);
+            Assert.IsNull(obj.Value);
+        }
+
+        [Test]
+        public void Test(){
+            var europeStd = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+            
+            var referenceTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Utc), europeStd);
+            
+            var bson = Serialize(new Document("Value", referenceTime));
+
+            var document = Deserialize<Document>(bson);
+            
+            Assert.AreEqual(referenceTime, document["Value"]);
         }
     }
 }

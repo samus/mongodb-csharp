@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
-
+using MongoDB.Driver.Tests.Bson;
 using NUnit.Framework;
 
 using MongoDB.Driver;
@@ -9,7 +9,7 @@ using MongoDB.Driver;
 namespace MongoDB.Driver.Bson
 {
     [TestFixture]
-    public class TestBsonWriter
+    public class TestBsonWriter : BsonTestBase
     {
         char euro = '\u20ac';
         [Test]
@@ -146,6 +146,18 @@ namespace MongoDB.Driver.Bson
             
             Assert.IsTrue(thrown, "Shouldn't be able to write large document");
         }
-      
+
+        [Test]
+        public void TestWriteDateTimeFromOtherTimeZone(){
+            var europeStd = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+
+            var referenceTime = TimeZoneInfo.ConvertTime(new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Utc), europeStd);
+
+            var bson = Serialize(new Document("Value", referenceTime));
+
+            var document = Deserialize(bson);
+
+            Assert.AreEqual(referenceTime, document["Value"]);
+        }
     }
 }

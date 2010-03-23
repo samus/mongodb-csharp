@@ -43,9 +43,9 @@ namespace MongoDB.Driver
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        public Collection(Connection connection, string databaseName, string name)
+        public Collection(ISerializationFactory serializationFactory, Connection connection, string databaseName, string name)
         {
-            _collection = new Collection<Document>(connection, databaseName, name);
+            _collection = new Collection<Document>(serializationFactory, connection, databaseName, name);
         }
 
         public Document FindOne(Document spec){

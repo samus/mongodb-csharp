@@ -15,20 +15,22 @@ namespace MongoDB.Driver
         private readonly Connection _connection;
         private Database _database;
         private CollectionMetaData _metaData;
-        private readonly ISerializationFactory _serializationFactory = SerializationFactory.Default;
+        private readonly ISerializationFactory _serializationFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
         /// </summary>
+        /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        public Collection(Connection connection, string databaseName, string name)
+        public Collection(ISerializationFactory serializationFactory, Connection connection, string databaseName, string name)
         {
             //Todo: This should be internal
             Name = name;
             DatabaseName = databaseName;
             _connection = connection;
+            _serializationFactory = serializationFactory;
         }
 
         /// <summary>
@@ -36,7 +38,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value>The database.</value>
         public IMongoDatabase Database {
-            get { return _database ?? (_database = new Database(_connection, DatabaseName)); }
+            get { return _database ?? (_database = new Database(_serializationFactory, _connection, DatabaseName)); }
         }
 
         /// <summary>
@@ -64,7 +66,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value>The meta data.</value>
         public CollectionMetaData MetaData {
-            get { return _metaData ?? (_metaData = new CollectionMetaData(DatabaseName, Name, _connection)); }
+            get { return _metaData ?? (_metaData = new CollectionMetaData(_serializationFactory, DatabaseName, Name, _connection)); }
         }
 
         /// <summary>
@@ -137,7 +139,8 @@ namespace MongoDB.Driver
         /// Finds the specified spec.
         /// </summary>
         /// <param name="spec">The spec.</param>
-        /// <returns></returns>
+        /// <param name="fields"></param>
+        /// <returns>A <see cref="ICursor"/></returns>
         public ICursor<T> Find(Document spec, Document fields){
             return Find(spec, 0, 0, fields);
         }
@@ -146,7 +149,8 @@ namespace MongoDB.Driver
         /// Finds the specified spec.
         /// </summary>
         /// <param name="spec">The spec.</param>
-        /// <returns></returns>
+        /// <param name="fields"></param>
+        /// <returns>A <see cref="ICursor"/></returns>
         public ICursor<T> Find(object spec, object fields){
             return Find(spec, 0, 0, fields);
         }
@@ -197,7 +201,7 @@ namespace MongoDB.Driver
         public ICursor<T> Find(object spec, int limit, int skip, object fields){
             if (spec == null)
                 spec = new Document();
-            return new Cursor<T>(_connection, FullName, spec, limit, skip, fields);
+            return new Cursor<T>(_serializationFactory, _connection, FullName, spec, limit, skip, fields);
         }
 
         /// <summary>
@@ -319,16 +323,22 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="documents">The documents.</param>
         public void Insert<TElement>(IEnumerable<TElement> documents){
-            var insertMessage = new InsertMessage { FullCollectionName = FullName };
-            
+            var rootType = typeof(T);
+            var bsonDescriptor = _serializationFactory.GetBsonDescriptor(rootType, _connection);
+
+            var insertMessage = new InsertMessage(bsonDescriptor)
+            {
+                FullCollectionName = FullName
+            };
+
+            var descriptor = _serializationFactory.GetObjectDescriptor(rootType);
             var insertDocument = new List<object>();
-            var descriotor = _serializationFactory.GetObjectDescriptor(typeof(T));
             
             foreach (var document in documents) {
-                var id = descriotor.GetPropertyValue(document, "_id");
+                var id = descriptor.GetPropertyValue(document, "_id");
                 
                 if (id == null)
-                    descriotor.SetPropertyValue(document, "_id", Oid.NewOid());
+                    descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId(document));
                 
                 insertDocument.Add(document);
             }
@@ -452,7 +462,7 @@ namespace MongoDB.Driver
                 selector["_id"] = value;
             } else {
                 //Likely a new document
-                descriptor.SetPropertyValue(document, "_id", Oid.NewOid());
+                descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId(document));
                 upsert = UpdateFlags.Upsert;
             }
             
@@ -615,6 +625,16 @@ namespace MongoDB.Driver
         public void Save(Document document){
             Save((object)document);
         }
+
+        /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Save(Document document, bool safemode){
+            Save((object)document, safemode);
+        }
+
         /// <summary>
         /// Saves a document to the database using an upsert.
         /// </summary>
@@ -624,7 +644,37 @@ namespace MongoDB.Driver
         /// to Update(Document) to maintain consistency between drivers.
         /// </remarks>
         public void Save(object document){
-            Update(document);
+            //Try to generate a selector using _id for an existing document.
+            //otherwise just set the upsert flag to 1 to insert and send onward.
+            var selector = new Document();
+            var upsert = UpdateFlags.Upsert;
+
+            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
+
+            var value = descriptor.GetPropertyValue(document, "_id");
+
+            if(value != null)
+            {
+                selector["_id"] = value;
+            }
+            else
+            {
+                //Likely a new document
+                descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId(document));
+                upsert = UpdateFlags.Upsert;
+            }
+
+            Update(document, selector, upsert);
+        }
+
+        /// <summary>
+        /// Saves a document to the database using an upsert.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Save(object document,bool safemode){
+            Save(document);
+            CheckError(safemode);
         }
 
         /// <summary>

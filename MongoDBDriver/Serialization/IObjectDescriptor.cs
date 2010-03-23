@@ -2,8 +2,18 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IObjectDescriptor
     {
+        /// <summary>
+        /// Generates the id.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns></returns>
+        object GenerateId(object instance);
+
         /// <summary>
         /// Gets the property value.
         /// </summary>
