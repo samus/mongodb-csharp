@@ -61,7 +61,7 @@ Namespace Simple
             
             category("name") = "Bluess"
             'The following will do the same thing.
-            categories.Update(category)
+            categories.Save(category)
             
             Console.WriteLine("Category after one update " + categories.FindOne(selector).ToString())
             

@@ -262,7 +262,7 @@ namespace MongoDB.GridFS
             
             
             if (chunk.Contains ("_id")) {
-                chunks.Update (chunk);
+                chunks.Save (chunk);
             } else {
                 chunks.Insert (chunk);
             }
@@ -336,7 +336,7 @@ namespace MongoDB.GridFS
             EnsureNoHoles ();
             string md5 = gridFileInfo.CalcMD5 ();
             gridFileInfo.Md5 = md5;
-            this.files.Update (gridFileInfo.ToDocument ());
+            this.files.Save (gridFileInfo.ToDocument ());
             base.Close ();
         }
 

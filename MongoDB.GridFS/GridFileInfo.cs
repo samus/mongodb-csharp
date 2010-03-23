@@ -156,7 +156,7 @@ namespace MongoDB.GridFS
         /// Creates the file named FileName and returns the GridFileStream
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="IOEXception">If the file already exists</exception>
+        /// <exception cref="IOException">If the file already exists</exception>
         public GridFileStream Create(){
             return Create(FileMode.CreateNew);
         }
@@ -284,7 +284,7 @@ namespace MongoDB.GridFS
             if(filedata.Contains("_id") == false) return;
             this.gridFile.Chunks.Delete(new Document().Add("files_id", filedata["_id"]));
             this.Length = 0;
-            this.gridFile.Files.Update(filedata);
+            this.gridFile.Files.Save(filedata);
         }
 
         /// <summary>

@@ -28,6 +28,8 @@ namespace MongoDB.Driver.Connections
             _client.NoDelay = true;
             _client.ReceiveTimeout = (int)connectionTimeout.TotalMilliseconds;
             _client.SendTimeout = (int)connectionTimeout.TotalMilliseconds;
+
+            //Todo: custom exception?
             _client.Connect(EndPoint.Host, EndPoint.Port);
         }
 
