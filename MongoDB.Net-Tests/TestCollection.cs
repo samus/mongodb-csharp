@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using NUnit.Framework;
 using System.Linq;
 
@@ -428,6 +428,24 @@ namespace MongoDB.Driver
         public void TestCountInvalidCollection(){
             IMongoCollection counts = DB["counts_wtf"];
             Assert.AreEqual(0, counts.Count());
+        }
+        
+        [Test]
+        public void TestSave(){
+            IMongoCollection saves = DB["saves"];
+            int count = 100;
+            for(int i = 0; i < count; i++){
+                saves.Save(new Document(){{"x", i},{"desc", "This document is number: " + i},{"y", 1}});
+            }
+            Assert.AreEqual(count, saves.Count(new Document(){{"y", 1}}));
+            
+            using(var cur = saves.FindAll()){
+                foreach(var d in cur.Documents){
+                    d["y"] = Convert.ToInt32(d["y"]) + 1;
+                    saves.Save(d);
+                }
+            }
+            Assert.AreEqual(count, saves.Count(new Document(){{"y", 2}}));
         }
     }
 }

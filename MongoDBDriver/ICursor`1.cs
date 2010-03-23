@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver.Generic {
+namespace MongoDB.Driver{
     public interface ICursor<T> : IDisposable
     {
         long Id { get; }

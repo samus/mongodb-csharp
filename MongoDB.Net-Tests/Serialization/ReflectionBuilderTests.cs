@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Tests.Serialization
+namespace MongoDB.Driver.Serialization
 {
     [TestFixture]
     public class ReflectionBuilderTests : SerializationTestBase
@@ -219,19 +219,6 @@ namespace MongoDB.Driver.Tests.Serialization
             var obj = Deserialize<ConvertPropertyValuesToNullable>(bson);
             Assert.IsNotNull(obj);
             Assert.IsNull(obj.Value);
-        }
-
-        [Test]
-        public void Test(){
-            var europeStd = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
-            
-            var referenceTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Utc), europeStd);
-            
-            var bson = Serialize(new Document("Value", referenceTime));
-
-            var document = Deserialize<Document>(bson);
-            
-            Assert.AreEqual(referenceTime, document["Value"]);
         }
     }
 }

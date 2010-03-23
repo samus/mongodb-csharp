@@ -8,6 +8,13 @@ namespace MongoDB.Driver.Serialization
     public interface IObjectDescriptor
     {
         /// <summary>
+        /// Generates the id.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns></returns>
+        object GenerateId(object instance);
+
+        /// <summary>
         /// Gets the property value.
         /// </summary>
         /// <param name="instance">The instance.</param>

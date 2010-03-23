@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MongoDB.Driver.Serialization.Builders;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Tests.Serialization
+namespace MongoDB.Driver.Serialization
 {
     [TestFixture]
     public class ObjectArrayBuilderTests
@@ -154,7 +154,7 @@ namespace MongoDB.Driver.Tests.Serialization
             Assert.AreEqual(typeof(int), containingType2);
         }
 
-        [Test]
+        [Test,Ignore("Support will be later added")]
         public void CanBuildQueue()
         {
             var builder = new ObjectArrayBuilder(typeof(Queue));
@@ -171,7 +171,7 @@ namespace MongoDB.Driver.Tests.Serialization
             Assert.AreEqual(typeof(object), containingType2);
         }
 
-        [Test]
+        [Test, Ignore("Support will be later added")]
         public void CanBuildQueueOfInt()
         {
             var builder = new ObjectArrayBuilder(typeof(Queue<int>));
@@ -188,7 +188,7 @@ namespace MongoDB.Driver.Tests.Serialization
             Assert.AreEqual(typeof(int), containingType2);
         }
 
-        [Test]
+        [Test, Ignore("Support will be later added")]
         public void CanBuildStack()
         {
             var builder = new ObjectArrayBuilder(typeof(Stack));
@@ -205,7 +205,7 @@ namespace MongoDB.Driver.Tests.Serialization
             Assert.AreEqual(typeof(object), containingType2);
         }
 
-        [Test]
+        [Test, Ignore("Support will be later added")]
         public void CanBuildStackOfInt()
         {
             var builder = new ObjectArrayBuilder(typeof(Stack<int>));

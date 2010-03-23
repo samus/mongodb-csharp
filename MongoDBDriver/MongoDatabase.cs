@@ -5,12 +5,12 @@ using System.Text;
 
 using MongoDB.Driver.CommandResults;
 using MongoDB.Driver.Connections;
-using MongoDB.Driver.Generic;
 using MongoDB.Driver.Serialization;
+
 
 namespace MongoDB.Driver
 {
-    public class Database : IMongoDatabase
+    public class MongoDatabase : IMongoDatabase
     {
         private readonly ISerializationFactory _serializationFactory;
         private readonly Connection _connection;
@@ -22,7 +22,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="name">The name.</param>
-        public Database(ISerializationFactory serializationFactory, string connectionString, String name)
+        public MongoDatabase(ISerializationFactory serializationFactory, string connectionString, String name)
             : this(serializationFactory, ConnectionFactory.GetConnection(connectionString),name)
         {
             if(name == null)
@@ -34,7 +34,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
-        public Database(ISerializationFactory serializationFactory, Connection connection, String name)
+        public MongoDatabase(ISerializationFactory serializationFactory, Connection connection, String name)
         {
             //Todo: should be internal
             Name = name;
@@ -91,7 +91,7 @@ namespace MongoDB.Driver
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public IMongoCollection GetCollection(String name){
-            return new Collection(_serializationFactory, _connection, Name, name);
+            return new MongoCollection(_serializationFactory, _connection, Name, name);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace MongoDB.Driver
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public IMongoCollection<T> GetCollection<T>(String name) where T : class{
-            return new Collection<T>(_serializationFactory, _connection, Name, name);
+            return new MongoCollection<T>(_serializationFactory, _connection, Name, name);
         }
 
         /// <summary>
@@ -164,8 +164,8 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="sisterDatabaseName">Name of the sister database.</param>
         /// <returns></returns>
-        public Database GetSisterDatabase(string sisterDatabaseName){
-            return new Database(_serializationFactory, _connection, sisterDatabaseName);
+        public MongoDatabase GetSisterDatabase(string sisterDatabaseName){
+            return new MongoDatabase(_serializationFactory, _connection, sisterDatabaseName);
         }
 
         /// <summary>

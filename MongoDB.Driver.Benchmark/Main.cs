@@ -26,7 +26,7 @@ namespace MongoDB.Driver.Benchmark
 
             Mongo m = new Mongo();
             m.Connect();
-            Database db = m["benchmark"];
+            MongoDatabase db = m["benchmark"];
 
             db.MetaData.DropDatabase();
             Console.WriteLine("Starting Tests");
@@ -104,7 +104,7 @@ namespace MongoDB.Driver.Benchmark
             large.Add("harvested_words", harvestedWords);
         }
 #region Insert Tests
-        static void RunInsertTest(string name, Database db, string col, Document doc, bool index, bool bulk){
+        static void RunInsertTest(string name, MongoDatabase db, string col, Document doc, bool index, bool bulk){
             TimeSpan lowest = TimeSpan.MaxValue;
             for(int i = 0; i < trials; i++){
                 SetupInsert(db,"col",index);
@@ -115,7 +115,7 @@ namespace MongoDB.Driver.Benchmark
             Console.Out.WriteLine(String.Format("{0}{1} {2}", name + new string('.', 55 - name.Length), opsSec, lowest));
         }
 
-        static void SetupInsert(Database db, string col, bool index){
+        static void SetupInsert(MongoDatabase db, string col, bool index){
             try{
                 db.MetaData.DropCollection(col);
                 if(index){
@@ -127,7 +127,7 @@ namespace MongoDB.Driver.Benchmark
             }
         }
 
-        static TimeSpan TimeInsert(Database db, string col, Document doc, bool bulk){
+        static TimeSpan TimeInsert(MongoDatabase db, string col, Document doc, bool bulk){
             DateTime start = DateTime.Now;
             if(bulk){
                 DoBulkInsert(db,col,doc, batchSize);
@@ -139,7 +139,7 @@ namespace MongoDB.Driver.Benchmark
             return t;
         }
 
-        static void DoInsert(Database db, string col, Document doc){
+        static void DoInsert(MongoDatabase db, string col, Document doc){
             for(int i = 0; i < perTrial; i++){
                 Document ins = new Document();
                 doc.CopyTo(ins);
@@ -148,7 +148,7 @@ namespace MongoDB.Driver.Benchmark
             }
         }
         
-        static void DoBulkInsert(Database db, string col, Document doc, int size){
+        static void DoBulkInsert(MongoDatabase db, string col, Document doc, int size){
             for(int i = 0; i < perTrial / size; i++){
                 Document[] docs = new Document[size];
                 for(int f = 0; f < docs.Length; f++){
@@ -224,7 +224,7 @@ namespace MongoDB.Driver.Benchmark
         }
 
         #region Find Tests
-        static void RunFindTest(string name, Database db, string col, Document spec, bool range){
+        static void RunFindTest(string name, MongoDatabase db, string col, Document spec, bool range){
             TimeSpan lowest = TimeSpan.MaxValue;
             for(int i = 0; i < trials; i++){
                 TimeSpan ret = TimeFind(db, col, spec, range);
@@ -234,7 +234,7 @@ namespace MongoDB.Driver.Benchmark
             Console.Out.WriteLine(String.Format("{0}{1} {2}", name + new string('.', 55 - name.Length), opsSec, lowest));
         }
 
-        static TimeSpan TimeFind(Database db, string col,Document psec, bool range){
+        static TimeSpan TimeFind(MongoDatabase db, string col,Document psec, bool range){
             DateTime start = DateTime.Now;
             if(range){
                 DoFindOne(db,col,psec);
@@ -246,13 +246,13 @@ namespace MongoDB.Driver.Benchmark
             return t;
         }
 
-        static void DoFindOne(Database db, string col, Document spec){
+        static void DoFindOne(MongoDatabase db, string col, Document spec){
             for(int i = 0; i < perTrial; i++){
                 db[col].FindOne(spec);
             }
         }
 
-        static void DoFind(Database db, string col, Document spec){
+        static void DoFind(MongoDatabase db, string col, Document spec){
             for(int i = 0; i < perTrial; i++){
                 ICursor cur = db[col].Find(spec);
                 foreach(Document d in cur.Documents){

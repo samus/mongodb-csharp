@@ -1,5 +1,6 @@
 imports System
 imports System.Configuration
+Imports Microsoft.VisualBasic
 
 imports MongoDB.Driver
 
@@ -20,6 +21,8 @@ Namespace Simple
         
         Public Shared Sub Main()
             Dim app As New Application()
+            Dim c As Collection
+            
             app.Setup()
             app.Run()
             Console.WriteLine("Press any key to continue...")

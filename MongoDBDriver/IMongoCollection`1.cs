@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver.Generic
+namespace MongoDB.Driver
 {
     /// <summary>
     /// A collection is a storage unit for a group of <see cref="Document"/>s.  The documents do not all have to 

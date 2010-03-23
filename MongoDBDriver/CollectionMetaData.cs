@@ -13,12 +13,12 @@ namespace MongoDB.Driver
     {
         private string fullName;
         private string name;
-        private Database db;
+        private MongoDatabase db;
 
         public CollectionMetaData (ISerializationFactory serializationFactory, string dbName, string name, Connection conn){
             this.fullName = dbName + "." + name;
             this.name = name;
-            this.db = new Database (serializationFactory, conn, dbName);
+            this.db = new MongoDatabase (serializationFactory, conn, dbName);
         }
 
         private Document options = null;

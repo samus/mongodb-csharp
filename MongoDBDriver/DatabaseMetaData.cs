@@ -12,13 +12,13 @@ namespace MongoDB.Driver
         private ISerializationFactory serializationFactory;
         private Connection connection;  
         private string name;
-        private Database db;
+        private MongoDatabase db;
         
         public DatabaseMetaData(ISerializationFactory serializationFactory, string name, Connection conn){
             this.serializationFactory = serializationFactory;
             this.connection = conn;
             this.name = name;
-            this.db = new Database(serializationFactory, conn, name);
+            this.db = new MongoDatabase(serializationFactory, conn, name);
         }
         
         public IMongoCollection CreateCollection(String name){
@@ -30,11 +30,11 @@ namespace MongoDB.Driver
             Document cmd = new Document();
             cmd.Add("create", name).Merge(options);
             db.SendCommand(cmd);
-            return new Collection(serializationFactory, connection, this.name, name);
+            return new MongoCollection(serializationFactory, connection, this.name, name);
         }
 
 
-        public Boolean DropCollection(Collection col)
+        public Boolean DropCollection(MongoCollection col)
         {
             return this.DropCollection(col.Name);
         }
@@ -51,7 +51,7 @@ namespace MongoDB.Driver
         
         public void AddUser(string username, string password){
             IMongoCollection users = db["system.users"];
-            string pwd = Database.Hash(username + ":mongo:" + password);
+            string pwd = MongoDatabase.Hash(username + ":mongo:" + password);
             Document user = new Document().Add("user", username).Add("pwd", pwd);
             
             if (FindUser(username) != null){
