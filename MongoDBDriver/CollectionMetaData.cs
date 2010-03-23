@@ -9,7 +9,7 @@ namespace MongoDB.Driver
     /// <summary>
     ///   Lazily loaded meta data on the collection.
     /// </summary>
-    public class CollectionMetaData
+    public class CollectionMetadata
     {
         private readonly MongoDatabase _database;
         private readonly string _fullName;
@@ -19,13 +19,13 @@ namespace MongoDB.Driver
         private Document _options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CollectionMetaData"/> class.
+        /// Initializes a new instance of the <see cref="CollectionMetadata"/> class.
         /// </summary>
         /// <param name="serializationFactory">The serialization factory.</param>
-        /// <param name="databaseName">Name of the db.</param>
+        /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        /// <param name="connection">The conn.</param>
-        public CollectionMetaData(ISerializationFactory serializationFactory, string databaseName, string name, Connection connection)
+        /// <param name="connection">The connection.</param>
+        public CollectionMetadata(ISerializationFactory serializationFactory, string databaseName, string name, Connection connection)
         {
             _fullName = databaseName + "." + name;
             this._name = name;

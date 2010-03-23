@@ -14,7 +14,7 @@ namespace MongoDB.Driver
     {
         private readonly Connection _connection;
         private MongoDatabase _database;
-        private CollectionMetaData _metaData;
+        private CollectionMetadata _metaData;
         private readonly ISerializationFactory _serializationFactory;
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace MongoDB.Driver
         /// Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        public CollectionMetaData MetaData {
-            get { return _metaData ?? (_metaData = new CollectionMetaData(_serializationFactory, DatabaseName, Name, _connection)); }
+        public CollectionMetadata MetaData {
+            get { return _metaData ?? (_metaData = new CollectionMetadata(_serializationFactory, DatabaseName, Name, _connection)); }
         }
 
         /// <summary>

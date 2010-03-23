@@ -21,7 +21,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestCreateCollectionNoOptions(){
-            DB.MetaData.CreateCollection("creatednoopts");
+            DB.Metadata.CreateCollection("creatednoopts");
             
             List<String> names = DB.GetCollectionNames();
             Assert.IsTrue(names.Contains("tests.creatednoopts"));
@@ -31,7 +31,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCreateCollectionWithOptions(){
             Document options = new Document().Add("capped", true).Add("size", 10000);
-            DB.MetaData.CreateCollection("createdcapped",options);           
+            DB.Metadata.CreateCollection("createdcapped",options);           
 
             List<String> names = DB.GetCollectionNames();
             Assert.IsTrue(names.Contains("tests.createdcapped"));
@@ -41,7 +41,7 @@ namespace MongoDB.Driver
         [Test]
         public void TestCreateCollectionWithInvalidOptions(){
             Document options = new Document().Add("invalidoption", true);
-            DB.MetaData.CreateCollection("createdinvalid",options);          
+            DB.Metadata.CreateCollection("createdinvalid",options);          
 
             List<String> names = DB.GetCollectionNames();
             Assert.IsTrue(names.Contains("tests.createdinvalid"));
@@ -50,7 +50,7 @@ namespace MongoDB.Driver
         
         [Test]
         public void TestDropCollection(){
-            bool dropped = DB.MetaData.DropCollection("todrop");
+            bool dropped = DB.Metadata.DropCollection("todrop");
             
             Assert.IsTrue(dropped,"Dropped was false");
 
@@ -63,7 +63,7 @@ namespace MongoDB.Driver
         public void TestDropInvalidCollection(){
             bool thrown = false;
             try{
-                DB.MetaData.DropCollection("todrop_notexists");
+                DB.Metadata.DropCollection("todrop_notexists");
             }catch(MongoCommandException){
                 thrown = true;
             }

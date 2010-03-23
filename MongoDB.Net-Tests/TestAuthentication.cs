@@ -26,12 +26,12 @@ namespace MongoDB.Driver
                 mongo.Connect();
 
                 var testDatabase = mongo[testDatabaseName];
-                if(testDatabase.MetaData.FindUser(testuser) == null)
-                    testDatabase.MetaData.AddUser(testuser, testpass);
+                if(testDatabase.Metadata.FindUser(testuser) == null)
+                    testDatabase.Metadata.AddUser(testuser, testpass);
 
                 var adminDatabase = mongo["admin"];
-                if(adminDatabase.MetaData.FindUser(adminuser) == null)
-                    adminDatabase.MetaData.AddUser(adminuser, adminpass);
+                if(adminDatabase.Metadata.FindUser(adminuser) == null)
+                    adminDatabase.Metadata.AddUser(adminuser, adminpass);
             }
         }
 
@@ -108,8 +108,8 @@ namespace MongoDB.Driver
              */
             using(var mongo = ConnectAndAuthenticatedMongo(adminuser, adminuser))
             {
-                mongo[testDatabaseName].MetaData.RemoveUser(testuser);
-                mongo["admin"].MetaData.RemoveUser(adminuser);
+                mongo[testDatabaseName].Metadata.RemoveUser(testuser);
+                mongo["admin"].Metadata.RemoveUser(adminuser);
             }
 
             // clean connections

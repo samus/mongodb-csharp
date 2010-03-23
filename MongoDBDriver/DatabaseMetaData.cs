@@ -6,7 +6,7 @@ namespace MongoDB.Driver
     /// <summary>
     ///   Administration of metadata for a database.
     /// </summary>
-    public class DatabaseMetaData
+    public class DatabaseMetadata
     {
         private readonly Connection _connection;
         private readonly MongoDatabase _database;
@@ -14,12 +14,12 @@ namespace MongoDB.Driver
         private readonly ISerializationFactory _serializationFactory;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "DatabaseMetaData" /> class.
+        ///   Initializes a new instance of the <see cref = "DatabaseMetadata" /> class.
         /// </summary>
         /// <param name = "serializationFactory">The serialization factory.</param>
         /// <param name = "name">The name.</param>
         /// <param name = "conn">The conn.</param>
-        public DatabaseMetaData(ISerializationFactory serializationFactory, string name, Connection conn)
+        public DatabaseMetadata(ISerializationFactory serializationFactory, string name, Connection conn)
         {
             this._serializationFactory = serializationFactory;
             _connection = conn;

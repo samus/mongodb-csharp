@@ -195,7 +195,7 @@ namespace MongoDB.Driver
                 return; //Nothing to do.
 
             //Drop the temporary collection that was created as part of results.
-            database.MetaData.DropCollection(Result.CollectionName);
+            database.Metadata.DropCollection(Result.CollectionName);
         }
 
         /// <summary>

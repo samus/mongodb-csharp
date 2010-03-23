@@ -35,14 +35,14 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestGetOptions(){
-            CollectionMetaData cmd = DB["reads"].MetaData;
+            CollectionMetadata cmd = DB["reads"].MetaData;
             Document options = cmd.Options;
             Assert.IsNotNull(options);
         }
 
         [Test]
         public void TestGetIndexes(){
-            CollectionMetaData cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = DB["indextests"].MetaData;
             Dictionary<string, Document> indexes = cmd.Indexes;
 
             Assert.IsNotNull(indexes);
@@ -54,7 +54,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestCreateIndex(){
-            CollectionMetaData cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = DB["indextests"].MetaData;
             cmd.CreateIndex("lastnames", new Document().Add("lname", IndexOrder.Ascending), false);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["lastnames"]);
@@ -62,7 +62,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestCreateIndexNoNames(){
-            CollectionMetaData cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = DB["indextests"].MetaData;
             cmd.CreateIndex(new Document().Add("lname", IndexOrder.Ascending).Add("fname", IndexOrder.Ascending), true);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["_lname_fname_unique_"]);
@@ -70,7 +70,7 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestDropIndex(){
-            CollectionMetaData cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = DB["indextests"].MetaData;
             cmd.CreateIndex("firstnames", new Document().Add("fname", IndexOrder.Ascending), false);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["firstnames"]);
@@ -82,7 +82,7 @@ namespace MongoDB.Driver
         public void TestRename(){
             DB["rename"].Insert(new Document(){{"test", "rename"}});
             Assert.AreEqual(1, DB["rename"].Count());
-            CollectionMetaData cmd = DB["rename"].MetaData;
+            CollectionMetadata cmd = DB["rename"].MetaData;
             cmd.Rename("renamed");
             Assert.IsFalse(DB.GetCollectionNames().Contains(DB.Name + ".rename"), "Shouldn't have found collection");
             Assert.IsTrue(DB.GetCollectionNames().Contains(DB.Name + ".renamed"),"Should have found collection");

@@ -28,7 +28,7 @@ namespace MongoDB.Driver.Benchmark
             m.Connect();
             MongoDatabase db = m["benchmark"];
 
-            db.MetaData.DropDatabase();
+            db.Metadata.DropDatabase();
             Console.WriteLine("Starting Tests");
             
             RunEncodeTest("encode (small)",small);
@@ -39,7 +39,7 @@ namespace MongoDB.Driver.Benchmark
             RunDecodeTest("decode (medium)", medium);
             RunDecodeTest("decode (large)", large);
             
-            db.MetaData.DropDatabase();
+            db.Metadata.DropDatabase();
             RunInsertTest("insert (small, no index)", db, "small_none",small,false,false);
             RunInsertTest("insert (medium, no index)", db, "medium_none",medium,false,false);
             RunInsertTest("insert (large, no index)", db, "large_none",large,false,false);
@@ -117,7 +117,7 @@ namespace MongoDB.Driver.Benchmark
 
         static void SetupInsert(MongoDatabase db, string col, bool index){
             try{
-                db.MetaData.DropCollection(col);
+                db.Metadata.DropCollection(col);
                 if(index){
                     Document idx = new Document().Add("x", IndexOrder.Ascending);
                     db[col].MetaData.CreateIndex(idx,false);

@@ -85,7 +85,7 @@
     <Compile Include="CommandResults\CommandResultBase.cs" />
     <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="IMongoDatabase.cs" />
-    <Compile Include="CollectionMetaData.cs" />
+    <Compile Include="CollectionMetadata.cs" />
     <Compile Include="Connections\Connection.cs" />
     <Compile Include="Connections\ConnectionFactory.cs" />
     <Compile Include="Connections\ConnectionFactoryBase.cs" />
@@ -95,7 +95,7 @@
     <Compile Include="Connections\SimpleConnectionFactory.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Bson\BsonWriter.cs" />
-    <Compile Include="DatabaseMetaData.cs" />
+    <Compile Include="DatabaseMetadata.cs" />
     <Compile Include="DBRef.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="Exceptions\MongoCommandException.cs" />

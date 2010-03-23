@@ -18,7 +18,7 @@ namespace MongoDB.Driver
         private readonly ISerializationFactory _serializationFactory;
         private readonly Connection _connection;
         private DatabaseJavascript _javascript;
-        private DatabaseMetaData _metaData;
+        private DatabaseMetadata _metadata;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
@@ -57,8 +57,8 @@ namespace MongoDB.Driver
         /// Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        public DatabaseMetaData MetaData{
-            get { return _metaData ?? (_metaData = new DatabaseMetaData(_serializationFactory, Name, _connection)); }
+        public DatabaseMetadata Metadata{
+            get { return _metadata ?? (_metadata = new DatabaseMetadata(_serializationFactory, Name, _connection)); }
         }
 
         /// <summary>

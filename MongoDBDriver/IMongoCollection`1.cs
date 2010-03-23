@@ -35,7 +35,7 @@ namespace MongoDB.Driver
         /// <summary>
         /// Metadata about the collection such as indexes.
         /// </summary>
-        CollectionMetaData MetaData { get; }
+        CollectionMetadata MetaData { get; }
 
         /// <summary>
         ///   Finds and returns the first document in a query.

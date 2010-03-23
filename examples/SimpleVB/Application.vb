@@ -21,7 +21,6 @@ Namespace Simple
         
         Public Shared Sub Main()
             Dim app As New Application()
-            Dim c As Collection
             
             app.Setup()
             app.Run()

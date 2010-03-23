@@ -29,7 +29,7 @@ namespace MongoDB.Driver
         /// Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        CollectionMetaData MetaData { get; }
+        CollectionMetadata MetaData { get; }
 
         /// <summary>
         /// Finds the one.

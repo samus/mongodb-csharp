@@ -47,7 +47,7 @@ namespace MongoDB.Driver
         /// Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        public CollectionMetaData MetaData {
+        public CollectionMetadata MetaData {
             get { return _collection.MetaData; }
         }
 

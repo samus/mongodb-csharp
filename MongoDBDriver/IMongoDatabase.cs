@@ -18,7 +18,7 @@ namespace MongoDB.Driver
         /// Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        DatabaseMetaData MetaData { get; }
+        DatabaseMetadata Metadata { get; }
 
         /// <summary>
         /// Gets the javascript.

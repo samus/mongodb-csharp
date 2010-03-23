@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 
 using MongoDB.Driver;
@@ -197,7 +195,7 @@ namespace MongoDB.GridFS
         /// <summary>
         /// Copies from the source array into the grid file.
         /// </summary>
-        /// <param name="array">A <see cref="System.Byte[]"/>  The source array to copy from.</param>
+        /// <param name="array">The array.</param>
         /// <param name="offset">A <see cref="System.Int32"/>  The offset within the source array.</param>
         /// <param name="count">A <see cref="System.Int32"/>  The number of bytes from within the source array to copy.</param>
         public override void Write (byte[] array, int offset, int count)
