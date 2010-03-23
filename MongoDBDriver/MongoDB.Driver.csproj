@@ -111,7 +111,10 @@
     <Compile Include="Mongo.cs" />
     <Compile Include="Bson\BsonReader.cs" />
     <Compile Include="Cursor.cs" />
+    <Compile Include="MongoCollection.cs" />
+    <Compile Include="MongoCollection`1.cs" />
     <Compile Include="MongoConnectionStringBuilder.cs" />
+    <Compile Include="MongoDatabase.cs" />
     <Compile Include="MongoMaxKey.cs" />
     <Compile Include="MongoMinKey.cs" />
     <Compile Include="MongoServerEndPoint.cs" />
@@ -168,9 +171,6 @@
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="Configuration\ConnectionElement.cs" />
     <Compile Include="Configuration\ConnectionCollection.cs" />
-    <Compile Include="Collection.cs" />
-    <Compile Include="Database.cs" />
-    <Compile Include="Collection`1.cs" />
     <Compile Include="Cursor`1.cs" />
     <Compile Include="ICursor`1.cs" />
     <Compile Include="IMongoCollection`1.cs" />

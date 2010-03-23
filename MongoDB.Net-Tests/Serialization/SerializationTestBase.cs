@@ -4,7 +4,7 @@ using MongoDB.Driver.Bson;
 using MongoDB.Driver.Serialization;
 using MongoDB.Driver.Tests.Bson;
 
-namespace MongoDB.Driver.Tests.Serialization
+namespace MongoDB.Driver.Serialization
 {
     public abstract class SerializationTestBase : BsonTestBase
     {

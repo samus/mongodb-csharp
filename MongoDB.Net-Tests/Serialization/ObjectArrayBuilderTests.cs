@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MongoDB.Driver.Serialization.Builders;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Tests.Serialization
+namespace MongoDB.Driver.Serialization
 {
     [TestFixture]
     public class ObjectArrayBuilderTests

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Tests.Serialization
+namespace MongoDB.Driver.Serialization
 {
     [TestFixture]
     public class ReflectionBuilderTests : SerializationTestBase

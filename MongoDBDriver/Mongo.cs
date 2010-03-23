@@ -63,15 +63,15 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public Database GetDatabase (String name){
-            return new Database (serializationFactory, connection, name);
+        public MongoDatabase GetDatabase (String name){
+            return new MongoDatabase (serializationFactory, connection, name);
         }
 
         /// <summary>
         /// Gets the <see cref="MongoDatabase"/> with the specified name.
         /// </summary>
         /// <value></value>
-        public Database this[String name] {
+        public MongoDatabase this[String name] {
             get { return this.GetDatabase (name); }
         }
 
