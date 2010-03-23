@@ -6,7 +6,7 @@ namespace MongoDB.Driver
     /// <summary>
     /// 
     /// </summary>
-    public interface IMongoCollection{
+    public interface IMongoCollection {
         /// <summary>
         /// Gets the name.
         /// </summary>
@@ -105,28 +105,28 @@ namespace MongoDB.Driver
         /// <summary>
         /// Inserts the specified doc.
         /// </summary>
-        /// <param name="doc">The doc.</param>
-        void Insert (Document doc);
+        /// <param name="document">The document.</param>
+        void Insert (Document document);
 
         /// <summary>
         /// Inserts the specified doc.
         /// </summary>
-        /// <param name="doc">The doc.</param>
+        /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Insert (Document doc, bool safemode);
+        void Insert (Document document, bool safemode);
 
         /// <summary>
         /// Inserts the specified docs.
         /// </summary>
-        /// <param name="docs">The docs.</param>
-        void Insert (IEnumerable<Document> docs);
+        /// <param name="documents">The docs.</param>
+        void Insert (IEnumerable<Document> documents);
 
         /// <summary>
         /// Inserts the specified docs.
         /// </summary>
-        /// <param name="docs">The docs.</param>
+        /// <param name="documents">The docs.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Insert (IEnumerable<Document> docs, bool safemode);
+        void Insert (IEnumerable<Document> documents, bool safemode);
 
         /// <summary>
         /// Deletes the specified selector.
@@ -144,67 +144,76 @@ namespace MongoDB.Driver
         /// <summary>
         /// Updates the specified doc.
         /// </summary>
-        /// <param name="doc">The doc.</param>
-        void Update (Document doc);
+        /// <param name="document">The document.</param>
+        [Obsolete("Use Save instead")]
+        void Update(Document document);
 
         /// <summary>
         /// Updates the specified doc.
         /// </summary>
-        /// <param name="doc">The doc.</param>
+        /// <param name="document">The document.</param>
         /// <param name="selector">The selector.</param>
-        void Update (Document doc, Document selector);
+        void Update(Document document, Document selector);
 
         /// <summary>
         /// Updates the specified doc.
         /// </summary>
-        /// <param name="doc">The doc.</param>
-        /// <param name="selector">The selector.</param>
-        /// <param name="flags">The flags.</param>
-        void Update (Document doc, Document selector, UpdateFlags flags);
-
-        /// <summary>
-        /// Updates the specified doc.
-        /// </summary>
-        /// <param name="doc">The doc.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Update (Document doc, bool safemode);
-
-        /// <summary>
-        /// Updates the specified doc.
-        /// </summary>
-        /// <param name="doc">The doc.</param>
-        /// <param name="selector">The selector.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Update (Document doc, Document selector, bool safemode);
-
-        /// <summary>
-        /// Updates the specified doc.
-        /// </summary>
-        /// <param name="doc">The doc.</param>
+        /// <param name="document">The document.</param>
         /// <param name="selector">The selector.</param>
         /// <param name="flags">The flags.</param>
+        void Update (Document document, Document selector, UpdateFlags flags);
+
+        /// <summary>
+        /// Updates the specified doc.
+        /// </summary>
+        /// <param name="document">The document.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Update (Document doc, Document selector, UpdateFlags flags, bool safemode);
+        [Obsolete("Use Save instead")]
+        void Update(Document document, bool safemode);
+
+        /// <summary>
+        /// Updates the specified doc.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        void Update (Document document, Document selector, bool safemode);
+
+        /// <summary>
+        /// Updates the specified doc.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="selector">The selector.</param>
+        /// <param name="flags">The flags.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        void Update (Document document, Document selector, UpdateFlags flags, bool safemode);
 
         /// <summary>
         /// Updates all.
         /// </summary>
-        /// <param name="doc">The doc.</param>
+        /// <param name="document">The document.</param>
         /// <param name="selector">The selector.</param>
-        void UpdateAll (Document doc, Document selector);
+        void UpdateAll (Document document, Document selector);
 
         /// <summary>
         /// Updates all.
         /// </summary>
-        /// <param name="doc">The doc.</param>
+        /// <param name="document">The document.</param>
         /// <param name="selector">The selector.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void UpdateAll (Document doc, Document selector, bool safemode);
+        void UpdateAll (Document document, Document selector, bool safemode);
 
         /// <summary>
         /// Saves the specified doc.
         /// </summary>
-        /// <param name="doc">The doc.</param>
-        void Save (Document doc);
+        /// <param name="document">The document.</param>
+        void Save (Document document);
+
+        /// <summary>
+        /// Saves the specified doc.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        void Save(Document document, bool safemode);
     }
 }
