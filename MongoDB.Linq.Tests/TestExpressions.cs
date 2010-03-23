@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
@@ -15,7 +15,7 @@ namespace MongoDB.Linq.Tests {
             switch (memberExpression.Member.MemberType) {
                 case MemberTypes.Property:
                     var propertyInfo = (PropertyInfo)memberExpression.Member;
-                    var innerMember = (MemberExpression)memberExpression.Expression;
+                    var innerMember = (MemberExpression)memberExpression.Expression; //ConstantExpression in Mono
                     var fieldInfo = (FieldInfo)innerMember.Member;
                     var obj = fieldInfo.GetValue(((ConstantExpression)innerMember.Expression).Value);
                     Assert.AreEqual("abc", propertyInfo.GetValue(obj, null));
