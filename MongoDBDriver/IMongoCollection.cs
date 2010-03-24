@@ -4,216 +4,216 @@ using System.Collections.Generic;
 namespace MongoDB.Driver
 {
     /// <summary>
-    /// 
     /// </summary>
-    public interface IMongoCollection {
+    public interface IMongoCollection
+    {
         /// <summary>
-        /// Gets the name.
+        ///   Gets the name.
         /// </summary>
         /// <value>The name.</value>
         string Name { get; }
 
         /// <summary>
-        /// Gets the name of the database.
+        ///   Gets the name of the database.
         /// </summary>
         /// <value>The name of the database.</value>
         string DatabaseName { get; }
 
         /// <summary>
-        /// Gets the full name.
+        ///   Gets the full name.
         /// </summary>
         /// <value>The full name.</value>
         string FullName { get; }
 
         /// <summary>
-        /// Gets the meta data.
+        ///   Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
         CollectionMetadata MetaData { get; }
 
         /// <summary>
-        /// Finds the one.
+        ///   Finds the one.
         /// </summary>
-        /// <param name="spec">The spec.</param>
+        /// <param name = "spec">The spec.</param>
         /// <returns></returns>
-        Document FindOne (Document spec);
+        Document FindOne(Document spec);
 
         /// <summary>
-        /// Finds all.
-        /// </summary>
-        /// <returns></returns>
-        ICursor FindAll ();
-
-        /// <summary>
-        /// Finds the specified where.
-        /// </summary>
-        /// <param name="where">The where.</param>
-        /// <returns></returns>
-        ICursor Find (String @where);
-
-        /// <summary>
-        /// Finds the specified spec.
-        /// </summary>
-        /// <param name="spec">The spec.</param>
-        /// <returns></returns>
-        ICursor Find (Document spec);
-
-        /// <summary>
-        /// Finds the specified spec.
-        /// </summary>
-        /// <param name="spec">The spec.</param>
-        /// <param name="limit">The limit.</param>
-        /// <param name="skip">The skip.</param>
-        /// <returns></returns>
-        ICursor Find (Document spec, int limit, int skip);
-
-        /// <summary>
-        /// Finds the specified spec.
-        /// </summary>
-        /// <param name="spec">The spec.</param>
-        /// <param name="limit">The limit.</param>
-        /// <param name="skip">The skip.</param>
-        /// <param name="fields">The fields.</param>
-        /// <returns></returns>
-        ICursor Find (Document spec, int limit, int skip, Document fields);
-
-        /// <summary>
-        /// Maps the reduce.
+        ///   Finds all.
         /// </summary>
         /// <returns></returns>
-        MapReduce MapReduce ();
+        ICursor FindAll();
 
         /// <summary>
-        /// Maps the reduce builder.
+        ///   Finds the specified where.
+        /// </summary>
+        /// <param name = "where">The where.</param>
+        /// <returns></returns>
+        ICursor Find(String @where);
+
+        /// <summary>
+        ///   Finds the specified spec.
+        /// </summary>
+        /// <param name = "spec">The spec.</param>
+        /// <returns></returns>
+        ICursor Find(Document spec);
+
+        /// <summary>
+        ///   Finds the specified spec.
+        /// </summary>
+        /// <param name = "spec">The spec.</param>
+        /// <param name = "limit">The limit.</param>
+        /// <param name = "skip">The skip.</param>
+        /// <returns></returns>
+        ICursor Find(Document spec, int limit, int skip);
+
+        /// <summary>
+        ///   Finds the specified spec.
+        /// </summary>
+        /// <param name = "spec">The spec.</param>
+        /// <param name = "limit">The limit.</param>
+        /// <param name = "skip">The skip.</param>
+        /// <param name = "fields">The fields.</param>
+        /// <returns></returns>
+        ICursor Find(Document spec, int limit, int skip, Document fields);
+
+        /// <summary>
+        ///   Maps the reduce.
         /// </summary>
         /// <returns></returns>
-        MapReduceBuilder MapReduceBuilder ();
+        MapReduce MapReduce();
 
         /// <summary>
-        /// Counts this instance.
+        ///   Maps the reduce builder.
         /// </summary>
         /// <returns></returns>
-        long Count ();
+        MapReduceBuilder MapReduceBuilder();
 
         /// <summary>
-        /// Counts the specified spec.
+        ///   Counts this instance.
         /// </summary>
-        /// <param name="spec">The spec.</param>
         /// <returns></returns>
-        long Count (Document spec);
+        long Count();
 
         /// <summary>
-        /// Inserts the specified doc.
+        ///   Counts the specified spec.
         /// </summary>
-        /// <param name="document">The document.</param>
-        void Insert (Document document);
+        /// <param name = "spec">The spec.</param>
+        /// <returns></returns>
+        long Count(Document spec);
 
         /// <summary>
-        /// Inserts the specified doc.
+        ///   Inserts the specified doc.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Insert (Document document, bool safemode);
+        /// <param name = "document">The document.</param>
+        void Insert(Document document);
 
         /// <summary>
-        /// Inserts the specified docs.
+        ///   Inserts the specified doc.
         /// </summary>
-        /// <param name="documents">The docs.</param>
-        void Insert (IEnumerable<Document> documents);
+        /// <param name = "document">The document.</param>
+        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        void Insert(Document document, bool safemode);
 
         /// <summary>
-        /// Inserts the specified docs.
+        ///   Inserts the specified docs.
         /// </summary>
-        /// <param name="documents">The docs.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Insert (IEnumerable<Document> documents, bool safemode);
+        /// <param name = "documents">The docs.</param>
+        void Insert(IEnumerable<Document> documents);
 
         /// <summary>
-        /// Deletes the specified selector.
+        ///   Inserts the specified docs.
         /// </summary>
-        /// <param name="selector">The selector.</param>
-        void Delete (Document selector);
+        /// <param name = "documents">The docs.</param>
+        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        void Insert(IEnumerable<Document> documents, bool safemode);
 
         /// <summary>
-        /// Deletes the specified selector.
+        ///   Deletes the specified selector.
         /// </summary>
-        /// <param name="selector">The selector.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Delete (Document selector, bool safemode);
+        /// <param name = "selector">The selector.</param>
+        void Delete(Document selector);
 
         /// <summary>
-        /// Updates the specified doc.
+        ///   Deletes the specified selector.
         /// </summary>
-        /// <param name="document">The document.</param>
+        /// <param name = "selector">The selector.</param>
+        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        void Delete(Document selector, bool safemode);
+
+        /// <summary>
+        ///   Updates the specified doc.
+        /// </summary>
+        /// <param name = "document">The document.</param>
         [Obsolete("Use Save instead")]
         void Update(Document document);
 
         /// <summary>
-        /// Updates the specified doc.
+        ///   Updates the specified doc.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="selector">The selector.</param>
+        /// <param name = "document">The document.</param>
+        /// <param name = "selector">The selector.</param>
         void Update(Document document, Document selector);
 
         /// <summary>
-        /// Updates the specified doc.
+        ///   Updates the specified doc.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="selector">The selector.</param>
-        /// <param name="flags">The flags.</param>
-        void Update (Document document, Document selector, UpdateFlags flags);
+        /// <param name = "document">The document.</param>
+        /// <param name = "selector">The selector.</param>
+        /// <param name = "flags">The flags.</param>
+        void Update(Document document, Document selector, UpdateFlags flags);
 
         /// <summary>
-        /// Updates the specified doc.
+        ///   Updates the specified doc.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        /// <param name = "document">The document.</param>
+        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
         [Obsolete("Use Save instead")]
         void Update(Document document, bool safemode);
 
         /// <summary>
-        /// Updates the specified doc.
+        ///   Updates the specified doc.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="selector">The selector.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Update (Document document, Document selector, bool safemode);
+        /// <param name = "document">The document.</param>
+        /// <param name = "selector">The selector.</param>
+        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        void Update(Document document, Document selector, bool safemode);
 
         /// <summary>
-        /// Updates the specified doc.
+        ///   Updates the specified doc.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="selector">The selector.</param>
-        /// <param name="flags">The flags.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void Update (Document document, Document selector, UpdateFlags flags, bool safemode);
+        /// <param name = "document">The document.</param>
+        /// <param name = "selector">The selector.</param>
+        /// <param name = "flags">The flags.</param>
+        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        void Update(Document document, Document selector, UpdateFlags flags, bool safemode);
 
         /// <summary>
-        /// Updates all.
+        ///   Updates all.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="selector">The selector.</param>
-        void UpdateAll (Document document, Document selector);
+        /// <param name = "document">The document.</param>
+        /// <param name = "selector">The selector.</param>
+        void UpdateAll(Document document, Document selector);
 
         /// <summary>
-        /// Updates all.
+        ///   Updates all.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="selector">The selector.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
-        void UpdateAll (Document document, Document selector, bool safemode);
+        /// <param name = "document">The document.</param>
+        /// <param name = "selector">The selector.</param>
+        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        void UpdateAll(Document document, Document selector, bool safemode);
 
         /// <summary>
-        /// Saves the specified doc.
+        ///   Saves the specified doc.
         /// </summary>
-        /// <param name="document">The document.</param>
-        void Save (Document document);
+        /// <param name = "document">The document.</param>
+        void Save(Document document);
 
         /// <summary>
-        /// Saves the specified doc.
+        ///   Saves the specified doc.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        /// <param name = "document">The document.</param>
+        /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
         void Save(Document document, bool safemode);
     }
 }

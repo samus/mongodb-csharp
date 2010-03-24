@@ -174,7 +174,6 @@ namespace MongoDB.Driver.Serialization
             if(instance is Document){
                 var document = (Document)instance;
                 return document[mongoName];
-
             }
 
             var property = GetPropertyFromMongoName(mongoName);

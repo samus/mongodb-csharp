@@ -144,18 +144,6 @@ namespace MongoDB.Driver
         /// <param name="skip">The skip.</param>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        public ICursor<T> Find(Document spec, int limit, int skip, Document fields){
-            return Find((object)spec, limit, skip, (object)fields);
-        }
-
-        /// <summary>
-        /// Finds the specified spec.
-        /// </summary>
-        /// <param name="spec">The spec.</param>
-        /// <param name="limit">The limit.</param>
-        /// <param name="skip">The skip.</param>
-        /// <param name="fields">The fields.</param>
-        /// <returns></returns>
         public ICursor<T> Find(object spec, int limit, int skip, object fields){
             if (spec == null)
                 spec = new Document();
@@ -221,8 +209,9 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        /// Inserts the specified documents.
+        /// Inserts all.
         /// </summary>
+        /// <typeparam name="TElement">The type of the element.</typeparam>
         /// <param name="documents">The documents.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
         public void Insert<TElement>(IEnumerable<TElement> documents, bool safemode){
@@ -237,6 +226,12 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="documents">The documents.</param>
         public void Insert<TElement>(IEnumerable<TElement> documents){
+            if(documents is Document)
+            {
+                Insert(new[]{(Document)documents});
+                return;
+            }
+
             var rootType = typeof(T);
             var bsonDescriptor = _serializationFactory.GetBsonDescriptor(rootType, _connection);
 

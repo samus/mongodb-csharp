@@ -171,7 +171,6 @@ namespace MongoDB.Driver
             _collection.Insert(document, safemode);
         }
 
-
         /// <summary>
         /// Inserts the specified docs.
         /// </summary>
