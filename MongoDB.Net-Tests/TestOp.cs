@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver
@@ -142,6 +137,14 @@ namespace MongoDB.Driver
             var op = Op.Type(BsonDataType.Boolean);
 
             Assert.AreEqual((int)BsonDataType.Boolean, op["$type"]);
+        }
+
+        [Test]
+        public void Where()
+        {
+            var op = Op.Where("return this.a == 3 || this.b == 4;");
+
+            Assert.AreEqual("return this.a == 3 || this.b == 4;",op["$where"]);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver.Bson;
+﻿using System;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver
 {
@@ -149,6 +150,19 @@ namespace MongoDB.Driver
         public static Op Type(BsonDataType bsonType)
         {
             return (Op)new Op().Add("$type", (int)bsonType);
+        }
+
+        /// <summary>
+        /// Sends the Javascript expressiosn to the server.
+        /// </summary>
+        /// <param name="javascript">The javascript.</param>
+        /// <returns></returns>
+        public static Op Where(string javascript)
+        {
+            if(javascript == null)
+                throw new ArgumentNullException("javascript");
+
+            return (Op)new Op().Add("$where", javascript);
         }
 
         /// <summary>
