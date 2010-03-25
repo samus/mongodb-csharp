@@ -383,7 +383,7 @@ namespace MongoDB.Driver
             
             var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
             
-            foreach (var name in descriptor.GetMongoPropertyNames())
+            foreach (var name in descriptor.GetMongoPropertyNames(document))
                 if (name.IndexOf('$') == 0) {
                     foundOp = true;
                     break;

@@ -89,7 +89,7 @@
     <Compile Include="Serialization\Builders\ConcreteClassMapBuilder.cs" />
     <Compile Include="Serialization\Builders\DocumentBuilder.cs" />
     <Compile Include="Serialization\Builders\IObjectBuilder.cs" />
-    <Compile Include="Serialization\BsonObjectBuilder.cs" />
+    <Compile Include="Serialization\BsonClassMapBuilder.cs" />
     <Compile Include="Serialization\Builders\PolymorphicClassMapBuilder.cs" />
     <Compile Include="Serialization\ClassMapObjectDescriptorAdapter.cs" />
     <Compile Include="Serialization\Descriptors\ArrayDescriptor.cs" />
@@ -99,7 +99,7 @@
     <Compile Include="Serialization\Descriptors\ExampleClassMapDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\IClassMapDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\IPropertyDescriptor.cs" />
-    <Compile Include="Serialization\BsonObjectDescriptor.cs" />
+    <Compile Include="Serialization\BsonClassMapDescriptor.cs" />
     <Compile Include="Serialization\DocumentObjectDescriptorAdapter.cs" />
     <Compile Include="Serialization\IClassMapExtensions.cs" />
     <Compile Include="Serialization\IObjectDescriptor.cs" />

@@ -41,7 +41,10 @@ namespace MongoDB.Driver.Serialization
         /// <returns></returns>
         public IBsonObjectBuilder GetBsonBuilder(Type rootType)
         {
-            return new BsonObjectBuilder(_mappingStore, rootType);
+            if (typeof(Document).IsAssignableFrom(rootType))
+                return new BsonDocumentBuilder();
+
+            return new BsonClassMapBuilder(_mappingStore, rootType);
         }
 
         /// <summary>
@@ -52,7 +55,10 @@ namespace MongoDB.Driver.Serialization
         /// <returns></returns>
         public IBsonObjectDescriptor GetBsonDescriptor(Type rootType)
         {
-            return new BsonObjectDescriptor(_mappingStore, rootType);
+            if (typeof(Document).IsAssignableFrom(rootType))
+                return new BsonDocumentDescriptor();
+
+            return new BsonClassMapDescriptor(_mappingStore, rootType);
         }
 
         /// <summary>

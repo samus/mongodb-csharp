@@ -33,7 +33,8 @@ namespace MongoDB.Driver.Serialization
         /// <summary>
         /// Gets the mongo property names.
         /// </summary>
+        /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        IEnumerable<string> GetMongoPropertyNames();
+        IEnumerable<string> GetMongoPropertyNames(object instance);
     }
 }

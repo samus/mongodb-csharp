@@ -9,12 +9,12 @@ using MongoDB.Driver.Serialization.Builders;
 
 namespace MongoDB.Driver.Serialization
 {
-    internal class BsonObjectBuilder : IBsonObjectBuilder
+    internal class BsonClassMapBuilder : IBsonObjectBuilder
     {
         private readonly Stack<Type> _types;
         private readonly IMappingStore _mappingStore;
 
-        public BsonObjectBuilder(IMappingStore mappingStore, Type classType)
+        public BsonClassMapBuilder(IMappingStore mappingStore, Type classType)
         {
             _mappingStore = mappingStore;
             _types = new Stack<Type>();

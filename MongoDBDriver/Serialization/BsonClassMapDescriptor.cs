@@ -12,12 +12,12 @@ using MongoDB.Driver.Serialization.Descriptors;
 
 namespace MongoDB.Driver.Serialization
 {
-    internal class BsonObjectDescriptor : IBsonObjectDescriptor
+    internal class BsonClassMapDescriptor : IBsonObjectDescriptor
     {
         private readonly Stack<Type> _types;
         private readonly IMappingStore _mappingStore;
 
-        public BsonObjectDescriptor(IMappingStore mappingStore, Type rootType)
+        public BsonClassMapDescriptor(IMappingStore mappingStore, Type rootType)
         {
             if (mappingStore == null)
                 throw new ArgumentNullException("mappingStore");

@@ -37,8 +37,9 @@ namespace MongoDB.Driver.Serialization
         /// <summary>
         /// Gets the mongo property names.
         /// </summary>
+        /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public IEnumerable<string> GetMongoPropertyNames()
+        public IEnumerable<string> GetMongoPropertyNames(object instance)
         {
             if (_classMap.HasId)
                 yield return _classMap.IdMap.Alias;
