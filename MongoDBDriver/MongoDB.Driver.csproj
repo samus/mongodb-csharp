@@ -33,7 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <RootNamespace>MongoDB.Driver</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
@@ -71,6 +71,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
@@ -83,6 +86,59 @@
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
     <Compile Include="CommandResults\CommandResultBase.cs" />
+    <Compile Include="Configuration\CollectionAdapters\ArrayListCollectionAdapter.cs" />
+    <Compile Include="Configuration\CollectionAdapters\GenericListCollectionAdapter.cs" />
+    <Compile Include="Configuration\CollectionAdapters\GenericSetCollectionAdapter.cs" />
+    <Compile Include="Configuration\CollectionAdapters\ICollectionAdapter.cs" />
+    <Compile Include="Configuration\IdGenerators\AssignedIdGenerator.cs" />
+    <Compile Include="Configuration\IdGenerators\GuidCombGenerator.cs" />
+    <Compile Include="Configuration\IdGenerators\IdGenerationException.cs" />
+    <Compile Include="Configuration\IdGenerators\IIdGenerator.cs" />
+    <Compile Include="Configuration\IdGenerators\OidGenerator.cs" />
+    <Compile Include="Configuration\Inflector.cs" />
+    <Compile Include="Configuration\Mapping\AutoMappingStore.cs" />
+    <Compile Include="Configuration\Mapping\Auto\AggregateAutoMapper.cs" />
+    <Compile Include="Configuration\Mapping\Auto\AutoMapper.cs" />
+    <Compile Include="Configuration\Mapping\Auto\AutoMappingProfile.cs" />
+    <Compile Include="Configuration\Mapping\Auto\ClassOverrides.cs" />
+    <Compile Include="Configuration\Mapping\Auto\IAutoMapper.cs" />
+    <Compile Include="Configuration\Mapping\Auto\IAutoMappingProfile.cs" />
+    <Compile Include="Configuration\Mapping\Auto\IMemberFinder.cs" />
+    <Compile Include="Configuration\Mapping\Auto\MemberOverrides.cs" />
+    <Compile Include="Configuration\Mapping\Auto\PublicMemberFinder.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\ConventionProfile.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultCollectionAdapterConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultDefaultValueConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultIdGeneratorConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultIdUnsavedValueConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateAliasConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateCollectionNameConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateDiscriminatorAliasConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateDiscriminatorConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IAliasConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\ICollectionAdapterConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\ICollectionNameConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IDefaultValueConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IDiscriminatorAliasConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IDiscriminatorConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IExtendedPropertiesConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IIdConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IIdGeneratorConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IIdUnsavedValueConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\NamedExtendedPropertiesConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\NamedIdConvention.cs" />
+    <Compile Include="Configuration\Mapping\IMappingStore.cs" />
+    <Compile Include="Configuration\Mapping\Model\ClassMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\ClassMapBase.cs" />
+    <Compile Include="Configuration\Mapping\Model\CollectionMemberMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\DocumentMemberMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\ExtendedPropertiesMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\IClassMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\IdMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\MemberMapBase.cs" />
+    <Compile Include="Configuration\Mapping\Model\MemberReflectionOptimizer.cs" />
+    <Compile Include="Configuration\Mapping\Model\PersistentMemberMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\SubClassMap.cs" />
     <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="CollectionMetadata.cs" />
@@ -174,6 +230,7 @@
     <Compile Include="Cursor`1.cs" />
     <Compile Include="ICursor`1.cs" />
     <Compile Include="IMongoCollection`1.cs" />
+    <Compile Include="Util\ReflectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
