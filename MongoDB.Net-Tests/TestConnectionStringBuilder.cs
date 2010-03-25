@@ -16,13 +16,14 @@ namespace MongoDB.Driver
         public void TestDefaults (){
             var builder = new MongoConnectionStringBuilder ();
             Assert.IsNull (builder.Username);
-            Assert.IsNull (builder.Password);
+            Assert.IsNull(builder.Database);
+            Assert.IsNull(builder.Password);
             Assert.AreEqual (builder.MaximumPoolSize, MongoConnectionStringBuilder.DefaultMaximumPoolSize);
             Assert.AreEqual (builder.MinimumPoolSize, MongoConnectionStringBuilder.DefaultMinimumPoolSize);
             Assert.AreEqual (builder.ConnectionLifetime, MongoConnectionStringBuilder.DefaultConnectionLifeTime);
             Assert.AreEqual (builder.ConnectionTimeout, MongoConnectionStringBuilder.DefaultConnectionTimeout);
             Assert.AreEqual (builder.Pooled, MongoConnectionStringBuilder.DefaultPooled);
-            
+
             var servers = new List<MongoServerEndPoint> (builder.Servers);
             Assert.AreEqual (1, servers.Count);
             Assert.AreEqual (MongoServerEndPoint.DefaultPort, servers[0].Port);
@@ -31,10 +32,11 @@ namespace MongoDB.Driver
 
         [Test]
         public void TestConnectionStringParsing (){
-            var builder = new MongoConnectionStringBuilder ("Username=testuser;Password=testpassword;Server=testserver:555;ConnectionLifetime=50;MaximumPoolSize=101;MinimumPoolSize=202;Pooled=false");
-            Assert.AreEqual ("testuser", builder.Username);
-            Assert.AreEqual ("testpassword", builder.Password);
-            Assert.AreEqual (101, builder.MaximumPoolSize);
+            var builder = new MongoConnectionStringBuilder ("Username=testuser;Password=testpassword;Server=testserver:555;ConnectionLifetime=50;MaximumPoolSize=101;MinimumPoolSize=202;Pooled=false;Database=testdatabase");
+            Assert.AreEqual("testuser", builder.Username);
+            Assert.AreEqual("testpassword", builder.Password);
+            Assert.AreEqual("testdatabase", builder.Database);
+            Assert.AreEqual(101, builder.MaximumPoolSize);
             Assert.AreEqual (202, builder.MinimumPoolSize);
             Assert.AreEqual (TimeSpan.FromSeconds (50), builder.ConnectionLifetime);
             Assert.AreEqual (false, builder.Pooled);
@@ -81,5 +83,48 @@ namespace MongoDB.Driver
             Assert.AreEqual ("Server=testserver", builder.ToString ());
         }
 
+        [Test]
+        public void TestSimpleUriString()
+        {
+            var builder = new MongoConnectionStringBuilder("mongodb://server");
+            Assert.AreEqual(1, builder.Servers.Length);
+            Assert.AreEqual("server", builder.Servers[0].Host);
+            Assert.AreEqual(MongoServerEndPoint.DefaultPort, builder.Servers[0].Port);
+        }
+
+        [Test]
+        public void TestUriStringWithUsenameAndPasswort()
+        {
+            var builder = new MongoConnectionStringBuilder("mongodb://username:password@server");
+            Assert.AreEqual("username", builder.Username);
+            Assert.AreEqual("password", builder.Password);
+            Assert.AreEqual(1, builder.Servers.Length);
+            Assert.AreEqual("server", builder.Servers[0].Host);
+            Assert.AreEqual(MongoServerEndPoint.DefaultPort, builder.Servers[0].Port);
+        }
+
+        [Test]
+        public void TestSimpleUriStringWithDatabase()
+        {
+            var builder = new MongoConnectionStringBuilder("mongodb://server/database");
+            Assert.AreEqual("database", builder.Database);
+            Assert.AreEqual(1, builder.Servers.Length);
+            Assert.AreEqual("server", builder.Servers[0].Host);
+            Assert.AreEqual(MongoServerEndPoint.DefaultPort, builder.Servers[0].Port);
+        }
+
+        [Test]
+        public void TestUriWithMultipleServers()
+        {
+            var builder = new MongoConnectionStringBuilder("mongodb://server1,server2:1234,server3/database");
+            Assert.AreEqual("database", builder.Database);
+            Assert.AreEqual(3, builder.Servers.Length);
+            Assert.AreEqual("server1", builder.Servers[0].Host);
+            Assert.AreEqual(MongoServerEndPoint.DefaultPort, builder.Servers[0].Port);
+            Assert.AreEqual("server2", builder.Servers[1].Host);
+            Assert.AreEqual(1234, builder.Servers[1].Port);
+            Assert.AreEqual("server3", builder.Servers[2].Host);
+            Assert.AreEqual(MongoServerEndPoint.DefaultPort, builder.Servers[2].Port);
+        }
     }
 }

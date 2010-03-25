@@ -32,9 +32,10 @@ namespace MongoDB.Driver
         /// </summary>
         public static readonly TimeSpan DefaultConnectionLifeTime = TimeSpan.Zero;
 
-        private static readonly Regex PairRegex = new Regex ("^\\s*(.*)\\s*=\\s*(.*)\\s*$");
-        private static readonly Regex ServerRegex = new Regex ("\\s*([^:]+)(?::(\\d+))?\\s*$");
-
+        private static readonly Regex PairRegex = new Regex (@"^\s*(.*)\s*=\s*(.*)\s*$");
+        private static readonly Regex ServerRegex = new Regex (@"^\s*([^:]+)(?::(\d+))?\s*$");
+        private static readonly Regex UriRegex = new Regex(@"^mongodb://(?:([^:]*):([^@]*)@)?([^/]*)(?:/(.*))?$");
+        
         private readonly List<MongoServerEndPoint> _servers = new List<MongoServerEndPoint> ();
 
         /// <summary>
@@ -58,10 +59,14 @@ namespace MongoDB.Driver
         ///   no server is added.
         /// </summary>
         /// <param name = "connectionString">The connection string.</param>
-        public MongoConnectionStringBuilder (string connectionString) : this(){
-            
+        public MongoConnectionStringBuilder (string connectionString) : this(){            
             if (!string.IsNullOrEmpty (connectionString))
-                Parse (connectionString);
+            {
+                if(connectionString.StartsWith("mongodb://"))
+                    ParseUri(connectionString);
+                else
+                    Parse(connectionString);
+            }
         }
 
         /// <summary>
@@ -83,7 +88,6 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value>The username.</value>
         public string Username { get; set; }
-
 
         /// <summary>
         /// Gets or sets the maximum size of the connection pool.
@@ -114,6 +118,39 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value><c>true</c> if pooled; otherwise, <c>false</c>.</value>
         public bool Pooled { get; set; }
+
+        /// <summary>
+        /// Gets or sets the database.
+        /// </summary>
+        /// <remarks>
+        /// Is only used when passing directly constructing MongoDatabase instance.
+        /// </remarks>
+        /// <value>The database.</value>
+        public string Database { get; set; }
+
+        /// <summary>
+        /// Parses the URI.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        private void ParseUri(string connectionString){
+            if(connectionString == null)
+                throw new ArgumentNullException("connectionString");
+
+            var uriMatch = UriRegex.Match(connectionString);
+
+            if(!uriMatch.Success)
+                throw new FormatException(string.Format("Invalid connection string: {0}", connectionString));
+
+            Username = uriMatch.Groups[1].Value;
+            Password = uriMatch.Groups[2].Value;
+
+            var servers = uriMatch.Groups[3].Value;
+
+            if(!string.IsNullOrEmpty(servers))
+                ParseServers(servers);
+
+            Database = uriMatch.Groups[4].Value;
+        }
 
         /// <summary>
         ///   Parses the specified connection string.
@@ -153,6 +190,12 @@ namespace MongoDB.Driver
                         } catch(FormatException exception) {
                             throw new FormatException("Invalid string for Pooled in connection string", exception);
                         }
+                        break;
+                    }
+                    case "Database":
+                    case "Data Source":
+                    {
+                        Database = value;
                         break;
                     }
                     case "MaximumPoolSize":
@@ -202,27 +245,35 @@ namespace MongoDB.Driver
                     case "Server":
                     case "Servers":
                     {
-                        var servers = value.Split (',');
-                        
-                        foreach (var server in servers) {
-                            var serverMatch = ServerRegex.Match (server);
-                            if (!serverMatch.Success)
-                                throw new FormatException (string.Format ("Invalid server in connection string: {0}", serverMatch.Value));
-                            
-                            var serverHost = serverMatch.Groups[1].Value;
-                            
-                            int port;
-                            if (int.TryParse (serverMatch.Groups[2].Value, out port))
-                                AddServer (serverHost, port);
-                            else
-                                AddServer (serverHost);
-                        }
-                        
+                        ParseServers(value);
+
                         break;
                     }
                     default:
                         throw new FormatException (string.Format ("Unknown connection string option: {0}", key));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Parses the servers.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        private void ParseServers(string value){
+            var servers = value.Split (',');
+                        
+            foreach (var server in servers) {
+                var serverMatch = ServerRegex.Match (server);
+                if (!serverMatch.Success)
+                    throw new FormatException (string.Format ("Invalid server in connection string: {0}", serverMatch.Value));
+                            
+                var serverHost = serverMatch.Groups[1].Value;
+                            
+                int port;
+                if (int.TryParse (serverMatch.Groups[2].Value, out port))
+                    AddServer (serverHost, port);
+                else
+                    AddServer (serverHost);
             }
         }
 
