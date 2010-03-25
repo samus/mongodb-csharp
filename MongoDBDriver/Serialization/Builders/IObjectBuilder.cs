@@ -1,29 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Serialization.Builders
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IObjectBuilder
+    internal interface IObjectBuilder
     {
-        /// <summary>
-        /// Completes this instance.
-        /// </summary>
-        /// <returns></returns>
-        object Complete();
+        void AddProperty(string name, object value);
 
-        /// <summary>
-        /// Begins the property.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        Type BeginProperty(string name);
+        object BuildObject();
 
-        /// <summary>
-        /// Ends the property.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        void EndProperty(object value);
+        Type GetPropertyType(string name);
     }
 }

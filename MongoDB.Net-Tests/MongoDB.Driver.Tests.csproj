@@ -85,14 +85,25 @@
     <Compile Include="Connections\TestConnectionFactory.cs" />
     <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
-    <Compile Include="Serialization\ObjectArrayBuilderTests.cs" />
-    <Compile Include="Serialization\ReflectionBuilderTests.cs" />
-    <Compile Include="Serialization\ReflectionDescriptorTests.cs" />
+    <Compile Include="Serialization\Builders\DocumentPropertyTests.cs" />
+    <Compile Include="Serialization\Builders\EmbeddedClassPropertyTests.cs" />
+    <Compile Include="Serialization\Builders\EnumerablePropertyTests.cs" />
+    <Compile Include="Serialization\Builders\ExtendedPropertiesTests.cs" />
+    <Compile Include="Serialization\Builders\GenericListPropertyTests.cs" />
+    <Compile Include="Serialization\Builders\PolymorphicObjectTests.cs" />
+    <Compile Include="Serialization\Descriptors\DocumentPropertyTests.cs" />
+    <Compile Include="Serialization\Descriptors\EmbeddedClassPropertyTests.cs" />
+    <Compile Include="Serialization\Descriptors\EnumerablePropertyTests.cs" />
+    <Compile Include="Serialization\Descriptors\ExtendedPropertiesTests.cs" />
+    <Compile Include="Serialization\Descriptors\GenericListPropertyTests.cs" />
+    <Compile Include="Serialization\Descriptors\OperatorTests.cs" />
+    <Compile Include="Serialization\Descriptors\PolymorphicObjectTests.cs" />
     <Compile Include="Serialization\SerializationTestBase.cs" />
     <Compile Include="TestAuthentication.cs" />
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
+    <Compile Include="TestCollection`1.cs" />
     <Compile Include="TestConnectionStringBuilder.cs" />
     <Compile Include="TestCursor.cs" />
     <Compile Include="TestDatabase.cs" />
@@ -122,7 +133,6 @@
     <Compile Include="TestOp.cs" />
     <Compile Include="Util\TestJsonUtils.cs" />
     <Compile Include="Configuration\TestConfigurationSection.cs" />
-    <Compile Include="Serialization\DocumentReflectionSerializationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

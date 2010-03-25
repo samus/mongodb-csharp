@@ -297,7 +297,7 @@ namespace MongoDB.Driver
         ///   Retrieves the data.
         /// </summary>
         private void RetrieveData(){
-            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T));
             
             var query = new QueryMessage(descriptor) { FullCollectionName = FullCollectionName, Query = BuildSpec(),
                                 NumberToReturn = _limit, NumberToSkip = _skip, Options = _options };
@@ -305,7 +305,7 @@ namespace MongoDB.Driver
             if (_fields != null)
                 query.ReturnFieldSelector = _fields;
             
-            var builder = _serializationFactory.GetBsonBuilder(typeof(T), _connection);
+            var builder = _serializationFactory.GetBsonBuilder(typeof(T));
             
             try {
                 _reply = _connection.SendTwoWayMessage<T>(query, builder);
@@ -324,7 +324,7 @@ namespace MongoDB.Driver
         private void RetrieveMoreData(){
             var getMoreMessage = new GetMoreMessage(FullCollectionName, Id, _limit);
             
-            var builder = _serializationFactory.GetBsonBuilder(typeof(T), _connection);
+            var builder = _serializationFactory.GetBsonBuilder(typeof(T));
             
             try {
                 _reply = _connection.SendTwoWayMessage<T>(getMoreMessage, builder);

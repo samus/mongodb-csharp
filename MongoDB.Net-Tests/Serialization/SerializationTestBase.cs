@@ -1,34 +1,51 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.IO;
+
+using MongoDB.Driver;
 using MongoDB.Driver.Bson;
-using MongoDB.Driver.Serialization;
-using MongoDB.Driver.Tests.Bson;
+using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Driver.Serialization.Builders;
+using MongoDB.Driver.Serialization.Descriptors;
 
 namespace MongoDB.Driver.Serialization
 {
-    public abstract class SerializationTestBase : BsonTestBase
+    public abstract class SerializationTestBase
     {
-        protected string Serialize(object instance){
-            return Serialize(instance, instance.GetType());
+        protected virtual IMappingStore MappingStore
+        {
+            get { return new AutoMappingStore(); }
         }
 
-        protected string Serialize(object instance,Type rootType)
+        protected T Deserialize<T>(string base64)
         {
-            using(var mem = new MemoryStream())
+            using (var mem = new MemoryStream(Convert.FromBase64String(base64)))
             {
-                var writer = new BsonWriter(mem, new BsonReflectionDescriptor(SerializationFactory.Default, rootType));
+                var reader = new BsonReader(mem, new BsonClassMapBuilder(MappingStore, typeof(T)));
+                return (T)reader.ReadObject();
+            }
+        }
+
+        protected string Serialize<T>(object instance)
+        {
+            using (var mem = new MemoryStream())
+            {
+                var writer = new BsonWriter(mem, new BsonClassMapDescriptor(MappingStore, typeof(T)));
                 writer.WriteObject(instance);
                 writer.Flush();
                 return Convert.ToBase64String(mem.ToArray());
             }
         }
 
-        protected T Deserialize<T>(string base64)
+        protected string Serialize(Document document)
         {
-            using(var mem = new MemoryStream(Convert.FromBase64String(base64)))
+            using (var mem = new MemoryStream())
             {
-                var reader = new BsonReader(mem, new BsonReflectionBuilder(SerializationFactory.Default,typeof(T)));
-                return (T)reader.ReadObject();
+                var writer = new BsonWriter(mem, new BsonDocumentDescriptor());
+                writer.WriteObject(document);
+                writer.Flush();
+                return Convert.ToBase64String(mem.ToArray());
             }
         }
     }

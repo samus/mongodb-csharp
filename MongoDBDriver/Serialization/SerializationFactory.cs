@@ -1,38 +1,37 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
 using MongoDB.Driver.Bson;
-using MongoDB.Driver.Connections;
+using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Driver.Serialization;
+using MongoDB.Driver.Serialization.Builders;
+using MongoDB.Driver.Serialization.Descriptors;
 
 namespace MongoDB.Driver.Serialization
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class SerializationFactory : ISerializationFactory
     {
-        /// <summary>
-        /// Default Factory for this application.
-        /// </summary>
         public static readonly SerializationFactory Default = new SerializationFactory();
 
+        private IMappingStore _mappingStore;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
+        /// Initializes a new instance of the <see cref="MapperSerializationFactory"/> class.
         /// </summary>
-        public SerializationFactory(){
-            TypeNameProvider = new QualifiedNameTypeNameProvider();
-            Registry = new TypeRegistry(this);
+        public SerializationFactory()
+            : this(null)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapperSerializationFactory"/> class.
+        /// </summary>
+        /// <param name="mappingStore">The mapping store.</param>
+        public SerializationFactory(IMappingStore mappingStore)
+        {
+            _mappingStore = mappingStore ?? new AutoMappingStore();
         }
-
-        /// <summary>
-        /// Gets or sets the type name provider.
-        /// </summary>
-        /// <value>The type name provider.</value>
-        public ITypeNameProvider TypeNameProvider { get; set; }
-
-        /// <summary>
-        /// Gets or sets the registry.
-        /// </summary>
-        /// <value>The registry.</value>
-        public TypeRegistry Registry { get; private set; }
 
         /// <summary>
         /// Gets the builder.
@@ -40,8 +39,12 @@ namespace MongoDB.Driver.Serialization
         /// <param name="rootType">Type of the root.</param>
         /// <param name="connection">The connection.</param>
         /// <returns></returns>
-        IBsonObjectBuilder ISerializationFactory.GetBsonBuilder(Type rootType, Connection connection){
-            return new BsonReflectionBuilder(this, rootType);
+        public IBsonObjectBuilder GetBsonBuilder(Type rootType)
+        {
+            if (typeof(Document).IsAssignableFrom(rootType))
+                return new BsonDocumentBuilder();
+
+            return new BsonClassMapBuilder(_mappingStore, rootType);
         }
 
         /// <summary>
@@ -50,8 +53,12 @@ namespace MongoDB.Driver.Serialization
         /// <param name="rootType">Type of the root.</param>
         /// <param name="connection">The connection.</param>
         /// <returns></returns>
-        IBsonObjectDescriptor ISerializationFactory.GetBsonDescriptor(Type rootType, Connection connection){
-            return new BsonReflectionDescriptor(this, rootType);
+        public IBsonObjectDescriptor GetBsonDescriptor(Type rootType)
+        {
+            if (typeof(Document).IsAssignableFrom(rootType))
+                return new BsonDocumentDescriptor();
+
+            return new BsonClassMapDescriptor(_mappingStore, rootType);
         }
 
         /// <summary>
@@ -59,8 +66,12 @@ namespace MongoDB.Driver.Serialization
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        public IObjectDescriptor GetObjectDescriptor(Type type){
-            return Registry.GetOrCreate(type);
+        public IObjectDescriptor GetObjectDescriptor(Type type)
+        {
+            if (typeof(Document).IsAssignableFrom(type))
+                return new DocumentObjectDescriptorAdapter();
+
+            return new ClassMapObjectDescriptorAdapter(_mappingStore.GetClassMap(type));
         }
     }
 }
