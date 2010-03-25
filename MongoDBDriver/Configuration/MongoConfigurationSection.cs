@@ -5,7 +5,7 @@ namespace MongoDB.Driver.Configuration
     /// <summary>
     /// 
     /// </summary>
-    public class MongoConfiguration : ConfigurationSection
+    public class MongoConfigurationSection : ConfigurationSection
     {
         /// <summary>
         /// Gets the connections.
