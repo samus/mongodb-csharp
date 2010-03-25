@@ -31,17 +31,15 @@ namespace MongoDB.Driver.Serialization
 
         public object BeginObject(object instance)
         {
-            if (instance is Document && (_types.Peek() == typeof(Document) || IsNativeToMongo(_types.Peek())))
+            if (instance is Document && typeof(Document).IsAssignableFrom(_types.Peek()))
                 return new DocumentDescriptor((Document)instance);
 
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
-
-            //If the instance is not an anonymous type...
-            var instanceType = instance.GetType();
-            
-            if (instanceType == typeof(Document))
+          
+            if (instance is Document)
                 return new DocumentClassMapDescriptor(currentClassMap, (Document)instance);
-            
+
+            var instanceType = instance.GetType();
             if (currentClassMap.ClassType.IsAssignableFrom(instanceType))
             {
                 if (currentClassMap.ClassType != instanceType) //we are a subclass

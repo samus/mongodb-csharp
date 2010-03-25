@@ -20,7 +20,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         [Test]
         public void CanSerializeWithStandardOperator()
         {
-            var bson = Serialize<OperatorProperty>(new { A = new Document("$gt", 12) });
+            var bson = Serialize<OperatorProperty>(new { A = Op.GreaterThan(12) });
 
             Assert.AreEqual("FgAAAANBAA4AAAAQJGd0AAwAAAAAAA==", bson);
         }
@@ -28,7 +28,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         [Test]
         public void CanSerializeWithMetaOperator()
         {
-            var bson = Serialize<OperatorProperty>(new { A = new Document("$not", new Document("$gt", 12)) });
+            var bson = Serialize<OperatorProperty>(new { A = !Op.GreaterThan(12) });
 
             Assert.AreEqual("IQAAAANBABkAAAADJG5vdAAOAAAAECRndAAMAAAAAAAA", bson);
         }
@@ -36,7 +36,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         [Test]
         public void CanSerializeWithComplexOperators()
         {
-            var bson = Serialize<OperatorProperty>(new { A = new Document("$gt", 12).Add("$not", new Document("$gt", 24)) });
+            var bson = Serialize<OperatorProperty>(new { A = Op.GreaterThan(12) & !Op.GreaterThan(24) });
 
             Assert.AreEqual("KgAAAANBACIAAAAQJGd0AAwAAAADJG5vdAAOAAAAECRndAAYAAAAAAAA", bson);
         }
