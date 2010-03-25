@@ -26,6 +26,10 @@ namespace MongoDB.Driver
         /// <summary>
         /// 
         /// </summary>
+        public const string DefaultDatabase = "admin";
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly TimeSpan DefaultConnectionTimeout = TimeSpan.FromSeconds(15);
         /// <summary>
         /// 
@@ -50,6 +54,7 @@ namespace MongoDB.Driver
             MaximumPoolSize = DefaultMaximumPoolSize;
             MinimumPoolSize = DefaultMinimumPoolSize;
             Pooled = DefaultPooled;
+            Database = DefaultDatabase;
         }
 
         /// <summary>
@@ -141,15 +146,21 @@ namespace MongoDB.Driver
             if(!uriMatch.Success)
                 throw new FormatException(string.Format("Invalid connection string: {0}", connectionString));
 
-            Username = uriMatch.Groups[1].Value;
-            Password = uriMatch.Groups[2].Value;
+            var username = uriMatch.Groups[1].Value;
+            if(!string.IsNullOrEmpty(username))
+                Username = username;
+
+            var password = uriMatch.Groups[2].Value;
+            if(!string.IsNullOrEmpty(password))
+                Password = password;
 
             var servers = uriMatch.Groups[3].Value;
-
             if(!string.IsNullOrEmpty(servers))
                 ParseServers(servers);
 
-            Database = uriMatch.Groups[4].Value;
+            var database = uriMatch.Groups[4].Value;
+            if(!string.IsNullOrEmpty(database))
+                Database = database;
         }
 
         /// <summary>
