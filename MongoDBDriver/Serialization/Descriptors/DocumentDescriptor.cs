@@ -23,7 +23,8 @@ namespace MongoDB.Driver.Serialization.Descriptors
         public KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
         {
             var value = _document[name];
-            return new KeyValuePair<Type, object>(value.GetType(), value);
+            var valueType = value == null ? typeof(Document) : value.GetType();
+            return new KeyValuePair<Type, object>(valueType, value);
         }
     }
 }

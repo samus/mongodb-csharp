@@ -140,7 +140,6 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <param name="classType">Type of the entity.</param>
         /// <returns></returns>
         public string GetCollectionName(Type classType){
-            _conventions.CollectionNameConvention.GetCollectionName(classType);
             return GetClassOverrideValue(classType,
                 o => o.CollectionName,
                 s => !string.IsNullOrEmpty(s),

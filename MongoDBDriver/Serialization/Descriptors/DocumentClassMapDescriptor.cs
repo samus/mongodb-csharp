@@ -47,10 +47,15 @@ namespace MongoDB.Driver.Serialization.Descriptors
                 return new KeyValuePair<Type, object>(_classMap.Discriminator.GetType(), _classMap.Discriminator);
 
             var memberMap = _classMap.GetMemberMapFromAlias(name);
+            object value;
             if (memberMap == null) //if it isn't mapped, return it as is...
-                return new KeyValuePair<Type, object>(_document[name].GetType(), _document[name]);
+            {
+                value = _document[name];
+                var valueType = value == null ? typeof(Document) : value.GetType();
+                return new KeyValuePair<Type, object>(valueType, value);
+            }
 
-            var value = _document[memberMap.MemberName];
+            value = _document[memberMap.MemberName];
             if (value is Document)
                 return new KeyValuePair<Type, object>(typeof(Document), value);
 
