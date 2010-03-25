@@ -1,9 +1,10 @@
-﻿using System;
-
-using MongoDB.Driver.Configuration.Mapping.Model;
+﻿using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Configuration.IdGenerators
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IIdGenerator
     {
         /// <summary>

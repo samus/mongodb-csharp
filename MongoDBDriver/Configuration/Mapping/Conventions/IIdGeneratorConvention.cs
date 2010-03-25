@@ -4,6 +4,9 @@ using MongoDB.Driver.Configuration.IdGenerators;
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IIdGeneratorConvention
     {
         /// <summary>

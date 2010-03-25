@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IIdConvention
     {
         /// <summary>

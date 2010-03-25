@@ -2,6 +2,9 @@
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class PersistentMemberMap : MemberMapBase
     {
         private readonly string _alias;
@@ -26,16 +29,19 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
             get { return _defaultValue; }
         }
 
+        /// <summary>
         /// Gets a value indicating whether or not null should be persisted to the database.
         /// </summary>
-        /// <value><c>true</c> if the null should be persisted; otherwise, <c>false</c>.</value>
+        /// <value>
+        /// 	<c>true</c> if the null should be persisted; otherwise, <c>false</c>.
+        /// </value>
         public bool PersistNull
         {
             get { return _persistNull; }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PersistentMemberMapBase"/> class.
+        /// Initializes a new instance of the <see cref="PersistentMemberMap"/> class.
         /// </summary>
         /// <param name="memberName">Name of the member.</param>
         /// <param name="memberReturnType">Type of the member return.</param>

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ExtendedPropertiesMap : MemberMapBase
     {
         /// <summary>

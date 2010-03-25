@@ -3,54 +3,36 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ClassMap : ClassMapBase
     {
-        private string _collectionName;
-        private object _discriminator;
-        private string _discriminatorPropertyName;
-        private ExtendedPropertiesMap _extendedPropertiesMap;
-        private IdMap _idMap;
         private readonly List<SubClassMap> _subClassMaps;
 
         /// <summary>
         /// Gets the name of the collection.
         /// </summary>
         /// <value>The name of the collection.</value>
-        public override string CollectionName
-        {
-            get { return _collectionName; }
-            internal set { _collectionName = value; }
-        }
+        public override string CollectionName { get; internal set; }
 
         /// <summary>
         /// Gets the alias used to store the discriminator.
         /// </summary>
         /// <value>The discriminator alias.</value>
-        public override string DiscriminatorAlias
-        {
-            get { return _discriminatorPropertyName; }
-            internal set { _discriminatorPropertyName = value; }
-        }
+        public override string DiscriminatorAlias { get; internal set; }
 
         /// <summary>
         /// Gets the extended properties map.
         /// </summary>
         /// <value>The extended properties map.</value>
-        public override ExtendedPropertiesMap ExtendedPropertiesMap
-        {
-            get { return _extendedPropertiesMap; }
-            internal set { _extendedPropertiesMap = value; }
-        }
+        public override ExtendedPropertiesMap ExtendedPropertiesMap { get; internal set; }
 
         /// <summary>
         /// Gets the id map.
         /// </summary>
         /// <value>The id map.</value>
-        public override IdMap IdMap
-        {
-            get { return _idMap; }
-            internal set { _idMap = value; }
-        }
+        public override IdMap IdMap { get; internal set; }
 
         /// <summary>
         /// Gets a value indicating whether this class map is polymorphic.

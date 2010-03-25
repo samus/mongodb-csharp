@@ -8,11 +8,19 @@ using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class MemberReflectionOptimizer
     {
-        private static Dictionary<string, Func<object, object>> getterCache = new Dictionary<string, Func<object, object>>();
-        private static Dictionary<string, Action<object, object>> setterCache = new Dictionary<string, Action<object, object>>();
+        private static readonly Dictionary<string, Func<object, object>> getterCache = new Dictionary<string, Func<object, object>>();
+        private static readonly Dictionary<string, Action<object, object>> setterCache = new Dictionary<string, Action<object, object>>();
 
+        /// <summary>
+        /// Gets the getter.
+        /// </summary>
+        /// <param name="memberInfo">The member info.</param>
+        /// <returns></returns>
         public static Func<object, object> GetGetter(MemberInfo memberInfo)
         {
             if (memberInfo == null)
@@ -22,12 +30,18 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
 
             if (memberInfo.MemberType == MemberTypes.Field)
                 return GetFieldGetter(memberInfo as FieldInfo);
-            else if (memberInfo.MemberType == MemberTypes.Property)
+            
+            if (memberInfo.MemberType == MemberTypes.Property)
                 return GetPropertyGetter(memberInfo as PropertyInfo);
 
             throw new InvalidOperationException("Can only create getters for fields or properties.");
         }
 
+        /// <summary>
+        /// Gets the field getter.
+        /// </summary>
+        /// <param name="fieldInfo">The field info.</param>
+        /// <returns></returns>
         public static Func<object, object> GetFieldGetter(FieldInfo fieldInfo)
         {
             if (fieldInfo == null)
@@ -50,6 +64,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
             return result;
         }
 
+        /// <summary>
+        /// Gets the property getter.
+        /// </summary>
+        /// <param name="propertyInfo">The property info.</param>
+        /// <returns></returns>
         public static Func<object, object> GetPropertyGetter(PropertyInfo propertyInfo)
         {
             if (propertyInfo == null)
@@ -75,6 +94,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
             return result;
         }
 
+        /// <summary>
+        /// Gets the setter.
+        /// </summary>
+        /// <param name="memberInfo">The member info.</param>
+        /// <returns></returns>
         public static Action<object, object> GetSetter(MemberInfo memberInfo)
         {
             if (memberInfo == null)
@@ -84,12 +108,18 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
 
             if (memberInfo.MemberType == MemberTypes.Field)
                 return GetFieldSetter(memberInfo as FieldInfo);
-            else if (memberInfo.MemberType == MemberTypes.Property)
+            
+            if (memberInfo.MemberType == MemberTypes.Property)
                 return GetPropertySetter(memberInfo as PropertyInfo);
 
             throw new InvalidOperationException("Can only create setters for fields or properties.");
         }
 
+        /// <summary>
+        /// Gets the field setter.
+        /// </summary>
+        /// <param name="fieldInfo">The field info.</param>
+        /// <returns></returns>
         public static Action<object, object> GetFieldSetter(FieldInfo fieldInfo)
         {
             if (fieldInfo == null)
@@ -118,6 +148,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
             return result;
         }
 
+        /// <summary>
+        /// Gets the property setter.
+        /// </summary>
+        /// <param name="propertyInfo">The property info.</param>
+        /// <returns></returns>
         public static Action<object, object> GetPropertySetter(PropertyInfo propertyInfo)
         {
             if (propertyInfo == null)
@@ -148,6 +183,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
             return result;
         }
 
+        /// <summary>
+        /// Creates the key.
+        /// </summary>
+        /// <param name="memberInfo">The member info.</param>
+        /// <returns></returns>
         private static string CreateKey(MemberInfo memberInfo)
         {
             return string.Format("{0}_{1}_{2}_{3}",

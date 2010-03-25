@@ -4,6 +4,9 @@ using MongoDB.Driver.Configuration.CollectionAdapters;
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ICollectionAdapterConvention
     {
         /// <summary>

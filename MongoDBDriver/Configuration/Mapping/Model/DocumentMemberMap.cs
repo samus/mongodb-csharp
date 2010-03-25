@@ -1,9 +1,10 @@
 ﻿using System;
 
-using MongoDB.Driver;
-
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DocumentMemberMap : PersistentMemberMap
     {
         /// <summary>

@@ -6,12 +6,25 @@ using MongoDB.Driver.Configuration.CollectionAdapters;
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DefaultCollectionAdapterConvention : ICollectionAdapterConvention
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DefaultCollectionAdapterConvention Instance = new DefaultCollectionAdapterConvention();
 
+        /// <summary>
+        /// 
+        /// </summary>
         private delegate ICollectionAdapter CollectionTypeFactoryDelegate();
-        private static readonly Dictionary<Type, CollectionTypeFactoryDelegate> _collectionTypes = new Dictionary<Type, CollectionTypeFactoryDelegate>
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static readonly Dictionary<Type, CollectionTypeFactoryDelegate> CollectionTypes = new Dictionary<Type, CollectionTypeFactoryDelegate>
         {
             { typeof(ArrayList), CreateArrayListCollectionType },
             { typeof(IList), CreateArrayListCollectionType },
@@ -24,7 +37,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
         };
 
         private delegate Type ElementTypeFactoryDelegate(Type type);
-        private static readonly Dictionary<Type, ElementTypeFactoryDelegate> _elementTypes = new Dictionary<Type, ElementTypeFactoryDelegate>
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static readonly Dictionary<Type, ElementTypeFactoryDelegate> ElementTypes = new Dictionary<Type, ElementTypeFactoryDelegate>
         {
             { typeof(ArrayList), GetArrayListElementType },
             { typeof(IList), GetArrayListElementType },
@@ -39,32 +56,42 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
         private DefaultCollectionAdapterConvention()
         { }
 
+        /// <summary>
+        /// Gets the type of the collection.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         public ICollectionAdapter GetCollectionType(Type type)
         {
             CollectionTypeFactoryDelegate factory;
-            if (_collectionTypes.TryGetValue(type, out factory))
+            if (CollectionTypes.TryGetValue(type, out factory))
                 return factory();
 
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
             {
                 Type genericType = type.GetGenericTypeDefinition();
-                if (_collectionTypes.TryGetValue(genericType, out factory))
+                if (CollectionTypes.TryGetValue(genericType, out factory))
                     return factory();
             }
 
             return null;
         }
 
+        /// <summary>
+        /// Gets the type of the element.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         public Type GetElementType(Type type)
         {
             ElementTypeFactoryDelegate factory;
-            if (_elementTypes.TryGetValue(type, out factory))
+            if (ElementTypes.TryGetValue(type, out factory))
                 return factory(type);
 
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
             {
-                Type genericType = type.GetGenericTypeDefinition();
-                if (_elementTypes.TryGetValue(genericType, out factory))
+                var genericType = type.GetGenericTypeDefinition();
+                if (ElementTypes.TryGetValue(genericType, out factory))
                     return factory(type);
             }
 

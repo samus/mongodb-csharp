@@ -4,6 +4,9 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Configuration.Mapping.Auto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IAutoMapper
     {
         /// <summary>

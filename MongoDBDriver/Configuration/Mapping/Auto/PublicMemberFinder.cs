@@ -4,8 +4,13 @@ using System.Reflection;
 
 namespace MongoDB.Driver.Configuration.Mapping.Auto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class PublicMemberFinder : IMemberFinder
     {
+        ///<summary>
+        ///</summary>
         public static readonly PublicMemberFinder Instance = new PublicMemberFinder();
 
         /// <summary>

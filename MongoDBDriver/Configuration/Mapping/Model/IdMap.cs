@@ -4,6 +4,9 @@ using MongoDB.Driver.Configuration.IdGenerators;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class IdMap : PersistentMemberMap
     {
         private readonly IIdGenerator _generator;
@@ -27,7 +30,6 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// <param name="setter">The setter.</param>
         /// <param name="generator">The generator.</param>
         /// <param name="unsavedValue">The unsaved value.</param>
-        /// <param name="valueConverter">The value converter.</param>
         public IdMap(string memberName, Type memberType, Func<object, object> getter, Action<object, object> setter, IIdGenerator generator, object unsavedValue)
             : base(memberName, memberType, getter, setter, null, "_id", true)
         {

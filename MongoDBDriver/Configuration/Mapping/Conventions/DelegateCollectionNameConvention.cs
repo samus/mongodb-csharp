@@ -2,6 +2,9 @@
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DelegateCollectionNameConvention : ICollectionNameConvention
     {
         private readonly Func<Type, string> _collectionName;

@@ -6,6 +6,9 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Configuration.Mapping
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AutoMappingStore : IMappingStore
     {
         private readonly IAutoMapper _autoMapper;

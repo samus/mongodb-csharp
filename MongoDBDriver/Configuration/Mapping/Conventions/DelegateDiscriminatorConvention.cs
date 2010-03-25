@@ -2,6 +2,9 @@
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DelegateDiscriminatorConvention : IDiscriminatorConvention
     {
         private readonly Func<Type, object> _discriminator;

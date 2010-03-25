@@ -5,15 +5,25 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Configuration.Mapping.Auto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AggregateAutoMapper : IAutoMapper
     {
-        private List<IAutoMapper> _autoMappers;
+        private readonly List<IAutoMapper> _autoMappers;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AggregateAutoMapper"/> class.
+        /// </summary>
         public AggregateAutoMapper()
         {
             this._autoMappers = new List<IAutoMapper>();
         }
 
+        /// <summary>
+        /// Adds the auto mapper.
+        /// </summary>
+        /// <param name="autoMapper">The auto mapper.</param>
         public void AddAutoMapper(IAutoMapper autoMapper)
         {
             if (autoMapper == null)
@@ -22,12 +32,17 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
             this._autoMappers.Add(autoMapper);
         }
 
+        /// <summary>
+        /// Creates the class map.
+        /// </summary>
+        /// <param name="classType">Type of the entity.</param>
+        /// <param name="classMapFinder">The class map finder.</param>
+        /// <returns></returns>
         public IClassMap CreateClassMap(Type classType, Func<Type, IClassMap> classMapFinder)
         {
-            IClassMap classMap;
-            foreach (IAutoMapper autoMapper in _autoMappers)
+            foreach (var autoMapper in _autoMappers)
             {
-                classMap = autoMapper.CreateClassMap(classType, classMapFinder);
+                var classMap = autoMapper.CreateClassMap(classType, classMapFinder);
                 if (classMap != null)
                     return classMap;
             }

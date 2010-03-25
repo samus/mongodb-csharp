@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MongoDB.Driver.Configuration.Mapping.Auto
+﻿namespace MongoDB.Driver.Configuration.Mapping.Auto
 {
+    ///<summary>
+    ///</summary>
     public class MemberOverrides
     {
         /// <summary>

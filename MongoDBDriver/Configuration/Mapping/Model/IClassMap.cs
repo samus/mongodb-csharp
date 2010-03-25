@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IClassMap
     {
         /// <summary>

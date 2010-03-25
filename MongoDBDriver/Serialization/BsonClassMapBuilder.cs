@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using MongoDB.Driver;
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.Configuration.Mapping;
-using MongoDB.Driver.Configuration.Mapping.Model;
 using MongoDB.Driver.Serialization.Builders;
 
 namespace MongoDB.Driver.Serialization

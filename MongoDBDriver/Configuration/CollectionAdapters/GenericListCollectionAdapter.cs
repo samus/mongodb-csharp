@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace MongoDB.Driver.Configuration.CollectionAdapters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class GenericListCollectionAdapter : ICollectionAdapter
     {
-        static readonly Type openListType = typeof(List<>);
+        static readonly Type OpenListType = typeof(List<>);
 
         /// <summary>
         /// Adds the element to instance.
@@ -17,7 +19,7 @@ namespace MongoDB.Driver.Configuration.CollectionAdapters
         /// <returns></returns>
         public object CreateCollection(Type elementType, object[] elements)
         {
-            var closedListType = openListType.MakeGenericType(elementType);
+            var closedListType = OpenListType.MakeGenericType(elementType);
             var typedElements = Array.CreateInstance(elementType, elements.Length);
             Array.Copy(elements, typedElements, elements.Length);
             return Activator.CreateInstance(closedListType, typedElements);

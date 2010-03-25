@@ -1,6 +1,4 @@
 ﻿using System;
-
-using MongoDB.Driver.Configuration.Mapping.Model;
 using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Builders
@@ -11,9 +9,9 @@ namespace MongoDB.Driver.Serialization.Builders
         private readonly Type _elementType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CollectionMemberMapBuilder"/> class.
+        /// Initializes a new instance of the <see cref="ArrayBuilder"/> class.
         /// </summary>
-        /// <param name="collectionMemberMap">The collection member map.</param>
+        /// <param name="elementType">Type of the element.</param>
         public ArrayBuilder(Type elementType)
         {
             _elements = new List<object>();

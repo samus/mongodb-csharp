@@ -10,6 +10,9 @@ using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver.Configuration.Mapping.Auto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AutoMappingProfile : IAutoMappingProfile
     {
         private ConventionProfile _conventions;
@@ -125,7 +128,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
             if (string.IsNullOrEmpty(alias))
                 alias = _conventions.AliasConvention.GetAlias(member) ?? member.Name;
 
-            return GetMemberOverrideValue<string>(classType, member,
+            return GetMemberOverrideValue(classType, member,
                 o => o.Alias,
                 s => !string.IsNullOrEmpty(s),
                 alias);
@@ -136,10 +139,9 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// </summary>
         /// <param name="classType">Type of the entity.</param>
         /// <returns></returns>
-        public string GetCollectionName(Type classType)
-        {
-            string collectionName = _conventions.CollectionNameConvention.GetCollectionName(classType);
-            return this.GetClassOverrideValue<string>(classType,
+        public string GetCollectionName(Type classType){
+            _conventions.CollectionNameConvention.GetCollectionName(classType);
+            return GetClassOverrideValue(classType,
                 o => o.CollectionName,
                 s => !string.IsNullOrEmpty(s),
                 _conventions.CollectionNameConvention.GetCollectionName(classType) ?? classType.Name);
@@ -184,7 +186,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
             if (defaultValue == null)
                 defaultValue = _conventions.DefaultValueConvention.GetDefaultValue(member.GetReturnType());
 
-            return GetMemberOverrideValue<object>(classType, member,
+            return GetMemberOverrideValue(classType, member,
                 o => o.DefaultValue,
                 v => v != null,
                 defaultValue);
@@ -257,7 +259,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public bool GetPersistNull(Type classType, MemberInfo member)
         {
-            return (bool)GetMemberOverrideValue<bool?>(classType, member,
+            return (bool)GetMemberOverrideValue(classType, member,
                 o => o.PersistIfNull,
                 v => v.HasValue,
                 false); //perhaps make this a global setting somewhere???  A convention maybe???
@@ -293,7 +295,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         {
             var doMap = member.GetCustomAttribute<MongoIgnoreAttribute>(true) == null;
 
-            return (bool)GetMemberOverrideValue<bool?>(classType, member,
+            return (bool)GetMemberOverrideValue(classType, member,
                 o => !o.Ignore,
                 v => v.HasValue,
                 doMap);

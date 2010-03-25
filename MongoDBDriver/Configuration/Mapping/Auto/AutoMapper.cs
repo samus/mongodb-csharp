@@ -9,6 +9,9 @@ using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver.Configuration.Mapping.Auto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AutoMapper : IAutoMapper
     {
         private readonly Func<Type, bool> _filter;

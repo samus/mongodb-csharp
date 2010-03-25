@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace MongoDB.Driver.Configuration.CollectionAdapters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class GenericSetCollectionAdapter : ICollectionAdapter
     {
-        static readonly Type openSetType = typeof(HashSet<>);
+        static readonly Type OpenSetType = typeof(HashSet<>);
 
         /// <summary>
         /// Adds the element to instance.
@@ -17,7 +19,7 @@ namespace MongoDB.Driver.Configuration.CollectionAdapters
         /// <returns></returns>
         public object CreateCollection(Type elementType, object[] elements)
         {
-            var closedSetType = openSetType.MakeGenericType(elementType);
+            var closedSetType = OpenSetType.MakeGenericType(elementType);
             var typedElements = Array.CreateInstance(elementType, elements.Length);
             Array.Copy(elements, typedElements, elements.Length);
             return Activator.CreateInstance(closedSetType, new[] { typedElements });

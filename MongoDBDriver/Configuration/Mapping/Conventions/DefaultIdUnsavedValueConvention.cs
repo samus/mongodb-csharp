@@ -2,8 +2,14 @@
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DefaultIdUnsavedValueConvention : IIdUnsavedValueConvention
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DefaultIdUnsavedValueConvention Instance = new DefaultIdUnsavedValueConvention();
 
         /// <summary>

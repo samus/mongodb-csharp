@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MongoDB.Driver.Configuration.Mapping.Model;
 using System.Collections;
 
 namespace MongoDB.Driver.Serialization.Descriptors

@@ -4,6 +4,9 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Configuration.IdGenerators
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class GuidCombGenerator : IIdGenerator
     {
         /// <summary>

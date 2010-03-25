@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace MongoDB.Driver.Configuration.CollectionAdapters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ArrayListCollectionAdapter : ICollectionAdapter
     {
         /// <summary>

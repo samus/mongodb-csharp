@@ -104,7 +104,7 @@
     <Compile Include="Serialization\IClassMapExtensions.cs" />
     <Compile Include="Serialization\IObjectDescriptor.cs" />
     <Compile Include="Serialization\SerializationFactory.cs" />
-    <Compile Include="Serialization\UnmappedMemberException.cs" />
+    <Compile Include="Exceptions\UnmappedMemberException.cs" />
     <Compile Include="CommandResults\CommandResultBase.cs" />
     <Compile Include="Configuration\CollectionAdapters\ArrayListCollectionAdapter.cs" />
     <Compile Include="Configuration\CollectionAdapters\GenericListCollectionAdapter.cs" />

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MongoDB.Driver.Serialization;
+﻿using System.Collections.Generic;
 using MongoDB.Driver.Configuration.Mapping.Model;
-using MongoDB.Driver.Configuration.Mapping;
 
 namespace MongoDB.Driver.Serialization
 {
@@ -26,12 +21,8 @@ namespace MongoDB.Driver.Serialization
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public object GenerateId(object instance)
-        {
-            if (!_classMap.HasId)
-                return null;
-
-            return _classMap.IdMap.Generate(instance);
+        public object GenerateId(object instance){
+            return !_classMap.HasId ? null : _classMap.IdMap.Generate(instance);
         }
 
         /// <summary>

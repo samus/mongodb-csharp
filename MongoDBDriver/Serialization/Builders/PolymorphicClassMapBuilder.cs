@@ -26,7 +26,7 @@ namespace MongoDB.Driver.Serialization.Builders
                 //we have found our discriminator and *can* instantiate our type
                 _classMap = _classMap.GetClassMapFromDiscriminator(value);
                 _concreteEntityBuilder = new ConcreteClassMapBuilder(_classMap);
-                foreach (KeyValuePair<string, object> pair in _properties)
+                foreach (var pair in _properties)
                     _concreteEntityBuilder.AddProperty(pair.Key, pair.Value);
 
                 _properties.Clear();

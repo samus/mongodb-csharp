@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DelegateDiscriminatorAliasConvention : IDiscriminatorAliasConvention
     {
         private readonly Func<Type, string> _discriminatorAlias;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateDiscriminatorPropertyNameConvention"/> class.
+        /// Initializes a new instance of the <see cref="DelegateDiscriminatorAliasConvention"/> class.
         /// </summary>
         /// <param name="discriminatorAlias">The discriminator alias.</param>
         public DelegateDiscriminatorAliasConvention(Func<Type, string> discriminatorAlias)

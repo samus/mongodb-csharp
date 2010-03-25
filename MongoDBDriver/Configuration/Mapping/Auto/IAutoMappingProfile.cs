@@ -7,12 +7,15 @@ using MongoDB.Driver.Configuration.IdGenerators;
 
 namespace MongoDB.Driver.Configuration.Mapping.Auto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IAutoMappingProfile
     {
         /// <summary>
         /// Indicates whether the class type should be mapped as a subclass.
         /// </summary>
-        /// <param name="classType">Type of the entity.</param>
+        /// <value>The is sub class.</value>
         /// <returns>
         /// 	<c>true</c> if [is sub class] [the specified class type]; otherwise, <c>false</c>.
         /// </returns>

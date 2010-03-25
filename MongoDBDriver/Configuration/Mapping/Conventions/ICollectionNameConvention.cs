@@ -2,6 +2,9 @@
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ICollectionNameConvention
     {
         /// <summary>

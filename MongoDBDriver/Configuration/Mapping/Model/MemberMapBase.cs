@@ -2,6 +2,9 @@
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MemberMapBase
     {
         private readonly Func<object, object> _getter;

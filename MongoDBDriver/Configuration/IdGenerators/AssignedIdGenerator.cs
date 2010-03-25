@@ -4,6 +4,9 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Configuration.IdGenerators
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AssignedIdGenerator : IIdGenerator
     {
         /// <summary>
@@ -15,7 +18,7 @@ namespace MongoDB.Driver.Configuration.IdGenerators
         public object Generate(object entity, IdMap idMap)
         {
             var id = idMap.GetValue(entity);
-            if (Object.Equals(id, idMap.UnsavedValue))
+            if (Equals(id, idMap.UnsavedValue))
                 throw new IdGenerationException(string.Format("Ids for {0} must be manually assigned before saving.", entity.GetType()));
 
             return id;

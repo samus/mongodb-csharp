@@ -1,12 +1,15 @@
 ﻿using System;
-
-using MongoDB.Driver;
 using MongoDB.Driver.Configuration.IdGenerators;
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DefaultIdGeneratorConvention : IIdGeneratorConvention
     {
+        ///<summary>
+        ///</summary>
         public static readonly DefaultIdGeneratorConvention Instance = new DefaultIdGeneratorConvention();
 
         /// <summary>
@@ -23,7 +26,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
         public IIdGenerator GetGenerator(Type type)
         {
             if (type == typeof(Oid))
-                return new MongoDB.Driver.Configuration.IdGenerators.OidGenerator();
+                return new IdGenerators.OidGenerator();
 
             if (type == typeof(Guid))
                 return new GuidCombGenerator();

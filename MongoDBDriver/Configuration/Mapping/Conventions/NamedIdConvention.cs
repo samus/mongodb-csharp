@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class NamedIdConvention : IIdConvention
     {
         private readonly BindingFlags _bindingFlags;
@@ -43,6 +46,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
             if (foundMembers.Length == 1)
                 return foundMembers[0];
 
+            //Todo: use custom exception
             throw new Exception("Too many members found matching Id criteria.");
         }
 

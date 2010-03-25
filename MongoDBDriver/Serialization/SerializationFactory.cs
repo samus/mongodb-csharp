@@ -1,31 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.Configuration.Mapping;
-using MongoDB.Driver.Serialization;
-using MongoDB.Driver.Serialization.Builders;
-using MongoDB.Driver.Serialization.Descriptors;
 
 namespace MongoDB.Driver.Serialization
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SerializationFactory : ISerializationFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly SerializationFactory Default = new SerializationFactory();
 
-        private IMappingStore _mappingStore;
+        private readonly IMappingStore _mappingStore;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MapperSerializationFactory"/> class.
+        /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
         /// </summary>
         public SerializationFactory()
             : this(null)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MapperSerializationFactory"/> class.
+        /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
         /// </summary>
         /// <param name="mappingStore">The mapping store.</param>
         public SerializationFactory(IMappingStore mappingStore)
@@ -37,7 +36,6 @@ namespace MongoDB.Driver.Serialization
         /// Gets the builder.
         /// </summary>
         /// <param name="rootType">Type of the root.</param>
-        /// <param name="connection">The connection.</param>
         /// <returns></returns>
         public IBsonObjectBuilder GetBsonBuilder(Type rootType)
         {
@@ -51,7 +49,6 @@ namespace MongoDB.Driver.Serialization
         /// Gets the descriptor.
         /// </summary>
         /// <param name="rootType">Type of the root.</param>
-        /// <param name="connection">The connection.</param>
         /// <returns></returns>
         public IBsonObjectDescriptor GetBsonDescriptor(Type rootType)
         {

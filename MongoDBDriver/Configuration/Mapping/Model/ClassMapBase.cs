@@ -2,24 +2,21 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ClassMapBase : IClassMap
     {
-        private Type _classType;
-        private object _discriminator;
         private readonly List<PersistentMemberMap> _memberMaps;
 
         /// <summary>
         /// Gets the type of class to which this map pertains.
         /// </summary>
         /// <value>The type of the class.</value>
-        public Type ClassType
-        {
-            get { return _classType; }
-        }
+        public Type ClassType { get; private set; }
 
         /// <summary>
         /// Gets the name of the collection.
@@ -31,11 +28,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// Gets the discriminator.
         /// </summary>
         /// <value>The discriminator.</value>
-        public object Discriminator
-        {
-            get { return _discriminator; }
-            internal set { _discriminator = value; }
-        }
+        public object Discriminator { get; internal set; }
 
         /// <summary>
         /// Gets the alias used to store the discriminator.
@@ -115,12 +108,12 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// Initializes a new instance of the <see cref="ClassMapBase"/> class.
         /// </summary>
         /// <param name="classType">Type of the entity.</param>
-        public ClassMapBase(Type classType)
+        protected ClassMapBase(Type classType)
         {
             if (classType == null)
                 throw new ArgumentNullException("classType");
 
-            _classType = classType;
+            ClassType = classType;
             _memberMaps = new List<PersistentMemberMap>();
         }
 
@@ -155,7 +148,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         public object GetId(object entity)
         {
             if (!HasId)
-                throw new InvalidCastException(string.Format("{0} does not have a mapped id.", _classType));
+                throw new InvalidCastException(string.Format("{0} does not have a mapped id.", ClassType));
 
             return IdMap.GetValue(entity);
         }

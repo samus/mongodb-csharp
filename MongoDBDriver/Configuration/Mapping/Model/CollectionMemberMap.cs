@@ -5,6 +5,9 @@ using MongoDB.Driver.Configuration.CollectionAdapters;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class CollectionMemberMap : PersistentMemberMap
     {
         private readonly ICollectionAdapter _collectionType;
@@ -30,7 +33,6 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// <param name="persistNull">if set to <c>true</c> [persist null].</param>
         /// <param name="collectionType">Type of the collection.</param>
         /// <param name="elementType">Type of the element.</param>
-        /// <param name="elementValueConverter">The element value converter.</param>
         public CollectionMemberMap(string memberName, Type memberReturnType, Func<object, object> getter, Action<object, object> setter, string alias, bool persistNull, ICollectionAdapter collectionType, Type elementType)
             : base(memberName, memberReturnType, getter, setter, null, alias, persistNull)
         {
@@ -53,6 +55,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
             return list.ToArray();
         }
 
+        /// <summary>
+        /// Sets the value on the specified instance.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="value">The value.</param>
         public override void SetValue(object instance, object value)
         {
             base.SetValue(instance, _collectionType.CreateCollection(_elementType, (object[])value));

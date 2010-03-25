@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using MongoDB.Driver;
 
 namespace MongoDB.Driver.Serialization.Builders
 {
     internal class DocumentBuilder : IObjectBuilder
     {
-        private Document _document;
+        private readonly Document _document;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentBuilder"/> class.

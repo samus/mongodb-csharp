@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SubClassMap : ClassMapBase
     {
         private IClassMap _superClassMap;
@@ -76,10 +79,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// <value>The member maps.</value>
         public override IEnumerable<PersistentMemberMap> MemberMaps
         {
-            get
-            {
-                return _superClassMap.MemberMaps.Concat(base.MemberMaps);
-            }
+            get{return _superClassMap.MemberMaps.Concat(base.MemberMaps);}
         }
 
         /// <summary>
@@ -105,12 +105,8 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// </summary>
         /// <param name="discriminator">The discriminator.</param>
         /// <returns></returns>
-        public override IClassMap GetClassMapFromDiscriminator(object discriminator)
-        {
-            if (Discriminator.Equals(discriminator))
-                return this;
-
-            return null;
+        public override IClassMap GetClassMapFromDiscriminator(object discriminator){
+            return Discriminator.Equals(discriminator) ? this : null;
         }
     }
 }
