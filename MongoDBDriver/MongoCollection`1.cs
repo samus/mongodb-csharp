@@ -257,7 +257,7 @@ namespace MongoDB.Driver
             try {
                 _connection.SendMessage(insertMessage);
             } catch (IOException exception) {
-                throw new MongoCommException("Could not insert document, communication failure", _connection, exception);
+                throw new MongoConnectionException("Could not insert document, communication failure", _connection, exception);
             }
         }
 
@@ -289,7 +289,7 @@ namespace MongoDB.Driver
             try {
                 _connection.SendMessage(deleteMessage);
             } catch (IOException exception) {
-                throw new MongoCommException("Could not delete document, communication failure", _connection, exception);
+                throw new MongoConnectionException("Could not delete document, communication failure", _connection, exception);
             }
         }
 
@@ -368,7 +368,7 @@ namespace MongoDB.Driver
             try {
                 _connection.SendMessage(updateMessage);
             } catch (IOException exception) {
-                throw new MongoCommException("Could not update document, communication failure", _connection, exception);
+                throw new MongoConnectionException("Could not update document, communication failure", _connection, exception);
             }
         }
 

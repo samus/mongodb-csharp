@@ -31,7 +31,7 @@ namespace MongoDB.Driver
             try{
                 MongoDatabase db = m["admin"];
                 db["$cmd"].FindOne(new Document().Add("listDatabases", 1.0));
-            }catch(MongoCommException){
+            }catch(MongoConnectionException){
                 thrown = true;
             }
             Assert.IsTrue(thrown, "MongoComException not thrown");

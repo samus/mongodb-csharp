@@ -79,7 +79,7 @@ namespace MongoDB.Driver
         /// Connects this instance.
         /// </summary>
         /// <returns></returns>
-        public Boolean Connect (){
+        public bool Connect (){
             connection.Open ();
             return connection.State == ConnectionState.Opened;
         }

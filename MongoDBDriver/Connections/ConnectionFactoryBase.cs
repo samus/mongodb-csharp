@@ -1,4 +1,5 @@
 using System;
+using System.Net.Sockets;
 
 namespace MongoDB.Driver.Connections
 {
@@ -58,7 +59,12 @@ namespace MongoDB.Driver.Connections
         protected RawConnection CreateRawConnection()
         {
             var endPoint = GetNextEndPoint();
-            return new RawConnection(endPoint, Builder.ConnectionTimeout);
+            try
+            {
+                return new RawConnection(endPoint, Builder.ConnectionTimeout);
+            }catch(SocketException exception){
+                throw new MongoConnectionException("Failed to connect to server " + endPoint, ConnectionString, endPoint, exception);
+            }
         }
 
         /// <summary>

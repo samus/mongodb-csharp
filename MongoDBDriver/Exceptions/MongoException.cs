@@ -11,8 +11,8 @@ namespace MongoDB.Driver
         /// Initializes a new instance of the <see cref="MongoException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <param name="inner">The inner.</param>
-        public MongoException(string message, Exception inner):base(message,inner){}
+        /// <param name="innerException">The inner.</param>
+        public MongoException(string message, Exception innerException):base(message,innerException){}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoException"/> class.

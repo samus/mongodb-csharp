@@ -278,7 +278,7 @@ namespace MongoDB.Driver
                 _connection.SendMessage(killCursorsMessage);
                 Id = 0;
             } catch (IOException exception) {
-                throw new MongoCommException("Could not read data, communication failure", _connection, exception);
+                throw new MongoConnectionException("Could not read data, communication failure", _connection, exception);
             }
         }
 
@@ -314,7 +314,7 @@ namespace MongoDB.Driver
                     _limit = _limit * -1;
                 _isModifiable = false;
             } catch (IOException exception) {
-                throw new MongoCommException("Could not read data, communication failure", _connection, exception);
+                throw new MongoConnectionException("Could not read data, communication failure", _connection, exception);
             }
         }
 
@@ -331,7 +331,7 @@ namespace MongoDB.Driver
                 Id = _reply.CursorId;
             } catch (IOException exception) {
                 Id = 0;
-                throw new MongoCommException("Could not read data, communication failure", _connection, exception);
+                throw new MongoConnectionException("Could not read data, communication failure", _connection, exception);
             }
         }
 

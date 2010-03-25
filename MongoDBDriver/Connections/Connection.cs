@@ -64,6 +64,14 @@ namespace MongoDB.Driver.Connections
             get { return _factory.ConnectionString; }
         }
 
+        /// <summary>
+        /// Gets the end point.
+        /// </summary>
+        /// <value>The end point.</value>
+        public MongoServerEndPoint EndPoint{
+            get { return _connection.EndPoint; }
+        }
+
          /// <summary>
         /// Sends the two way message.
         /// </summary>
@@ -83,7 +91,7 @@ namespace MongoDB.Driver.Connections
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
         public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage message, IBsonObjectBuilder objectBuilder) where T:class {
             if (State != ConnectionState.Opened) {
-                throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
+                throw new MongoConnectionException ("Operation cannot be performed on a closed connection.", this);
             }
             try {
                 var reply = new ReplyMessage<T>(objectBuilder);
@@ -106,7 +114,7 @@ namespace MongoDB.Driver.Connections
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
         public void SendMessage (IRequestMessage message){
             if (State != ConnectionState.Opened) {
-                throw new MongoCommException ("Operation cannot be performed on a closed connection.", this);
+                throw new MongoConnectionException ("Operation cannot be performed on a closed connection.", this);
             }
             try {
                 lock (_connection) {

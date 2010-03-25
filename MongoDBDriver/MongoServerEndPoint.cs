@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Net;
 
 namespace MongoDB.Driver
@@ -10,11 +11,11 @@ namespace MongoDB.Driver
     public class MongoServerEndPoint : EndPoint
     {
         /// <summary>
-        /// 
+        /// The mongo default host name.
         /// </summary>
         public const string DefaultHost = "localhost";
         /// <summary>
-        /// 
+        /// The mongo default server port.
         /// </summary>
         public const int DefaultPort = 27017;
 
@@ -74,5 +75,16 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value>The port.</value>
         public int Port { get; private set; }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.CurrentCulture, "{0}:{1}", Host, Port);
+        }
     }
 }
