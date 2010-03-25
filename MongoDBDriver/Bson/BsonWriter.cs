@@ -17,6 +17,23 @@ namespace MongoDB.Driver.Bson
         private readonly Stream _stream;
         private readonly IBsonObjectDescriptor _descriptor;
         private readonly BinaryWriter _writer;
+        private readonly bool _writeLocalTime;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BsonWriter"/> class.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="settings">The settings.</param>
+        public BsonWriter(Stream stream, BsonWriterSettings settings){
+            if(settings == null)
+                throw new ArgumentNullException("settings");
+            _stream = stream;
+            _descriptor = settings.Descriptor;
+            _writer = new BinaryWriter(_stream);
+            _buffer = new byte[BufferLength];
+            _maxChars = BufferLength / Encoding.UTF8.GetMaxByteCount(1);
+            _writeLocalTime = settings.WriteLocalTime;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BsonWriter"/> class.
@@ -29,6 +46,7 @@ namespace MongoDB.Driver.Bson
             _writer = new BinaryWriter(_stream);
             _buffer = new byte[BufferLength];
             _maxChars = BufferLength/Encoding.UTF8.GetMaxByteCount(1);
+            _writeLocalTime = false;
         }
 
         /// <summary>
@@ -170,9 +188,9 @@ namespace MongoDB.Driver.Bson
         /// <summary>
         /// Writes the specified data time.
         /// </summary>
-        /// <param name="dataTime">The data time.</param>
-        private void Write(DateTime dataTime){
-            var diff = dataTime.ToUniversalTime() - BsonInfo.Epoch;
+        /// <param name="dateTime">The data time.</param>
+        private void Write(DateTime dateTime){
+            var diff = (_writeLocalTime ? dateTime : dateTime.ToUniversalTime()) - BsonInfo.Epoch;
             var time = Math.Floor(diff.TotalMilliseconds);
             _writer.Write((long)time);
         }

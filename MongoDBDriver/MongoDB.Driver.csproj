@@ -83,6 +83,8 @@
     <Compile Include="Bson\BsonInfo.cs" />
     <Compile Include="Bson\BsonDocumentBuilder.cs" />
     <Compile Include="Bson\BsonDocumentDescriptor.cs" />
+    <Compile Include="Bson\BsonReaderSettings.cs" />
+    <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
     <Compile Include="Serialization\Builders\ArrayBuilder.cs" />

@@ -17,9 +17,29 @@ namespace MongoDB.Driver.Bson
         private readonly byte[] _seqRange3 = new byte[]{224, 239}; //Range of 3-byte sequence
         private readonly byte[] _seqRange4 = new byte[]{240, 244}; //Range of 4-byte sequence
         private readonly Stream _stream;
+        private readonly bool _convertToLocalTime;
+        private readonly bool _readAsLocalTime;
 
         private byte[] _byteBuffer;
         private char[] _charBuffer;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BsonReader"/> class.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="settings">The settings.</param>
+        public BsonReader(Stream stream, BsonReaderSettings settings)
+        {
+            if(settings == null)
+                throw new ArgumentNullException("settings");
+            
+            _builder = settings.Builder;
+            _convertToLocalTime = settings.ConvertToLocalTime;
+            _readAsLocalTime = settings.ReadAsLocalTime;
+            Position = 0;
+            _stream = stream;
+            _reader = new BinaryReader(_stream);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BsonReader"/> class.
@@ -125,9 +145,7 @@ namespace MongoDB.Driver.Bson
                     Position += 8;
                     return _reader.ReadInt64();
                 case BsonDataType.Date:
-                    Position += 8;
-                    var milliseconds = _reader.ReadInt64();
-                    return BsonInfo.Epoch.AddMilliseconds(milliseconds).ToUniversalTime();
+                    return ReadDateTime();
                 case BsonDataType.Oid:
                     Position += 12;
                     return new Oid(_reader.ReadBytes(12));
@@ -151,6 +169,21 @@ namespace MongoDB.Driver.Bson
                 default:
                     throw new ArgumentOutOfRangeException(String.Format("Type Number: {0} not recognized", typeNumber));
             }
+        }
+
+        /// <summary>
+        /// Reads the date time.
+        /// </summary>
+        /// <returns></returns>
+        private object ReadDateTime(){
+            Position += 8;
+            var milliseconds = _reader.ReadInt64();
+            var time = BsonInfo.Epoch.AddMilliseconds(milliseconds);
+            if(_convertToLocalTime)
+                time = time.ToLocalTime();
+            else if(_readAsLocalTime)
+                time = new DateTime(time.Year,time.Month,time.Day, time.Hour,time.Minute,time.Second,time.Millisecond,DateTimeKind.Local);
+            return time;
         }
 
         /// <summary>
