@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Reflection;
 
+using MongoDB.Driver.Attributes;
 using MongoDB.Driver.Configuration.CollectionAdapters;
 using MongoDB.Driver.Configuration.IdGenerators;
 using MongoDB.Driver.Configuration.Mapping.Conventions;
-using MongoDB.Driver.Serialization.Attributes;
 using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver.Configuration.Mapping.Auto

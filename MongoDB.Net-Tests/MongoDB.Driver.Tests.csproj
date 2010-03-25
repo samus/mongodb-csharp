@@ -85,10 +85,6 @@
     <Compile Include="Connections\TestConnectionFactory.cs" />
     <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
-    <Compile Include="Serialization\ObjectArrayBuilderTests.cs" />
-    <Compile Include="Serialization\ReflectionBuilderTests.cs" />
-    <Compile Include="Serialization\ReflectionDescriptorTests.cs" />
-    <Compile Include="Serialization\SerializationTestBase.cs" />
     <Compile Include="TestAuthentication.cs" />
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
@@ -122,7 +118,6 @@
     <Compile Include="TestOp.cs" />
     <Compile Include="Util\TestJsonUtils.cs" />
     <Compile Include="Configuration\TestConfigurationSection.cs" />
-    <Compile Include="Serialization\DocumentReflectionSerializationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -146,6 +141,9 @@
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
       <Name>MongoDB.Driver</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Serialization\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

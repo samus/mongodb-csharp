@@ -233,7 +233,7 @@ namespace MongoDB.Driver
             }
 
             var rootType = typeof(T);
-            var bsonDescriptor = _serializationFactory.GetBsonDescriptor(rootType, _connection);
+            var bsonDescriptor = _serializationFactory.GetBsonDescriptor(rootType);
 
             var insertMessage = new InsertMessage(bsonDescriptor)
             {
@@ -282,7 +282,7 @@ namespace MongoDB.Driver
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
         public void Delete(object selector){
-            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T));
             
             var deleteMessage = new DeleteMessage(descriptor) { FullCollectionName = FullName, Selector = selector };
             
@@ -356,7 +356,7 @@ namespace MongoDB.Driver
         /// <param name="selector">The query spec to find the document to update.</param>
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(object document, object selector, UpdateFlags flags){
-            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T), _connection);
+            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T));
             
             var updateMessage = new UpdateMessage(descriptor){
                 FullCollectionName = FullName, 

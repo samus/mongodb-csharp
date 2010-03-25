@@ -1,23 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-using MongoDB.Driver;
+using MongoDB.Driver.Configuration.Mapping.Model;
+using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Builders
 {
-    internal class DocumentBuilder : IObjectBuilder
+    internal class ArrayBuilder : IObjectBuilder
     {
-        private Document _document;
+        private readonly List<object> _elements;
+        private readonly Type _elementType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentBuilder"/> class.
+        /// Initializes a new instance of the <see cref="CollectionMemberMapBuilder"/> class.
         /// </summary>
-        public DocumentBuilder()
+        /// <param name="collectionMemberMap">The collection member map.</param>
+        public ArrayBuilder(Type elementType)
         {
-            _document = new Document();
+            _elements = new List<object>();
+            _elementType = elementType;
         }
-
         /// <summary>
         /// Adds the property.
         /// </summary>
@@ -25,7 +26,7 @@ namespace MongoDB.Driver.Serialization.Builders
         /// <param name="value">The value.</param>
         public void AddProperty(string name, object value)
         {
-            _document.Add(name, value);
+            _elements.Add(value);
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace MongoDB.Driver.Serialization.Builders
         /// <returns></returns>
         public object BuildObject()
         {
-            return _document;
+            return _elements.ToArray();
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace MongoDB.Driver.Serialization.Builders
         /// <returns></returns>
         public Type GetPropertyType(string name)
         {
-            return null;
+            return _elementType;
         }
     }
 }

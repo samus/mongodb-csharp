@@ -4,26 +4,21 @@ using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver.Serialization
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public interface ISerializationFactory
     {
         /// <summary>
         /// Gets the bson builder.
         /// </summary>
         /// <param name="rootType">Type of the root.</param>
-        /// <param name="connection">The connection.</param>
         /// <returns></returns>
-        IBsonObjectBuilder GetBsonBuilder(Type rootType,Connection connection);
+        IBsonObjectBuilder GetBsonBuilder(Type rootType);
 
         /// <summary>
         /// Gets the bson descriptor.
         /// </summary>
         /// <param name="rootType">Type of the root.</param>
-        /// <param name="connection">The connection.</param>
         /// <returns></returns>
-        IBsonObjectDescriptor GetBsonDescriptor(Type rootType, Connection connection);
+        IBsonObjectDescriptor GetBsonDescriptor(Type rootType);
 
         /// <summary>
         /// Gets the object descriptor.

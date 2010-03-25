@@ -1,4 +1,4 @@
-using MongoDB.Driver.Serialization.Attributes;
+using MongoDB.Driver.Attributes;
 
 namespace MongoDB.Driver.CommandResults
 {

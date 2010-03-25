@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Serialization.Attributes
+namespace MongoDB.Driver.Attributes
 {
     /// <summary>
     /// 
