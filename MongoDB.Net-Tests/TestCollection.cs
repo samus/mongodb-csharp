@@ -7,7 +7,7 @@ namespace MongoDB.Driver
     [TestFixture]
     public class TestCollection : MongoTestBase
     {
-        private string pound = "\u00a3";
+        const string POUND = "\u00a3";
 
         public override string TestCollections
         {
@@ -22,7 +22,7 @@ namespace MongoDB.Driver
             for(var j = 100; j < 105; j++)
                 finds.Insert(new Document {{"x", 4}, {"n", 1}, {"j", j}});
             var charreads = DB["charreads"];
-            charreads.Insert(new Document {{"test", "1234" + pound + "56"}});
+            charreads.Insert(new Document {{"test", "1234" + POUND + "56"}});
         }
 
         private int CountDocs(ICursor cur)
@@ -280,10 +280,10 @@ namespace MongoDB.Driver
         public void TestPoundSymbolInsert()
         {
             var inserts = DB["inserts"];
-            var indoc = new Document().Add("x", "1234" + pound + "56").Add("y", 1);
+            var indoc = new Document().Add("x", "1234" + POUND + "56").Add("y", 1);
             inserts.Insert(indoc);
 
-            var result = inserts.FindOne(new Document().Add("x", "1234" + pound + "56"));
+            var result = inserts.FindOne(new Document().Add("x", "1234" + POUND + "56"));
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result["y"]);
         }

@@ -103,6 +103,7 @@
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
+    <Compile Include="TestCollection`1.cs" />
     <Compile Include="TestConnectionStringBuilder.cs" />
     <Compile Include="TestCursor.cs" />
     <Compile Include="TestDatabase.cs" />

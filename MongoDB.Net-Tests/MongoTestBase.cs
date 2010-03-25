@@ -22,7 +22,6 @@ namespace MongoDB.Driver
         /// </summary>
         public abstract string TestCollections{get;}
         
-
         /// <summary>
         /// Override to add custom initialization code.
         /// </summary>
