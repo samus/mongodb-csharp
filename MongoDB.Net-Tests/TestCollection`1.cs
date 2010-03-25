@@ -30,6 +30,28 @@ namespace MongoDB.Driver
             public string test { get; set; }
         }
 
+        private class InsertsEntity
+        {
+            [MongoName("song")]
+            public string Song { get; set; }
+
+            [MongoName("artist")]
+            public string Artist { get; set; }
+
+            [MongoName("year")]
+            public int Year { get; set; }
+        }
+
+        private class CountsEntity
+        {
+            public string Last { get; set; }
+
+            public string First { get; set; }
+
+            [MongoName("cnt")]
+            public int Count { get; set; }
+        }
+
         public override string TestCollections
         {
             get { return "inserts,updates,counts,counts_spec,finds,charreads,saves"; }
@@ -121,6 +143,55 @@ namespace MongoDB.Driver
             Assert.AreEqual(4, col.Find(where).Documents.Count(), "String where didn't return 4 docs");
             Assert.AreEqual(4, col.Find(explicitWhere).Documents.Count(), "Explicit where didn't return 4 docs");
             Assert.AreEqual(4, col.Find(funcDoc).Documents.Count(), "Function where didn't return 4 docs");
+        }
+
+        [Test]
+        public void TestArrayInsert()
+        {
+            var inserts = DB.GetCollection<InsertsEntity>("inserts");
+            var indoc1 = new { Song = "The Axe", Artist = "Tinsley Ellis", Year = 2006 };
+            var indoc2 = new { Song = "The Axe2", Artist = "Tinsley Ellis2", Year = 2008 };
+
+            inserts.Insert(new[] { indoc1, indoc2 });
+
+            var result = inserts.FindOne(new Document().Add("Song", "The Axe"));
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2006, result.Year);
+
+            result = inserts.FindOne(new Document().Add("Song", "The Axe2"));
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2008, result.Year);
+        }
+
+        [Test]
+        public void TestCount()
+        {
+            var counts = DB.GetCollection<CountsEntity>("counts");
+            var top = 100;
+            for (var i = 0; i < top; i++)
+                counts.Insert(new Document().Add("Last", "Cordr").Add("First", "Sam").Add("Count", i));
+            var cnt = counts.Count();
+            Assert.AreEqual(top, cnt, "Count not the same as number of inserted records");
+        }
+
+        [Test]
+        public void TestCountInvalidCollection()
+        {
+            var counts = DB.GetCollection<CountsEntity>("counts_wtf");
+            Assert.AreEqual(0, counts.Count());
+        }
+
+        [Test]
+        public void TestCountWithSpec()
+        {
+            var counts = DB.GetCollection<CountsEntity>("counts_spec");
+            counts.Insert(new { Last = "Cordr", First = "Sam", Count = 1 });
+            counts.Insert(new { Last = "Cordr", First = "Sam", Count = 2 });
+            counts.Insert(new { Last = "Corder", First = "Sam", Count = 3 });
+
+            Assert.AreEqual(2, counts.Count(new { Last = "Cordr" }));
+            Assert.AreEqual(1, counts.Count(new { Last = "Corder" }));
+            Assert.AreEqual(0, counts.Count(new { Last = "Brown" }));
         }
     }
 }

@@ -63,6 +63,9 @@ namespace MongoDB.Driver.Serialization
             //if (_classMap.HasDiscriminator && _classMap.DiscriminatorAlias == mongoName)
             //    return _classMap.Discriminator;
 
+            if (!_classMap.HasId && mongoName == "_id")
+                return null;
+
             return _classMap.GetMemberMapFromAlias(mongoName).GetValue(instance);
         }
 
@@ -74,6 +77,9 @@ namespace MongoDB.Driver.Serialization
         /// <param name="value">The value.</param>
         public void SetPropertyValue(object instance, string mongoName, object value)
         {
+            if (!_classMap.HasId && mongoName == "_id") //there is nothing for us to set and we'll let the database do the id generation...
+                return;
+
             _classMap.GetMemberMapFromAlias(mongoName).SetValue(instance, value);
         }
     }
