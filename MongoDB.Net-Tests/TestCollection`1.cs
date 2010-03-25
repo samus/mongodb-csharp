@@ -14,6 +14,18 @@ namespace MongoDB.Driver
     {
         const string POUND = "\u00a3";
 
+        private class CountsEntity
+        {
+            public Oid Id { get; set; }
+
+            public string Last { get; set; }
+
+            public string First { get; set; }
+
+            [MongoName("cnt")]
+            public int Coolness { get; set; }
+        }
+
         private class FindsEntity
         {
             public int x { get; set; }
@@ -23,6 +35,8 @@ namespace MongoDB.Driver
 
             [MongoName("j")]
             public int Index { get; set; }
+
+            public int n { get; set; }
         }
 
         private class CharReadsEntity
@@ -42,14 +56,31 @@ namespace MongoDB.Driver
             public int Year { get; set; }
         }
 
-        private class CountsEntity
+        private class Album
         {
-            public string Last { get; set; }
+            [MongoName("artist")]
+            public string Artist { get; set; }
 
-            public string First { get; set; }
+            [MongoName("title")]
+            public string Title { get; set; }
 
-            [MongoName("cnt")]
-            public int Count { get; set; }
+            [MongoName("songs")]
+            public List<Song> Songs { get; set; }
+        }
+
+        private class Song
+        {
+            [MongoName("title")]
+            public string Title { get; set; }
+
+            [MongoName("length")]
+            public string Length { get; set; }
+        }
+
+        private class DeletesEntity
+        {
+            public int x { get; set; }
+            public int y { get; set; }
         }
 
         public override string TestCollections
@@ -67,6 +98,38 @@ namespace MongoDB.Driver
             var charreads = DB["charreads"];
             charreads.Insert(new Document { { "test", "1234" + POUND + "56" } });
         }
+
+        [Test]
+        public void TestCount()
+        {
+            var counts = DB.GetCollection<CountsEntity>("counts");
+            var top = 100;
+            for (var i = 0; i < top; i++)
+                counts.Insert(new CountsEntity { Last = "Cordr", First = "Sam", Coolness = i });
+            var cnt = counts.Count();
+            Assert.AreEqual(top, cnt, "Count not the same as number of inserted records");
+        }
+
+        [Test]
+        public void TestCountInvalidCollection()
+        {
+            var counts = DB.GetCollection<CountsEntity>("counts_wtf");
+            Assert.AreEqual(0, counts.Count());
+        }
+
+        [Test]
+        public void TestCountWithSpec()
+        {
+            var counts = DB.GetCollection<CountsEntity>("counts_spec");
+            counts.Insert(new CountsEntity { Last = "Cordr", First = "Sam", Coolness = 1 });
+            counts.Insert(new CountsEntity { Last = "Cordr", First = "Sam", Coolness = 2 });
+            counts.Insert(new CountsEntity { Last = "Corder", First = "Sam", Coolness = 3 });
+
+            Assert.AreEqual(2, counts.Count(new { Last = "Cordr" }));
+            Assert.AreEqual(1, counts.Count(new { Last = "Corder" }));
+            Assert.AreEqual(0, counts.Count(new { Last = "Brown" }));
+        }
+
 
         [Test]
         public void TestFindAttributeLimit()
@@ -97,9 +160,9 @@ namespace MongoDB.Driver
         [Test]
         public void TestFindNulls()
         {
-            var query = new { n = (string)null };
+            var query = new { Text = (string)null };
             var numnulls = DB.GetCollection<FindsEntity>("finds").Count(query);
-            Assert.AreEqual(99, numnulls);
+            Assert.AreEqual(4, numnulls);
         }
 
         [Test]
@@ -164,34 +227,160 @@ namespace MongoDB.Driver
         }
 
         [Test]
-        public void TestCount()
+        public void TestInsertBulkLargerThan4MBOfDocuments()
         {
-            var counts = DB.GetCollection<CountsEntity>("counts");
-            var top = 100;
-            for (var i = 0; i < top; i++)
-                counts.Insert(new Document().Add("Last", "Cordr").Add("First", "Sam").Add("Count", i));
-            var cnt = counts.Count();
-            Assert.AreEqual(top, cnt, "Count not the same as number of inserted records");
+            var b = new Binary(new byte[1024 * 1024 * 2]);
+            var inserts = DB.GetCollection<InsertsEntity>("inserts");
+            try
+            {
+                //6MB+ of documents
+                var docs = from i in Enumerable.Range(1, 10)
+                           select new { Song = "Bulk", bin = b, Year = i };
+
+                inserts.Insert(docs, true);
+                var count = inserts.Count(new Document { { "song", "Bulk" } });
+                Assert.AreEqual(docs.Count(), count, "Wrong number of documents inserted");
+            }
+            catch (MongoException)
+            {
+                Assert.Fail("MongoException should not have been thrown.");
+            }
         }
 
         [Test]
-        public void TestCountInvalidCollection()
+        public void TestInsertOfArray()
         {
-            var counts = DB.GetCollection<CountsEntity>("counts_wtf");
-            Assert.AreEqual(0, counts.Count());
+            var ogen = new OidGenerator();
+            var inserts = DB.GetCollection<Album>("inserts");
+            var album = new Album() { Title = "Deliveries After Dark", Artist = "Popa Chubby" };
+            album.Songs = new List<Song>
+            {
+                new Song() { Title = "Let The Music Set You Free", Length="5:15" },
+                new Song() { Title = "Sally Likes to Run", Length="4:06" },
+                new Song() { Title = "Deliveries After Dark", Length="4:17" },
+                new Song() { Title = "Theme From The Godfather", Length="3:06" },
+                new Song() { Title = "Grown Man Crying Blues", Length="8:09" }
+            };
+            inserts.Insert(album);
+
+            var result = inserts.FindOne(new Document().Add("songs.title", "Deliveries After Dark"));
+            Assert.IsNotNull(result);
+
+            Assert.AreEqual(album.Songs.Count, result.Songs.Count);
         }
 
         [Test]
-        public void TestCountWithSpec()
+        public void TestSimpleInsert()
         {
-            var counts = DB.GetCollection<CountsEntity>("counts_spec");
-            counts.Insert(new { Last = "Cordr", First = "Sam", Count = 1 });
-            counts.Insert(new { Last = "Cordr", First = "Sam", Count = 2 });
-            counts.Insert(new { Last = "Corder", First = "Sam", Count = 3 });
+            var inserts = DB.GetCollection<InsertsEntity>("inserts");
+            var indoc = new InsertsEntity() { Artist = "Afroman", Song = "Palmdale", Year = 1999 };
+            inserts.Insert(indoc);
 
-            Assert.AreEqual(2, counts.Count(new { Last = "Cordr" }));
-            Assert.AreEqual(1, counts.Count(new { Last = "Corder" }));
-            Assert.AreEqual(0, counts.Count(new { Last = "Brown" }));
+            var result = inserts.FindOne(new { Song = "Palmdale" });
+            Assert.IsNotNull(result);
+            Assert.AreEqual(indoc.Year, result.Year);
+        }
+
+        [Test]
+        public void TestDelete()
+        {
+            var deletes = DB.GetCollection<DeletesEntity>("deletes");
+            deletes.Insert(new { x = 2, y = 1 });
+
+            var selector = new { x = 2 };
+
+            var result = deletes.FindOne(selector);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.y);
+
+            deletes.Delete(selector);
+            result = deletes.FindOne(selector);
+            Assert.IsNull(result, "Shouldn't have been able to find a document that was deleted");
+        }
+
+        [Test]
+        public void TestUpdateMany()
+        {
+            var updates = DB.GetCollection<CountsEntity>("updates");
+
+            updates.Insert(new CountsEntity { Last = "Cordr", First = "Sam" });
+            updates.Insert(new CountsEntity { Last = "Cordr", First = "Sam2" });
+            updates.Insert(new CountsEntity { Last = "Cordr", First = "Sam3" });
+
+            var selector = new { Last = "Cordr" };
+            var results = updates.Find(selector);
+            Assert.AreEqual(3, results.Documents.Count(), "Didn't find all Documents inserted for TestUpdateMany with Selector");
+
+            var updateData = new { Last = "Cordr2" };
+            updates.UpdateAll(updateData, selector);
+
+            selector = new { Last = "Cordr2" };
+            results = updates.Find(selector);
+            int count = 0;
+            foreach (var doc in results.Documents)
+            {
+                count++;
+                Assert.AreEqual("Corder2", doc.Last);
+                Assert.IsNotNull(doc.First, "First name should not disappear");
+            }
+
+            Assert.AreEqual(3, count, "Didn't find all documents for updated.");
+        }
+
+        [Test]
+        public void TestUpdatePartial()
+        {
+            var updates = DB.GetCollection<CountsEntity>("updates");
+            var coolness = 5;
+            var einstein = new CountsEntity { Last = "Einstein", First = "Albret", Coolness = coolness++ };
+            updates.Insert(einstein);
+            var selector = new { Last = "Einstein" };
+
+            updates.Update(new Document { { "$inc", new Document("cnt", 1) } }, selector);
+            Assert.AreEqual(coolness++, Convert.ToInt32(updates.FindOne(selector).Coolness), "Coolness field not incremented", true);
+
+            updates.Update(new Document
+            {
+                {"$set", new { First = "Albert" } },
+                {"$inc", new Document {{"cnt", 1}}}
+            },
+                selector,
+                true);
+            Assert.AreEqual(coolness++, Convert.ToInt32(updates.FindOne(selector).Coolness), "Coolness field not incremented");
+        }
+
+        [Test]
+        public void TestUpdateUpsertExisting()
+        {
+            var updates = DB.GetCollection<CountsEntity>("updates");
+            var doc = new CountsEntity() { First = "Mtt", Last = "Brewer" };
+
+            updates.Insert(doc);
+
+            var selector = new { Last = "Brewer" };
+            doc = updates.FindOne(selector);
+            Assert.IsNotNull(doc);
+            Assert.AreEqual("Mtt", doc.First);
+            Assert.IsNotNull(doc.Id);
+
+            doc.First = "Matt";
+            updates.Update(doc);
+
+            var result = updates.FindOne(selector);
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Matt", result.First);
+        }
+
+        [Test]
+        public void TestUpdateUpsertNotExisting()
+        {
+            var updates = DB.GetCollection<CountsEntity>("updates");
+            var doc = new CountsEntity() { First = "Sam", Last = "CorderNE" };
+
+            updates.Update(doc);
+            var result = updates.FindOne(new { Last = "CorderNE" });
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Sam", result.First);
         }
     }
 }

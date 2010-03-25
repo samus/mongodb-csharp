@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MongoDB.Driver.CommandResults;
 
 namespace MongoDB.Driver
 {
@@ -135,7 +136,7 @@ namespace MongoDB.Driver
         /// <summary>
         /// Sends the command.
         /// </summary>
-        /// <param name="command">The CMD.</param>
+        /// <param name="command">The command.</param>
         /// <returns></returns>
         Document SendCommand(Document command);
     }
