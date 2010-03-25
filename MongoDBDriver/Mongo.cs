@@ -9,8 +9,8 @@ namespace MongoDB.Driver
     /// </summary>
     public class Mongo : IDisposable
     {
-        private readonly Connection connection;
-        private readonly ISerializationFactory serializationFactory;
+        private readonly Connection _connection;
+        private readonly ISerializationFactory _serializationFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Mongo"/> class.
@@ -46,8 +46,9 @@ namespace MongoDB.Driver
                 throw new ArgumentNullException("connectionString");
             if(serializationFactory == null)
                 throw new ArgumentNullException("serializationFactory");
-            this.connection = ConnectionFactory.GetConnection(connectionString);
-            this.serializationFactory = serializationFactory;
+            
+            _connection = ConnectionFactory.GetConnection(connectionString);
+            _serializationFactory = serializationFactory;
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value>The connection string.</value>
         public string ConnectionString {
-            get { return connection.ConnectionString; }
+            get { return _connection.ConnectionString; }
         }
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace MongoDB.Driver
         /// <param name="name">The name.</param>
         /// <returns></returns>
         public MongoDatabase GetDatabase (String name){
-            return new MongoDatabase (serializationFactory, connection, name);
+            return new MongoDatabase (_serializationFactory, _connection, name);
         }
 
         /// <summary>
@@ -72,32 +73,49 @@ namespace MongoDB.Driver
         /// </summary>
         /// <value></value>
         public MongoDatabase this[String name] {
-            get { return this.GetDatabase (name); }
+            get { return GetDatabase (name); }
         }
 
         /// <summary>
-        /// Connects this instance.
+        /// Connects to server.
         /// </summary>
         /// <returns></returns>
-        public bool Connect (){
-            connection.Open ();
-            return connection.State == ConnectionState.Opened;
+        /// <exception cref="MongoDB.Driver.MongoConnectionException">Thrown when connection fails.</exception>
+        public void Connect()
+        {
+            _connection.Open();
+        }
+
+        /// <summary>
+        /// Tries to connect to server.
+        /// </summary>
+        /// <returns></returns>
+        public bool TryConnect (){
+            try
+            {
+                _connection.Open();
+                return _connection.State == ConnectionState.Opened;
+            }
+            catch(MongoException)
+            {
+                return _connection.State == ConnectionState.Opened;
+            }
         }
 
         /// <summary>
         /// Disconnects this instance.
         /// </summary>
         /// <returns></returns>
-        public Boolean Disconnect (){
-            connection.Close ();
-            return connection.State == ConnectionState.Closed;
+        public bool Disconnect (){
+            _connection.Close ();
+            return _connection.State == ConnectionState.Closed;
         }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose (){
-            connection.Dispose ();
+            _connection.Dispose ();
         }
     }
 }
