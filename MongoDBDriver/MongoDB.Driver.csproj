@@ -224,7 +224,7 @@
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
     <Compile Include="Util\JsonFormatter.cs" />
-    <Compile Include="Configuration\MongoConfiguration.cs" />
+    <Compile Include="Configuration\MongoConfigurationSection.cs" />
     <Compile Include="Configuration\ConnectionElement.cs" />
     <Compile Include="Configuration\ConnectionCollection.cs" />
     <Compile Include="Cursor`1.cs" />

@@ -85,6 +85,20 @@
     <Compile Include="Connections\TestConnectionFactory.cs" />
     <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
+    <Compile Include="Serialization\Builders\DocumentPropertyTests.cs" />
+    <Compile Include="Serialization\Builders\EmbeddedClassPropertyTests.cs" />
+    <Compile Include="Serialization\Builders\EnumerablePropertyTests.cs" />
+    <Compile Include="Serialization\Builders\ExtendedPropertiesTests.cs" />
+    <Compile Include="Serialization\Builders\GenericListPropertyTests.cs" />
+    <Compile Include="Serialization\Builders\PolymorphicObjectTests.cs" />
+    <Compile Include="Serialization\Descriptors\DocumentPropertyTests.cs" />
+    <Compile Include="Serialization\Descriptors\EmbeddedClassPropertyTests.cs" />
+    <Compile Include="Serialization\Descriptors\EnumerablePropertyTests.cs" />
+    <Compile Include="Serialization\Descriptors\ExtendedPropertiesTests.cs" />
+    <Compile Include="Serialization\Descriptors\GenericListPropertyTests.cs" />
+    <Compile Include="Serialization\Descriptors\OperatorTests.cs" />
+    <Compile Include="Serialization\Descriptors\PolymorphicObjectTests.cs" />
+    <Compile Include="Serialization\SerializationTestBase.cs" />
     <Compile Include="TestAuthentication.cs" />
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
@@ -141,9 +155,6 @@
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
       <Name>MongoDB.Driver</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Serialization\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
