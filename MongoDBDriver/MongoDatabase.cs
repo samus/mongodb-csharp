@@ -23,14 +23,22 @@ namespace MongoDB.Driver
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
         /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        public MongoDatabase(string connectionString)
+            : this(SerializationFactory.Default,connectionString)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
+        /// </summary>
         /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connectionString">The connection string.</param>
-        /// <param name="name">The name.</param>
-        public MongoDatabase(ISerializationFactory serializationFactory, string connectionString, String name)
-            : this(serializationFactory, ConnectionFactory.GetConnection(connectionString),name)
+        public MongoDatabase(ISerializationFactory serializationFactory, string connectionString)
+            : this(serializationFactory,
+                   ConnectionFactory.GetConnection(connectionString),
+                   new MongoConnectionStringBuilder(connectionString).Database)
         {
-            if(name == null)
-                throw new ArgumentNullException("name");
         }
 
         /// <summary>
@@ -39,9 +47,15 @@ namespace MongoDB.Driver
         /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
-        public MongoDatabase(ISerializationFactory serializationFactory, Connection connection, String name)
+        public MongoDatabase(ISerializationFactory serializationFactory, Connection connection, string name)
         {
-            //Todo: should be internal
+            if(serializationFactory == null)
+                throw new ArgumentNullException("serializationFactory");
+            if(connection == null)
+                throw new ArgumentNullException("connection");
+            if(name == null)
+                throw new ArgumentNullException("name");
+
             Name = name;
             _connection = connection;
             _serializationFactory = serializationFactory;

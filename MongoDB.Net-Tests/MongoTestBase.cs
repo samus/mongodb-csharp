@@ -1,8 +1,5 @@
 using System;
 using System.Configuration;
-using System.IO;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.Serialization;
 using NUnit.Framework;
 
 namespace MongoDB.Driver
@@ -11,12 +8,19 @@ namespace MongoDB.Driver
     public abstract class MongoTestBase
     {
         public Mongo Mongo{get;set;}
+
         public IMongoDatabase DB{
             get{
                 return this.Mongo["tests"];
             }
         }
-        
+
+        /// <summary>
+        /// Gets or sets the connection string.
+        /// </summary>
+        /// <value>The connection string.</value>
+        public string ConnectionString { get; private set; }
+
         /// <summary>
         /// Comma separated list of collections to clean at startup.
         /// </summary>
@@ -38,9 +42,10 @@ namespace MongoDB.Driver
         /// </summary>
         [TestFixtureSetUp]
         public virtual void Init(){
-            string connstr = ConfigurationManager.AppSettings["tests"];
-            if(String.IsNullOrEmpty(connstr)) throw new ArgumentNullException("Connection string not found.");
-            this.Mongo = new Mongo(connstr);
+            ConnectionString = ConfigurationManager.AppSettings["tests"];
+            if(String.IsNullOrEmpty(ConnectionString))
+                throw new ArgumentNullException("Connection string not found.");
+            this.Mongo = new Mongo(ConnectionString);
             this.Mongo.Connect();
             CleanDB();
             OnInit();
