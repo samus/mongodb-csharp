@@ -17,16 +17,16 @@ namespace MongoDB.Driver.Serialization.Descriptors
         }
 
         [Test]
-        public void CanSerializeASimpleObjectUsingAnAnonymousType()
+        public void CanSerializeASimpleObject()
         {
-            var bson = Serialize<SimpleObject>(new { A = "a", B = "b", C = new { D = "d" } });
+            var bson = Serialize<SimpleObject>(new SimpleObject() { A = "a", B = "b", C = new SimpleObjectC() { D = "d" } });
             Assert.AreEqual("KAAAAAJBAAIAAABhAAJCAAIAAABiAANDAA4AAAACRAACAAAAZAAAAA==", bson);
         }
 
         [Test]
-        public void CanSerializeASimpleObject()
+        public void CanSerializeASimpleObjectUsingAnAnonymousType()
         {
-            var bson = Serialize<SimpleObject>(new SimpleObject(){ A = "a", B = "b", C = new SimpleObjectC() { D = "d" } });
+            var bson = Serialize<SimpleObject>(new { A = "a", B = "b", C = new { D = "d" } });
             Assert.AreEqual("KAAAAAJBAAIAAABhAAJCAAIAAABiAANDAA4AAAACRAACAAAAZAAAAA==", bson);
         }
 
