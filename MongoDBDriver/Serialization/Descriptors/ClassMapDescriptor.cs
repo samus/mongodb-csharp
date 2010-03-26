@@ -45,17 +45,25 @@ namespace MongoDB.Driver.Serialization.Descriptors
         {
             if (_classMap.ShouldPersistDiscriminator() && _classMap.DiscriminatorAlias == name)
                 return new KeyValuePair<Type, object>(_classMap.Discriminator.GetType(), _classMap.Discriminator);
+            
+            object value;
 
             var memberMap = _classMap.GetMemberMapFromAlias(name);
-            object value;
-            if (memberMap != null)
+            if(memberMap != null)
                 value = memberMap.GetValue(_instance);
             else if (_extendedProperties != null)
                 value = _extendedProperties[name];
             else
                 throw new InvalidOperationException("Attempting to get a property that does not exist.");
 
-            return new KeyValuePair<Type, object>(value.GetType(), value);
+            var type = typeof(object);
+
+            if(value != null)
+                type = value.GetType();
+            else if(memberMap != null)
+                type = memberMap.MemberReturnType;
+
+            return new KeyValuePair<Type, object>(type, value);
         }
     }
 }

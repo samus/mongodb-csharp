@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using MongoDB.Driver;
 
 namespace MongoDB.Driver.Serialization
 {

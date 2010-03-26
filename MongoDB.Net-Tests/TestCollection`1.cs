@@ -77,6 +77,15 @@ namespace MongoDB.Driver
             public string Length { get; set; }
         }
 
+        private class AlbumCase
+        {
+            public AlbumCase(){
+                Album = new Album();
+            }
+
+            public Album Album { get; set; }
+        }
+
         private class DeletesEntity
         {
             public int x { get; set; }
@@ -381,6 +390,13 @@ namespace MongoDB.Driver
             var result = updates.FindOne(new { Last = "CorderNE" });
             Assert.IsNotNull(result);
             Assert.AreEqual("Sam", result.First);
+        }
+
+        [Test]
+        public void TestCanInsertNullPropertys(){
+            var inserts = DB.GetCollection<CharReadsEntity>("inserts");
+
+            inserts.Insert(new CharReadsEntity());
         }
     }
 }

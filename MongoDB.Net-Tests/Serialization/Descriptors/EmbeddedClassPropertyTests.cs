@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using MongoDB.Driver;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
