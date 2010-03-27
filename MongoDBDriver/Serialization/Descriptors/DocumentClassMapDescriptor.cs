@@ -4,30 +4,41 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    internal class DocumentClassMapDescriptor : IClassMapDescriptor
+    internal class DocumentClassMapDescriptor : ClassMapDescriptorBase
     {
-        private readonly IClassMap _classMap;
         private readonly Document _document;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DocumentClassMapDescriptor"/> class.
+        /// </summary>
+        /// <param name="classMap">The class map.</param>
+        /// <param name="document">The document.</param>
         public DocumentClassMapDescriptor(IClassMap classMap, Document document)
+            : base(classMap)
         {
-            if (classMap == null)
-                throw new ArgumentNullException("classMap");
             if (document == null)
                 throw new ArgumentNullException("document");
 
-            _classMap = classMap;
             _document = document;
         }
 
-        public PersistentMemberMap GetMemberMap(string name)
+        /// <summary>
+        /// Gets the member map.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public override PersistentMemberMap GetMemberMap(string name)
         {
             return _classMap.GetMemberMapFromAlias(name);
         }
 
-        public IEnumerable<string> GetPropertyNames()
+        /// <summary>
+        /// Gets the property names.
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerable<string> GetPropertyNames()
         {
-            if (_classMap.ShouldPersistDiscriminator())
+            if (ShouldPersistDiscriminator())
                 yield return _classMap.DiscriminatorAlias;
 
             PersistentMemberMap memberMap;
@@ -41,25 +52,32 @@ namespace MongoDB.Driver.Serialization.Descriptors
             }
         }
 
-        public KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
+        /// <summary>
+        /// Gets the property type and value.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public override KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
         {
-            if (_classMap.ShouldPersistDiscriminator() && _classMap.DiscriminatorAlias == name)
+            if (_classMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
                 return new KeyValuePair<Type, object>(_classMap.Discriminator.GetType(), _classMap.Discriminator);
 
-            var memberMap = _classMap.GetMemberMapFromAlias(name);
             object value;
-            if (memberMap == null) //if it isn't mapped, return it as is...
-            {
+
+            var memberMap = _classMap.GetMemberMapFromAlias(name);
+            if (memberMap != null)
+                value = _document[memberMap.MemberName];
+            else
                 value = _document[name];
-                var valueType = value == null ? typeof(Document) : value.GetType();
-                return new KeyValuePair<Type, object>(valueType, value);
-            }
 
-            value = _document[memberMap.MemberName];
-            if (value is Document)
-                return new KeyValuePair<Type, object>(typeof(Document), value);
+            var type = typeof(Document);
 
-            return new KeyValuePair<Type, object>(memberMap.MemberReturnType, value);
+            if (memberMap != null)
+                type = memberMap.MemberReturnType;
+            else if (value != null)
+                type = value.GetType();
+
+            return new KeyValuePair<Type, object>(type, value);
         }
     }
 }

@@ -5,31 +5,29 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    internal class ExampleClassMapDescriptor : IClassMapDescriptor
+    internal class ExampleClassMapDescriptor : ClassMapDescriptorBase
     {
-        private readonly IClassMap _classMap;
         private readonly object _example;
         private readonly Type _exampleType;
 
         public ExampleClassMapDescriptor(IClassMap classMap, object example)
+            : base(classMap)
         {
-            if (classMap == null)
-                throw new ArgumentNullException("classMap");
             if (example == null)
                 throw new ArgumentNullException("example");
-            _classMap = classMap;
+
             _example = example;
             _exampleType = _example.GetType();
         }
 
-        public PersistentMemberMap GetMemberMap(string name)
+        public override PersistentMemberMap GetMemberMap(string name)
         {
             return _classMap.GetMemberMapFromAlias(name);
         }
 
-        public IEnumerable<string> GetPropertyNames()
+        public override IEnumerable<string> GetPropertyNames()
         {
-            if (_classMap.ShouldPersistDiscriminator())
+            if (ShouldPersistDiscriminator())
                 yield return _classMap.DiscriminatorAlias;
 
             PersistentMemberMap memberMap;
@@ -43,23 +41,25 @@ namespace MongoDB.Driver.Serialization.Descriptors
             }
         }
 
-        public KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
+        public override KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
         {
-            if (_classMap.ShouldPersistDiscriminator() && _classMap.DiscriminatorAlias == name)
+            if (_classMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
                 return new KeyValuePair<Type, object>(_classMap.Discriminator.GetType(), _classMap.Discriminator);
 
+            Type type;
+            object value;
+
             var memberMap = _classMap.GetMemberMapFromAlias(name);
-            if (memberMap == null) //if it isn't mapped, return it as is...
-            {
-                var propInfo = _exampleType.GetProperty(name);
-                return new KeyValuePair<Type, object>(propInfo.PropertyType, propInfo.GetValue(_example, null));
-            }
-
-            var value = _exampleType.GetProperty(memberMap.MemberName).GetValue(_example, null);
+            var propInfo = _exampleType.GetProperty(name);
+            value = propInfo.GetValue(_example, null);
             if (value is Document)
-                return new KeyValuePair<Type, object>(typeof(Document), value);
+                type = typeof(Document);
+            else if (memberMap != null)
+                type = memberMap.MemberReturnType;
+            else
+                type = propInfo.PropertyType;
 
-            return new KeyValuePair<Type, object>(memberMap.MemberReturnType, value);
+            return new KeyValuePair<Type, object>(type, value);
         }
     }
 }

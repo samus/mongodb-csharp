@@ -4,31 +4,47 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    internal class ClassMapDescriptor : IClassMapDescriptor
+    internal class ClassMapDescriptor : ClassMapDescriptorBase
     {
-        private readonly IClassMap _classMap;
         private readonly object _instance;
         private readonly IDictionary<string, object> _extendedProperties;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClassMapDescriptor"/> class.
+        /// </summary>
+        /// <param name="classMap">The class map.</param>
+        /// <param name="instance">The instance.</param>
         public ClassMapDescriptor(IClassMap classMap, object instance)
+            : base(classMap)
         {
-            _classMap = classMap;
+            if (instance == null)
+                throw new ArgumentNullException("instance");
+
             _instance = instance;
             if (_classMap.HasExtendedProperties)
                 _extendedProperties = (IDictionary<string, object>)_classMap.ExtendedPropertiesMap.GetValue(instance);
         }
 
-        public PersistentMemberMap GetMemberMap(string name)
+        /// <summary>
+        /// Gets the member map.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public override PersistentMemberMap GetMemberMap(string name)
         {
             return _classMap.GetMemberMapFromAlias(name);
         }
 
-        public IEnumerable<string> GetPropertyNames()
+        /// <summary>
+        /// Gets the property names.
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerable<string> GetPropertyNames()
         {
             if (_classMap.HasId)
                 yield return _classMap.IdMap.Alias;
 
-            if (_classMap.ShouldPersistDiscriminator())
+            if (ShouldPersistDiscriminator())
                 yield return _classMap.DiscriminatorAlias;
 
             foreach (var memberMap in _classMap.MemberMaps)
@@ -41,9 +57,14 @@ namespace MongoDB.Driver.Serialization.Descriptors
             }
         }
 
-        public KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
+        /// <summary>
+        /// Gets the property type and value.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public override KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
         {
-            if (_classMap.ShouldPersistDiscriminator() && _classMap.DiscriminatorAlias == name)
+            if (_classMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
                 return new KeyValuePair<Type, object>(_classMap.Discriminator.GetType(), _classMap.Discriminator);
             
             object value;
@@ -56,12 +77,12 @@ namespace MongoDB.Driver.Serialization.Descriptors
             else
                 throw new InvalidOperationException("Attempting to get a property that does not exist.");
 
-            var type = typeof(object);
+            var type = typeof(Document);
 
-            if(value != null)
-                type = value.GetType();
-            else if(memberMap != null)
+            if (memberMap != null)
                 type = memberMap.MemberReturnType;
+            else if (value != null)
+                type = value.GetType();
 
             return new KeyValuePair<Type, object>(type, value);
         }

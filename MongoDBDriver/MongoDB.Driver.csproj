@@ -97,6 +97,7 @@
     <Compile Include="Serialization\ClassMapObjectDescriptorAdapter.cs" />
     <Compile Include="Serialization\Descriptors\ArrayDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\ClassMapDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\ClassMapDescriptorBase.cs" />
     <Compile Include="Serialization\Descriptors\DocumentClassMapDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\DocumentDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\ExampleClassMapDescriptor.cs" />
@@ -104,7 +105,6 @@
     <Compile Include="Serialization\Descriptors\IPropertyDescriptor.cs" />
     <Compile Include="Serialization\BsonClassMapDescriptor.cs" />
     <Compile Include="Serialization\DocumentObjectDescriptorAdapter.cs" />
-    <Compile Include="Serialization\IClassMapExtensions.cs" />
     <Compile Include="Serialization\IObjectDescriptor.cs" />
     <Compile Include="Serialization\SerializationFactory.cs" />
     <Compile Include="Exceptions\UnmappedMemberException.cs" />
@@ -190,7 +190,7 @@
     <Compile Include="Bson\BsonReader.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="MongoCollection.cs" />
-    <Compile Include="MongoCollection`1.cs" />
+    <Compile Include="MongoCollection_1.cs" />
     <Compile Include="MongoConnectionStringBuilder.cs" />
     <Compile Include="MongoDatabase.cs" />
     <Compile Include="MongoMaxKey.cs" />
@@ -230,9 +230,9 @@
     <Compile Include="Configuration\MongoConfigurationSection.cs" />
     <Compile Include="Configuration\ConnectionElement.cs" />
     <Compile Include="Configuration\ConnectionCollection.cs" />
-    <Compile Include="Cursor`1.cs" />
-    <Compile Include="ICursor`1.cs" />
-    <Compile Include="IMongoCollection`1.cs" />
+    <Compile Include="Cursor_1.cs" />
+    <Compile Include="ICursor_1.cs" />
+    <Compile Include="IMongoCollection_1.cs" />
     <Compile Include="Util\ReflectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
