@@ -135,8 +135,6 @@
     <Compile Include="TestCollectionMetaData.cs" />
     <Compile Include="TestBinary.cs" />
     <Compile Include="TestOp.cs" />
-    <Compile Include="TypedCollections\FindTests.cs" />
-    <Compile Include="TypedCollections\TypedCollectionTestBase.cs" />
     <Compile Include="Util\TestJsonUtils.cs" />
     <Compile Include="Configuration\TestConfigurationSection.cs" />
   </ItemGroup>

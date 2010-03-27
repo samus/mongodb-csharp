@@ -48,9 +48,14 @@ namespace MongoDB.Driver.Serialization.Descriptors
 
             Type type;
             object value;
+            PropertyInfo propInfo;
 
             var memberMap = _classMap.GetMemberMapFromAlias(name);
-            var propInfo = _exampleType.GetProperty(memberMap.MemberName);
+            if (memberMap == null)
+                propInfo = _exampleType.GetProperty(name);
+            else
+                propInfo = _exampleType.GetProperty(memberMap.MemberName);
+
             value = propInfo.GetValue(_example, null);
             if (value is Document)
                 type = typeof(Document);
