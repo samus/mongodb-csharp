@@ -120,6 +120,16 @@ namespace MongoDB.Driver{
         }
 
         public static bool operator ==(Oid a, Oid b){
+			// Return true if both are same instance or both are null 
+			if (Object.ReferenceEquals(a, b)){
+				return true;
+			}
+
+			// Return false if only one instance is null 
+			if (((object)a == null) || ((object)b == null)){
+				return false;
+			} 
+
             return a.Equals(b);
         }
     
