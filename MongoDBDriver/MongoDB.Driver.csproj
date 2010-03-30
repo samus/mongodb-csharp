@@ -88,6 +88,7 @@
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
+    <Compile Include="Mo.cs" />
     <Compile Include="Serialization\Builders\ArrayBuilder.cs" />
     <Compile Include="Serialization\Builders\ConcreteClassMapBuilder.cs" />
     <Compile Include="Serialization\Builders\DocumentBuilder.cs" />

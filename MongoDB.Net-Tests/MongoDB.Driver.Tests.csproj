@@ -114,6 +114,7 @@
     <Compile Include="TestDatabaseMetaData.cs" />
     <Compile Include="TestDBRef.cs" />
     <Compile Include="TestDocument.cs" />
+    <Compile Include="TestMo.cs" />
     <Compile Include="TestMongo.cs" />
     <Compile Include="IO\TestMsgMessage.cs" />
     <Compile Include="TestB.cs" />
