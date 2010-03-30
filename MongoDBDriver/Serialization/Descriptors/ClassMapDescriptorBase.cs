@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ClassMapDescriptorBase : IClassMapDescriptor
     {
-        protected readonly IClassMap _classMap;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected readonly IClassMap ClassMap;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClassMapDescriptorBase"/> class.
@@ -19,7 +23,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
             if (classMap == null)
                 throw new ArgumentNullException("classMap");
 
-            _classMap = classMap;
+            ClassMap = classMap;
         }
 
         /// <summary>
@@ -48,7 +52,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <returns></returns>
         protected bool ShouldPersistDiscriminator()
         {
-            return (_classMap.IsPolymorphic && _classMap.HasDiscriminator) || _classMap.IsSubClass;
+            return (ClassMap.IsPolymorphic && ClassMap.HasDiscriminator) || ClassMap.IsSubClass;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <returns></returns>
         public override PersistentMemberMap GetMemberMap(string name)
         {
-            return _classMap.GetMemberMapFromAlias(name);
+            return ClassMap.GetMemberMapFromAlias(name);
         }
 
         /// <summary>
@@ -39,12 +39,12 @@ namespace MongoDB.Driver.Serialization.Descriptors
         public override IEnumerable<string> GetPropertyNames()
         {
             if (ShouldPersistDiscriminator())
-                yield return _classMap.DiscriminatorAlias;
+                yield return ClassMap.DiscriminatorAlias;
 
             PersistentMemberMap memberMap;
             foreach (string key in _document.Keys)
             {
-                memberMap = _classMap.GetMemberMapFromMemberName(key) as PersistentMemberMap;
+                memberMap = ClassMap.GetMemberMapFromMemberName(key) as PersistentMemberMap;
                 if (memberMap == null)
                     yield return key; //if it isn't mapped, we'll persist it anyways...
                 else
@@ -59,12 +59,12 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <returns></returns>
         public override KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
         {
-            if (_classMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
-                return new KeyValuePair<Type, object>(_classMap.Discriminator.GetType(), _classMap.Discriminator);
+            if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
+                return new KeyValuePair<Type, object>(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
 
             object value;
 
-            var memberMap = _classMap.GetMemberMapFromAlias(name);
+            var memberMap = ClassMap.GetMemberMapFromAlias(name);
             if (memberMap != null)
                 value = _document[memberMap.MemberName];
             else

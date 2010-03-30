@@ -21,8 +21,8 @@ namespace MongoDB.Driver.Serialization.Descriptors
                 throw new ArgumentNullException("instance");
 
             _instance = instance;
-            if (_classMap.HasExtendedProperties)
-                _extendedProperties = (IDictionary<string, object>)_classMap.ExtendedPropertiesMap.GetValue(instance);
+            if (ClassMap.HasExtendedProperties)
+                _extendedProperties = (IDictionary<string, object>)ClassMap.ExtendedPropertiesMap.GetValue(instance);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <returns></returns>
         public override PersistentMemberMap GetMemberMap(string name)
         {
-            return _classMap.GetMemberMapFromAlias(name);
+            return ClassMap.GetMemberMapFromAlias(name);
         }
 
         /// <summary>
@@ -41,13 +41,13 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <returns></returns>
         public override IEnumerable<string> GetPropertyNames()
         {
-            if (_classMap.HasId)
-                yield return _classMap.IdMap.Alias;
+            if (ClassMap.HasId)
+                yield return ClassMap.IdMap.Alias;
 
             if (ShouldPersistDiscriminator())
-                yield return _classMap.DiscriminatorAlias;
+                yield return ClassMap.DiscriminatorAlias;
 
-            foreach (var memberMap in _classMap.MemberMaps)
+            foreach (var memberMap in ClassMap.MemberMaps)
                 yield return memberMap.Alias;
 
             if (_extendedProperties != null)
@@ -64,12 +64,12 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <returns></returns>
         public override KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
         {
-            if (_classMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
-                return new KeyValuePair<Type, object>(_classMap.Discriminator.GetType(), _classMap.Discriminator);
+            if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
+                return new KeyValuePair<Type, object>(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
             
             object value;
 
-            var memberMap = _classMap.GetMemberMapFromAlias(name);
+            var memberMap = ClassMap.GetMemberMapFromAlias(name);
             if(memberMap != null)
                 value = memberMap.GetValue(_instance);
             else if (_extendedProperties != null)
