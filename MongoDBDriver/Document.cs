@@ -9,7 +9,19 @@ namespace MongoDB.Driver
     /// </summary>
     public class Document : DictionaryBase
     {
-        private List<String> orderedKeys = new List<String>();
+        private List<String> orderedKeys;
+        private IComparer<string> keyComparer;
+
+
+        public Document() : this(null)
+        {
+        }
+
+        public Document(IComparer<string> comparer)
+        {
+            orderedKeys = new List<string>();
+            keyComparer = comparer;
+        }
 
         public Object this[String key]
         {
@@ -17,9 +29,14 @@ namespace MongoDB.Driver
             set { Dictionary[key] = value; }
         }
 
-        public ICollection Keys
+        public IList<string> Keys
         {
-            get { return (orderedKeys); }
+            get 
+            {
+                if (keyComparer != null)
+                    orderedKeys.Sort(keyComparer);
+                return orderedKeys; 
+            }
         }
 
         public ICollection Values

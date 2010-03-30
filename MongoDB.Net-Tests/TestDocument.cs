@@ -46,6 +46,18 @@ namespace MongoDB.Driver
         }
 
         [Test]
+        public void TestUseOfIComparerForKeys()
+        {
+            var doc = new Document(new ReverseComparer());
+
+            doc.Append("a", 3);
+            doc.Append("b", 2);
+            doc.Append("c", 1);
+
+            Assert.AreEqual("c", doc.Keys.First());
+        }
+
+        [Test]
         public void TestInsertMaintainsKeyOrder()
         {
             Document d = new Document();
@@ -187,6 +199,15 @@ namespace MongoDB.Driver
             if (d1.Equals(d2)) {
                 Assert.Fail(string.Format("Documents match\r\nExpected: not {0}\r\nActual:       {1}", d1, d2));
             }
+        }
+    }
+
+    public class ReverseComparer : IComparer<string>
+    {
+
+        public int Compare(string x, string y)
+        {
+            return y.CompareTo(x);
         }
     }
 }
