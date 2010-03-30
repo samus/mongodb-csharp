@@ -6,7 +6,7 @@ using MongoDB.Driver.Connections;
 
 namespace MongoDB.Driver
 {
-    public class Database
+    public class Database : IDatabase
     {
         private Connection connection;
         private IMongoCollection command;

@@ -99,6 +99,8 @@
     <Compile Include="Exceptions\MongoMapReduceException.cs" />
     <Compile Include="Exceptions\MongoOperationException.cs" />
     <Compile Include="ICursor.cs" />
+    <Compile Include="IDatabase.cs" />
+    <Compile Include="IMongo.cs" />
     <Compile Include="IMongoCollection.cs" />
     <Compile Include="IndexOrder.cs" />
     <Compile Include="Mongo.cs" />
