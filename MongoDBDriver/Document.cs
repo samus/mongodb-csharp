@@ -9,6 +9,7 @@ namespace MongoDB.Driver
     /// </summary>
     public class Document : DictionaryBase
     {
+		private bool _dirty;
         private List<String> orderedKeys;
         private IComparer<string> keyComparer;
 
@@ -26,14 +27,16 @@ namespace MongoDB.Driver
         public Object this[String key]
         {
             get { return Dictionary[key]; }
-            set { Dictionary[key] = value; }
+            set{
+				_dirty = true;
+				Dictionary[key] = value;
+			}
         }
 
         public IList<string> Keys
         {
-            get 
-            {
-                if (keyComparer != null)
+            get{
+                if (keyComparer != null && _dirty)
                     orderedKeys.Sort(keyComparer);
                 return orderedKeys; 
             }
@@ -46,6 +49,7 @@ namespace MongoDB.Driver
 
         public void Add(String key, Object value)
         {
+			_dirty = true;
             Dictionary.Add(key, value);
         }
 
@@ -73,7 +77,9 @@ namespace MongoDB.Driver
                 if (!alreadyContains) orderedKeys.Remove(key);
                 throw;
             }
+			_dirty = true;
         }
+
         public Document Prepend(String key, Object value)
         {
             this.Insert(key, value, 0);
@@ -98,6 +104,7 @@ namespace MongoDB.Driver
 
         public void Remove(String key)
         {
+			_dirty = true;
             Dictionary.Remove(key);
         }
 
