@@ -258,7 +258,8 @@ namespace MongoDB.Driver.Connections
             {
                 var reply = SendTwoWayMessage<T>(query, builder);
 
-                SendMessage(new KillCursorsMessage(reply.CursorId));
+                if(reply.CursorId > 0)
+                    SendMessage(new KillCursorsMessage(reply.CursorId));
 
                 foreach(var document in reply.Documents)
                     return document;

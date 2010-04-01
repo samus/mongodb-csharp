@@ -139,5 +139,13 @@ namespace MongoDB.Driver
         /// <param name="command">The command.</param>
         /// <returns></returns>
         Document SendCommand(Document command);
+
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <param name="rootType">Type of serialization root.</param>
+        /// <param name="command">The CMD.</param>
+        /// <returns></returns>
+        Document SendCommand(Type rootType, Document command);
     }
 }
