@@ -13,7 +13,7 @@ namespace MongoDB.Driver
 
         public override string TestCollections {
             get {
-                return "inserts,updates,counts,counts_spec,finds,charreads";
+                return "inserts,updates,counts,counts_spec,finds,charreads,saves";
             }
         }
 
@@ -313,7 +313,21 @@ namespace MongoDB.Driver
             Assert.AreEqual("Matt", result["First"]);
 
         }
-
+        [Test]
+        public void TestSave(){
+            IMongoCollection saves = DB["saves"];
+            string[] vals = {"a","b","c","d"};
+            foreach(var v in vals){
+                saves.Save(new Document(){{"value", v}});
+            }
+            Assert.AreEqual(vals.Length, saves.Count());
+            Document d = saves.FindOne(new Document(){{"value", "b"}});
+            d["value"] = "b2";
+            saves.Save(d);
+            
+            Assert.AreEqual(1, saves.Count(new Document(){{"value", "b2"}}));
+            
+        }
         [Test]
         public void TestUpdateMany(){
             IMongoCollection updates = DB["updates"];

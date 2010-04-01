@@ -213,7 +213,20 @@ namespace MongoDB.Driver
         /// to Update(Document) to maintain consistency between drivers.
         /// </remarks>
         public void Save(Document doc){
-            Update(doc);
+            //Try to generate a selector using _id for an existing document.
+            //otherwise just set the upsert flag to 1 to insert and send onward.
+            Document selector = new Document();
+            int upsert = 0;
+            if(doc.Contains("_id")  & doc["_id"] != null){
+                selector["_id"] = doc["_id"];   
+            }else{
+                //Likely a new document
+                Oid id = Oid.NewOid();
+                selector["_id"] = id;
+                doc.Prepend("_id",id);
+                upsert = 1;
+            }
+            this.Update(doc, selector, upsert);
         }
         
         /// <summary>
@@ -224,19 +237,9 @@ namespace MongoDB.Driver
         /// the document then it is assumed that the document is new and an upsert is sent to the database
         /// instead.
         /// </remarks>
+        [Obsolete("Switch to Save(Document)")]
         public void Update(Document doc){
-            //Try to generate a selector using _id for an existing document.
-            //otherwise just set the upsert flag to 1 to insert and send onward.
-            Document selector = new Document();
-            int upsert = 0;
-            if(doc.Contains("_id")  & doc["_id"] != null){
-                selector["_id"] = doc["_id"];   
-            }else{
-                //Likely a new document
-                doc.Prepend("_id",Oid.NewOid());
-                upsert = 1;
-            }
-            this.Update(doc, selector, upsert);
+            Save(doc);
         }
         
         public void Update (Document doc, Document selector, bool safemode){
