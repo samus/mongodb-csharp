@@ -78,7 +78,7 @@ namespace MongoDB.Driver.Bson
                     writer.Write(id.ToByteArray());
                     return;
                 case BsonDataType.Number:
-                    writer.Write((double)obj);
+                    writer.Write(Convert.ToDouble(obj));
                     return;
                 case BsonDataType.String:{
                     String str = (String)obj;
