@@ -92,7 +92,46 @@ namespace MongoDB.Driver
             Cursor cur = new Cursor(connection, this.FullName, spec, limit, skip, fields);
             return cur;
         }
-        
+
+		/// <summary>
+		/// Finds, modifies and returns a document based on query, spec and sorting
+		/// </summary>
+		/// <returns>
+		/// A <see cref="Document"/>
+		/// </returns>
+		public Document FindAndModify(Document doc, Document spec)
+		{
+			return FindAndModify(doc, spec, false);
+		}
+
+		public Document FindAndModify(Document doc, Document spec, Document sort)
+		{
+			return FindAndModify(doc, spec, sort);
+		}
+
+		public Document FindAndModify(Document doc, Document spec, bool returnNewDoc)
+		{
+			return FindAndModify(doc, spec, new Document(), returnNewDoc);
+		}
+
+		public Document FindAndModify(Document doc, Document spec, Document sort, bool returnNewDoc)
+		{
+			try{
+				Document response = this.Db.SendCommand(new Document()
+					.Append("findandmodify", this.Name)
+					.Append("query", spec)
+					.Append("update", CreateUpdateDocument(doc))
+					.Append("sort", sort)
+					.Append("new", returnNewDoc));
+
+				return response["value"] as Document;
+			}
+			// This is when there is no document to operate on
+			catch (MongoCommandException){
+				return null;
+			}
+		}
+
         /// <summary>
         /// Entrypoint into executing a map/reduce query against the collection. 
         /// </summary>
@@ -289,27 +328,34 @@ namespace MongoDB.Driver
             //TODO Update the interface and make a breaking change.
             this.Update(doc,selector,(UpdateFlags)flags);
         }
-        
-        /// <summary>
+
+		private Document CreateUpdateDocument(Document doc)
+		{
+			bool foundOp = false;
+			foreach (string key in doc.Keys)
+			{
+				if (key.IndexOf('$') == 0)
+				{
+					foundOp = true;
+					break;
+				}
+			}
+			if (foundOp == false)
+			{
+				//wrap document in a $set.
+				doc = new Document().Append("$set", doc);
+			}
+			return doc;
+		}
+
+		/// <summary>
         /// Runs a multiple update query against the database.  It will wrap any 
         /// doc with $set if the passed in doc doesn't contain any '$' ops.
         /// </summary>
         /// <param name="doc"></param>
         /// <param name="selector"></param>
         public void UpdateAll(Document doc, Document selector){
-            bool foundOp = false;
-            foreach(string key in doc.Keys){
-                if(key.IndexOf('$') == 0){
-                    foundOp = true;
-                    break;
-                }
-            }
-            if(foundOp == false){
-                //wrap document in a $set.
-                Document s = new Document().Append("$set", doc);
-                doc = s;
-            }
-            this.Update(doc, selector, UpdateFlags.MultiUpdate);           
+			this.Update(CreateUpdateDocument(doc), selector, UpdateFlags.MultiUpdate);           
         }
         
         

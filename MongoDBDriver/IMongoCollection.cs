@@ -15,6 +15,10 @@ namespace MongoDB.Driver
         ICursor Find (Document spec);
         ICursor Find (Document spec, int limit, int skip);
         ICursor Find (Document spec, int limit, int skip, Document fields);
+		Document FindAndModify(Document doc, Document spec);
+		Document FindAndModify(Document doc, Document spec, Document sort);
+		Document FindAndModify(Document doc, Document spec, bool returnNewDoc);
+		Document FindAndModify(Document doc, Document spec, Document sort, bool returnNewDoc);
         MapReduce MapReduce ();
         MapReduceBuilder MapReduceBuilder ();
         long Count ();
