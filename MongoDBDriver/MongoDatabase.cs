@@ -238,29 +238,19 @@ namespace MongoDB.Driver
         /// <param name="command">The CMD.</param>
         /// <returns></returns>
         public Document SendCommand(Document command){
-            AuthenticateIfRequired();
-            return SendCommandCore(command);
+            return SendCommand(typeof(Document), command);
         }
 
         /// <summary>
-        /// Sends the command core.
+        /// Sends the command.
         /// </summary>
-        /// <remarks>Required only for auth.</remarks>
-        /// <param name="command">The command.</param>
+        /// <param name="rootType">Type of serialization root.</param>
+        /// <param name="command">The CMD.</param>
         /// <returns></returns>
-        private Document SendCommandCore(Document command){
-            var result = FindOneCommand<Document>(command);
-            var ok = (double)result["ok"];
-            if(ok != 1.0)
-            {
-                var msg = string.Empty;
-                if(result.Contains("msg"))
-                    msg = (string)result["msg"];
-                else if(result.Contains("errmsg"))
-                    msg = (string)result["errmsg"];
-                throw new MongoCommandException(msg, result, command);
-            }
-            return result;
+        public Document SendCommand(Type rootType, Document command)
+        {
+            AuthenticateIfRequired();
+            return _connection.SendCommand(_serializationFactory, Name, rootType, command);
         }
 
         /// <summary>
@@ -269,7 +259,8 @@ namespace MongoDB.Driver
         /// <typeparam name="T"></typeparam>
         /// <param name="commandName">Name of the command.</param>
         /// <returns></returns>
-        public T SendCommand<T>(string commandName) where T : CommandResultBase{
+        public T SendCommand<T>(string commandName) 
+            where T : CommandResultBase{
             return SendCommand<T>(new Document().Add(commandName, 1.0));
         }
 
@@ -279,33 +270,26 @@ namespace MongoDB.Driver
         /// <typeparam name="T"></typeparam>
         /// <param name="command">The command.</param>
         /// <returns></returns>
-        public T SendCommand<T>(object command) where T : CommandResultBase{
+        public T SendCommand<T>(object command) 
+            where T : CommandResultBase{
             AuthenticateIfRequired();
 
-            var result = FindOneCommand<T>(command);
-            if(!result.Success){
-                throw new MongoCommandException(result.ErrorMessage, null, null);
-            }
-
-            return result;
+            return _connection.SendCommand<T>(_serializationFactory, Name, typeof(T), command);
         }
 
         /// <summary>
-        /// Finds the one command.
+        /// Sends the command.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="spec">The spec.</param>
+        /// <param name="rootType">Type of serialization root.</param>
+        /// <param name="command">The command.</param>
         /// <returns></returns>
-        private T FindOneCommand<T>(object spec) where T:class{
-            var cursor = new Cursor<T>(_serializationFactory, _connection, Name + ".$cmd", spec??new Document(), -1, 0, null);
-            
-            foreach(var document in cursor.Documents)
-            {
-                cursor.Dispose();
-                return document;
-            }
+        public T SendCommand<T>(Type rootType, object command)
+            where T : CommandResultBase
+        {
+            AuthenticateIfRequired();
 
-            return null;
+            return _connection.SendCommand<T>(_serializationFactory, Name, rootType, command);
         }
 
         /// <summary>
@@ -320,7 +304,8 @@ namespace MongoDB.Driver
             if(string.IsNullOrEmpty(builder.Username))
                 return;
 
-            var nonceResult = SendCommandCore(new Document().Add("getnonce", 1.0));
+            var document = new Document().Add("getnonce", 1.0);
+            var nonceResult = _connection.SendCommand(_serializationFactory, Name, typeof(Document), document);
             var nonce = (String)nonceResult["nonce"];
 
             if(nonce == null)
@@ -334,7 +319,7 @@ namespace MongoDB.Driver
                 {"key", Hash(nonce + builder.Username + pwd)}
             };
             try{
-                SendCommandCore(auth);
+                _connection.SendCommand(_serializationFactory, Name, typeof(Document), auth);
             }
             catch(MongoCommandException exception){
                 //Todo: use custom exception?

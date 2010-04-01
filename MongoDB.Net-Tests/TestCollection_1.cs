@@ -139,7 +139,6 @@ namespace MongoDB.Driver
             Assert.AreEqual(0, counts.Count(new { Last = "Brown" }));
         }
 
-
         [Test]
         public void TestFindAttributeLimit()
         {

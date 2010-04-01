@@ -1,7 +1,9 @@
 using System;
 using System.IO;
 using MongoDB.Driver.Bson;
+using MongoDB.Driver.CommandResults;
 using MongoDB.Driver.Protocol;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Connections
 {
@@ -181,6 +183,92 @@ namespace MongoDB.Driver.Connections
         /// <returns></returns>
         public Stream GetStream (){
             return _connection.GetStream ();
+        }
+
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <param name="database">The database.</param>
+        /// <param name="rootType">Type of the command.</param>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        public Document SendCommand(ISerializationFactory factory, string database, Type rootType, Document command)
+        {
+            var result = SendCommandCore<Document>(factory, database, rootType, command);
+
+            if((double)result["ok"] != 1.0)
+            {
+                var msg = string.Empty;
+                if(result.Contains("msg"))
+                    msg = (string)result["msg"];
+                else if(result.Contains("errmsg"))
+                    msg = (string)result["errmsg"];
+                throw new MongoCommandException(msg, result, command);
+            }
+            
+            return result;
+        }
+
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="factory">The factory.</param>
+        /// <param name="database">The database.</param>
+        /// <param name="rootType">Type of serialization root.</param>
+        /// <param name="command">The spec.</param>
+        /// <returns></returns>
+        public T SendCommand<T>(ISerializationFactory factory, string database, Type rootType, object command) 
+            where T : CommandResultBase
+        {
+            var result = SendCommandCore<T>(factory, database, rootType, command);
+
+            if(!result.Success)
+                throw new MongoCommandException(result.ErrorMessage, null, null);
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Sends the command core.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="factory">The factory.</param>
+        /// <param name="database">The database.</param>
+        /// <param name="rootType">Type of serialization root.</param>
+        /// <param name="command">The spec.</param>
+        /// <returns></returns>
+        private T SendCommandCore<T>(ISerializationFactory factory, string database, Type rootType, object command) 
+            where T : class
+        {
+            var descriptor = factory.GetBsonDescriptor(rootType);
+
+            var query = new QueryMessage(descriptor)
+            {
+                FullCollectionName = database + ".$cmd",
+                NumberToReturn = -1,
+                Query = command
+            };
+
+            var builder = factory.GetBsonBuilder(typeof(T));
+
+            try
+            {
+                var reply = SendTwoWayMessage<T>(query, builder);
+
+                SendMessage(new KillCursorsMessage(reply.CursorId));
+
+                foreach(var document in reply.Documents)
+                    return document;
+
+                return null;
+            }
+            catch(IOException exception)
+            {
+                throw new MongoConnectionException("Could not read data, communication failure", this, exception);
+            }
         }
 
         /// <summary>
