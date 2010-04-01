@@ -120,6 +120,10 @@ namespace MongoDB.Driver{
         }
 
         public static bool operator ==(Oid a, Oid b){
+            if (System.Object.ReferenceEquals(a, b)){
+                return true;
+            }
+            
             return a.Equals(b);
         }
     

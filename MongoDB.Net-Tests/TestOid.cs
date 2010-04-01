@@ -49,6 +49,7 @@ namespace MongoDB.Driver
 
             Assert.IsTrue(val.Equals(other), "Equals(Oid) did not work");
             Assert.IsTrue(val == other, "== operator did not work");
+            Assert.IsTrue(val == val, "Objects should be equal to itself.");
         }
         
         [Test]
@@ -61,6 +62,16 @@ namespace MongoDB.Driver
             Assert.IsFalse(val.Equals(other));
             Assert.IsTrue(val != null);
             Assert.IsTrue(val != other);
+        }
+        
+        [Test]
+        public void TestOidEqualityToNull(){
+            Oid val = Oid.NewOid();
+            Oid other = null;
+            Oid other2 = null;
+            Assert.AreNotEqual(val, other);
+            Assert.AreNotEqual(other, val);
+            Assert.IsTrue(other == other2);
         }
 
         [Test]
