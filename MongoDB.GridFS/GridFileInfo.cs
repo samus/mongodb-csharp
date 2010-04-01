@@ -224,9 +224,8 @@ namespace MongoDB.GridFS
                 case FileMode.Create:
                     if(gridFile.Exists(this.FileName) == true){
                         return this.Open(FileMode.Truncate, access);
-                    }else{
-                        return this.Create(FileMode.CreateNew, access);
                     }
+                    return this.Create(FileMode.CreateNew, access);
                 case FileMode.CreateNew:
                     return this.Create(mode, access);
                 case FileMode.Open:

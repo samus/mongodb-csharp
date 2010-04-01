@@ -14,10 +14,8 @@ namespace MongoDB.Driver.Serialization.Descriptors
             _document = document;
         }
 
-        public IEnumerable<string> GetPropertyNames()
-        {
-            foreach (var key in _document.Keys)
-                yield return key;
+        public IEnumerable<string> GetPropertyNames(){
+            return _document.Keys;
         }
 
         public KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
