@@ -123,6 +123,9 @@ namespace MongoDB.Driver{
             if (System.Object.ReferenceEquals(a, b)){
                 return true;
             }
+            if((Object)a == null || (Object)b == null){
+                return false;
+            }
             
             return a.Equals(b);
         }

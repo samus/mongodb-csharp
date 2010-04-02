@@ -116,9 +116,10 @@ namespace MongoDB.Driver{
         /// A <see cref="System.Int32"/>
         /// </param>
         public void CopyTo (Document[] array, int arrayIndex){
-            Document query = new Document().Append("$orderby", new Document().Append("_id", 1));
+            //Document query = new Document().Append("$orderby", new Document().Append("_id", 1));
             int idx = arrayIndex;
-            foreach(Document doc in js.Find(query,array.Length - 1,arrayIndex).Documents){
+            foreach(var doc in js.FindAll().Sort("_id").Skip(arrayIndex).Documents){
+                if(idx >= array.Length) break;
                 array[idx] = doc;
                 idx++;
             }

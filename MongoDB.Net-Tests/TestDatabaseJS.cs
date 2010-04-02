@@ -126,6 +126,8 @@ namespace MongoDB.Driver{
             Assert.IsNull(funcs[0]);
             Assert.IsNotNull(funcs[1]);
             Assert.IsNotNull(funcs[4]);
+            
+            Assert.AreEqual("_1fcopyTo", (string)funcs[1]["_id"]);
             Assert.IsTrue(((string)funcs[1]["_id"]).StartsWith("_1")); //as long as no other _ named functions get in.
         }
         
