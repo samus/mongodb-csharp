@@ -4,7 +4,9 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 
@@ -16,8 +18,7 @@ namespace MongoDB.Driver
     public class TestDocument
     {
         [Test]
-        public void TestValuesAdded()
-        {
+        public void TestValuesAdded(){
             Document d = new Document();
             d["test"] = 1;
             Assert.AreEqual(1, d["test"]);
@@ -35,6 +36,7 @@ namespace MongoDB.Driver
                 cnt++;
             }
         }
+
         [Test] 
         public void TestRemove(){
             Document d = new Document();
@@ -42,7 +44,49 @@ namespace MongoDB.Driver
             d.Remove("one");
             Assert.IsFalse(d.Contains("one"));
         }
-        
+
+        [Test]
+        public void TestUseOfIComparerForKeys(){
+            var doc = new Document(new ReverseComparer());
+
+            doc.Append("a", 3);
+            doc.Append("b", 2);
+            doc.Append("c", 1);
+
+            Assert.AreEqual("c", doc.Keys.First());
+        }
+
+        [Test]
+        public void TestInsertMaintainsKeyOrder(){
+            Document d = new Document();
+            d["one"] = 1;
+            d.Insert("zero", 0, 0);
+
+            var keysList = d.Keys as IEnumerable<string>;
+            Assert.AreEqual(keysList.First(), "zero");
+        }
+
+		[Test]
+		public void TestMaintainsOrderUsingMultipleMethods(){
+			Document d = new Document(new ReverseComparer());
+			d["one"] = 1;
+			var test = d["one"];
+			d["zero"] = 0;
+
+            var keysList = d.Keys as IEnumerable<string>;
+			Assert.AreEqual(keysList.First(), "zero");
+		}
+
+        [Test]
+        [ExpectedException(ExceptionType = typeof(ArgumentException), 
+            ExpectedMessage="Key already exists in Document",
+            MatchType=MessageMatch.Contains)]
+        public void TestInsertWillThrowArgumentExceptionIfKeyAlreadyExists(){
+            Document d = new Document();
+            d["one"] = 1;
+            d.Insert("one", 1, 0);
+        }
+
         [Test]
         public void TestKeyOrderPreservedOnRemove(){
             Document d = new Document();
@@ -163,6 +207,15 @@ namespace MongoDB.Driver
             if (d1.Equals(d2)) {
                 Assert.Fail(string.Format("Documents match\r\nExpected: not {0}\r\nActual:       {1}", d1, d2));
             }
+        }
+    }
+
+    public class ReverseComparer : IComparer<string>
+    {
+
+        public int Compare(string x, string y)
+        {
+            return y.CompareTo(x);
         }
     }
 }

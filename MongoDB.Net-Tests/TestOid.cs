@@ -170,5 +170,12 @@ namespace MongoDB.Driver
             
             Assert.AreEqual(firstOid.ToString(), secondOid.ToString());
         }
+
+		[Test]
+		public void TestOidEqualityWithNull(){
+			Oid val = null;
+			Oid other = new Oid("5a7067c30a57000000008ecb");
+			Assert.IsFalse(val == other);
+		}
     }
 }

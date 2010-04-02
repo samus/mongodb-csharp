@@ -6,7 +6,7 @@ namespace MongoDB.Driver
     /// <summary>
     /// Description of Mongo.
     /// </summary>
-    public class Mongo : IDisposable
+	public class Mongo : IDisposable, IMongo
     {
         private Connection connection;
 
