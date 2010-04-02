@@ -22,6 +22,8 @@
 */test-results/*
 /test-results/
 
+/Release/*
+
 /examples/*/bin/*
 /examples/*/test-results/*
 /examples/*/obj/*
