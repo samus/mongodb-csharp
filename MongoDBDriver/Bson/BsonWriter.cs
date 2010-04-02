@@ -107,6 +107,10 @@ namespace MongoDB.Driver.Bson
                     this.WriteValue(BsonDataType.String,c.Value);
                     return;
                 }
+                case BsonDataType.Symbol:{
+                    this.WriteValue(BsonDataType.String, ((MongoSymbol)obj).Value);
+                    return;
+                }
                 case BsonDataType.CodeWScope:{
                     CodeWScope cw = (CodeWScope)obj;
                     writer.Write(CalculateSize(cw));
@@ -218,7 +222,11 @@ namespace MongoDB.Driver.Bson
                     size += b.Bytes.Length;
                     return size;
                 }
-                default:
+                case BsonDataType.Symbol:{
+                    MongoSymbol s = (MongoSymbol)val;
+                    return CalculateSize(s.Value,true);
+                }
+            default:
                     throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.",val.GetType().Name));
             }
         }
@@ -308,6 +316,8 @@ namespace MongoDB.Driver.Bson
                 ret = BsonDataType.MinKey;
             }else if(t == typeof(MongoMaxKey)){
                 ret = BsonDataType.MaxKey;
+            }else if(t == typeof(MongoSymbol)){
+                ret = BsonDataType.Symbol;
             }else if(val is IEnumerable){
                 ret = BsonDataType.Array;
             }else{

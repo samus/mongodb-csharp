@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 
@@ -243,6 +243,7 @@ namespace MongoDB.Driver.Bson
                 .Append("regex", new MongoRegex("[A-Z]"))
                 .Append("minkey", MongoMinKey.Value)
                 .Append("maxkey", MongoMaxKey.Value)
+                .Append("symbol", new MongoSymbol("symbol"))
             ;
             writer.Write(expected);
             writer.Flush();

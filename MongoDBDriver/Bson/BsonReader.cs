@@ -100,6 +100,9 @@ namespace MongoDB.Driver.Bson
             case BsonDataType.String:{
                 return ReadLenString ();
             }
+            case BsonDataType.Symbol:{
+                return new MongoSymbol(ReadLenString());
+            }
             case BsonDataType.Obj:{
                 Document doc = this.ReadDocument();
                 if(DBRef.IsDocumentDBRef(doc)){
@@ -107,7 +110,6 @@ namespace MongoDB.Driver.Bson
                 }
                 return doc;
             }
-
             case BsonDataType.Array:{
                 Document doc = this.ReadDocument();
                 return ConvertToArray (doc);

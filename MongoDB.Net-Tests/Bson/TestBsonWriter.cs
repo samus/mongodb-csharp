@@ -165,15 +165,16 @@ namespace MongoDB.Driver.Bson
         
         [Test]
         public void TestWriteSymbol(){
-            string expected = "000";
+            string expected = "0700000073796D626F6C00";
                    
             MemoryStream ms = new MemoryStream();
             BsonWriter writer = new BsonWriter(ms);
-            string val = "interned";
+            MongoSymbol val = "symbol";
             Assert.IsTrue(String.IsInterned(val) != null);
-            //string hexdump = BitConverter.ToString(ms.ToArray()).Replace("-","");
+            writer.WriteValue(BsonDataType.Symbol, val);
+            string hexdump = BitConverter.ToString(ms.ToArray()).Replace("-","");
             
-            //Assert.AreEqual(expected, hexdump);
+            Assert.AreEqual(expected, hexdump);
         }        
     }
 }
