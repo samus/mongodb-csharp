@@ -162,6 +162,18 @@ namespace MongoDB.Driver.Bson
             
             
         }
-      
+        
+        [Test]
+        public void TestWriteSymbol(){
+            string expected = "000";
+                   
+            MemoryStream ms = new MemoryStream();
+            BsonWriter writer = new BsonWriter(ms);
+            string val = "interned";
+            Assert.IsTrue(String.IsInterned(val) != null);
+            //string hexdump = BitConverter.ToString(ms.ToArray()).Replace("-","");
+            
+            //Assert.AreEqual(expected, hexdump);
+        }        
     }
 }
