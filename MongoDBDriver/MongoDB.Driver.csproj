@@ -99,7 +99,6 @@
     <Compile Include="Exceptions\MongoMapReduceException.cs" />
     <Compile Include="Exceptions\MongoOperationException.cs" />
     <Compile Include="ICursor.cs" />
-    <Compile Include="IDatabase.cs" />
     <Compile Include="IMongo.cs" />
     <Compile Include="IMongoCollection.cs" />
     <Compile Include="IndexOrder.cs" />
@@ -140,6 +139,7 @@
     <Compile Include="Configuration\ConnectionElement.cs" />
     <Compile Include="Configuration\ConnectionCollection.cs" />
     <Compile Include="MongoSymbol.cs" />
+    <Compile Include="IMongoDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
