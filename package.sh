@@ -1,3 +1,3 @@
 cd Release
-zip  ../redist/MongoDB-Driver-Release.zip *
+zip  ../redist/MongoDBDriver-Release.zip *
 cd -
