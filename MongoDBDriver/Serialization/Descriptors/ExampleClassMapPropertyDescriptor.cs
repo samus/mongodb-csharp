@@ -5,12 +5,12 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    internal class ExampleClassMapDescriptor : ClassMapDescriptorBase
+    internal class ExampleClassMapPropertyDescriptor : ClassMapPropertyDescriptorBase
     {
         private readonly object _example;
         private readonly Type _exampleType;
 
-        public ExampleClassMapDescriptor(IClassMap classMap, object example)
+        public ExampleClassMapPropertyDescriptor(IClassMap classMap, object example)
             : base(classMap)
         {
             if (example == null)
@@ -18,11 +18,6 @@ namespace MongoDB.Driver.Serialization.Descriptors
 
             _example = example;
             _exampleType = _example.GetType();
-        }
-
-        public override PersistentMemberMap GetMemberMap(string name)
-        {
-            return ClassMap.GetMemberMapFromAlias(name);
         }
 
         public override IEnumerable<string> GetPropertyNames()

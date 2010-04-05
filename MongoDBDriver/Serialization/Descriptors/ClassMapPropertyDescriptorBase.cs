@@ -7,7 +7,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
     /// <summary>
     /// 
     /// </summary>
-    public abstract class ClassMapDescriptorBase : IClassMapDescriptor
+    public abstract class ClassMapPropertyDescriptorBase : IPropertyDescriptor
     {
         /// <summary>
         /// 
@@ -18,20 +18,13 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// Initializes a new instance of the <see cref="ClassMapDescriptorBase"/> class.
         /// </summary>
         /// <param name="classMap">The class map.</param>
-        protected ClassMapDescriptorBase(IClassMap classMap)
+        protected ClassMapPropertyDescriptorBase(IClassMap classMap)
         {
             if (classMap == null)
                 throw new ArgumentNullException("classMap");
 
             ClassMap = classMap;
         }
-
-        /// <summary>
-        /// Gets the member map.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        public abstract PersistentMemberMap GetMemberMap(string name);
 
         /// <summary>
         /// Gets the property names.

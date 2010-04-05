@@ -26,24 +26,20 @@ namespace MongoDB.Driver.Serialization
 
         public object BeginObject(object instance)
         {
-            if (instance is Document && typeof(Document).IsAssignableFrom(_types.Peek()))
-                return new DocumentDescriptor((Document)instance);
+            if (instance is Document)
+                return BeginDocument((Document)instance);
 
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
-          
-            if (instance is Document)
-                return new DocumentClassMapDescriptor(currentClassMap, (Document)instance);
-
             var instanceType = instance.GetType();
             if (currentClassMap.ClassType.IsAssignableFrom(instanceType))
             {
                 if (currentClassMap.ClassType != instanceType) //we are a subclass
                     currentClassMap = _mappingStore.GetClassMap(instanceType);
 
-                return new ClassMapDescriptor(currentClassMap, instance);
+                return new ClassMapPropertyDescriptor(currentClassMap, instance);
             }
 
-            return new ExampleClassMapDescriptor(currentClassMap, instance);
+            return new ExampleClassMapPropertyDescriptor(currentClassMap, instance);
         }
 
         public object BeginArray(object instance)
@@ -85,6 +81,20 @@ namespace MongoDB.Driver.Serialization
         public bool IsObject(object instance)
         {
             return !IsNativeToMongo(instance.GetType());
+        }
+
+        private object BeginDocument(Document document)
+        {
+            //if we are expecting a document, no translation is necessary...
+            if (typeof(Document).IsAssignableFrom(_types.Peek()))
+                return new DocumentPropertyDescriptor(document);
+
+            var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
+
+            if (document["query"] != null)
+                return new QueriedPropertyDescriptor(document, _types.Peek());
+
+            return new DocumentClassMapPropertyDescriptor(currentClassMap, document);
         }
 
         private static bool IsNativeToMongo(Type type)

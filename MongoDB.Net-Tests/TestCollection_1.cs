@@ -246,7 +246,7 @@ namespace MongoDB.Driver
                            select new { Song = "Bulk", bin = b, Year = i };
 
                 inserts.Insert(docs, true);
-                var count = inserts.Count(new Document { { "song", "Bulk" } });
+                var count = inserts.Count(new Document("Song", "Bulk"));
                 Assert.AreEqual(docs.Count(), count, "Wrong number of documents inserted");
             }
             catch (MongoException)

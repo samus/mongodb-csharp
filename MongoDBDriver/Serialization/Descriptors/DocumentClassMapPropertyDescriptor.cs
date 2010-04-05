@@ -4,7 +4,7 @@ using MongoDB.Driver.Configuration.Mapping.Model;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    internal class DocumentClassMapDescriptor : ClassMapDescriptorBase
+    internal class DocumentClassMapPropertyDescriptor : ClassMapPropertyDescriptorBase
     {
         private readonly Document _document;
 
@@ -13,23 +13,13 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// </summary>
         /// <param name="classMap">The class map.</param>
         /// <param name="document">The document.</param>
-        public DocumentClassMapDescriptor(IClassMap classMap, Document document)
+        public DocumentClassMapPropertyDescriptor(IClassMap classMap, Document document)
             : base(classMap)
         {
             if (document == null)
                 throw new ArgumentNullException("document");
 
             _document = document;
-        }
-
-        /// <summary>
-        /// Gets the member map.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        public override PersistentMemberMap GetMemberMap(string name)
-        {
-            return ClassMap.GetMemberMapFromAlias(name);
         }
 
         /// <summary>

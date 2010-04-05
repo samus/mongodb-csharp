@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
-    internal class DocumentDescriptor : IPropertyDescriptor
+    internal class DocumentPropertyDescriptor : IPropertyDescriptor
     {
         private readonly Document _document;
 
-        public DocumentDescriptor(Document document)
+        public DocumentPropertyDescriptor(Document document)
         {
             if (document == null)
                 throw new ArgumentNullException("document");
