@@ -88,6 +88,10 @@
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
+    <Compile Include="Linq\MongoQuery.cs" />
+    <Compile Include="Linq\MongoQueryProvider.cs" />
+    <Compile Include="Linq\MongoQueryObject.cs" />
+    <Compile Include="Linq\TypeSystem.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Serialization\Builders\ArrayBuilder.cs" />
     <Compile Include="Serialization\Builders\ConcreteClassMapBuilder.cs" />
