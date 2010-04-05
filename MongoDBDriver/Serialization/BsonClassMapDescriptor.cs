@@ -91,9 +91,6 @@ namespace MongoDB.Driver.Serialization
 
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
 
-            if (document["query"] != null)
-                return new QueriedPropertyDescriptor(document, _types.Peek());
-
             return new DocumentClassMapPropertyDescriptor(currentClassMap, document);
         }
 

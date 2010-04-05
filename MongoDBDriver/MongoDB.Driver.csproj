@@ -99,7 +99,6 @@
     <Compile Include="Serialization\Descriptors\ArrayDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\ClassMapPropertyDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\ClassMapPropertyDescriptorBase.cs" />
-    <Compile Include="Serialization\Descriptors\QueriedPropertyDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\DocumentClassMapPropertyDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\DocumentPropertyDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\ExampleClassMapPropertyDescriptor.cs" />
