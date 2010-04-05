@@ -39,7 +39,14 @@ namespace MongoDB.Driver.Linq
 
         public MongoQueryObject GetQueryObject(Expression expression)
         {
-            throw new NotImplementedException();
+            expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
+            return new MongoQueryTranslator().Translate(expression);
+        }
+
+        private static bool CanBeEvaluatedLocally(Expression expression)
+        {
+            return expression.NodeType != ExpressionType.Parameter &&
+                   expression.NodeType != ExpressionType.Lambda;
         }
     }
 }

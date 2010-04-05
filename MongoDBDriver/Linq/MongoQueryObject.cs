@@ -17,6 +17,13 @@ namespace MongoDB.Driver.Linq
 
         public Document Query { get; set; }
 
+        public MongoQueryObject()
+        {
+            Fields = new Document();
+            Order = new Document();
+            Query = new Document();
+        }
+
         public override string ToString()
         {
             throw new NotImplementedException();
