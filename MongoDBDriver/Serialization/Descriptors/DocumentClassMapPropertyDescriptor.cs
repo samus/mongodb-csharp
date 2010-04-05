@@ -63,7 +63,11 @@ namespace MongoDB.Driver.Serialization.Descriptors
             var type = typeof(Document);
 
             if (memberMap != null)
+            {
                 type = memberMap.MemberReturnType;
+                if (memberMap is CollectionMemberMap)
+                    type = ((CollectionMemberMap)memberMap).ElementType;
+            }
             else if (name.StartsWith("$") || name == "query") //we are a modifier or a special case of querying
                 type = ClassMap.ClassType; //we'll pass this along so that the fields get replaced correctly...
             else if (value != null)

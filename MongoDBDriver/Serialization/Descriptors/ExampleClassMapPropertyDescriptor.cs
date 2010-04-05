@@ -52,10 +52,12 @@ namespace MongoDB.Driver.Serialization.Descriptors
                 propInfo = _exampleType.GetProperty(name);
 
             value = propInfo.GetValue(_example, null);
-            if (value is Document)
-                type = typeof(Document);
-            else if (memberMap != null)
+            if (memberMap != null)
+            {
                 type = memberMap.MemberReturnType;
+                if (memberMap is CollectionMemberMap)
+                    type = ((CollectionMemberMap)memberMap).ElementType;
+            }
             else
                 type = propInfo.PropertyType;
 

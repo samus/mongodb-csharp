@@ -57,17 +57,21 @@ namespace MongoDB.Driver.Serialization
         [Test]
         public void CanSerializeAGenericListOfClasses()
         {
+            var doc = new Document("A", new[] { new Document("B", "b") });
             var o = new GenericListOfClasses();
             o.A = new List<GenericListOfClassesA> { new GenericListOfClassesA() { B = "b" } };
             string bson = Serialize<GenericListOfClasses>(o);
-            Assert.AreEqual("HgAAAARBABYAAAADMAAOAAAAAkIAAgAAAGIAAAAA", bson);
+            string expected = Serialize(doc);
+            Assert.AreEqual(expected, bson);
         }
 
         [Test]
         public void CanSerializeAGenericListOfClassesUsingAnonymousType()
         {
+            var doc = new Document("A", new[] { new Document("B", "b") });
             string bson = Serialize<GenericListOfClasses>(new { A = new[] { new { B = "b" } } });
-            Assert.AreEqual("HgAAAARBABYAAAADMAAOAAAAAkIAAgAAAGIAAAAA", bson);
+            string expected = Serialize(doc);
+            Assert.AreEqual(expected, bson);
         }
 
         public class GenericListOfEmbeddedDocuments
@@ -78,17 +82,21 @@ namespace MongoDB.Driver.Serialization
         [Test]
         public void CanSerializeAListOfEmbeddedDocuments()
         {
+            var doc = new Document("A", new[] { new Document("B", "b" ) });
             var o = new GenericListOfEmbeddedDocuments();
             o.A = new List<Document> { new Document().Append("B", "b") };
             string bson = Serialize<GenericListOfEmbeddedDocuments>(o);
-            Assert.AreEqual("HgAAAARBABYAAAADMAAOAAAAAkIAAgAAAGIAAAAA", bson);
+            string expected = Serialize(doc);
+            Assert.AreEqual(expected, bson);
         }
 
         [Test]
         public void CanSerializeAListOfEmbeddedDocumentsUsingAnonymousType()
         {
+            var doc = new Document("A", new[] { new Document("B", "b") });
             string bson = Serialize<GenericListOfEmbeddedDocuments>(new { A = new[] { new Document("B", "b") } });
-            Assert.AreEqual("HgAAAARBABYAAAADMAAOAAAAAkIAAgAAAGIAAAAA", bson);
+            string expected = Serialize(doc);
+            Assert.AreEqual(expected, bson);
         }
     }
 }

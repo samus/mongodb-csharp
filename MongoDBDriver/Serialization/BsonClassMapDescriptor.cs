@@ -31,20 +31,18 @@ namespace MongoDB.Driver.Serialization
 
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
             var instanceType = instance.GetType();
-            if (currentClassMap.ClassType.IsAssignableFrom(instanceType))
-            {
-                if (currentClassMap.ClassType != instanceType) //we are a subclass
-                    currentClassMap = _mappingStore.GetClassMap(instanceType);
+            if (!currentClassMap.ClassType.IsAssignableFrom(instanceType))
+                return new ExampleClassMapPropertyDescriptor(currentClassMap, instance);
 
-                return new ClassMapPropertyDescriptor(currentClassMap, instance);
-            }
+            if (currentClassMap.ClassType != instanceType) //we are a subclass
+                currentClassMap = _mappingStore.GetClassMap(instanceType);
 
-            return new ExampleClassMapPropertyDescriptor(currentClassMap, instance);
+            return new ClassMapPropertyDescriptor(currentClassMap, instance);
         }
 
         public object BeginArray(object instance)
         {
-            return new ArrayDescriptor((IEnumerable)instance);
+            return new ArrayDescriptor((IEnumerable)instance, _types.Peek());
         }
 
         public IEnumerable<string> GetPropertyNames(object instance)
@@ -85,7 +83,6 @@ namespace MongoDB.Driver.Serialization
 
         private object BeginDocument(Document document)
         {
-            //if we are expecting a document, no translation is necessary...
             if (typeof(Document).IsAssignableFrom(_types.Peek()))
                 return new DocumentPropertyDescriptor(document);
 

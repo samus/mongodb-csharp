@@ -7,16 +7,21 @@ namespace MongoDB.Driver.Serialization.Descriptors
     internal class ArrayDescriptor : IPropertyDescriptor
     {
         private readonly Dictionary<string, object> _items = new Dictionary<string, object>();
+        private readonly Type _elementType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArrayDescriptor"/> class.
         /// </summary>
         /// <param name="enumerable">The enumerable.</param>
-        public ArrayDescriptor(IEnumerable enumerable)
+        /// <param name="elementType">Type of the element.</param>
+        public ArrayDescriptor(IEnumerable enumerable, Type elementType)
         {
             if (enumerable == null)
                 throw new ArgumentNullException("enumerable");
+            if (elementType == null)
+                throw new ArgumentNullException("elementType");
 
+            _elementType = elementType;
             var i = 0;
             foreach (var item in enumerable)
                 _items.Add((i++).ToString(), item);
@@ -39,7 +44,10 @@ namespace MongoDB.Driver.Serialization.Descriptors
         public KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
         {
             var value = _items[name];
-            var type = value == null ? typeof(Document) : value.GetType();
+            var type = _elementType;
+            if(type == null)
+                type = value == null ? null : value.GetType();
+
             return new KeyValuePair<Type, object>(type, value);
         }
     }

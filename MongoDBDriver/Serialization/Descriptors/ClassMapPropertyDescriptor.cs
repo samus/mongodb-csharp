@@ -70,7 +70,11 @@ namespace MongoDB.Driver.Serialization.Descriptors
             var type = typeof(Document);
 
             if (memberMap != null)
+            {
                 type = memberMap.MemberReturnType;
+                if (memberMap is CollectionMemberMap)
+                    type = ((CollectionMemberMap)memberMap).ElementType;
+            }
             else if (value != null)
                 type = value.GetType();
 
