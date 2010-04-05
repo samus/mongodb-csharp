@@ -52,12 +52,12 @@ namespace MongoDB.Driver.Serialization.Descriptors
             if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
                 return new KeyValuePair<Type, object>(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
 
-            object value;
+            object value = null;
 
             var memberMap = ClassMap.GetMemberMapFromAlias(name);
             if (memberMap != null)
-                value = _document[memberMap.MemberName];
-            else
+                value = _document[memberMap.MemberName] ?? _document[name];
+            else 
                 value = _document[name];
 
             var type = typeof(Document);

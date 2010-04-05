@@ -46,10 +46,10 @@ namespace MongoDB.Driver.Serialization.Descriptors
             PropertyInfo propInfo;
 
             var memberMap = ClassMap.GetMemberMapFromAlias(name);
-            if (memberMap == null)
-                propInfo = _exampleType.GetProperty(name);
+            if (memberMap != null)
+                propInfo = _exampleType.GetProperty(memberMap.MemberName) ?? _exampleType.GetProperty(name);
             else
-                propInfo = _exampleType.GetProperty(memberMap.MemberName);
+                propInfo = _exampleType.GetProperty(name);
 
             value = propInfo.GetValue(_example, null);
             if (value is Document)
