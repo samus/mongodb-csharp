@@ -21,7 +21,7 @@ namespace MongoDB.Driver.Linq
             get { return _fields; }
         }
 
-        public Expression Selector { get; set; }
+        public LambdaExpression Projector { get; set; }
 
         public MongoFieldProjection()
         {
@@ -31,6 +31,14 @@ namespace MongoDB.Driver.Linq
         public void AddField(string field)
         {
             _fields.Add(field);
+        }
+
+        public Document CreateDocument()
+        {
+            var doc = new Document();
+            foreach (var field in _fields)
+                doc.Add(field, 1);
+            return doc;
         }
     }
 
@@ -47,11 +55,11 @@ namespace MongoDB.Driver.Linq
                 miGetValue = typeof(MongoProjectionDocument).GetMethod("GetValue");
         }
 
-        public MongoFieldProjection ProjectFields(Expression expression, ParameterExpression row)
+        public MongoFieldProjection ProjectFields(Expression expression, ParameterExpression document)
         {
-            _document = row;
+            _document = document;
             _projection = new MongoFieldProjection();
-            _projection.Selector = Visit(expression);
+            _projection.Projector = Expression.Lambda(Visit(expression), _document);
 
             return _projection;
         }

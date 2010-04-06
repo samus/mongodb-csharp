@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace MongoDB.Driver.Tests.Linq
 {
     [TestFixture]
-    public class MongoQueryTests
+    public class MongoQueryTests : MongoTestBase
     {
         private class Person
         {
@@ -23,97 +23,53 @@ namespace MongoDB.Driver.Tests.Linq
 
         private IMongoCollection<Person> collection;
 
+        public override string TestCollections
+        {
+            get { return "people"; }
+        }
+
         [SetUp]
         public void TestSetup()
         {
-            collection = new Mongo().GetDatabase("tests").GetCollection<Person>("people");
-        }
-
-        [Test]
-        public void WithoutConstraints()
-        {
-            var people = collection.Linq();
-
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-
-            Assert.IsNull(queryObject.Projection);
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Order.Count);
-            Assert.AreEqual(0, queryObject.Query.Count);
-        }
-
-        [Test]
-        public void SingleEqualConstraint()
-        {
-            var people = collection.Linq().Where(p => p.FirstName == "Jack");
-
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-
-            Assert.IsNull(queryObject.Projection);
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Order.Count);
-            Assert.AreEqual(new Document("FirstName", "Jack"), queryObject.Query);
-        }
-
-        [Test]
-        public void ConjuctionConstraint()
-        {
-            var people = collection.Linq().Where(p => p.Age > 21 && p.Age < 42);
-
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-
-            Assert.IsNull(queryObject.Projection);
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Order.Count);
-            Assert.AreEqual(new Document("Age", new Document().Merge(Op.GreaterThan(21)).Merge(Op.LessThan(42))), queryObject.Query);
+            collection = this.DB.GetCollection<Person>("people");
+            collection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42 }, true);
+            collection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35 }, true);
+            collection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21 }, true);
         }
 
         [Test]
         public void Simple()
         {
-            var people = from p in collection.Linq()
-                         select p;
+            var people = collection.Linq().ToList();
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-            Assert.IsNotNull(queryObject.Projection);
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Order.Count);
-            Assert.AreEqual(0, queryObject.Query.Count);
+            Assert.AreEqual(3, people.Count());            
         }
 
         [Test]
-        public void Projection()
+        public void SimpleConstraint()
         {
-            var people = from p in collection.Linq()
-                         select new { Name = p.FirstName + p.LastName };
+            var people = collection.Linq().Where(p => p.FirstName == "Bob").ToList();
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-            Assert.IsNotNull(queryObject.Projection);
-            Assert.AreEqual(2, queryObject.Projection.Fields.Count());
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Order.Count);
-            Assert.AreEqual(0, queryObject.Query.Count);
+            Assert.AreEqual(1, people.Count());
         }
 
         [Test]
-        public void ProjectionWithConstraints()
+        public void ConjunctiveConstraint()
         {
-            var people = from p in collection.Linq()
-                         where p.Age > 21 && p.Age < 42
-                         select new { Name = p.FirstName + p.LastName };
+            var people = collection.Linq().Where(p => p.Age > 21 && p.Age < 42).ToList();
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-            Assert.IsNotNull(queryObject.Projection);
-            Assert.AreEqual(2, queryObject.Projection.Fields.Count());
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Order.Count);
-            Assert.AreEqual(new Document("Age", new Document().Merge(Op.GreaterThan(21)).Merge(Op.LessThan(42))), queryObject.Query);
+            Assert.AreEqual(1, people.Count());
         }
+
+        [Test]
+        public void SimpleProjection()
+        {
+            var names = (from p in collection.Linq()
+                         select new { Name = p.FirstName + " " + p.LastName })
+                         .ToList();
+
+            Assert.AreEqual(3, names.Count());
+        }
+
     }
 }

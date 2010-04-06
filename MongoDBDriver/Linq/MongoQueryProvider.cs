@@ -4,19 +4,21 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using MongoDB.Driver.Connections;
+using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Linq
 {
     public class MongoQueryProvider : IQueryProvider
     {
-        private readonly IMongoDatabase _database;
+        private readonly object _collection;
 
-        public MongoQueryProvider(IMongoDatabase database)
+        public MongoQueryProvider(object collection)
         {
-            if (database == null)
-                throw new ArgumentNullException("database");
+            if (collection == null)
+                throw new ArgumentNullException("collection");
 
-            _database = database;
+            _collection = collection;
         }
 
         public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
@@ -44,7 +46,30 @@ namespace MongoDB.Driver.Linq
 
         public object Execute(Expression expression)
         {
-            throw new NotImplementedException();
+            var queryObject = GetQueryObject(expression);
+
+            var cursor = _collection.GetType().GetMethod("FindAll")
+                            .Invoke(_collection, null);
+            var cursorType = cursor.GetType();
+            cursorType.GetMethod("Spec", new [] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Query });
+            if(queryObject.Projection != null)
+                cursorType.GetMethod("Fields", new [] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Projection.CreateDocument() });
+            cursorType.GetMethod("Limit").Invoke(cursor, new object[] { queryObject.NumberToLimit });
+            cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
+
+            Type elementType = TypeSystem.GetElementType(expression.Type);
+            if (queryObject.Projection != null)
+            {
+                var projector = queryObject.Projection.Projector.Compile();
+                return Activator.CreateInstance(
+                    typeof(MongoProjectionReader<,>).MakeGenericType(cursorType.GetGenericArguments()[0], elementType),
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    null,
+                    new object[] { cursor, projector },
+                    null);
+            }
+
+            return cursor.GetType().GetProperty("Documents").GetValue(cursor, null);
         }
 
         internal MongoQueryObject GetQueryObject(Expression expression)
