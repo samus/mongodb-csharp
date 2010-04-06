@@ -35,7 +35,10 @@ namespace MongoDB.Driver.Linq
 
         public void PushConditionScope(string name)
         {
-            _scopes.Push(new Scope(name));
+            if (_scopes.Count == 0)
+                _scopes.Push(new Scope(name, Query[name]));
+            else
+                _scopes.Push(_scopes.Peek().CreateChildScope(name));
         }
 
         public void PopConditionScope()
@@ -67,9 +70,10 @@ namespace MongoDB.Driver.Linq
 
             public object Value { get; private set; }
 
-            public Scope(string key)
+            public Scope(string key, object initialValue)
             {
                 Key = key;
+                Value = initialValue;
             }
 
             public void AddCondition(object value)
@@ -87,6 +91,14 @@ namespace MongoDB.Driver.Linq
                     throw new InvalidQueryException();
                 else
                     Value = value;
+            }
+
+            public Scope CreateChildScope(string name)
+            {
+                if (Value is Document)
+                    return new Scope(name, ((Document)Value)[name]);
+
+                return new Scope(name, null);
             }
         }
     }

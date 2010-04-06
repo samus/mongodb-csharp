@@ -19,6 +19,13 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
+            if (b.NodeType == ExpressionType.And || b.NodeType == ExpressionType.AndAlso)
+            {
+                Visit(b.Left);
+                Visit(b.Right);
+                return b;
+            }
+
             var left = b.Left;
             var right = b.Right;
             if (left.NodeType != ExpressionType.MemberAccess && right.NodeType != ExpressionType.MemberAccess)
@@ -66,7 +73,7 @@ namespace MongoDB.Driver.Linq
                     break;
             }
 
-            return base.VisitBinary(b);
+            return b;
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)

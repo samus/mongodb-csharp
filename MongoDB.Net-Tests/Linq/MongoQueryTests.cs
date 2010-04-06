@@ -58,9 +58,9 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
-        public void SingleGreaterThanConstraint()
+        public void ConjuctionConstraint()
         {
-            var people = collection.Linq().Where(p => p.Age > 23);
+            var people = collection.Linq().Where(p => p.Age > 21 && p.Age < 42);
 
             var queryObject = ((MongoQuery<Person>)people).GetQueryObject();
 
@@ -68,7 +68,7 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(0, queryObject.Order.Count);
-            Assert.AreEqual(new Document("Age", Op.GreaterThan(23)), queryObject.Query);
+            Assert.AreEqual(new Document("Age", new Document().Merge(Op.GreaterThan(21)).Merge(Op.LessThan(42))), queryObject.Query);
         }
 
     }
