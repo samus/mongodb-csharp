@@ -9,6 +9,16 @@ namespace MongoDB.Driver.Linq
 {
     public class MongoQueryProvider : IQueryProvider
     {
+        private readonly IMongoDatabase _database;
+
+        public MongoQueryProvider(IMongoDatabase database)
+        {
+            if (database == null)
+                throw new ArgumentNullException("database");
+
+            _database = database;
+        }
+
         public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
         {
             return new MongoQuery<TElement>(this, expression);

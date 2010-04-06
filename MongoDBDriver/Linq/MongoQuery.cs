@@ -56,9 +56,14 @@ namespace MongoDB.Driver.Linq
         IEnumerator IEnumerable.GetEnumerator() {
             return ((IEnumerable)this._provider.Execute(_expression)).GetEnumerator();
         }
+
+        public MongoQueryObject GetQueryObject()
+        {
+            return _provider.GetQueryObject(_expression);
+        }
  
         public override string ToString() {
-            return _provider.GetQueryObject(_expression).ToString();
+            return GetQueryObject().ToString();
         }
     }
 }

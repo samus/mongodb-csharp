@@ -88,6 +88,7 @@
     <Compile Include="Connections\TestConnectionFactory.cs" />
     <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
+    <Compile Include="Linq\MongoQueryTests.cs" />
     <Compile Include="Serialization\Builders\DocumentPropertyTests.cs" />
     <Compile Include="Serialization\Builders\EmbeddedClassPropertyTests.cs" />
     <Compile Include="Serialization\Builders\EnumerablePropertyTests.cs" />
