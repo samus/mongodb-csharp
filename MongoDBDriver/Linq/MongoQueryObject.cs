@@ -5,23 +5,42 @@ using System.Text;
 
 namespace MongoDB.Driver.Linq
 {
-    public class MongoQueryObject
+    internal class MongoQueryObject
     {
         private Stack<Scope> _scopes;
 
-        public Document Fields { get; set; }
-
+        /// <summary>
+        /// Gets or sets the number to skip.
+        /// </summary>
+        /// <value>The number to skip.</value>
         public int NumberToSkip { get; set; }
 
+        /// <summary>
+        /// Gets or sets the number to limit.
+        /// </summary>
+        /// <value>The number to limit.</value>
         public int NumberToLimit { get; set; }
 
+        /// <summary>
+        /// Gets or sets the order.
+        /// </summary>
+        /// <value>The order.</value>
         public Document Order { get; set; }
 
+        /// <summary>
+        /// Gets or sets the projection.
+        /// </summary>
+        /// <value>The projection.</value>
+        public MongoFieldProjection Projection { get; set; }
+
+        /// <summary>
+        /// Gets or sets the query.
+        /// </summary>
+        /// <value>The query.</value>
         public Document Query { get; set; }
 
         public MongoQueryObject()
         {
-            Fields = new Document();
             Order = new Document();
             Query = new Document();
 

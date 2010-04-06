@@ -47,7 +47,7 @@ namespace MongoDB.Driver.Linq
             throw new NotImplementedException();
         }
 
-        public MongoQueryObject GetQueryObject(Expression expression)
+        internal MongoQueryObject GetQueryObject(Expression expression)
         {
             expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
             return new MongoQueryTranslator().Translate(expression);

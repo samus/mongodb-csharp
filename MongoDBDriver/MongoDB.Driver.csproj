@@ -89,8 +89,10 @@
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
     <Compile Include="Linq\ExpressionVisitor.cs" />
+    <Compile Include="Linq\IMongoQuery.cs" />
     <Compile Include="Linq\InvalidQueryException.cs" />
-    <Compile Include="Linq\LinqExtension.cs" />
+    <Compile Include="Linq\LinqExtensions.cs" />
+    <Compile Include="Linq\MongoFieldProjector.cs" />
     <Compile Include="Linq\MongoQuery.cs" />
     <Compile Include="Linq\MongoQueryProvider.cs" />
     <Compile Include="Linq\MongoQueryObject.cs" />

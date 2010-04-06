@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MongoDB.Driver.Linq
 {
-    public static class LinqExtension
+    public static class LinqExtensions
     {
         public static IQueryable<T> Linq<T>(this IMongoCollection<T> collection) where T : class
         {

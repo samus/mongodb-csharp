@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MongoDB.Driver.Linq
 {
-    public class MongoQuery<T> : IOrderedQueryable<T>, IOrderedQueryable, IQueryable<T>, IQueryable, IEnumerable<T>, IEnumerable
+    public class MongoQuery<T> : IOrderedQueryable<T>, IMongoQuery
     {
         private readonly Expression _expression;
         private readonly MongoQueryProvider _provider;
@@ -57,13 +57,13 @@ namespace MongoDB.Driver.Linq
             return ((IEnumerable)this._provider.Execute(_expression)).GetEnumerator();
         }
 
-        public MongoQueryObject GetQueryObject()
+        public override string ToString() {
+            return _provider.GetQueryObject(_expression).ToString();
+        }
+
+        MongoQueryObject IMongoQuery.GetQueryObject()
         {
             return _provider.GetQueryObject(_expression);
-        }
- 
-        public override string ToString() {
-            return GetQueryObject().ToString();
         }
     }
 }

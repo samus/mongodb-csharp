@@ -8,11 +8,13 @@ namespace MongoDB.Driver.Linq
 {
     internal class MongoQueryTranslator : ExpressionVisitor
     {
+        private ParameterExpression _document;
         private MongoQueryObject _queryObject;
 
         internal MongoQueryObject Translate(Expression e)
         {
             _queryObject = new MongoQueryObject();
+            _document = Expression.Parameter(typeof(MongoProjectionDocument), "document");
             Visit(e);
             return _queryObject;
         }
@@ -78,13 +80,25 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Method.DeclaringType != typeof(Queryable) || m.Method.Name != "Where")
-                throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
+            if (m.Method.DeclaringType == typeof(Queryable))
+            {
+                if (m.Method.Name == "Where")
+                {
+                    this.Visit(m.Arguments[0]);
+                    var lambda = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                    this.Visit(lambda.Body);
+                    return m;
+                }
+                else if (m.Method.Name == "Select")
+                {
+                    var lamda = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                    _queryObject.Projection = new MongoFieldProjector().ProjectFields(lamda.Body, _document);
+                    Visit(m.Arguments[0]);
+                    return m;
+                }
+            }
 
-            this.Visit(m.Arguments[0]);
-            var lambda = (LambdaExpression)StripQuotes(m.Arguments[1]);
-            this.Visit(lambda.Body);
-            return m;
+            throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
         }
 
         protected override Expression VisitUnary(UnaryExpression u)
