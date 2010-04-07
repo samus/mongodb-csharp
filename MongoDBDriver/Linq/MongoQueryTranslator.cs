@@ -123,16 +123,19 @@ namespace MongoDB.Driver.Linq
 
         private static string EvaluateMemberAccess(MemberExpression m)
         {
-            var sb = new StringBuilder();
+            var memberNames = new Stack<string>();
             var p = m;
             while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
             {
-                sb.AppendFormat("{0}.", p.Member.Name);
+                memberNames.Push(p.Member.Name);
                 p = (MemberExpression)p.Expression;
             }
 
             if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
-                return sb.Append(p.Member.Name).ToString();
+            {
+                memberNames.Push(p.Member.Name);
+                return string.Join(".", memberNames.ToArray());
+            }
 
             throw new NotSupportedException(string.Format("The member '{0}' is not supported", m.Member.Name));
         }

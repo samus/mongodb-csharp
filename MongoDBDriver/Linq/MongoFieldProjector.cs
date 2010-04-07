@@ -53,15 +53,33 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
-            if (m.Expression != null && m.Expression.NodeType == ExpressionType.Parameter)
+            var members = new Stack<MemberInfo>();
+            var p = m;
+            while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
             {
-                _projection.AddField(m.Member.Name);
-                return Expression.MakeMemberAccess(
-                    _document, 
-                    m.Member);
+                members.Push(p.Member);
+                p = (MemberExpression)p.Expression;
             }
-            
-            return base.VisitMemberAccess(m);
+
+            if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
+            {
+                members.Push(p.Member);
+                _projection.AddField(string.Join(".", members.Select(member => member.Name).ToArray()));
+
+                var current = Expression.MakeMemberAccess(
+                    _document,
+                    members.Pop());
+                while (members.Count > 0)
+                {
+                    current = Expression.MakeMemberAccess(
+                        current,
+                        members.Pop());
+                }
+
+                return current;
+            }
+
+            throw new NotSupportedException(string.Format("The member '{0}' is not supported", m.Member.Name));
         }
     }
 

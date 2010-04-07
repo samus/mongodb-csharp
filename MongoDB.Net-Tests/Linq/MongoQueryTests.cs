@@ -19,6 +19,13 @@ namespace MongoDB.Driver.Tests.Linq
             public string LastName { get; set; }
 
             public int Age { get; set; }
+
+            public Address Address { get; set; }
+        }
+
+        private class Address
+        {
+            public string City { get; set; }
         }
 
         private IMongoCollection<Person> collection;
@@ -33,9 +40,9 @@ namespace MongoDB.Driver.Tests.Linq
         {
             collection = this.DB.GetCollection<Person>("people");
             collection.Delete(new { }, true);
-            collection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42 }, true);
-            collection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35 }, true);
-            collection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21 }, true);
+            collection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42, Address = new Address { City = "London" } }, true);
+            collection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35, Address = new Address { City = "Paris" } }, true);
+            collection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21, Address = new Address { City = "Chicago" } }, true);
         }
 
         [Test]
@@ -50,6 +57,14 @@ namespace MongoDB.Driver.Tests.Linq
         public void SimpleConstraint()
         {
             var people = collection.Linq().Where(p => p.FirstName == "Bob").ToList();
+
+            Assert.AreEqual(1, people.Count());
+        }
+
+        [Test]
+        public void NestedClassConstraint()
+        {
+            var people = collection.Linq().Where(p => p.Address.City == "London").ToList();
 
             Assert.AreEqual(1, people.Count());
         }
@@ -73,12 +88,36 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        public void NestedClassProjection()
+        {
+            var cities = collection.Linq().Select(p => p.Address.City).ToList();
+
+            Assert.AreEqual(3, cities.Count());
+        }
+
+        [Test]
         public void ProjectionWithConstraints()
         {
             var names = (from p in collection.Linq()
                          where p.Age > 21
                          select p.FirstName)
                          .ToList();
+
+            Assert.AreEqual(2, names.Count());
+        }
+
+        [Test]
+        public void ProjectionWithConstraintsInReverse()
+        {
+            var names = collection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).ToList();
+
+            Assert.AreEqual(2, names.Count());
+        }
+
+        [Test]
+        public void OddQuery()
+        {
+            var names = collection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).Select(t => t.FirstName).ToList();
 
             Assert.AreEqual(2, names.Count());
         }
