@@ -7,11 +7,6 @@ using System.Text;
 
 namespace MongoDB.Driver.Linq
 {
-    internal abstract class MongoProjectionDocument
-    {
-        public abstract object GetValue(string memberName);
-    }
-
     internal class MongoFieldProjection
     {
         private List<string> _fields;
@@ -44,16 +39,8 @@ namespace MongoDB.Driver.Linq
 
     internal class MongoFieldProjector : ExpressionVisitor
     {
-        private static MethodInfo miGetValue;
-
         private MongoFieldProjection _projection;
         private ParameterExpression _document;
-
-        public MongoFieldProjector()
-        {
-            if (miGetValue == null)
-                miGetValue = typeof(MongoProjectionDocument).GetMethod("GetValue");
-        }
 
         public MongoFieldProjection ProjectFields(Expression expression, ParameterExpression document)
         {
@@ -69,10 +56,12 @@ namespace MongoDB.Driver.Linq
             if (m.Expression != null && m.Expression.NodeType == ExpressionType.Parameter)
             {
                 _projection.AddField(m.Member.Name);
-                return Expression.Convert(Expression.Call(_document, miGetValue, Expression.Constant(m.Member.Name)), m.Type);
+                return Expression.MakeMemberAccess(
+                    _document, 
+                    m.Member);
             }
-            else
-                return base.VisitMemberAccess(m);
+            
+            return base.VisitMemberAccess(m);
         }
     }
 
@@ -80,7 +69,7 @@ namespace MongoDB.Driver.Linq
     {
         private Enumerator _enumerator;
 
-        public MongoProjectionReader(ICursor<T> cursor, Func<MongoProjectionDocument, TResult> projector)
+        public MongoProjectionReader(ICursor<T> cursor, Func<T, TResult> projector)
         {
             _enumerator = new Enumerator(cursor.Documents.GetEnumerator(), projector);
         }
@@ -99,23 +88,22 @@ namespace MongoDB.Driver.Linq
             return GetEnumerator();
         }
 
-        private class Enumerator : MongoProjectionDocument, IEnumerator<TResult>, IDisposable
+        private class Enumerator : IEnumerator<TResult>, IDisposable
         {
-            private TResult _current;
             private IEnumerator<T> _cursorEnumerator;
-            private Func<MongoProjectionDocument, TResult> _projector;
+            private Func<T, TResult> _projector;
 
             public TResult Current
             {
-                get { return _projector(this); }
+                get { return _projector(_cursorEnumerator.Current); }
             }
 
             object System.Collections.IEnumerator.Current
             {
-                get { return _current; }
+                get { return Current; }
             }
 
-            public Enumerator(IEnumerator<T> enumerator, Func<MongoProjectionDocument, TResult> projector)
+            public Enumerator(IEnumerator<T> enumerator, Func<T, TResult> projector)
             {
                 _cursorEnumerator = enumerator;
                 _projector = projector;
@@ -124,12 +112,6 @@ namespace MongoDB.Driver.Linq
             public void Dispose()
             {
                 _cursorEnumerator.Dispose();
-            }
-
-            public override object GetValue(string memberName)
-            {
-                var currentObj = _cursorEnumerator.Current;
-                return currentObj.GetType().GetProperty(memberName).GetValue(currentObj, null);
             }
 
             public bool MoveNext()

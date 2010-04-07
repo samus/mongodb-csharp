@@ -63,7 +63,7 @@ namespace MongoDB.Driver.Linq
                 var projector = queryObject.Projection.Projector.Compile();
                 return Activator.CreateInstance(
                     typeof(MongoProjectionReader<,>).MakeGenericType(cursorType.GetGenericArguments()[0], elementType),
-                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    BindingFlags.Instance | BindingFlags.Public,
                     null,
                     new object[] { cursor, projector },
                     null);

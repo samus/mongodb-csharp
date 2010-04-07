@@ -32,6 +32,7 @@ namespace MongoDB.Driver.Tests.Linq
         public void TestSetup()
         {
             collection = this.DB.GetCollection<Person>("people");
+            collection.Delete(new { }, true);
             collection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42 }, true);
             collection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35 }, true);
             collection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21 }, true);
@@ -69,6 +70,17 @@ namespace MongoDB.Driver.Tests.Linq
                          .ToList();
 
             Assert.AreEqual(3, names.Count());
+        }
+
+        [Test]
+        public void ProjectionWithConstraints()
+        {
+            var names = (from p in collection.Linq()
+                         where p.Age > 21
+                         select p.FirstName)
+                         .ToList();
+
+            Assert.AreEqual(2, names.Count());
         }
 
     }

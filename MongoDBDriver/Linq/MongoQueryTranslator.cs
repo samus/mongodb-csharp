@@ -8,13 +8,11 @@ namespace MongoDB.Driver.Linq
 {
     internal class MongoQueryTranslator : ExpressionVisitor
     {
-        private ParameterExpression _document;
         private MongoQueryObject _queryObject;
 
         internal MongoQueryObject Translate(Expression e)
         {
             _queryObject = new MongoQueryObject();
-            _document = Expression.Parameter(typeof(MongoProjectionDocument), "document");
             Visit(e);
             return _queryObject;
         }
@@ -92,7 +90,8 @@ namespace MongoDB.Driver.Linq
                 else if (m.Method.Name == "Select")
                 {
                     var lamda = (LambdaExpression)StripQuotes(m.Arguments[1]);
-                    _queryObject.Projection = new MongoFieldProjector().ProjectFields(lamda.Body, _document);
+                    var parameter = Expression.Parameter(lamda.Parameters[0].Type, "document");
+                    _queryObject.Projection = new MongoFieldProjector().ProjectFields(lamda.Body, parameter);
                     Visit(m.Arguments[0]);
                     return m;
                 }
