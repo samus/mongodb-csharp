@@ -11,15 +11,14 @@ namespace MongoDB.Driver.Serialization.Descriptors
         }
 
         [Test]
-        public void CanSerializeWithStandardOperator()
+        public void CanSerializeWithStandardOperatorUsingAnonymousType()
         {
             var bson = Serialize<OperatorProperty>(new { A = Op.GreaterThan(12) });
-
             Assert.AreEqual("FgAAAANBAA4AAAAQJGd0AAwAAAAAAA==", bson);
         }
 
         [Test]
-        public void CanSerializeWithMetaOperator()
+        public void CanSerializeWithMetaOperatorUsingAnonymousType()
         {
             var bson = Serialize<OperatorProperty>(new { A = !Op.GreaterThan(12) });
 
@@ -27,7 +26,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         }
 
         [Test]
-        public void CanSerializeWithComplexOperators()
+        public void CanSerializeWithComplexOperatorsUsingAnonymousType()
         {
             var bson = Serialize<OperatorProperty>(new { A = Op.GreaterThan(12) & !Op.GreaterThan(24) });
 

@@ -39,7 +39,7 @@ namespace MongoDB.Driver.Serialization
         }
 
         public object BeginArray()
-        {
+        {            
             return new ArrayBuilder(_types.Peek());
         }
 

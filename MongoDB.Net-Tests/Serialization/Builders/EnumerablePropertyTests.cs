@@ -51,5 +51,23 @@ namespace MongoDB.Driver.Serialization.Builders
             Assert.Contains(1, list);
             Assert.Contains(2, list);
         }
+
+        [Test]
+        public void CanTransfromASimpleArrayToItsMostEqualTypeInADocument(){
+            var bson = Serialize(new Document().Add("A", new[] {"text"}));
+
+            var simpleArray = Deserialize<Document>(bson);
+
+            Assert.AreEqual(1, simpleArray.Count);
+
+            var array = simpleArray["A"];
+
+            Assert.IsNotNull(array);
+            Assert.IsInstanceOfType(typeof(IList<string>),array);
+
+            var stringArray = (IList<string>)array;
+            Assert.AreEqual(1,stringArray.Count);
+            Assert.Contains("text",(ICollection)stringArray);
+        } 
     }
 }

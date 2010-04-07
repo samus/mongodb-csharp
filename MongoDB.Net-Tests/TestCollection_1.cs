@@ -139,7 +139,6 @@ namespace MongoDB.Driver
             Assert.AreEqual(0, counts.Count(new { Last = "Brown" }));
         }
 
-
         [Test]
         public void TestFindAttributeLimit()
         {
@@ -171,7 +170,7 @@ namespace MongoDB.Driver
         {
             var query = new { Text = (string)null };
             var numnulls = DB.GetCollection<FindsEntity>("finds").Count(query);
-            Assert.AreEqual(4, numnulls);
+            Assert.AreEqual(5, numnulls);
         }
 
         [Test]
@@ -247,7 +246,7 @@ namespace MongoDB.Driver
                            select new { Song = "Bulk", bin = b, Year = i };
 
                 inserts.Insert(docs, true);
-                var count = inserts.Count(new Document { { "song", "Bulk" } });
+                var count = inserts.Count(new Document("Song", "Bulk"));
                 Assert.AreEqual(docs.Count(), count, "Wrong number of documents inserted");
             }
             catch (MongoException)
@@ -329,7 +328,7 @@ namespace MongoDB.Driver
             foreach (var doc in results.Documents)
             {
                 count++;
-                Assert.AreEqual("Corder2", doc.Last);
+                Assert.AreEqual("Cordr2", doc.Last);
                 Assert.IsNotNull(doc.First, "First name should not disappear");
             }
 

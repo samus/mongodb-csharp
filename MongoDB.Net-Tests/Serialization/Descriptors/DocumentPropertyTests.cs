@@ -13,7 +13,14 @@ namespace MongoDB.Driver.Serialization.Descriptors
         [Test]
         public void CanSerialize()
         {
-            var bson = Serialize<DocumentProperty>(new { A = new Document("B", "b") });
+            var bson = Serialize<DocumentProperty>(new DocumentProperty() { A = new Document("B", "b") });
+            Assert.AreEqual("FgAAAANBAA4AAAACQgACAAAAYgAAAA==", bson);
+        }
+
+        [Test]
+        public void CanSerializeUsingAnonymousType()
+        {
+            var bson = Serialize<DocumentProperty>(new { A = new { B = "b" } });
             Assert.AreEqual("FgAAAANBAA4AAAACQgACAAAAYgAAAA==", bson);
         }
     }

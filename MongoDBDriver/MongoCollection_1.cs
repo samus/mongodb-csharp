@@ -261,7 +261,7 @@ namespace MongoDB.Driver
         /// </remarks>
         public long Count(object spec){
             try {
-                var response = Database.SendCommand(new Document().Add("count", Name).Add("query", spec));
+                var response = Database.SendCommand(typeof(T),new Document().Add("count", Name).Add("query", spec));
                 return Convert.ToInt64((double)response["n"]);
             } catch (MongoCommandException) {
                 //FIXME This is an exception condition when the namespace is missing. 

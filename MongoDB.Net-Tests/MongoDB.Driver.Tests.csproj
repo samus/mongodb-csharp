@@ -102,6 +102,7 @@
     <Compile Include="Serialization\Builders\ExtendedPropertiesTests.cs" />
     <Compile Include="Serialization\Builders\GenericListPropertyTests.cs" />
     <Compile Include="Serialization\Builders\PolymorphicObjectTests.cs" />
+    <Compile Include="Serialization\Descriptors\ModifierTests.cs" />
     <Compile Include="Serialization\Descriptors\DocumentPropertyTests.cs" />
     <Compile Include="Serialization\Descriptors\EmbeddedClassPropertyTests.cs" />
     <Compile Include="Serialization\Descriptors\EnumerablePropertyTests.cs" />
@@ -114,13 +115,14 @@
     <Compile Include="Bson\TestBsonReader.cs" />
     <Compile Include="IO\TestQueryMessage.cs" />
     <Compile Include="TestCollection.cs" />
-    <Compile Include="TestCollection`1.cs" />
+    <Compile Include="TestCollection_1.cs" />
     <Compile Include="TestConnectionStringBuilder.cs" />
     <Compile Include="TestCursor.cs" />
     <Compile Include="TestDatabase.cs" />
     <Compile Include="TestDatabaseMetaData.cs" />
     <Compile Include="TestDBRef.cs" />
     <Compile Include="TestDocument.cs" />
+    <Compile Include="TestMo.cs" />
     <Compile Include="TestMongo.cs" />
     <Compile Include="IO\TestMsgMessage.cs" />
     <Compile Include="TestB.cs" />

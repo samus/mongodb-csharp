@@ -4,7 +4,7 @@ using MongoDB.Driver.Bson;
 namespace MongoDB.Driver
 {
     /// <summary>
-    /// 
+    /// Staticly typed way of using MongoDB query operators.
     /// </summary>
     public class Op : Document
     {
