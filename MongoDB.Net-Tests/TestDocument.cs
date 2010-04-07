@@ -1,11 +1,7 @@
-/*
- * User: scorder
- * Date: 7/8/2009
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
@@ -37,6 +33,31 @@ namespace MongoDB.Driver
                 cnt++;
             }
         }
+        
+        [Test]
+        public void TestInsertMaintainsKeyOrder(){
+            Document d = new Document();
+            d["one"] = 1;
+            d.Insert("zero", 0, 0);
+
+            var keysList = d.Keys as IEnumerable<string>;
+            foreach(var k in d.Keys){
+                Assert.AreEqual("zero", k);
+                break;
+            }
+        }
+        
+        [Test]
+        public void TestUseOfIComparerForKeys(){
+            var doc = new Document(new ReverseComparer());
+
+            doc.Append("a", 3);
+            doc.Append("b", 2);
+            doc.Append("c", 1);
+
+            Assert.AreEqual("c", doc.Keys.First());
+        }
+        
         [Test] 
         public void TestRemove(){
             Document d = new Document();
@@ -207,5 +228,46 @@ namespace MongoDB.Driver
                 Assert.Fail(string.Format("Documents match\r\nExpected: not {0}\r\nActual:       {1}", d1, d2));
             }
         }
+        
+        [Test]
+        [ExpectedException(ExceptionType = typeof(ArgumentException), 
+            ExpectedMessage="Key already exists in Document",
+            MatchType=MessageMatch.Contains)]
+        public void TestInsertWillThrowArgumentExceptionIfKeyAlreadyExists(){
+            Document d = new Document();
+            d["one"] = 1;
+            d.Insert("one", 1, 0);
+        }
+        
+        [Test]
+        public void TestMaintainsOrderUsingMultipleMethods(){
+            Document d = new Document(new ReverseComparer());
+            d["one"] = 1;
+            var test = d["one"];
+            d["zero"] = 0;
+
+            var keysList = d.Keys as IEnumerable<string>;
+            Assert.AreEqual(keysList.First(), "zero");
+        }
     }
+    
+    public class ReverseComparer : IEqualityComparer<string>
+    {
+
+        public int Compare(string x, string y)
+        {
+            return y.CompareTo(x);
+        }
+        
+        public bool Equals (string x, string y)
+        {
+            return x.Equals(y);
+        }
+        
+        public int GetHashCode (string obj)
+        {
+            return obj.GetHashCode();
+        }
+        
+    }    
 }

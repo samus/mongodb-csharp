@@ -41,7 +41,7 @@ Patches
 =======
 Patches are welcome and will likely be accepted.  By submitting a patch you assign the copyright to me, Sam Corder.  This is necessary to simplify the number of copyright holders should it become necessary that the copyright need to be reassigned or the code relicensed.  The code will always be available under an OSI approved license.
 
-A bug fix patch should contain a test case that reproduces the issue along with the actual fix.  Try to follow the same style that the code is already in so that things remain clean.
+A bug fix patch should contain a test case that reproduces the issue along with the actual fix.  Try to follow the same style that the code is already in so that things remain clean.  Keep your whitespace settings the same as the code to make reading and applying diffs manageable.  We use 4 spaces for tabs and Windows line endings.
 
 Usage
 =====
@@ -62,6 +62,10 @@ Getting Help
 ============
 The Google Group mongodb-csharp at (http://groups.google.com/group/mongodb-csharp) is the best place to go.
 
+Reporting Bugs
+==============
+The bug tracker is the same as the Mongodb bug tracker located at http://jira.mongodb.org
+
 Contributors
 ============
 - Sam Corder (samus)
@@ -74,3 +78,5 @@ Contributors
 - Kevin Smith (codebrulee)
 - Rashadh (rashadh)
 - Sergey Bartunov (sbos)
+- David O'Hara (davidmohara)
+- Tim Raybrun (trayburn)

@@ -17,6 +17,7 @@ namespace MongoDB.Driver.Connections
     {
         private readonly IConnectionFactory _factory;
         private RawConnection _connection;
+        private bool disposed = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Connection"/> class.
@@ -36,7 +37,7 @@ namespace MongoDB.Driver.Connections
         /// </summary>
         ~Connection (){
             // make sure the connection returns to pool if the user forget it.
-            Dispose ();
+            Dispose (false);
         }
 
         /// <summary>
@@ -187,7 +188,25 @@ namespace MongoDB.Driver.Connections
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose (){
-            Close ();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // Cleanup Managed Resources Here
+                    Close();
+                }
+
+                // Cleanup Unmanaged Resources Here
+
+                // Then mark object as disposed
+                disposed = true;
+            }
         }
     }
 }

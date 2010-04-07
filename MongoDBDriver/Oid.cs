@@ -152,8 +152,14 @@ namespace MongoDB.Driver
         /// <param name = "a">A.</param>
         /// <param name = "b">The b.</param>
         /// <returns>The result of the operator.</returns>
-        public static bool operator ==(Oid a, Oid b)
-        {
+        public static bool operator ==(Oid a, Oid b){
+            if (System.Object.ReferenceEquals(a, b)){
+                return true;
+            }
+            if((Object)a == null || (Object)b == null){
+                return false;
+            }
+            
             return a.Equals(b);
         }
 

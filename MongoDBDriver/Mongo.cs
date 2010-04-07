@@ -7,7 +7,7 @@ namespace MongoDB.Driver
     /// <summary>
     /// Description of Mongo.
     /// </summary>
-    public class Mongo : IDisposable
+    public class Mongo : IDisposable, IMongo
     {
         private readonly Connection _connection;
         private readonly ISerializationFactory _serializationFactory;
@@ -64,7 +64,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public MongoDatabase GetDatabase (String name){
+        public IMongoDatabase GetDatabase (String name){
             return new MongoDatabase (_serializationFactory, _connection, name);
         }
 
@@ -72,7 +72,7 @@ namespace MongoDB.Driver
         /// Gets the <see cref="MongoDatabase"/> with the specified name.
         /// </summary>
         /// <value></value>
-        public MongoDatabase this[String name] {
+        public IMongoDatabase this[String name] {
             get { return GetDatabase (name); }
         }
 

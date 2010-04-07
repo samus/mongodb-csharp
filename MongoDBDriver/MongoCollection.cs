@@ -120,7 +120,30 @@ namespace MongoDB.Driver
         public ICursor Find(Document spec, int limit, int skip, Document fields){
             return new Cursor(_collection.Find(spec, limit, skip, fields));
         }
-
+                
+        public Document FindAndModify (Document doc, Document spec)
+        {
+            throw new System.NotImplementedException();
+        }
+        
+        
+        public Document FindAndModify (Document doc, Document spec, Document sort)
+        {
+            throw new System.NotImplementedException();
+        }
+        
+        
+        public Document FindAndModify (Document doc, Document spec, bool ReturnNew)
+        {
+            throw new System.NotImplementedException();
+        }
+        
+        
+        public Document FindAndModify (Document doc, Document spec, Document sort, bool ReturnNew)
+        {
+            throw new System.NotImplementedException();
+        }
+        
         /// <summary>
         /// Maps the reduce.
         /// </summary>
@@ -297,5 +320,6 @@ namespace MongoDB.Driver
         public void Save(Document document, bool safemode){
             _collection.Save(document,safemode);
         }
+
     }
 }

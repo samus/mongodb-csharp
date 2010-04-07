@@ -76,7 +76,7 @@ namespace MongoDB.Driver.Bson
                     Write((Oid)obj);
                     return;
                 case BsonDataType.Number:
-                    _writer.Write((double)obj);
+                    _writer.Write(Convert.ToDouble(obj));
                     return;
                 case BsonDataType.String:{
                     Write((String)obj);
@@ -97,6 +97,10 @@ namespace MongoDB.Driver.Bson
                 }
                 case BsonDataType.Code:{
                     Write((Code)obj);
+                    return;
+                }
+                case BsonDataType.Symbol:{
+                    this.WriteValue(BsonDataType.String, ((MongoSymbol)obj).Value);
                     return;
                 }
                 case BsonDataType.CodeWScope:{
@@ -319,6 +323,10 @@ namespace MongoDB.Driver.Bson
                         return CalculateSize((Guid)obj);
                     return CalculateSize((Binary)obj);
                 }
+                case BsonDataType.Symbol:{
+                    MongoSymbol s = (MongoSymbol)obj;
+                    return CalculateSize(s.Value,true);
+                }
             }
 
             throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.", obj.GetType().Name));
@@ -479,6 +487,7 @@ namespace MongoDB.Driver.Bson
         /// <param name="obj">The obj.</param>
         /// <returns></returns>
         protected BsonDataType TranslateToBsonType(object obj){
+            //TODO:Convert to use a dictionary
             if(obj == null)
                 return BsonDataType.Null;
 
@@ -521,7 +530,8 @@ namespace MongoDB.Driver.Bson
                 return BsonDataType.MinKey;
             if(type == typeof(MongoMaxKey))
                 return BsonDataType.MaxKey;
-
+            if(type == typeof(MongoSymbol))
+                return BsonDataType.Symbol;
             if(_descriptor.IsArray(obj))
                 return BsonDataType.Array;
             if(_descriptor.IsObject(obj))
