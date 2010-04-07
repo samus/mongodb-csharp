@@ -6,11 +6,11 @@ using System.Text;
 
 namespace MongoDB.Driver.Linq
 {
-    internal class MongoQueryTranslator : ExpressionVisitor
+    internal class QueryFormatter : MongoExpressionVisitor
     {
         private MongoQueryObject _queryObject;
 
-        internal MongoQueryObject Translate(Expression e)
+        internal MongoQueryObject Format(Expression e)
         {
             _queryObject = new MongoQueryObject();
             Visit(e);
@@ -78,26 +78,38 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Method.DeclaringType == typeof(Queryable))
-            {
-                if (m.Method.Name == "Where")
-                {
-                    this.Visit(m.Arguments[0]);
-                    var lambda = (LambdaExpression)StripQuotes(m.Arguments[1]);
-                    this.Visit(lambda.Body);
-                    return m;
-                }
-                else if (m.Method.Name == "Select")
-                {
-                    var lamda = (LambdaExpression)StripQuotes(m.Arguments[1]);
-                    var parameter = Expression.Parameter(lamda.Parameters[0].Type, "document");
-                    _queryObject.Projection = new MongoFieldProjector().ProjectFields(lamda.Body, parameter);
-                    Visit(m.Arguments[0]);
-                    return m;
-                }
-            }
-
             throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
+        }
+
+        protected override Expression VisitSelect(SelectExpression s)
+        {
+            if(s.From != null)
+                VisitSource(s.From);
+            if (s.Where != null)
+                Visit(s.Where);
+
+            return s;
+        }
+
+        protected override Expression VisitSource(Expression source)
+        {
+            switch ((MongoExpressionType)source.NodeType)
+            {
+                case MongoExpressionType.Collection:
+                    var collection = (CollectionExpression)source;
+                    _queryObject.CollectionName = collection.CollectionName;
+                    _queryObject.Database = collection.Database;
+                    _queryObject.DocumentType = collection.DocumentType;
+                    break;
+                case MongoExpressionType.Select:
+                    var select = (SelectExpression)source;
+                    _queryObject.Fields.Merge(CreateFieldsDocument(select.Fields));
+                    Visit(select);
+                    break;
+                default:
+                    throw new InvalidOperationException("Select source is not valid type");
+            }
+            return source;
         }
 
         protected override Expression VisitUnary(UnaryExpression u)
@@ -114,6 +126,14 @@ namespace MongoDB.Driver.Linq
             }
 
             return u;
+        }
+
+        private static Document CreateFieldsDocument(IEnumerable<FieldDeclaration> fields)
+        {
+            var doc = new Document();
+            foreach (var field in fields)
+                doc.Add(field.Name, 1);
+            return doc;
         }
 
         private static object EvaluateConstant(ConstantExpression c)

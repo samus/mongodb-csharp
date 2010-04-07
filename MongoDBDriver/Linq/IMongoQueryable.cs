@@ -5,8 +5,12 @@ using System.Text;
 
 namespace MongoDB.Driver.Linq
 {
-    internal interface IMongoQuery
+    internal interface IMongoQueryable : IQueryable
     {
+        string CollectionName { get; }
+
+        IMongoDatabase Database { get; }
+
         MongoQueryObject GetQueryObject();
     }
 }

@@ -11,14 +11,28 @@ namespace MongoDB.Driver.Linq
 {
     public class MongoQueryProvider : IQueryProvider
     {
-        private readonly object _collection;
+        private readonly string _collectionName;
+        private readonly IMongoDatabase _database;
 
-        public MongoQueryProvider(object collection)
+        public string CollectionName
         {
-            if (collection == null)
-                throw new ArgumentNullException("collection");
+            get { return _collectionName; }
+        }
 
-            _collection = collection;
+        public IMongoDatabase Database
+        {
+            get { return _database; }
+        }
+
+        public MongoQueryProvider(IMongoDatabase database, string collectionName)
+        {
+            if (database == null)
+                throw new ArgumentNullException("database");
+            if (collectionName == null)
+                throw new ArgumentNullException("collectionName");
+
+            _collectionName = collectionName;
+            _database = database;
         }
 
         public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
@@ -48,34 +62,38 @@ namespace MongoDB.Driver.Linq
         {
             var queryObject = GetQueryObject(expression);
 
-            var cursor = _collection.GetType().GetMethod("FindAll")
-                            .Invoke(_collection, null);
-            var cursorType = cursor.GetType();
-            cursorType.GetMethod("Spec", new [] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Query });
-            if(queryObject.Projection != null)
-                cursorType.GetMethod("Fields", new [] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Projection.CreateDocument() });
-            cursorType.GetMethod("Limit").Invoke(cursor, new object[] { queryObject.NumberToLimit });
-            cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
+            throw new NotImplementedException();
+            //var cursor = _collection.GetType().GetMethod("FindAll")
+            //                .Invoke(_collection, null);
+            //var cursorType = cursor.GetType();
+            //cursorType.GetMethod("Spec", new [] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Query });
+            //if(queryObject.Projection != null)
+            //    cursorType.GetMethod("Fields", new [] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Projection.CreateDocument() });
+            //cursorType.GetMethod("Limit").Invoke(cursor, new object[] { queryObject.NumberToLimit });
+            //cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
 
-            Type elementType = TypeSystem.GetElementType(expression.Type);
-            if (queryObject.Projection != null)
-            {
-                var projector = queryObject.Projection.Projector.Compile();
-                return Activator.CreateInstance(
-                    typeof(MongoProjectionReader<,>).MakeGenericType(cursorType.GetGenericArguments()[0], elementType),
-                    BindingFlags.Instance | BindingFlags.Public,
-                    null,
-                    new object[] { cursor, projector },
-                    null);
-            }
+            //Type elementType = TypeSystem.GetElementType(expression.Type);
+            //if (queryObject.Projection != null)
+            //{
+            //    var projector = queryObject.Projection.Projector.Compile();
+            //    return Activator.CreateInstance(
+            //        typeof(ProjectionReader<,>).MakeGenericType(cursorType.GetGenericArguments()[0], elementType),
+            //        BindingFlags.Instance | BindingFlags.Public,
+            //        null,
+            //        new object[] { cursor, projector },
+            //        null);
+            //}
 
-            return cursor.GetType().GetProperty("Documents").GetValue(cursor, null);
+            //return cursor.GetType().GetProperty("Documents").GetValue(cursor, null);
         }
 
         internal MongoQueryObject GetQueryObject(Expression expression)
         {
             expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
-            return new MongoQueryTranslator().Translate(expression);
+            var projection = (ProjectionExpression)new QueryBinder().Bind(expression);
+            var queryObject = new QueryFormatter().Format(projection.Source);
+            queryObject.Projector = Expression.Lambda(projection.Projector, Expression.Parameter(queryObject.DocumentType, "document"));
+            return queryObject;
         }
 
         private static bool CanBeEvaluatedLocally(Expression expression)

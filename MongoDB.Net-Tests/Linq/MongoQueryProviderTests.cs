@@ -34,9 +34,9 @@ namespace MongoDB.Driver.Tests.Linq
         {
             var people = collection.Linq();
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
 
-            Assert.IsNull(queryObject.Projection);
+            Assert.IsNull(queryObject.Projector);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(0, queryObject.Order.Count);
@@ -48,9 +48,9 @@ namespace MongoDB.Driver.Tests.Linq
         {
             var people = collection.Linq().Where(p => p.FirstName == "Jack");
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
 
-            Assert.IsNull(queryObject.Projection);
+            Assert.IsNull(queryObject.Projector);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(0, queryObject.Order.Count);
@@ -62,9 +62,9 @@ namespace MongoDB.Driver.Tests.Linq
         {
             var people = collection.Linq().Where(p => p.Age > 21 && p.Age < 42);
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
 
-            Assert.IsNull(queryObject.Projection);
+            Assert.IsNull(queryObject.Projector);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(0, queryObject.Order.Count);
@@ -77,8 +77,8 @@ namespace MongoDB.Driver.Tests.Linq
             var people = from p in collection.Linq()
                          select p;
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-            Assert.IsNotNull(queryObject.Projection);
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.IsNotNull(queryObject.Projector);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(0, queryObject.Order.Count);
@@ -91,9 +91,9 @@ namespace MongoDB.Driver.Tests.Linq
             var people = from p in collection.Linq()
                          select new { Name = p.FirstName + p.LastName };
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-            Assert.IsNotNull(queryObject.Projection);
-            Assert.AreEqual(2, queryObject.Projection.Fields.Count());
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.IsNotNull(queryObject.Projector);
+            Assert.AreEqual(2, queryObject.Fields.Count());
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(0, queryObject.Order.Count);
@@ -107,9 +107,9 @@ namespace MongoDB.Driver.Tests.Linq
                          where p.Age > 21 && p.Age < 42
                          select new { Name = p.FirstName + p.LastName };
 
-            var queryObject = ((IMongoQuery)people).GetQueryObject();
-            Assert.IsNotNull(queryObject.Projection);
-            Assert.AreEqual(2, queryObject.Projection.Fields.Count());
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.IsNotNull(queryObject.Projector);
+            Assert.AreEqual(2, queryObject.Fields.Count());
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(0, queryObject.Order.Count);

@@ -2,12 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Linq.Expressions;
 
 namespace MongoDB.Driver.Linq
 {
     internal class MongoQueryObject
     {
         private Stack<Scope> _scopes;
+
+        /// <summary>
+        /// Gets or sets the name of the collection.
+        /// </summary>
+        /// <value>The name of the collection.</value>
+        public string CollectionName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the database.
+        /// </summary>
+        /// <value>The database.</value>
+        public IMongoDatabase Database { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the document.
+        /// </summary>
+        /// <value>The type of the document.</value>
+        public Type DocumentType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the fields.
+        /// </summary>
+        /// <value>The fields.</value>
+        public Document Fields { get; set; }
 
         /// <summary>
         /// Gets or sets the number to skip.
@@ -28,10 +53,10 @@ namespace MongoDB.Driver.Linq
         public Document Order { get; set; }
 
         /// <summary>
-        /// Gets or sets the projection.
+        /// Gets or sets the projector.
         /// </summary>
-        /// <value>The projection.</value>
-        public MongoFieldProjection Projection { get; set; }
+        /// <value>The projector.</value>
+        public LambdaExpression Projector { get; set; }
 
         /// <summary>
         /// Gets or sets the query.
@@ -41,6 +66,7 @@ namespace MongoDB.Driver.Linq
 
         public MongoQueryObject()
         {
+            Fields = new Document();
             Order = new Document();
             Query = new Document();
 

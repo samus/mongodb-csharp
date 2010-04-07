@@ -9,7 +9,7 @@ namespace MongoDB.Driver.Linq
     {
         public static IQueryable<T> Linq<T>(this IMongoCollection<T> collection) where T : class
         {
-            return new MongoQuery<T>(new MongoQueryProvider(collection));
+            return new MongoQuery<T>(new MongoQueryProvider(collection.Database, collection.Name));
         }
     }
 }
