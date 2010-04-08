@@ -115,5 +115,33 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.Order.Count);
             Assert.AreEqual(new Document("Age", new Document().Merge(Op.GreaterThan(21)).Merge(Op.LessThan(42))), queryObject.Query);
         }
+
+        [Test]
+        public void ConstraintsAgainstLocalVariable()
+        {
+            int age = 21;
+            var people = collection.Linq().Where(p => p.Age > age);
+
+            var queryObject = ((IMongoQuery)people).GetQueryObject();
+            Assert.IsNull(queryObject.Projection);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(0, queryObject.Order.Count);
+            Assert.AreEqual(new Document("Age", Op.GreaterThan(age)), queryObject.Query);
+        }
+
+        [Test]
+        public void ConstraintsAgainstLocalReferenceMember()
+        {
+            var local = new { Test = new { Age = 21 } };
+            var people = collection.Linq().Where(p => p.Age > local.Test.Age);
+
+            var queryObject = ((IMongoQuery)people).GetQueryObject();
+            Assert.IsNull(queryObject.Projection);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(0, queryObject.Order.Count);
+            Assert.AreEqual(new Document("Age", Op.GreaterThan(local.Test.Age)), queryObject.Query);
+        }
     }
 }
