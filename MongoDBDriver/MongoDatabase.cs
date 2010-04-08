@@ -248,7 +248,6 @@ namespace MongoDB.Driver
         /// <returns></returns>
         public Document SendCommand(Type rootType, Document command)
         {
-            AuthenticateIfRequired();
             return _connection.SendCommand(_serializationFactory, Name, rootType, command);
         }
 
@@ -271,8 +270,6 @@ namespace MongoDB.Driver
         /// <returns></returns>
         public T SendCommand<T>(object command) 
             where T : CommandResultBase{
-            AuthenticateIfRequired();
-
             return _connection.SendCommand<T>(_serializationFactory, Name, typeof(T), command);
         }
 
@@ -286,57 +283,7 @@ namespace MongoDB.Driver
         public T SendCommand<T>(Type rootType, object command)
             where T : CommandResultBase
         {
-            AuthenticateIfRequired();
-
             return _connection.SendCommand<T>(_serializationFactory, Name, rootType, command);
-        }
-
-        /// <summary>
-        ///   Authenticates the on first request.
-        /// </summary>
-        private void AuthenticateIfRequired(){
-            if(_connection.IsAuthenticated)
-                return;
-
-            var builder = new MongoConnectionStringBuilder(_connection.ConnectionString);
-
-            if(string.IsNullOrEmpty(builder.Username))
-                return;
-
-            var document = new Document().Add("getnonce", 1.0);
-            var nonceResult = _connection.SendCommand(_serializationFactory, Name, typeof(Document), document);
-            var nonce = (String)nonceResult["nonce"];
-
-            if(nonce == null)
-                throw new MongoException("Error retrieving nonce", null);
-
-            var pwd = Hash(builder.Username + ":mongo:" + builder.Password);
-            var auth = new Document{
-                {"authenticate", 1.0},
-                {"user", builder.Username},
-                {"nonce", nonce},
-                {"key", Hash(nonce + builder.Username + pwd)}
-            };
-            try{
-                _connection.SendCommand(_serializationFactory, Name, typeof(Document), auth);
-            }
-            catch(MongoCommandException exception){
-                //Todo: use custom exception?
-                throw new MongoException("Authentication faild for " + builder.Username, exception);
-            }
-
-            _connection.MaskAuthenticated();
-        }
-
-        /// <summary>
-        ///   Hashes the specified text.
-        /// </summary>
-        /// <param name = "text">The text.</param>
-        /// <returns></returns>
-        internal static string Hash(string text){
-            var md5 = MD5.Create();
-            var hash = md5.ComputeHash(Encoding.Default.GetBytes(text));
-            return BitConverter.ToString(hash).Replace("-", "").ToLower();
         }
     }
 }

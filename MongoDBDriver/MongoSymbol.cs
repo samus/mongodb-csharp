@@ -26,10 +26,8 @@ namespace MongoDB.Driver
         /// <param name="value">The value.</param>
         public MongoSymbol(string value)
             : this(){
-            if(string.IsNullOrEmpty(value))
-                throw new ArgumentNullException("value");
-
-            Value = String.Intern(value);
+                if(!string.IsNullOrEmpty(value))
+                    Value = String.Intern(value);
         }
 
         /// <summary>

@@ -248,6 +248,7 @@
     <Compile Include="Cursor_1.cs" />
     <Compile Include="ICursor_1.cs" />
     <Compile Include="IMongoCollection_1.cs" />
+    <Compile Include="Util\MongoHash.cs" />
     <Compile Include="Util\ReflectionExtensions.cs" />
     <Compile Include="MongoSymbol.cs" />
   </ItemGroup>

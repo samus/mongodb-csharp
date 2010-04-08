@@ -200,12 +200,14 @@ namespace MongoDB.Driver
         public T FindAndModify(object document, object spec, object sort, bool returnNew){
             try
             {
-                var response = _database.SendCommand<FindAndModifyResult<T>>(new Document{
-                    {"findandmodify", Name}, 
-                    {"query", spec},
-                    {"update", EnsureUpdateDocument(document)},
-                    {"sort", sort},
-                    {"new", returnNew}});
+                var command = new Document
+                {                    {"findandmodify", Name},                    {"query", spec},                    {"update", EnsureUpdateDocument(document)},                    {"sort", sort},                    {"new", returnNew}
+                };
+
+                var response = _connection.SendCommand<FindAndModifyResult<T>>(_serializationFactory,
+                    DatabaseName,
+                    typeof(T),
+                    command);
 
                 return response.Value;
             }
