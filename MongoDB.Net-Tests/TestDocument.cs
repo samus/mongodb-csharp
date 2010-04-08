@@ -231,7 +231,6 @@ namespace MongoDB.Driver
         
         [Test]
         [ExpectedException(ExceptionType = typeof(ArgumentException), 
-            ExpectedMessage="Key already exists in Document",
             MatchType=MessageMatch.Contains)]
         public void TestInsertWillThrowArgumentExceptionIfKeyAlreadyExists(){
             Document d = new Document();

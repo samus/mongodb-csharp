@@ -10,7 +10,7 @@ namespace MongoDB.Driver
     [Serializable]
     public class Document : IDictionary<string,object>
     {
-        private readonly List<string> _orderedKeys = new List<String>();
+        private readonly List<string> _orderedKeys;
         private readonly Dictionary<string,object > _dictionary;
         
         /// <summary>
@@ -18,12 +18,15 @@ namespace MongoDB.Driver
         /// </summary>
         public Document(){
             _dictionary = new Dictionary<string, object>();
+            _orderedKeys = new List<String>();
         }
         
         /// <summary>
         /// Initialize a new instance of the <see cref="Document"/> class with an optional key sorter.
         /// </summary>
-        public Document(IEqualityComparer<string> comparer) {
+        public Document(IEqualityComparer<string> comparer)
+            :this()
+        {
             _dictionary = new Dictionary<string, object>(comparer);
         }
         
@@ -33,7 +36,9 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
-        public Document(string key,object value){
+        public Document(string key,object value)
+            : this()
+        {
             Add(key, value);
         }
 
@@ -41,7 +46,9 @@ namespace MongoDB.Driver
         /// Initializes a new instance of the <see cref="Document"/> class.
         /// </summary>
         /// <param name="dictionary">The dictionary.</param>
-        public Document(IEnumerable<KeyValuePair<string, object>> dictionary){
+        public Document(IEnumerable<KeyValuePair<string, object>> dictionary)
+            :this()
+        {
             if(dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
