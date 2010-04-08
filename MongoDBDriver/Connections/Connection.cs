@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using MongoDB.Driver.Bson;
-using MongoDB.Driver.CommandResults;
 using MongoDB.Driver.Protocol;
+using MongoDB.Driver.Results;
 using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Connections
@@ -281,21 +281,25 @@ namespace MongoDB.Driver.Connections
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposed)
+            if(disposed)
+                return;
+            
+            if (disposing)
             {
-                if (disposing)
-                {
-                    // Cleanup Managed Resources Here
-                    Close();
-                }
-
-                // Cleanup Unmanaged Resources Here
-
-                // Then mark object as disposed
-                disposed = true;
+                // Cleanup Managed Resources Here
+                Close();
             }
+
+            // Cleanup Unmanaged Resources Here
+
+            // Then mark object as disposed
+            disposed = true;
         }
     }
 }

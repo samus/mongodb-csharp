@@ -10,7 +10,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         private readonly IDictionary<string, object> _extendedProperties;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClassMapDescriptor"/> class.
+        /// Initializes a new instance of the <see cref="ClassMapPropertyDescriptor"/> class.
         /// </summary>
         /// <param name="classMap">The class map.</param>
         /// <param name="instance">The instance.</param>

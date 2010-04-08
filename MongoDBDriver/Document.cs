@@ -245,17 +245,7 @@ namespace MongoDB.Driver
 
             return this;
         }
-        
-        
-        public Document Update(Document @from) {
-            //TODO: Decide if this is needed.
-            if(@from == null)
-                return this;
-            foreach(String key in @from.Keys) {
-                this[key] = @from[key];
-            }
-            return this;
-        }
+
         /// <summary>
         /// Determines whether [contains] [the specified key].
         /// </summary>

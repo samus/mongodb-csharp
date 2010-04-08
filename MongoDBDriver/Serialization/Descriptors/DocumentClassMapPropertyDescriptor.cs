@@ -9,7 +9,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         private readonly Document _document;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentClassMapDescriptor"/> class.
+        /// Initializes a new instance of the <see cref="DocumentClassMapPropertyDescriptor"/> class.
         /// </summary>
         /// <param name="classMap">The class map.</param>
         /// <param name="document">The document.</param>

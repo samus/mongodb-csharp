@@ -88,76 +88,48 @@ namespace MongoDB.Driver
         /// </summary>
         [Obsolete("Use the fluent interface on ICursor for specifying limit and skip Find.Skip(x).Limit(y)")]
         ICursor<T> Find(object spec, int limit, int skip, object fields);
-        
+
         /// <summary>
         /// Executes a query and atomically applies a modifier operation to the first document returning the original document
         /// by default.
         /// </summary>
-        /// <param name="doc">
-        /// <see cref="Document"/> to use when applying the update.
-        /// </param>
-        /// <param name="spec">
-        /// <see cref="Document"/> to find the document.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Document"/>
-        /// </returns>
-        T FindAndModify(object doc, object spec);
-        
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <returns>A <see cref="Document"/></returns>
+        T FindAndModify(object document, object spec);
+
         /// <summary>
         /// Executes a query and atomically applies a modifier operation to the first document returning the original document
         /// by default.
         /// </summary>
-        /// <param name="doc">
-        /// <see cref="Document"/> to use when applying the update.
-        /// </param>
-        /// <param name="spec">
-        /// <see cref="Document"/> to find the document.
-        /// </param>
-        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the 
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the</param>
+        /// <returns>A <see cref="Document"/></returns>
         /// <see cref="IndexOrder"/>
-        /// <returns>
-        /// A <see cref="Document"/>
-        /// </returns>
-        T FindAndModify(object doc, object spec, object sort);
-        
+        T FindAndModify(object document, object spec, object sort);
+
         /// <summary>
         /// Executes a query and atomically applies a modifier operation to the first document returning the original document
         /// by default.
         /// </summary>
-        /// <param name="doc">
-        /// <see cref="Document"/> to use when applying the update.
-        /// </param>
-        /// <param name="spec">
-        /// <see cref="Document"/> to find the document.
-        /// </param>
-        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the 
-        /// <see cref="IndexOrder"/>
-        /// </param>
-        /// <returns>
-        /// A <see cref="Document"/>
-        /// </returns>        
-        T FindAndModify(object doc, object spec, bool ReturnNew);
-        
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        T FindAndModify(object document, object spec, bool returnNew);
+
         /// <summary>
         /// Executes a query and atomically applies a modifier operation to the first document returning the original document
         /// by default.
         /// </summary>
-        /// <param name="doc">
-        /// <see cref="Document"/> to use when applying the update.
-        /// </param>
-        /// <param name="spec">
-        /// <see cref="Document"/> to find the document.
-        /// </param>
-        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the 
-        /// <see cref="IndexOrder"/>
-        /// </param>
-        /// <param name="ReturnNew">By default the original unmodified document is returned.  Pass in true to override this and
-        /// get the modified document back.
-        /// <returns>
-        /// A <see cref="Document"/>
-        /// </returns>        
-        T FindAndModify(object doc, object spec, object sort, bool ReturnNew);
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
+        /// <see cref="IndexOrder"/></param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        T FindAndModify(object document, object spec, object sort, bool returnNew);
         
         /// <summary>
         ///   Entrypoint into executing a map/reduce query against the collection.

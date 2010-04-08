@@ -15,7 +15,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         protected readonly IClassMap ClassMap;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClassMapDescriptorBase"/> class.
+        /// Initializes a new instance of the <see cref="ClassMapPropertyDescriptorBase"/> class.
         /// </summary>
         /// <param name="classMap">The class map.</param>
         protected ClassMapPropertyDescriptorBase(IClassMap classMap)

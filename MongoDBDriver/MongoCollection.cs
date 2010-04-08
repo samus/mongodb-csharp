@@ -120,28 +120,59 @@ namespace MongoDB.Driver
         public ICursor Find(Document spec, int limit, int skip, Document fields){
             return new Cursor(_collection.Find(spec, limit, skip, fields));
         }
-                
-        public Document FindAndModify (Document doc, Document spec)
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <returns>A <see cref="Document"/></returns>
+        public Document FindAndModify (Document document, Document spec)
         {
-            throw new System.NotImplementedException();
+            return _collection.FindAndModify(document, spec);
         }
-        
-        
-        public Document FindAndModify (Document doc, Document spec, Document sort)
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the</param>
+        /// <returns>A <see cref="Document"/></returns>
+        /// <see cref="IndexOrder"/>
+        public Document FindAndModify (Document document, Document spec, Document sort)
         {
-            throw new System.NotImplementedException();
+            return _collection.FindAndModify(document, spec, sort);
         }
-        
-        
-        public Document FindAndModify (Document doc, Document spec, bool ReturnNew)
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        public Document FindAndModify (Document document, Document spec, bool returnNew)
         {
-            throw new System.NotImplementedException();
+            return _collection.FindAndModify(document, spec, returnNew);
         }
-        
-        
-        public Document FindAndModify (Document doc, Document spec, Document sort, bool ReturnNew)
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
+        /// <see cref="IndexOrder"/></param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        public Document FindAndModify (Document document, Document spec, Document sort, bool returnNew)
         {
-            throw new System.NotImplementedException();
+            return _collection.FindAndModify(document, spec, sort, returnNew);
         }
         
         /// <summary>
