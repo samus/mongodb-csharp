@@ -214,18 +214,18 @@ namespace MongoDB.Driver.Bson
         /// </summary>
         /// <param name="obj">The obj.</param>
         private void WriteElements(object obj){
-            var propertys = _descriptor.GetPropertyNames(obj);
+            var propertys = _descriptor.GetPropertys(obj);
             var size = CalculateSizeObject(obj,propertys);
             if(size >= BsonInfo.MaxDocumentSize) 
                 throw new ArgumentException("Maximum document size exceeded.");
             _writer.Write(size);
-            foreach(var name in propertys){
-                var value = _descriptor.BeginProperty(obj, name);
-                var bsonType = TranslateToBsonType(value);
+            foreach(var property in propertys){
+                _descriptor.BeginProperty(obj, property);
+                var bsonType = TranslateToBsonType(property.Value);
                 _writer.Write((byte)bsonType);
-                Write(name, false);
-                WriteValue(bsonType, value);
-                _descriptor.EndProperty(obj,name,value);
+                Write(property.Name, false);
+                WriteValue(bsonType, property.Value);
+                _descriptor.EndProperty(obj, property);
             }
             _writer.Write((byte)0);
         }
@@ -403,7 +403,7 @@ namespace MongoDB.Driver.Bson
         /// <returns></returns>
         public int CalculateSizeObject(object obj){
             obj = _descriptor.BeginObject(obj);
-            var propertys = _descriptor.GetPropertyNames(obj);
+            var propertys = _descriptor.GetPropertys(obj);
 
             var size = CalculateSizeObject(obj, propertys);
 
@@ -418,16 +418,16 @@ namespace MongoDB.Driver.Bson
         /// <param name="obj">The obj.</param>
         /// <param name="propertys">The propertys.</param>
         /// <returns></returns>
-        private int CalculateSizeObject(object obj, IEnumerable<string> propertys)
+        private int CalculateSizeObject(object obj, IEnumerable<BsonProperty> propertys)
         {
             var size = 4;
-            foreach(var name in propertys)
+            foreach(var property in propertys)
             {
                 var elsize = 1; //type
-                var value = _descriptor.BeginProperty(obj, name);
-                elsize += CalculateSize(name, false);
-                elsize += CalculateSize(value);
-                _descriptor.EndProperty(obj, name, value);
+                _descriptor.BeginProperty(obj, property);
+                elsize += CalculateSize(property.Name, false);
+                elsize += CalculateSize(property.Value);
+                _descriptor.EndProperty(obj, property);
                 size += elsize;
             }
             size += 1; //terminator
@@ -441,7 +441,7 @@ namespace MongoDB.Driver.Bson
         /// <returns></returns>
         public int CalculateSize(IEnumerable enumerable){
             var obj = _descriptor.BeginArray(enumerable);
-            var propertys = _descriptor.GetPropertyNames(obj);
+            var propertys = _descriptor.GetPropertys(obj);
 
             var size = CalculateSizeObject(obj, propertys);
 

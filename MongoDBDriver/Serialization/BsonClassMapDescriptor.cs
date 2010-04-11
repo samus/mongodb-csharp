@@ -45,19 +45,19 @@ namespace MongoDB.Driver.Serialization
             return new ArrayDescriptor((IEnumerable)instance, _types.Peek());
         }
 
-        public IEnumerable<string> GetPropertyNames(object instance)
-        {
-            return ((IPropertyDescriptor)instance).GetPropertyNames();
+        public IEnumerable<BsonProperty> GetPropertys(object instance){
+            foreach(var propertyName in ((IPropertyDescriptor)instance).GetPropertyNames())
+                yield return new BsonProperty(propertyName);
         }
 
-        public object BeginProperty(object instance, string name)
+        public void BeginProperty(object instance, BsonProperty property)
         {
-            var pair = ((IPropertyDescriptor)instance).GetPropertyTypeAndValue(name);
+            var pair = ((IPropertyDescriptor)instance).GetPropertyTypeAndValue(property.Name);
             _types.Push(pair.Key);
-            return pair.Value;
+            property.Value = pair.Value;
         }
 
-        public void EndProperty(object instance, string name, object value)
+        public void EndProperty(object instance, BsonProperty property)
         {
             _types.Pop();
         }

@@ -22,27 +22,25 @@ namespace MongoDB.Driver.Bson
         object BeginArray(object instance);
 
         /// <summary>
-        /// Gets the property names.
+        /// Gets the propertys.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        IEnumerable<string> GetPropertyNames(object instance);
+        IEnumerable<BsonProperty> GetPropertys(object instance);
 
         /// <summary>
         /// Begins the property.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        object BeginProperty(object instance, string name);
+        /// <param name="property">The property.</param>
+        void BeginProperty(object instance, BsonProperty property);
 
         /// <summary>
         /// Ends the property.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        void EndProperty(object instance, string name, object value);
+        /// <param name="property">The property.</param>
+        void EndProperty(object instance, BsonProperty property);
 
         /// <summary>
         /// Ends the array.

@@ -97,6 +97,7 @@
     <Compile Include="Bson\BsonInfo.cs" />
     <Compile Include="Bson\BsonDocumentBuilder.cs" />
     <Compile Include="Bson\BsonDocumentDescriptor.cs" />
+    <Compile Include="Bson\BsonProperty.cs" />
     <Compile Include="Bson\BsonReaderSettings.cs" />
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />

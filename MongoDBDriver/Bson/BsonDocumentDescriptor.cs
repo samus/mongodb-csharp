@@ -37,30 +37,29 @@ namespace MongoDB.Driver.Bson
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public IEnumerable<string> GetPropertyNames(object instance){
+        public IEnumerable<BsonProperty> GetPropertys(object instance){
             var document = (Document)instance;
             foreach(var key in document.Keys)
-                yield return key;
+                yield return new BsonProperty(key);
         }
 
         /// <summary>
         /// Begins the property.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        /// <param name="name">The name.</param>
+        /// <param name="property">The property.</param>
         /// <returns></returns>
-        public object BeginProperty(object instance, string name){
+        public void BeginProperty(object instance, BsonProperty property){
             var document = (Document)instance;
-            return document[name];
+            property.Value = document[property.Name];
         }
 
         /// <summary>
         /// Ends the property.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        public void EndProperty(object instance, string name, object value){
+        /// <param name="property">The property.</param>
+        public void EndProperty(object instance, BsonProperty property){
         }
 
         /// <summary>
