@@ -37,7 +37,7 @@ namespace MongoDB.Driver.Bson
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public IEnumerable<BsonProperty> GetPropertys(object instance){
+        public IEnumerable<BsonProperty> GetProperties(object instance){
             var document = (Document)instance;
             foreach(var key in document.Keys)
                 yield return new BsonProperty(key);

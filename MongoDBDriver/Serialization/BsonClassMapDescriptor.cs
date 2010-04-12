@@ -45,7 +45,7 @@ namespace MongoDB.Driver.Serialization
             return new ArrayDescriptor((IEnumerable)instance, _types.Peek());
         }
 
-        public IEnumerable<BsonProperty> GetPropertys(object instance)
+        public IEnumerable<BsonProperty> GetProperties(object instance)
         {
             foreach (var prop in ((IPropertyDescriptor)instance).GetProperties())
                 yield return new BsonProperty(prop.Key) { Value = prop.Value };
