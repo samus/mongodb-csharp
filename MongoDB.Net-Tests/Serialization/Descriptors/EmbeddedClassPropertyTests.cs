@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using MongoDB.Driver.Attributes;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
@@ -35,6 +36,26 @@ namespace MongoDB.Driver.Serialization.Descriptors
         {
             var bson = Serialize<SimpleObject>(new SimpleObject());
             Assert.AreEqual("DgAAAApBAApCAApDAAA=", bson);
+        }
+
+        public class SuperClass
+        {
+            [MongoName("a")]
+            public SuperClassA A { get; set; }
+        }
+
+        public class SuperClassA
+        {
+            [MongoName("b")]
+            public string B { get; set; }
+        }
+
+        [Test]
+        public void CanSerializeAnEmbeddedClassPropertyUsingDotSyntaxWhenAliasesExist()
+        {
+            var expected = Serialize(new Document("a.b", "b"));
+            var bson = Serialize<SuperClass>(new Document("A.B", "b"));
+            Assert.AreEqual(expected, bson);
         }
     }
 }

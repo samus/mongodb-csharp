@@ -214,12 +214,12 @@ namespace MongoDB.Driver.Bson
         /// </summary>
         /// <param name="obj">The obj.</param>
         private void WriteElements(object obj){
-            var propertys = _descriptor.GetPropertys(obj);
-            var size = CalculateSizeObject(obj,propertys);
+            var properties = _descriptor.GetProperties(obj);
+            var size = CalculateSizeObject(obj,properties);
             if(size >= BsonInfo.MaxDocumentSize) 
                 throw new ArgumentException("Maximum document size exceeded.");
             _writer.Write(size);
-            foreach(var property in propertys){
+            foreach(var property in properties){
                 _descriptor.BeginProperty(obj, property);
                 var bsonType = TranslateToBsonType(property.Value);
                 _writer.Write((byte)bsonType);
@@ -403,9 +403,9 @@ namespace MongoDB.Driver.Bson
         /// <returns></returns>
         public int CalculateSizeObject(object obj){
             obj = _descriptor.BeginObject(obj);
-            var propertys = _descriptor.GetPropertys(obj);
+            var properties = _descriptor.GetProperties(obj);
 
-            var size = CalculateSizeObject(obj, propertys);
+            var size = CalculateSizeObject(obj, properties);
 
             _descriptor.EndObject(obj);
 
@@ -441,9 +441,9 @@ namespace MongoDB.Driver.Bson
         /// <returns></returns>
         public int CalculateSize(IEnumerable enumerable){
             var obj = _descriptor.BeginArray(enumerable);
-            var propertys = _descriptor.GetPropertys(obj);
+            var properties = _descriptor.GetProperties(obj);
 
-            var size = CalculateSizeObject(obj, propertys);
+            var size = CalculateSizeObject(obj, properties);
 
             _descriptor.EndArray(obj);
 
