@@ -25,7 +25,7 @@ namespace MongoDB.Driver.Connections
                 throw new ArgumentNullException("endPoint");
 
             EndPoint = endPoint;
-            CreationTime = DateTime.Now;
+            CreationTime = DateTime.UtcNow;
             
             _client.NoDelay = true;
             _client.ReceiveTimeout = (int)connectionTimeout.TotalMilliseconds;
