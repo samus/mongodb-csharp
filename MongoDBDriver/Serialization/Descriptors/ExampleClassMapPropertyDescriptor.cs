@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using MongoDB.Driver.Configuration.Mapping.Model;
 using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
@@ -31,21 +32,21 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// Gets the property names.
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<KeyValuePair<string, KeyValuePair<Type, object>>> GetProperties()
+        public override IEnumerable<BsonProperty> GetProperties()
         {
             if (ShouldPersistDiscriminator())
                 yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
 
             foreach (PropertyInfo propertyInfo in _exampleType.GetProperties())
-                yield return CreateProperty(GetAliasFromMemberName(propertyInfo.Name), GetPropertyTypeAndValue(propertyInfo));
+                yield return CreateProperty(GetAliasFromMemberName(propertyInfo.Name), GetValue(propertyInfo));
         }
 
         /// <summary>
-        /// Gets the property type and value.
+        /// Gets the value.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="propertyInfo">The property info.</param>
         /// <returns></returns>
-        private KeyValuePair<Type, object> GetPropertyTypeAndValue(PropertyInfo propertyInfo)
+        private BsonPropertyValue GetValue(PropertyInfo propertyInfo)
         {
             Type type;
 
@@ -60,7 +61,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
             else
                 type = propertyInfo.PropertyType;
 
-            return new KeyValuePair<Type, object>(type, value);
+            return new BsonPropertyValue(type, value);
         }
     }
 }

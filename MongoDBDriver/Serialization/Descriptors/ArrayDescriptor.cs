@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
@@ -29,28 +30,28 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// Gets the properties.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<KeyValuePair<string, KeyValuePair<Type, object>>> GetProperties()
+        public IEnumerable<BsonProperty> GetProperties()
         {
             int i = 0;
             foreach (var element in _enumerable)
             {
-                yield return new KeyValuePair<string, KeyValuePair<Type, object>>(i.ToString(), GetPropertyTypeAndValue(element));
+                yield return new BsonProperty(i.ToString()) { Value = GetValue(element) };
                 i++;
             }
         }
 
         /// <summary>
-        /// Gets the property value.
+        /// Gets the value.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         /// <returns></returns>
-        private KeyValuePair<Type, object> GetPropertyTypeAndValue(object value)
+        private BsonPropertyValue GetValue(object value)
         {
             var type = _elementType;
             if(type == null)
                 type = value == null ? null : value.GetType();
 
-            return new KeyValuePair<Type, object>(type, value);
+            return new BsonPropertyValue(type, value);
         }
 
         

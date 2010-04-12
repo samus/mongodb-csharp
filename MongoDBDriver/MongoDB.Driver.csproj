@@ -113,6 +113,7 @@
     <Compile Include="Serialization\Builders\PolymorphicClassMapBuilder.cs" />
     <Compile Include="Serialization\ClassMapObjectDescriptorAdapter.cs" />
     <Compile Include="Serialization\Descriptors\ArrayDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\BsonPropertyValue.cs" />
     <Compile Include="Serialization\Descriptors\ClassMapPropertyDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\ClassMapPropertyDescriptorBase.cs" />
     <Compile Include="Serialization\Descriptors\DocumentClassMapPropertyDescriptor.cs" />

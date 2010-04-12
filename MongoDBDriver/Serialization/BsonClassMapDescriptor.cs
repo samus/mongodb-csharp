@@ -47,15 +47,17 @@ namespace MongoDB.Driver.Serialization
 
         public IEnumerable<BsonProperty> GetProperties(object instance)
         {
-            foreach (var prop in ((IPropertyDescriptor)instance).GetProperties())
-                yield return new BsonProperty(prop.Key) { Value = prop.Value };
+            return ((IPropertyDescriptor)instance).GetProperties();
         }
 
         public void BeginProperty(object instance, BsonProperty property)
         {
-            var pair = (KeyValuePair<Type, object>)property.Value;
-            _types.Push(pair.Key);
-            property.Value = pair.Value;
+            var value = property.Value as BsonPropertyValue;
+            if (value == null)
+                return;
+            
+            _types.Push(value.Type);
+            property.Value = value.Value;
         }
 
         public void EndProperty(object instance, BsonProperty property)

@@ -10,7 +10,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
     /// <summary>
     /// 
     /// </summary>
-    public abstract class ClassMapPropertyDescriptorBase : IPropertyDescriptor
+    internal abstract class ClassMapPropertyDescriptorBase : IPropertyDescriptor
     {
         private readonly IMappingStore _mappingStore;
         /// <summary>
@@ -38,7 +38,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// Gets the properties.
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerable<KeyValuePair<string, KeyValuePair<Type, object>>> GetProperties();
+        public abstract IEnumerable<BsonProperty> GetProperties();
 
         /// <summary>
         /// Creates the property.
@@ -47,9 +47,9 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <param name="valueType">Type of the value.</param>
         /// <param name="value">The value.</param>
         /// <returns></returns>
-        protected KeyValuePair<string, KeyValuePair<Type, object>> CreateProperty(string alias, Type valueType, object value)
+        protected BsonProperty CreateProperty(string alias, Type valueType, object value)
         {
-            return new KeyValuePair<string, KeyValuePair<Type, object>>(alias, new KeyValuePair<Type, object>(valueType, value));
+            return CreateProperty(alias, new BsonPropertyValue(valueType, value));
         }
 
         /// <summary>
@@ -58,9 +58,9 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <param name="alias">The alias.</param>
         /// <param name="pair">The pair.</param>
         /// <returns></returns>
-        protected KeyValuePair<string, KeyValuePair<Type, object>> CreateProperty(string alias, KeyValuePair<Type, object> pair)
+        protected BsonProperty CreateProperty(string alias, BsonPropertyValue value)
         {
-            return new KeyValuePair<string, KeyValuePair<Type, object>>(alias, pair);
+            return new BsonProperty(alias) { Value = value };
         }
 
         /// <summary>
