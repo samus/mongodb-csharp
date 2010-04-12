@@ -5,8 +5,6 @@ namespace MongoDB.Driver.Serialization.Descriptors
 {
     internal interface IPropertyDescriptor
     {
-        IEnumerable<string> GetPropertyNames();
-
-        KeyValuePair<Type, object> GetPropertyTypeAndValue(string name);
+        IEnumerable<KeyValuePair<string, KeyValuePair<Type, object>>> GetProperties();
     }
 }

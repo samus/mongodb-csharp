@@ -32,12 +32,12 @@ namespace MongoDB.Driver.Serialization
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
             var instanceType = instance.GetType();
             if (!currentClassMap.ClassType.IsAssignableFrom(instanceType))
-                return new ExampleClassMapPropertyDescriptor(currentClassMap, instance);
+                return new ExampleClassMapPropertyDescriptor(_mappingStore, currentClassMap, instance);
 
             if (currentClassMap.ClassType != instanceType) //we are a subclass
                 currentClassMap = _mappingStore.GetClassMap(instanceType);
 
-            return new ClassMapPropertyDescriptor(currentClassMap, instance);
+            return new ClassMapPropertyDescriptor(_mappingStore, currentClassMap, instance);
         }
 
         public object BeginArray(object instance)
@@ -45,14 +45,15 @@ namespace MongoDB.Driver.Serialization
             return new ArrayDescriptor((IEnumerable)instance, _types.Peek());
         }
 
-        public IEnumerable<BsonProperty> GetPropertys(object instance){
-            foreach(var propertyName in ((IPropertyDescriptor)instance).GetPropertyNames())
-                yield return new BsonProperty(propertyName);
+        public IEnumerable<BsonProperty> GetPropertys(object instance)
+        {
+            foreach (var prop in ((IPropertyDescriptor)instance).GetProperties())
+                yield return new BsonProperty(prop.Key) { Value = prop.Value };
         }
 
         public void BeginProperty(object instance, BsonProperty property)
         {
-            var pair = ((IPropertyDescriptor)instance).GetPropertyTypeAndValue(property.Name);
+            var pair = (KeyValuePair<Type, object>)property.Value;
             _types.Push(pair.Key);
             property.Value = pair.Value;
         }
@@ -88,7 +89,7 @@ namespace MongoDB.Driver.Serialization
 
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
 
-            return new DocumentClassMapPropertyDescriptor(currentClassMap, document);
+            return new DocumentClassMapPropertyDescriptor(_mappingStore, currentClassMap, document);
         }
 
         private static bool IsNativeToMongo(Type type)

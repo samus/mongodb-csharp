@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Driver.Configuration.Mapping.Model;
+using MongoDB.Driver.Configuration.Mapping;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
@@ -12,10 +13,11 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// <summary>
         /// Initializes a new instance of the <see cref="ClassMapPropertyDescriptor"/> class.
         /// </summary>
+        /// <param name="mappingStore">The mapping store.</param>
         /// <param name="classMap">The class map.</param>
         /// <param name="instance">The instance.</param>
-        public ClassMapPropertyDescriptor(IClassMap classMap, object instance)
-            : base(classMap)
+        public ClassMapPropertyDescriptor(IMappingStore mappingStore, IClassMap classMap, object instance)
+            : base(mappingStore, classMap)
         {
             if (instance == null)
                 throw new ArgumentNullException("instance");
@@ -29,21 +31,21 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// Gets the property names.
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<string> GetPropertyNames()
+        public override IEnumerable<KeyValuePair<string, KeyValuePair<Type, object>>> GetProperties()
         {
             if (ClassMap.HasId)
-                yield return ClassMap.IdMap.Alias;
+                yield return CreateProperty(ClassMap.IdMap.Alias, ClassMap.IdMap.MemberReturnType, ClassMap.GetId(_instance));
 
             if (ShouldPersistDiscriminator())
-                yield return ClassMap.DiscriminatorAlias;
+                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
 
             foreach (var memberMap in ClassMap.MemberMaps)
-                yield return memberMap.Alias;
+                yield return CreateProperty(memberMap.Alias, GetPropertyTypeAndValue(memberMap.MemberName));
 
             if (_extendedProperties != null)
             {
                 foreach (string propertyName in _extendedProperties.Keys)
-                    yield return propertyName;
+                    yield return CreateProperty(propertyName, GetPropertyTypeAndValue(propertyName));
             }
         }
 
@@ -52,14 +54,14 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public override KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
+        private KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
         {
             if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
                 return new KeyValuePair<Type, object>(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
             
             object value;
 
-            var memberMap = ClassMap.GetMemberMapFromAlias(name);
+            var memberMap = GetMemberMapFromMemberName(name);
             if(memberMap != null)
                 value = memberMap.GetValue(_instance);
             else if (_extendedProperties != null)
