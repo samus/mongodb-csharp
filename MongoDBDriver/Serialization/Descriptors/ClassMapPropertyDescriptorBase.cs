@@ -56,7 +56,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// Creates the property.
         /// </summary>
         /// <param name="alias">The alias.</param>
-        /// <param name="pair">The pair.</param>
+        /// <param name="value">The value.</param>
         /// <returns></returns>
         protected BsonProperty CreateProperty(string alias, BsonPropertyValue value)
         {
