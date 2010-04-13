@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 
 namespace MongoDB.Driver.Connections
@@ -10,6 +11,7 @@ namespace MongoDB.Driver.Connections
     public class RawConnection : IDisposable
     {
         private readonly TcpClient _client = new TcpClient();
+        private readonly List<string> _authenticatedDatabases = new List<string>();
         private bool _isDisposed;
 
         /// <summary>
@@ -23,7 +25,7 @@ namespace MongoDB.Driver.Connections
                 throw new ArgumentNullException("endPoint");
 
             EndPoint = endPoint;
-            CreationTime = DateTime.Now;
+            CreationTime = DateTime.UtcNow;
             
             _client.NoDelay = true;
             _client.ReceiveTimeout = (int)connectionTimeout.TotalMilliseconds;
@@ -84,19 +86,27 @@ namespace MongoDB.Driver.Connections
         public MongoServerEndPoint EndPoint { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is authenticated.
+        /// Determines whether the specified database name is authenticated.
         /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this instance is authenticated; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAuthenticated { get; private set; }
+        /// <param name="databaseName">Name of the database.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified database name is authenticated; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsAuthenticated(string databaseName){
+            if(databaseName == null)
+                throw new ArgumentNullException("databaseName");
+
+            return _authenticatedDatabases.Contains(databaseName);
+        }
 
         /// <summary>
         /// Marks as authenticated.
         /// </summary>
-        public void MarkAuthenticated()
-        {
-            IsAuthenticated = true;
+        public void MarkAuthenticated(string databaseName){
+            if(databaseName == null)
+                throw new ArgumentNullException("databaseName");
+
+            _authenticatedDatabases.Add(databaseName);
         }
 
         /// <summary>

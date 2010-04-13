@@ -8,15 +8,6 @@ namespace MongoDB.Driver
     public class Cursor : ICursor
     {
         private readonly ICursor<Document> _cursor;
-
-        /// <summary>
-        /// Gets the id.
-        /// </summary>
-        /// <value>The id.</value>
-        public long Id {
-            get { return _cursor.Id; }
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Cursor"/> class.
         /// </summary>
@@ -24,6 +15,15 @@ namespace MongoDB.Driver
         internal Cursor(ICursor<Document> cursor)
         {
             _cursor = cursor;
+        }
+
+        /// <summary>
+        /// Gets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        public long Id
+        {
+            get { return _cursor.Id; }
         }
 
         /// <summary>

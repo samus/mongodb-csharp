@@ -45,21 +45,37 @@ namespace MongoDB.Driver
         public void TestOidEquality(){
             Oid val = new Oid("4a7067c30a57000000008ecb");
             Oid other = new Oid("4a7067c30a57000000008ecb");
-
+            
             Assert.IsTrue(val.Equals(other), "Equals(Oid) did not work");
             Assert.IsTrue(val == other, "== operator did not work");
+            Assert.IsTrue(val == val, "Objects should be equal to itself.");
+            
         }
-        
+                        
         [Test]
         public void TestOidInEquality(){
             Oid val = new Oid("4a7067c30a57000000008ecb");
             Oid other = new Oid("5a7067c30a57000000008ecb");
+            Oid nilo = null;
             
             Assert.IsFalse(val == null);
+            Assert.IsFalse(nilo == val);
+            Assert.IsFalse(val == nilo);
             Assert.IsFalse(val == other);
             Assert.IsFalse(val.Equals(other));
             Assert.IsTrue(val != null);
             Assert.IsTrue(val != other);
+            
+        }
+        
+        [Test]
+        public void TestOidEqualityToNull(){
+            Oid val = Oid.NewOid();
+            Oid other = null;
+            Oid other2 = null;
+            Assert.AreNotEqual(val, other);
+            Assert.AreNotEqual(other, val);
+            Assert.IsTrue(other == other2);
         }
 
         [Test]
@@ -157,5 +173,6 @@ namespace MongoDB.Driver
             
             Assert.AreEqual(firstOid.ToString(), secondOid.ToString());
         }
+
     }
 }

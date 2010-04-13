@@ -10,22 +10,35 @@ namespace MongoDB.Driver
     [Serializable]
     public class Document : IDictionary<string,object>
     {
-        private readonly List<string> _orderedKeys = new List<String>();
-        private readonly Dictionary<string,object > _dictionary = new Dictionary<string, object>();
-
+        private readonly List<string> _orderedKeys;
+        private readonly Dictionary<string,object > _dictionary;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="Document"/> class.
         /// </summary>
         public Document(){
+            _dictionary = new Dictionary<string, object>();
+            _orderedKeys = new List<String>();
         }
-
+        
+        /// <summary>
+        /// Initialize a new instance of the <see cref="Document"/> class with an optional key sorter.
+        /// </summary>
+        public Document(IEqualityComparer<string> comparer)
+            :this()
+        {
+            _dictionary = new Dictionary<string, object>(comparer);
+        }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="Document"/> class and
         /// add's the given values to it.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
-        public Document(string key,object value){
+        public Document(string key,object value)
+            : this()
+        {
             Add(key, value);
         }
 
@@ -33,7 +46,9 @@ namespace MongoDB.Driver
         /// Initializes a new instance of the <see cref="Document"/> class.
         /// </summary>
         /// <param name="dictionary">The dictionary.</param>
-        public Document(IEnumerable<KeyValuePair<string, object>> dictionary){
+        public Document(IEnumerable<KeyValuePair<string, object>> dictionary)
+            :this()
+        {
             if(dictionary == null)
                 throw new ArgumentNullException("dictionary");
 
@@ -177,7 +192,7 @@ namespace MongoDB.Driver
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
         /// <returns></returns>
-        [Obsolete("Use Add instead. This method is about to remove in a future version.")]
+        [Obsolete("Use Add instead. This method is about to be removed in a future version.")]
         public Document Append(string key, object value){
             return Add(key, value);
         }
@@ -324,7 +339,23 @@ namespace MongoDB.Driver
         void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex){
             ((ICollection<KeyValuePair<string, object>>)_dictionary).CopyTo(array,arrayIndex);
         }
+        
+        /// <summary>
+        /// TODO Fix any accidental reordering issues.
+        /// </summary>
+        /// <param name="destinationDocument">The dest.</param>
+        public void CopyTo(Document destinationDocument){
+            if(destinationDocument == null)
+                throw new ArgumentNullException("destinationDocument");
+            
+            //Todo: Fix any accidental reordering issues.
 
+            foreach(var key in _orderedKeys){
+                if(destinationDocument.Contains(key))
+                    destinationDocument.Remove(key);
+                destinationDocument[key] = this[key];
+            }
+        }
         /// <summary>
         /// Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </summary>
@@ -341,7 +372,7 @@ namespace MongoDB.Driver
                 _orderedKeys.Remove(item.Key);
             return removed;
         }
-
+        
         /// <summary>
         /// Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </summary>
@@ -361,23 +392,6 @@ namespace MongoDB.Driver
         /// </returns>
         public bool IsReadOnly{
             get { return false; }
-        }
-
-        /// <summary>
-        /// TODO Fix any accidental reordering issues.
-        /// </summary>
-        /// <param name="destinationDocument">The dest.</param>
-        public void CopyTo(Document destinationDocument){
-            if(destinationDocument == null)
-                throw new ArgumentNullException("destinationDocument");
-            
-            //Todo: Fix any accidental reordering issues.
-
-            foreach(var key in _orderedKeys){
-                if(destinationDocument.Contains(key))
-                    destinationDocument.Remove(key);
-                destinationDocument[key] = this[key];
-            }
         }
 
         /// <summary>
@@ -428,16 +442,6 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator IEnumerable.GetEnumerator(){
-            return GetEnumerator();
-        }
-
-        /// <summary>
         /// Gets the value hash code.
         /// </summary>
         /// <param name="value">The value.</param>
@@ -463,7 +467,17 @@ namespace MongoDB.Driver
             }
             return hash;
         }
-
+        
+        /// <summary>
+        /// Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator(){
+            return GetEnumerator();
+        }
+        
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>

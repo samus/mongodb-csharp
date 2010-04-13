@@ -76,7 +76,7 @@ namespace MongoDB.Driver.Bson
                     Write((Oid)obj);
                     return;
                 case BsonDataType.Number:
-                    _writer.Write((double)obj);
+                    _writer.Write(Convert.ToDouble(obj));
                     return;
                 case BsonDataType.String:{
                     Write((String)obj);
@@ -97,6 +97,10 @@ namespace MongoDB.Driver.Bson
                 }
                 case BsonDataType.Code:{
                     Write((Code)obj);
+                    return;
+                }
+                case BsonDataType.Symbol:{
+                    this.WriteValue(BsonDataType.String, ((MongoSymbol)obj).Value);
                     return;
                 }
                 case BsonDataType.CodeWScope:{
@@ -210,18 +214,18 @@ namespace MongoDB.Driver.Bson
         /// </summary>
         /// <param name="obj">The obj.</param>
         private void WriteElements(object obj){
-            var propertys = _descriptor.GetPropertyNames(obj);
-            var size = CalculateSizeObject(obj,propertys);
+            var properties = _descriptor.GetProperties(obj);
+            var size = CalculateSizeObject(obj,properties);
             if(size >= BsonInfo.MaxDocumentSize) 
                 throw new ArgumentException("Maximum document size exceeded.");
             _writer.Write(size);
-            foreach(var name in propertys){
-                var value = _descriptor.BeginProperty(obj, name);
-                var bsonType = TranslateToBsonType(value);
+            foreach(var property in properties){
+                _descriptor.BeginProperty(obj, property);
+                var bsonType = TranslateToBsonType(property.Value);
                 _writer.Write((byte)bsonType);
-                Write(name, false);
-                WriteValue(bsonType, value);
-                _descriptor.EndProperty(obj,name,value);
+                Write(property.Name, false);
+                WriteValue(bsonType, property.Value);
+                _descriptor.EndProperty(obj, property);
             }
             _writer.Write((byte)0);
         }
@@ -319,6 +323,10 @@ namespace MongoDB.Driver.Bson
                         return CalculateSize((Guid)obj);
                     return CalculateSize((Binary)obj);
                 }
+                case BsonDataType.Symbol:{
+                    MongoSymbol s = (MongoSymbol)obj;
+                    return CalculateSize(s.Value,true);
+                }
             }
 
             throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.", obj.GetType().Name));
@@ -395,9 +403,9 @@ namespace MongoDB.Driver.Bson
         /// <returns></returns>
         public int CalculateSizeObject(object obj){
             obj = _descriptor.BeginObject(obj);
-            var propertys = _descriptor.GetPropertyNames(obj);
+            var properties = _descriptor.GetProperties(obj);
 
-            var size = CalculateSizeObject(obj, propertys);
+            var size = CalculateSizeObject(obj, properties);
 
             _descriptor.EndObject(obj);
 
@@ -410,16 +418,16 @@ namespace MongoDB.Driver.Bson
         /// <param name="obj">The obj.</param>
         /// <param name="propertys">The propertys.</param>
         /// <returns></returns>
-        private int CalculateSizeObject(object obj, IEnumerable<string> propertys)
+        private int CalculateSizeObject(object obj, IEnumerable<BsonProperty> propertys)
         {
             var size = 4;
-            foreach(var name in propertys)
+            foreach(var property in propertys)
             {
                 var elsize = 1; //type
-                var value = _descriptor.BeginProperty(obj, name);
-                elsize += CalculateSize(name, false);
-                elsize += CalculateSize(value);
-                _descriptor.EndProperty(obj, name, value);
+                _descriptor.BeginProperty(obj, property);
+                elsize += CalculateSize(property.Name, false);
+                elsize += CalculateSize(property.Value);
+                _descriptor.EndProperty(obj, property);
                 size += elsize;
             }
             size += 1; //terminator
@@ -433,9 +441,9 @@ namespace MongoDB.Driver.Bson
         /// <returns></returns>
         public int CalculateSize(IEnumerable enumerable){
             var obj = _descriptor.BeginArray(enumerable);
-            var propertys = _descriptor.GetPropertyNames(obj);
+            var properties = _descriptor.GetProperties(obj);
 
-            var size = CalculateSizeObject(obj, propertys);
+            var size = CalculateSizeObject(obj, properties);
 
             _descriptor.EndArray(obj);
 
@@ -479,6 +487,7 @@ namespace MongoDB.Driver.Bson
         /// <param name="obj">The obj.</param>
         /// <returns></returns>
         protected BsonDataType TranslateToBsonType(object obj){
+            //TODO:Convert to use a dictionary
             if(obj == null)
                 return BsonDataType.Null;
 
@@ -521,7 +530,8 @@ namespace MongoDB.Driver.Bson
                 return BsonDataType.MinKey;
             if(type == typeof(MongoMaxKey))
                 return BsonDataType.MaxKey;
-
+            if(type == typeof(MongoSymbol))
+                return BsonDataType.Symbol;
             if(_descriptor.IsArray(obj))
                 return BsonDataType.Array;
             if(_descriptor.IsObject(obj))

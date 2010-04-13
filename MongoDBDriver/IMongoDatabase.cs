@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MongoDB.Driver.CommandResults;
 
 namespace MongoDB.Driver
 {

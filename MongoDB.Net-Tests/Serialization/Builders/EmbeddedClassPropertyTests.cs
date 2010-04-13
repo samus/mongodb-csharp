@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace MongoDB.Driver.Serialization.Builders
 {
@@ -16,6 +11,7 @@ namespace MongoDB.Driver.Serialization.Builders
             public string B { get; set; }
             public SimpleObjectC C { get; set; }
         }
+
         public class SimpleObjectC
         {
             public string D { get; set; }

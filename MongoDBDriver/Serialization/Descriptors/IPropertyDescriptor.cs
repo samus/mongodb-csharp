@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
     internal interface IPropertyDescriptor
     {
-        IEnumerable<string> GetPropertyNames();
-
-        KeyValuePair<Type, object> GetPropertyTypeAndValue(string name);
+        IEnumerable<BsonProperty> GetProperties();
     }
 }

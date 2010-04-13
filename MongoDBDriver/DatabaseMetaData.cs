@@ -1,5 +1,6 @@
 using MongoDB.Driver.Connections;
 using MongoDB.Driver.Serialization;
+using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver
 {
@@ -90,7 +91,7 @@ namespace MongoDB.Driver
         public void AddUser(string username, string password)
         {
             var users = _database["system.users"];
-            var pwd = MongoDatabase.Hash(username + ":mongo:" + password);
+            var pwd = MongoHash.Generate(username + ":mongo:" + password);
             var user = new Document().Add("user", username).Add("pwd", pwd);
 
             if(FindUser(username) != null)

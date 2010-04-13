@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Driver.Configuration.Mapping.Model;
+using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
@@ -9,12 +11,13 @@ namespace MongoDB.Driver.Serialization.Descriptors
         private readonly Document _document;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DocumentClassMapDescriptor"/> class.
+        /// Initializes a new instance of the <see cref="DocumentClassMapPropertyDescriptor"/> class.
         /// </summary>
+        /// <param name="mappingStore">The mapping store.</param>
         /// <param name="classMap">The class map.</param>
         /// <param name="document">The document.</param>
-        public DocumentClassMapPropertyDescriptor(IClassMap classMap, Document document)
-            : base(classMap)
+        public DocumentClassMapPropertyDescriptor(IMappingStore mappingStore, IClassMap classMap, Document document)
+            : base(mappingStore, classMap)
         {
             if (document == null)
                 throw new ArgumentNullException("document");
@@ -26,40 +29,32 @@ namespace MongoDB.Driver.Serialization.Descriptors
         /// Gets the property names.
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<string> GetPropertyNames()
+        public override IEnumerable<BsonProperty> GetProperties()
         {
             if (ShouldPersistDiscriminator())
-                yield return ClassMap.DiscriminatorAlias;
+                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
 
-            PersistentMemberMap memberMap;
             foreach (string key in _document.Keys)
             {
-                memberMap = ClassMap.GetMemberMapFromMemberName(key) as PersistentMemberMap;
-                if (memberMap == null)
-                    yield return key; //if it isn't mapped, we'll persist it anyways...
-                else
-                    yield return memberMap.Alias;
+                var alias = GetAliasFromMemberName(key);
+                var valueAndType = GetValue(key);
+                yield return CreateProperty(alias, valueAndType);
             }
         }
 
         /// <summary>
-        /// Gets the property type and value.
+        /// Gets the value.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public override KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
+        private BsonPropertyValue GetValue(string name)
         {
             if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
-                return new KeyValuePair<Type, object>(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
+                return new BsonPropertyValue(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
 
-            object value = null;
+            var value = _document[name];
 
-            var memberMap = ClassMap.GetMemberMapFromAlias(name);
-            if (memberMap != null)
-                value = _document[memberMap.MemberName] ?? _document[name];
-            else 
-                value = _document[name];
-
+            var memberMap = GetMemberMapFromMemberName(name);
             var type = typeof(Document);
 
             if (memberMap != null)
@@ -73,7 +68,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
             else if (value != null)
                 type = value.GetType();
 
-            return new KeyValuePair<Type, object>(type, value);
+            return new BsonPropertyValue(type, value);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace MongoDB.Driver
 
         public override string TestCollections
         {
-            get { return "inserts,updates,counts,counts_spec,finds,charreads,saves"; }
+            get { return "inserts,updates,counts,counts_spec,finds,charreads,saves,find_and_modify"; }
         }
 
         public override void OnInit()
@@ -194,7 +194,58 @@ namespace MongoDB.Driver
             Assert.AreEqual(4, CountDocs(col.Find(explicitWhere)), "Explicit where didn't return 4 docs");
             Assert.AreEqual(4, CountDocs(col.Find(funcDoc)), "Function where didn't return 4 docs");
         }
+        
+        [Test]
+        public void TestFindAndModifyReturnsOldDocument() {
+            IMongoCollection collection = DB["find_and_modify"];
+            Document person = new Document().Append("First", "Sally").Append("Last", "Simmons");
+            collection.Insert(person);
+            
+            Document spec = new Document().Append("_id", person["_id"]);
+            Document loaded = collection.FindAndModify(new Document().Append("First", "Jane"), spec);
+            
+            Assert.AreEqual("Sally", loaded["First"]);
+        }
 
+        [Test]
+        public void TestFindAndModifyReturnsNewDocument() {
+            IMongoCollection collection = DB["find_and_modify"];
+            Document person = new Document().Append("First", "Susie").Append("Last", "O'Hara");
+            collection.Insert(person);
+            
+            Document spec = new Document().Append("_id", person["_id"]);
+            Document loaded = collection.FindAndModify(new Document().Append("First", "Darlene"), spec, true);
+            
+            Assert.AreEqual("Darlene", loaded["First"]);
+        }
+
+        [Test]
+        public void TestFindAndModifySortsResults() {
+            IMongoCollection collection = DB["find_and_modify"];
+            Document doc1 = new Document().Append("handled", false).Append("priority", 1).Append("value", "Test 1");
+            Document doc2 = new Document().Append("handled", false).Append("priority", 2).Append("value", "Test 2");
+            collection.Insert(doc1);
+            collection.Insert(doc2);
+            
+            Document update = new Document().Append("handled", true);
+            Document spec = new Document().Append("handled", false);
+            Document sort = new Document().Append("priority", -1);
+            Document loaded = collection.FindAndModify(update, spec, sort, true);
+            
+            Assert.AreEqual(true, loaded["handled"]);
+            Assert.AreEqual(doc2["priority"], loaded["priority"]);
+            Assert.AreEqual(doc2["value"], loaded["value"]);
+        }
+
+        [Test]
+        public void TestFindAndModifyReturnNullForNoRecordFound() {
+            IMongoCollection collection = DB["find_and_modify"];
+            Document spec = new Document().Append("FirstName", "Noone");
+            Document loaded = collection.FindAndModify(new Document().Append("First", "Darlene"), spec, true);
+            
+            Assert.IsNull(loaded, "Should return null for no document found");
+        }
+        
         [Test]
         public void TestInsertBulkLargerThan4MBOfDocuments()
         {
