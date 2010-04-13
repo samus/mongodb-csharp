@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using MongoDB.Driver.Bson;
 
 namespace MongoDB.Driver.Serialization.Descriptors
 {
     internal class ArrayDescriptor : IPropertyDescriptor
     {
-        private readonly Dictionary<string, object> _items = new Dictionary<string, object>();
         private readonly Type _elementType;
+        private readonly IEnumerable _enumerable;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArrayDescriptor"/> class.
@@ -22,33 +23,37 @@ namespace MongoDB.Driver.Serialization.Descriptors
                 throw new ArgumentNullException("elementType");
 
             _elementType = elementType;
-            var i = 0;
-            foreach (var item in enumerable)
-                _items.Add((i++).ToString(), item);
+            _enumerable = enumerable;
         }
 
         /// <summary>
-        /// Gets the property names.
+        /// Gets the properties.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetPropertyNames()
+        public IEnumerable<BsonProperty> GetProperties()
         {
-            return _items.Keys;
+            int i = 0;
+            foreach (var element in _enumerable)
+            {
+                yield return new BsonProperty(i.ToString()) { Value = GetValue(element) };
+                i++;
+            }
         }
 
         /// <summary>
-        /// Gets the property value.
+        /// Gets the value.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
         /// <returns></returns>
-        public KeyValuePair<Type, object> GetPropertyTypeAndValue(string name)
+        private BsonPropertyValue GetValue(object value)
         {
-            var value = _items[name];
             var type = _elementType;
             if(type == null)
                 type = value == null ? null : value.GetType();
 
-            return new KeyValuePair<Type, object>(type, value);
+            return new BsonPropertyValue(type, value);
         }
+
+        
     }
 }

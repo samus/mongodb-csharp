@@ -154,6 +154,8 @@ namespace MongoDB.Driver.Bson
                     return _reader.ReadDouble();
                 case BsonDataType.String:
                     return ReadLengthString();
+                case BsonDataType.Symbol:
+                    return new MongoSymbol(ReadLengthString());
                 case BsonDataType.Obj:
                     return ReadObject();
                 case BsonDataType.Array:

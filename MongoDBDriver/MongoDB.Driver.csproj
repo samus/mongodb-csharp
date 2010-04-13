@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -15,9 +15,16 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>MongoDB.Driver</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>MongoDB.Driver</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -30,13 +37,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <RootNamespace>MongoDB.Driver</RootNamespace>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,16 +51,28 @@
     <ConsolePause>false</ConsolePause>
     <DocumentationFile>bin\Debug\MongoDB.Driver.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <GenerateDocumentation>true</GenerateDocumentation>
     <DocumentationFile>bin\Release\MongoDB.Driver.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentation>true</GenerateDocumentation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
@@ -84,6 +98,7 @@
     <Compile Include="Bson\BsonInfo.cs" />
     <Compile Include="Bson\BsonDocumentBuilder.cs" />
     <Compile Include="Bson\BsonDocumentDescriptor.cs" />
+    <Compile Include="Bson\BsonProperty.cs" />
     <Compile Include="Bson\BsonReaderSettings.cs" />
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
@@ -101,6 +116,7 @@
     <Compile Include="Linq\PartialEvaluator.cs" />
     <Compile Include="Linq\TypeSystem.cs" />
     <Compile Include="Mo.cs" />
+    <Compile Include="Results\FindAndModifyResult.cs" />
     <Compile Include="Serialization\Builders\ArrayBuilder.cs" />
     <Compile Include="Serialization\Builders\ConcreteClassMapBuilder.cs" />
     <Compile Include="Serialization\Builders\DocumentBuilder.cs" />
@@ -109,6 +125,7 @@
     <Compile Include="Serialization\Builders\PolymorphicClassMapBuilder.cs" />
     <Compile Include="Serialization\ClassMapObjectDescriptorAdapter.cs" />
     <Compile Include="Serialization\Descriptors\ArrayDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\BsonPropertyValue.cs" />
     <Compile Include="Serialization\Descriptors\ClassMapPropertyDescriptor.cs" />
     <Compile Include="Serialization\Descriptors\ClassMapPropertyDescriptorBase.cs" />
     <Compile Include="Serialization\Descriptors\DocumentClassMapPropertyDescriptor.cs" />
@@ -120,7 +137,7 @@
     <Compile Include="Serialization\IObjectDescriptor.cs" />
     <Compile Include="Serialization\SerializationFactory.cs" />
     <Compile Include="Exceptions\UnmappedMemberException.cs" />
-    <Compile Include="CommandResults\CommandResultBase.cs" />
+    <Compile Include="Results\CommandResultBase.cs" />
     <Compile Include="Configuration\CollectionAdapters\ArrayListCollectionAdapter.cs" />
     <Compile Include="Configuration\CollectionAdapters\GenericListCollectionAdapter.cs" />
     <Compile Include="Configuration\CollectionAdapters\GenericSetCollectionAdapter.cs" />
@@ -196,6 +213,7 @@
     <Compile Include="Exceptions\MongoMapReduceException.cs" />
     <Compile Include="Exceptions\MongoOperationException.cs" />
     <Compile Include="ICursor.cs" />
+    <Compile Include="IMongo.cs" />
     <Compile Include="IMongoCollection.cs" />
     <Compile Include="IndexOrder.cs" />
     <Compile Include="Mongo.cs" />
@@ -245,23 +263,38 @@
     <Compile Include="Cursor_1.cs" />
     <Compile Include="ICursor_1.cs" />
     <Compile Include="IMongoCollection_1.cs" />
+    <Compile Include="Util\MongoHash.cs" />
     <Compile Include="Util\ReflectionExtensions.cs" />
+    <Compile Include="MongoSymbol.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
       <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
@@ -270,4 +303,5 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
 </Project>

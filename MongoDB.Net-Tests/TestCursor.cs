@@ -107,12 +107,14 @@ namespace MongoDB.Driver
                 Assert.AreEqual(exp, Convert.ToInt32(doc["x"]));
                 exp++;
             }
+            Assert.AreEqual(randoms.Length, exp);
             
             exp = 9;
             foreach(Document doc in sorts.FindAll().Sort("x", IndexOrder.Descending).Documents){
                 Assert.AreEqual(exp, Convert.ToInt32(doc["x"]));
                 exp--;
-            }            
+            }
+            Assert.AreEqual(-1, exp);
         }
         
         [Test]

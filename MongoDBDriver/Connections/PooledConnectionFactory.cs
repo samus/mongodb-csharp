@@ -112,14 +112,17 @@ namespace MongoDB.Driver.Connections
             if(connection == null)
                 throw new ArgumentNullException("connection");
 
-            if(Builder.ConnectionLifetime!=TimeSpan.Zero)
-                if(connection.CreationTime.Add(Builder.ConnectionLifetime) < DateTime.Now)
-                    return false;
-
             if(!connection.IsConnected)
                 return false;
 
-            return !connection.IsInvalid;
+            if(connection.IsInvalid)
+                return false;
+
+            if(Builder.ConnectionLifetime != TimeSpan.Zero)
+                if(connection.CreationTime.Add(Builder.ConnectionLifetime) < DateTime.Now)
+                    return false;
+
+            return true;
         }
 
         /// <summary>

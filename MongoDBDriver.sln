@@ -1,7 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
+<<<<<<< HEAD:MongoDBDriver.sln
 # SharpDevelop 3.1.1.5327
+=======
+>>>>>>> 619db08d8a7e44d93c07b5d168d3d39672a357e3:MongoDBDriver.sln
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver", "MongoDBDriver\MongoDB.Driver.csproj", "{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}"
 EndProject
 Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{502F3381-58AA-461B-B9D8-12578A588C61}"
@@ -70,8 +73,10 @@ Global
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{502F3381-58AA-461B-B9D8-12578A588C61}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1BAAE3D8-7720-4AA5-9335-E59824E7B667} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
+		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = MongoDBDriver\MongoDB.Driver.csproj
@@ -92,6 +97,7 @@ Global
 		$3.inheritsScope = text/plain
 		$3.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $4
+<<<<<<< HEAD:MongoDBDriver.sln
 		$4.IndentSwitchBody = True
 		$4.MethodBraceStyle = EndOfLineWithoutSpace
 		$4.BeforeMethodCallParentheses = False
@@ -99,6 +105,23 @@ Global
 		$4.BeforeConstructorDeclarationParentheses = False
 		$4.BeforeDelegateDeclarationParentheses = False
 		$4.NewParentheses = False
+=======
+		$4.MethodBraceStyle = EndOfLine
+		$4.ConstructorBraceStyle = EndOfLine
+		$4.DestructorBraceStyle = EndOfLine
+		$4.BeforeMethodCallParentheses = False
+		$4.BeforeMethodDeclarationParentheses = False
+		$4.BeforeConstructorDeclarationParentheses = False
+		$4.NewParentheses = False
+		$4.IfParentheses = False
+		$4.WhileParentheses = False
+		$4.ForParentheses = False
+		$4.ForeachParentheses = False
+		$4.CatchParentheses = False
+		$4.SwitchParentheses = False
+		$4.LockParentheses = False
+		$4.UsingParentheses = False
+>>>>>>> 619db08d8a7e44d93c07b5d168d3d39672a357e3:MongoDBDriver.sln
 		$4.inheritsSet = Mono
 		$4.inheritsScope = text/x-csharp
 		$4.scope = text/x-csharp
@@ -112,8 +135,11 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+<<<<<<< HEAD:MongoDBDriver.sln
 	GlobalSection(NestedProjects) = preSolution
 		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
 		{1BAAE3D8-7720-4AA5-9335-E59824E7B667} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
 	EndGlobalSection
+=======
+>>>>>>> 619db08d8a7e44d93c07b5d168d3d39672a357e3:MongoDBDriver.sln
 EndGlobal

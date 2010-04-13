@@ -1,6 +1,6 @@
 using MongoDB.Driver.Attributes;
 
-namespace MongoDB.Driver.CommandResults
+namespace MongoDB.Driver.Results
 {
     /// <summary>
     /// 

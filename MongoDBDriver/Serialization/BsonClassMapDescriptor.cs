@@ -32,12 +32,12 @@ namespace MongoDB.Driver.Serialization
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
             var instanceType = instance.GetType();
             if (!currentClassMap.ClassType.IsAssignableFrom(instanceType))
-                return new ExampleClassMapPropertyDescriptor(currentClassMap, instance);
+                return new ExampleClassMapPropertyDescriptor(_mappingStore, currentClassMap, instance);
 
             if (currentClassMap.ClassType != instanceType) //we are a subclass
                 currentClassMap = _mappingStore.GetClassMap(instanceType);
 
-            return new ClassMapPropertyDescriptor(currentClassMap, instance);
+            return new ClassMapPropertyDescriptor(_mappingStore, currentClassMap, instance);
         }
 
         public object BeginArray(object instance)
@@ -45,19 +45,22 @@ namespace MongoDB.Driver.Serialization
             return new ArrayDescriptor((IEnumerable)instance, _types.Peek());
         }
 
-        public IEnumerable<string> GetPropertyNames(object instance)
+        public IEnumerable<BsonProperty> GetProperties(object instance)
         {
-            return ((IPropertyDescriptor)instance).GetPropertyNames();
+            return ((IPropertyDescriptor)instance).GetProperties();
         }
 
-        public object BeginProperty(object instance, string name)
+        public void BeginProperty(object instance, BsonProperty property)
         {
-            var pair = ((IPropertyDescriptor)instance).GetPropertyTypeAndValue(name);
-            _types.Push(pair.Key);
-            return pair.Value;
+            var value = property.Value as BsonPropertyValue;
+            if (value == null)
+                return;
+            
+            _types.Push(value.Type);
+            property.Value = value.Value;
         }
 
-        public void EndProperty(object instance, string name, object value)
+        public void EndProperty(object instance, BsonProperty property)
         {
             _types.Pop();
         }
@@ -88,7 +91,7 @@ namespace MongoDB.Driver.Serialization
 
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
 
-            return new DocumentClassMapPropertyDescriptor(currentClassMap, document);
+            return new DocumentClassMapPropertyDescriptor(_mappingStore, currentClassMap, document);
         }
 
         private static bool IsNativeToMongo(Type type)

@@ -74,6 +74,11 @@ namespace MongoDB.Driver.Bson
         /// favor of data_code_w_scope
         /// </summary>
         Code = 13,
+        
+        /// <summary>
+        /// String
+        /// </summary>
+        Symbol = 14,
         /// <summary>
         /// int32 
         /// int32 cstring bson_object  The first int32 is the total # of

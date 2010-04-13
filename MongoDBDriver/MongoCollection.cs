@@ -122,6 +122,60 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <returns>A <see cref="Document"/></returns>
+        public Document FindAndModify (Document document, Document spec)
+        {
+            return _collection.FindAndModify(document, spec);
+        }
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the</param>
+        /// <returns>A <see cref="Document"/></returns>
+        /// <see cref="IndexOrder"/>
+        public Document FindAndModify (Document document, Document spec, Document sort)
+        {
+            return _collection.FindAndModify(document, spec, sort);
+        }
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        public Document FindAndModify (Document document, Document spec, bool returnNew)
+        {
+            return _collection.FindAndModify(document, spec, returnNew);
+        }
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
+        /// <see cref="IndexOrder"/></param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        public Document FindAndModify (Document document, Document spec, Document sort, bool returnNew)
+        {
+            return _collection.FindAndModify(document, spec, sort, returnNew);
+        }
+        
+        /// <summary>
         /// Maps the reduce.
         /// </summary>
         /// <returns></returns>
@@ -297,5 +351,6 @@ namespace MongoDB.Driver
         public void Save(Document document, bool safemode){
             _collection.Save(document,safemode);
         }
+
     }
 }

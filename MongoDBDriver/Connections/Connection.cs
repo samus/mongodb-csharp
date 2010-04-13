@@ -1,9 +1,10 @@
 using System;
 using System.IO;
 using MongoDB.Driver.Bson;
-using MongoDB.Driver.CommandResults;
 using MongoDB.Driver.Protocol;
+using MongoDB.Driver.Results;
 using MongoDB.Driver.Serialization;
+using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver.Connections
 {
@@ -19,6 +20,7 @@ namespace MongoDB.Driver.Connections
     {
         private readonly IConnectionFactory _factory;
         private RawConnection _connection;
+        private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Connection"/> class.
@@ -38,24 +40,7 @@ namespace MongoDB.Driver.Connections
         /// </summary>
         ~Connection (){
             // make sure the connection returns to pool if the user forget it.
-            Dispose ();
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is authenticated.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is authenticated; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsAuthenticated {
-            get { return _connection.IsAuthenticated; }
-        }
-
-        /// <summary>
-        /// Masks as authenticated.
-        /// </summary>
-        public void MaskAuthenticated (){
-            _connection.MarkAuthenticated ();
+            Dispose (false);
         }
 
         /// <summary>
@@ -195,6 +180,8 @@ namespace MongoDB.Driver.Connections
         /// <returns></returns>
         public Document SendCommand(ISerializationFactory factory, string database, Type rootType, Document command)
         {
+            AuthenticateIfRequired(database);
+
             var result = SendCommandCore<Document>(factory, database, rootType, command);
 
             if((double)result["ok"] != 1.0)
@@ -222,6 +209,8 @@ namespace MongoDB.Driver.Connections
         public T SendCommand<T>(ISerializationFactory factory, string database, Type rootType, object command) 
             where T : CommandResultBase
         {
+            AuthenticateIfRequired(database);
+
             var result = SendCommandCore<T>(factory, database, rootType, command);
 
             if(!result.Success)
@@ -273,10 +262,76 @@ namespace MongoDB.Driver.Connections
         }
 
         /// <summary>
+        /// Authenticates the on first request.
+        /// </summary>
+        /// <param name="databaseName">Name of the database.</param>
+        private void AuthenticateIfRequired(string databaseName)
+        {
+            if(databaseName == null)
+                throw new ArgumentNullException("databaseName");
+
+            if(_connection.IsAuthenticated(databaseName))
+                return;
+
+            var builder = new MongoConnectionStringBuilder(ConnectionString);
+
+            if(string.IsNullOrEmpty(builder.Username))
+                return;
+
+            var document = new Document().Add("getnonce", 1.0);
+            var nonceResult = SendCommandCore<Document>(SerializationFactory.Default, databaseName, typeof(Document), document);
+            var nonce = (string)nonceResult["nonce"];
+
+            if(nonce == null)
+                throw new MongoException("Error retrieving nonce", null);
+
+            var pwd = MongoHash.Generate(builder.Username + ":mongo:" + builder.Password);
+            var auth = new Document{
+                {"authenticate", 1.0},
+                {"user", builder.Username},
+                {"nonce", nonce},
+                {"key", MongoHash.Generate(nonce + builder.Username + pwd)}
+            };
+            try
+            {
+                SendCommandCore<Document>(SerializationFactory.Default, databaseName, typeof(Document), auth);
+            }
+            catch(MongoCommandException exception)
+            {
+                //Todo: use custom exception?
+                throw new MongoException("Authentication faild for " + builder.Username, exception);
+            }
+
+            _connection.MarkAuthenticated(databaseName);
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose (){
-            Close ();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(_disposed)
+                return;
+            
+            if (disposing)
+            {
+                // Cleanup Managed Resources Here
+                Close();
+            }
+
+            // Cleanup Unmanaged Resources Here
+
+            // Then mark object as disposed
+            _disposed = true;
         }
     }
 }
