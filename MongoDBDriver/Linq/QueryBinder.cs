@@ -135,15 +135,7 @@ namespace MongoDB.Driver.Linq
 
         private static bool CanBeField(Expression expression)
         {
-            var m = expression as MemberExpression;
-            if (m == null)
-                return false;
-
-            var p = m;
-            while (p.Expression != null && p.NodeType == ExpressionType.MemberAccess)
-                p = (MemberExpression)p.Expression;
-
-            return p.Expression != null && p.NodeType == ExpressionType.Parameter;
+            return expression.NodeType == (ExpressionType)MongoExpressionType.Field;
         }
 
         private static bool IsCollection(object value)

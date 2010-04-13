@@ -56,22 +56,44 @@ namespace MongoDB.Driver.Linq
             return new FieldProjection(_fields.AsReadOnly(), Visit(expression));
         }
 
-        protected override Expression Visit(Expression exp)
+        //protected override Expression Visit(Expression exp)
+        //{
+        //    if (_candidates.Contains(exp))
+        //    {
+        //        if (exp.NodeType == (ExpressionType)MongoExpressionType.Field)
+        //        {
+        //            throw new NotSupportedException();
+        //        }
+        //        else
+        //        {
+        //            var field = (MemberExpression)exp;
+        //            _fields.Add(new FieldDeclaration(field.Member.Name, field));
+        //            return new FieldExpression(field.Type, field.Member.Name);
+        //        }
+        //    }
+        //    return base.Visit(exp);
+        //}
+
+        protected override Expression VisitMemberAccess(MemberExpression m)
         {
-            if (_candidates.Contains(exp))
+            var members = new Stack<MemberInfo>();
+            var p = m;
+            while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
             {
-                if (exp.NodeType == ExpressionType.MemberAccess)
-                {
-                    var field = (MemberExpression)exp;
-                    _fields.Add(new FieldDeclaration(field.Member.Name, field));
-                    return new FieldExpression(field.Type, field.Member.Name);
-                }
-                else
-                {
-                    throw new NotSupportedException();
-                }
+                members.Push(p.Member);
+                p = (MemberExpression)p.Expression;
             }
-            return base.Visit(exp);
+
+            if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
+            {
+                members.Push(p.Member);
+                string fieldName = string.Join(".", members.Select(member => member.Name).ToArray());
+                _fields.Add(new FieldDeclaration(fieldName, m));
+
+                return new FieldExpression(m);
+            }
+
+            throw new NotSupportedException(string.Format("The member '{0}' is not supported", m.Member.Name));
         }
 
         private class Nominator : MongoExpressionVisitor

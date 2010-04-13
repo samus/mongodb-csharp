@@ -88,6 +88,12 @@ namespace MongoDB.Driver.Linq
             if (s.Where != null)
                 Visit(s.Where);
 
+            foreach (var field in s.Fields)
+            {
+                Visit(field.Expression);
+                _queryObject.Fields[field.Name] = 1;
+            }
+
             return s;
         }
 
@@ -102,9 +108,7 @@ namespace MongoDB.Driver.Linq
                     _queryObject.DocumentType = collection.DocumentType;
                     break;
                 case MongoExpressionType.Select:
-                    var select = (SelectExpression)source;
-                    _queryObject.Fields.Merge(CreateFieldsDocument(select.Fields));
-                    Visit(select);
+                    Visit(source);
                     break;
                 default:
                     throw new InvalidOperationException("Select source is not valid type");
@@ -126,14 +130,6 @@ namespace MongoDB.Driver.Linq
             }
 
             return u;
-        }
-
-        private static Document CreateFieldsDocument(IEnumerable<FieldDeclaration> fields)
-        {
-            var doc = new Document();
-            foreach (var field in fields)
-                doc.Add(field.Name, 1);
-            return doc;
         }
 
         private static object EvaluateConstant(ConstantExpression c)

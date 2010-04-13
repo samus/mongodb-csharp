@@ -61,30 +61,30 @@ namespace MongoDB.Driver.Linq
         public object Execute(Expression expression)
         {
             var queryObject = GetQueryObject(expression);
+            return ExecuteQueryObject(queryObject);
+        }
 
-            throw new NotImplementedException();
-            //var cursor = _collection.GetType().GetMethod("FindAll")
-            //                .Invoke(_collection, null);
-            //var cursorType = cursor.GetType();
-            //cursorType.GetMethod("Spec", new [] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Query });
-            //if(queryObject.Projection != null)
-            //    cursorType.GetMethod("Fields", new [] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Projection.CreateDocument() });
-            //cursorType.GetMethod("Limit").Invoke(cursor, new object[] { queryObject.NumberToLimit });
-            //cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
+        internal object ExecuteQueryObject(MongoQueryObject queryObject)
+        {
+            var miGetCollection = typeof(IMongoDatabase).GetMethods().Where(m => m.Name == "GetCollection" && m.GetGenericArguments().Length == 1).Single().MakeGenericMethod(queryObject.DocumentType);
 
-            //Type elementType = TypeSystem.GetElementType(expression.Type);
-            //if (queryObject.Projection != null)
-            //{
-            //    var projector = queryObject.Projection.Projector.Compile();
-            //    return Activator.CreateInstance(
-            //        typeof(ProjectionReader<,>).MakeGenericType(cursorType.GetGenericArguments()[0], elementType),
-            //        BindingFlags.Instance | BindingFlags.Public,
-            //        null,
-            //        new object[] { cursor, projector },
-            //        null);
-            //}
+            var collection = miGetCollection.Invoke(queryObject.Database, new [] { queryObject.CollectionName });
 
-            //return cursor.GetType().GetProperty("Documents").GetValue(cursor, null);
+            var cursor = collection.GetType().GetMethod("FindAll")
+                            .Invoke(collection, null);
+            var cursorType = cursor.GetType();
+            cursorType.GetMethod("Spec", new[] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Query });
+            cursorType.GetMethod("Fields", new[] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Fields });
+            cursorType.GetMethod("Limit").Invoke(cursor, new object[] { queryObject.NumberToLimit });
+            cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
+
+            var projector = queryObject.Projector.Compile();
+            return Activator.CreateInstance(
+                typeof(ProjectionReader<,>).MakeGenericType(queryObject.DocumentType, projector.Method.ReturnType),
+                BindingFlags.Instance | BindingFlags.Public,
+                null,
+                new object[] { cursor, projector },
+                null);
         }
 
         internal MongoQueryObject GetQueryObject(Expression expression)
@@ -92,7 +92,7 @@ namespace MongoDB.Driver.Linq
             expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
             var projection = (ProjectionExpression)new QueryBinder().Bind(expression);
             var queryObject = new QueryFormatter().Format(projection.Source);
-            queryObject.Projector = Expression.Lambda(projection.Projector, Expression.Parameter(queryObject.DocumentType, "document"));
+            queryObject.Projector = new ProjectionBuilder().Build(queryObject.DocumentType, projection.Projector);
             return queryObject;
         }
 

@@ -36,6 +36,10 @@ namespace MongoDB.Driver.Linq
 
         protected virtual Expression VisitField(FieldExpression f)
         {
+            var inner = Visit(f.Expression);
+            if (inner != f.Expression)
+                return new FieldExpression(inner);
+
             return f;
         }
 
@@ -121,17 +125,17 @@ namespace MongoDB.Driver.Linq
 
     internal class FieldExpression : Expression
     {
-        private readonly string _name;
+        private readonly Expression _expression;
 
-        public string Name
+        public Expression Expression
         {
-            get { return _name; }
+            get { return _expression; }
         }
 
-        public FieldExpression(Type type, string name)
-            : base((ExpressionType)MongoExpressionType.Field, type)
+        public FieldExpression(Expression expression)
+            : base((ExpressionType)MongoExpressionType.Field, expression.Type)
         {
-            _name = name;
+            _expression = expression;
         }
     }
 
