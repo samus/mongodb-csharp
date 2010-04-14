@@ -22,11 +22,13 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         private IMongoCollection<Person> collection;
+        private IMongoCollection documentCollection;
 
         [SetUp]
         public void TestSetup()
         {
             collection = new Mongo().GetDatabase("tests").GetCollection<Person>("people");
+            documentCollection = new Mongo().GetDatabase("tests").GetCollection("people");
         }
 
         [Test]
@@ -134,6 +136,21 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(0, queryObject.Order.Count);
             Assert.AreEqual(new Document("Age", Op.GreaterThan(local.Test.Age)), queryObject.Query);
+        }
+
+        [Test]
+        public void DocumentQuery()
+        {
+            var people = from p in documentCollection.Linq()
+                        where p.Key("Age") > 21
+                        select (string)p["FirstName"];
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(new Document("FirstName", 1), queryObject.Fields);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(0, queryObject.Order.Count);
+            Assert.AreEqual(new Document("Age", Op.GreaterThan(21)), queryObject.Query);
         }
     }
 }

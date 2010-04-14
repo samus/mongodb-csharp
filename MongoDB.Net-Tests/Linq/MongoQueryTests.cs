@@ -147,8 +147,18 @@ namespace MongoDB.Driver.Tests.Linq
                         };
 
             var results = query.ToList();
+        }
 
+        [Test]
+        public void DocumentQuery()
+        {
+            var query = from p in DB.GetCollection("people").Linq()
+                        where p.Key("Age") > 21
+                        select (string)p["FirstName"];
 
+            var names = query.ToList();
+
+            Assert.AreEqual(2, names.Count);
         }
 
     }

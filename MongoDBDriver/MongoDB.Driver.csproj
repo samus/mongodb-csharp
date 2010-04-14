@@ -117,8 +117,10 @@
     <Compile Include="Linq\LinqExtensions.cs" />
     <Compile Include="Linq\Expressions\MongoExpressionVisitor.cs" />
     <Compile Include="Linq\FieldProjector.cs" />
+    <Compile Include="Linq\DocumentQuery.cs" />
     <Compile Include="Linq\MongoQuery.cs" />
     <Compile Include="Linq\ProjectionBuilder.cs" />
+    <Compile Include="Linq\MongoQueryable.cs" />
     <Compile Include="Linq\QueryBinder.cs" />
     <Compile Include="Linq\MongoQueryProvider.cs" />
     <Compile Include="Linq\MongoQueryObject.cs" />

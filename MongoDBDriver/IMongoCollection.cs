@@ -26,6 +26,12 @@ namespace MongoDB.Driver
         string FullName { get; }
 
         /// <summary>
+        /// Gets the database.
+        /// </summary>
+        /// <value>The database.</value>
+        IMongoDatabase Database { get; }
+
+        /// <summary>
         ///   Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>

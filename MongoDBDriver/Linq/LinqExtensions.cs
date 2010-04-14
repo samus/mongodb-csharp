@@ -11,5 +11,10 @@ namespace MongoDB.Driver.Linq
         {
             return new MongoQuery<T>(new MongoQueryProvider(collection.Database, collection.Name));
         }
+
+        public static IQueryable<Document> Linq(this IMongoCollection collection)
+        {
+            return new MongoQuery<Document>(new MongoQueryProvider(collection.Database, collection.Name));
+        }
     }
 }

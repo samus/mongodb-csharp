@@ -15,8 +15,8 @@ namespace MongoDB.Driver
         /// Gets the database.
         /// </summary>
         /// <value>The database.</value>
-        public string Database {
-            get { return _collection.DatabaseName; }
+        public IMongoDatabase Database {
+            get { return _collection.Database; }
         }
 
         /// <summary>

@@ -38,6 +38,20 @@ namespace MongoDB.Driver.Linq
                 }
                 throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
             }
+            else if (m.Method.DeclaringType == typeof(MongoQueryable))
+            {
+                if (m.Method.Name == "Key")
+                {
+                    return new FieldExpression((string)((ConstantExpression)m.Arguments[1]).Value, m);
+                }
+            }
+            else if (typeof(Document).IsAssignableFrom(m.Method.DeclaringType))
+            {
+                if (m.Method.Name == "get_Item") //TODO: does this work for VB?
+                {
+                    return new FieldExpression((string)((ConstantExpression)m.Arguments[0]).Value, m);
+                }
+            }
             return base.VisitMethodCall(m);
         }
 
@@ -133,7 +147,6 @@ namespace MongoDB.Driver.Linq
         private static bool CanBeField(Expression expression)
         {
             return expression.NodeType == (ExpressionType)MongoExpressionType.Field;
-            //return expression.NodeType == ExpressionType.Parameter || expression.NodeType == ExpressionType.MemberAccess;
         }
 
         private static bool IsCollection(object value)
