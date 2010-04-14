@@ -19,6 +19,11 @@ namespace MongoDB.Driver.Linq
             return Expression.Lambda(body, _document);
         }
 
+        protected override Expression VisitField(FieldExpression f)
+        {
+            return Visit(f.Expression);
+        }
+
         protected override Expression VisitParameter(ParameterExpression p)
         {
             if (p.Type == _document.Type)

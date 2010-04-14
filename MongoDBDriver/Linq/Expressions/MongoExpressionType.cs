@@ -8,6 +8,7 @@ namespace MongoDB.Driver.Linq.Expressions
     internal enum MongoExpressionType
     {
         Collection = 1000,
+        Field,
         Select,
         Projection
     }

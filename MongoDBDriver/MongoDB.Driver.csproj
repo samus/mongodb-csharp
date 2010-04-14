@@ -105,6 +105,7 @@
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
     <Compile Include="IMongoFindExecutor.cs" />
     <Compile Include="Linq\Expressions\CollectionExpression.cs" />
+    <Compile Include="Linq\Expressions\FieldExpression.cs" />
     <Compile Include="Linq\Expressions\MongoExpressionType.cs" />
     <Compile Include="Linq\Expressions\Nominator.cs" />
     <Compile Include="Linq\Expressions\ProjectionExpression.cs" />

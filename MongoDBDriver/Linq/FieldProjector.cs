@@ -32,8 +32,8 @@ namespace MongoDB.Driver.Linq
         {
             if (_candidates.Contains(exp))
             {
-                if (exp.NodeType == ExpressionType.MemberAccess)
-                    _fields.Add(GetFieldName((MemberExpression)exp));
+                if (exp.NodeType == (ExpressionType)MongoExpressionType.Field)
+                    _fields.Add(((FieldExpression)exp).Name);
             }
             return base.Visit(exp);
         }

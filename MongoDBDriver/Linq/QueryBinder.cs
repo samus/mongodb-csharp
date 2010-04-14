@@ -50,6 +50,8 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
+            var fieldName = GetFieldName(m);
+
             var source = Visit(m.Expression);
             switch (source.NodeType)
             {
@@ -74,10 +76,17 @@ namespace MongoDB.Driver.Linq
                     }
                     break;
             }
-            if (source == m.Expression)
-                return m;
 
-            return Expression.MakeMemberAccess(source, m.Member);
+            Expression ret;
+            if (source == m.Expression)
+                ret = m;
+            else
+                ret = Expression.MakeMemberAccess(source, m.Member);
+
+            if (fieldName != null)
+                ret = new FieldExpression(fieldName, ret);
+
+            return ret;
         }
 
         protected override Expression VisitParameter(ParameterExpression p)
@@ -123,7 +132,8 @@ namespace MongoDB.Driver.Linq
 
         private static bool CanBeField(Expression expression)
         {
-            return expression.NodeType == ExpressionType.Parameter || expression.NodeType == ExpressionType.MemberAccess;
+            return expression.NodeType == (ExpressionType)MongoExpressionType.Field;
+            //return expression.NodeType == ExpressionType.Parameter || expression.NodeType == ExpressionType.MemberAccess;
         }
 
         private static bool IsCollection(object value)
@@ -148,6 +158,25 @@ namespace MongoDB.Driver.Linq
             while (e.NodeType == ExpressionType.Quote)
                 e = ((UnaryExpression)e).Operand;
             return e;
+        }
+
+        private static string GetFieldName(MemberExpression m)
+        {
+            var memberNames = new Stack<string>();
+            var p = m;
+            while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
+            {
+                memberNames.Push(p.Member.Name);
+                p = (MemberExpression)p.Expression;
+            }
+
+            if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
+            {
+                memberNames.Push(p.Member.Name);
+                return string.Join(".", memberNames.ToArray());
+            }
+
+            return null;
         }
     }
 }

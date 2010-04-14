@@ -17,18 +17,25 @@ namespace MongoDB.Driver.Linq.Expressions
             {
                 case MongoExpressionType.Collection:
                     return VisitCollection((CollectionExpression)exp);
+                case MongoExpressionType.Field:
+                    return VisitField((FieldExpression)exp);
                 case MongoExpressionType.Projection:
                     return VisitProjection((ProjectionExpression)exp);
                 case MongoExpressionType.Select:
                     return VisitSelect((SelectExpression)exp);
                 default:
-                return base.Visit(exp);
+                    return base.Visit(exp);
             }
         }
 
         protected virtual Expression VisitCollection(CollectionExpression c)
         {
             return c;
+        }
+
+        protected virtual Expression VisitField(FieldExpression f)
+        {
+            return f;
         }
 
         protected virtual Expression VisitProjection(ProjectionExpression p)
@@ -54,23 +61,6 @@ namespace MongoDB.Driver.Linq.Expressions
             return Visit(source);
         }
 
-        protected static string GetFieldName(MemberExpression m)
-        {
-            var memberNames = new Stack<string>();
-            var p = m;
-            while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
-            {
-                memberNames.Push(p.Member.Name);
-                p = (MemberExpression)p.Expression;
-            }
 
-            if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
-            {
-                memberNames.Push(p.Member.Name);
-                return string.Join(".", memberNames.ToArray());
-            }
-
-            throw new NotSupportedException(string.Format("The member '{0}' is not supported", m.Member.Name));
-        }
     }
 }

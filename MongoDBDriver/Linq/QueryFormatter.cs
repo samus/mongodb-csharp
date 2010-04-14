@@ -30,23 +30,24 @@ namespace MongoDB.Driver.Linq
 
             var left = b.Left;
             var right = b.Right;
-            if (left.NodeType != ExpressionType.MemberAccess && right.NodeType != ExpressionType.MemberAccess)
+
+            //xor operation
+            if (left.NodeType != (ExpressionType)MongoExpressionType.Field && right.NodeType != (ExpressionType)MongoExpressionType.Field)
                 throw new InvalidQueryException();
-            else if (left.NodeType == ExpressionType.MemberAccess && right.NodeType == ExpressionType.MemberAccess)
+            else if (left.NodeType == (ExpressionType)MongoExpressionType.Field && right.NodeType == (ExpressionType)MongoExpressionType.Field)
                 throw new InvalidQueryException();
-           
-            if (right.NodeType == ExpressionType.MemberAccess)
+
+            if (right.NodeType == (ExpressionType)MongoExpressionType.Field)
             {
                 left = b.Right;
                 right = b.Left;
-                //reverse the order so that the member access is on the left side...
+                //reverse the order so that the field is on the left side...
             }
 
             if (right.NodeType != ExpressionType.Constant)
                 throw new InvalidQueryException();
 
-            var memberPath = GetFieldName((MemberExpression)left);
-            _queryObject.PushConditionScope(memberPath);
+            _queryObject.PushConditionScope(((FieldExpression)left).Name);
             switch (b.NodeType)
             {
                 case ExpressionType.Equal:
