@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Driver.Linq.Expressions
 {
     internal abstract class ExpressionVisitor
     {

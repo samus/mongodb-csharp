@@ -4,7 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+
 using MongoDB.Driver.Connections;
+using MongoDB.Driver.Linq.Expressions;
 using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Linq

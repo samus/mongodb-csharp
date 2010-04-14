@@ -4,6 +4,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+using MongoDB.Driver.Linq.Expressions;
+
 namespace MongoDB.Driver.Linq
 {
     internal class QueryFormatter : MongoExpressionVisitor
@@ -43,7 +45,7 @@ namespace MongoDB.Driver.Linq
             if (right.NodeType != ExpressionType.Constant)
                 throw new InvalidQueryException();
 
-            var memberPath = EvaluateMemberAccess((MemberExpression)left);
+            var memberPath = GetFieldName((MemberExpression)left);
             _queryObject.PushConditionScope(memberPath);
             switch (b.NodeType)
             {
@@ -89,10 +91,7 @@ namespace MongoDB.Driver.Linq
                 Visit(s.Where);
 
             foreach (var field in s.Fields)
-            {
-                Visit(field.Expression);
-                _queryObject.Fields[field.Name] = 1;
-            }
+                _queryObject.Fields[field] = 1;
 
             return s;
         }
@@ -135,25 +134,6 @@ namespace MongoDB.Driver.Linq
         private static object EvaluateConstant(ConstantExpression c)
         {
             return c.Value;
-        }
-
-        private static string EvaluateMemberAccess(MemberExpression m)
-        {
-            var memberNames = new Stack<string>();
-            var p = m;
-            while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
-            {
-                memberNames.Push(p.Member.Name);
-                p = (MemberExpression)p.Expression;
-            }
-
-            if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
-            {
-                memberNames.Push(p.Member.Name);
-                return string.Join(".", memberNames.ToArray());
-            }
-
-            throw new NotSupportedException(string.Format("The member '{0}' is not supported", m.Member.Name));
         }
 
         private static Expression StripQuotes(Expression e)

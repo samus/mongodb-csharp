@@ -28,7 +28,15 @@ namespace MongoDB.Driver.Tests.Linq
             public string City { get; set; }
         }
 
-        private IMongoCollection<Person> collection;
+        private class Organization
+        {
+            public string Name { get; set; }
+
+            public Address Address { get; set; }
+        }
+
+        private IMongoCollection<Person> personCollection;
+        private IMongoCollection<Organization> orgCollection;
 
         public override string TestCollections
         {
@@ -38,17 +46,21 @@ namespace MongoDB.Driver.Tests.Linq
         [SetUp]
         public void TestSetup()
         {
-            collection = this.DB.GetCollection<Person>("people");
-            collection.Delete(new { }, true);
-            collection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42, Address = new Address { City = "London" } }, true);
-            collection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35, Address = new Address { City = "Paris" } }, true);
-            collection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21, Address = new Address { City = "Chicago" } }, true);
+            personCollection = this.DB.GetCollection<Person>("people");
+            personCollection.Delete(new { }, true);
+            personCollection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42, Address = new Address { City = "London" } }, true);
+            personCollection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35, Address = new Address { City = "Paris" } }, true);
+            personCollection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21, Address = new Address { City = "Chicago" } }, true);
+
+            orgCollection = this.DB.GetCollection<Organization>("orgs");
+            orgCollection.Delete(new { }, true);
+            orgCollection.Insert(new Organization { Name = "The Muffler Shanty", Address = new Address { City = "London" } }, true);
         }
 
         [Test]
         public void Simple()
         {
-            var people = collection.Linq().ToList();
+            var people = personCollection.Linq().ToList();
 
             Assert.AreEqual(3, people.Count());            
         }
@@ -56,7 +68,7 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void SimpleConstraint()
         {
-            var people = collection.Linq().Where(p => p.FirstName == "Bob").ToList();
+            var people = personCollection.Linq().Where(p => p.FirstName == "Bob").ToList();
 
             Assert.AreEqual(1, people.Count());
         }
@@ -64,7 +76,7 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void NestedClassConstraint()
         {
-            var people = collection.Linq().Where(p => p.Address.City == "London").ToList();
+            var people = personCollection.Linq().Where(p => p.Address.City == "London").ToList();
 
             Assert.AreEqual(1, people.Count());
         }
@@ -72,7 +84,7 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void ConjunctiveConstraint()
         {
-            var people = collection.Linq().Where(p => p.Age > 21 && p.Age < 42).ToList();
+            var people = personCollection.Linq().Where(p => p.Age > 21 && p.Age < 42).ToList();
 
             Assert.AreEqual(1, people.Count());
         }
@@ -80,7 +92,7 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void SimpleProjection()
         {
-            var names = (from p in collection.Linq()
+            var names = (from p in personCollection.Linq()
                          select new { Name = p.FirstName + " " + p.LastName })
                          .ToList();
 
@@ -90,7 +102,7 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void NestedClassProjection()
         {
-            var cities = collection.Linq().Select(p => p.Address.City).ToList();
+            var cities = personCollection.Linq().Select(p => p.Address.City).ToList();
 
             Assert.AreEqual(3, cities.Count());
         }
@@ -98,7 +110,7 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void ProjectionWithConstraints()
         {
-            var names = (from p in collection.Linq()
+            var names = (from p in personCollection.Linq()
                          where p.Age > 21
                          select p.FirstName)
                          .ToList();
@@ -109,7 +121,7 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void ProjectionWithConstraintsInReverse()
         {
-            var names = collection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).ToList();
+            var names = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).ToList();
 
             Assert.AreEqual(2, names.Count());
         }
@@ -117,9 +129,26 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void OddQuery()
         {
-            var names = collection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).Select(t => t.FirstName).ToList();
+            var names = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).Select(t => t.FirstName).ToList();
 
             Assert.AreEqual(2, names.Count());
+        }
+
+        [Test]
+        public void NestedQuery()
+        {
+            var query = from p in personCollection.Linq()
+                        select new
+                        {
+                            Name = p.FirstName + " " + p.LastName,
+                            SameCityOrgs = from o in orgCollection.Linq()
+                                           where o.Address.City == p.Address.City
+                                           select o.Name
+                        };
+
+            var results = query.ToList();
+
+
         }
 
     }

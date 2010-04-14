@@ -1,47 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Collections.ObjectModel;
+
+using MongoDB.Driver.Linq.Expressions;
 
 namespace MongoDB.Driver.Linq
 {
-    internal class FieldProjection
-    {
-        private readonly ReadOnlyCollection<FieldDeclaration> _fields;
-        private readonly Expression _projector;
-
-        public ReadOnlyCollection<FieldDeclaration> Fields
-        {
-            get { return _fields; }
-        }
-
-        public Expression Projector
-        {
-            get { return _projector; }
-        }
-
-        public FieldProjection(ReadOnlyCollection<FieldDeclaration> fields, Expression projector)
-        {
-            _fields = fields;
-            _projector = projector;
-        }
-
-        public Document CreateDocument()
-        {
-            var doc = new Document();
-            foreach (var field in _fields)
-                doc.Add(field.Name, 1);
-            return doc;
-        }
-    }
-
     internal class FieldProjector : MongoExpressionVisitor
     {
         private HashSet<Expression> _candidates;
-        private List<FieldDeclaration> _fields;
+        private List<string> _fields;
         private Nominator _nominator;
 
         public FieldProjector(Func<Expression, bool> canBeField)
@@ -51,91 +23,40 @@ namespace MongoDB.Driver.Linq
 
         public FieldProjection ProjectFields(Expression expression)
         {
-            _fields = new List<FieldDeclaration>();
+            _fields = new List<string>();
             _candidates = _nominator.Nominate(expression);
             return new FieldProjection(_fields.AsReadOnly(), Visit(expression));
         }
 
-        //protected override Expression Visit(Expression exp)
-        //{
-        //    if (_candidates.Contains(exp))
-        //    {
-        //        if (exp.NodeType == (ExpressionType)MongoExpressionType.Field)
-        //        {
-        //            throw new NotSupportedException();
-        //        }
-        //        else
-        //        {
-        //            var field = (MemberExpression)exp;
-        //            _fields.Add(new FieldDeclaration(field.Member.Name, field));
-        //            return new FieldExpression(field.Type, field.Member.Name);
-        //        }
-        //    }
-        //    return base.Visit(exp);
-        //}
-
-        protected override Expression VisitMemberAccess(MemberExpression m)
+        protected override Expression Visit(Expression exp)
         {
-            var members = new Stack<MemberInfo>();
-            var p = m;
-            while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
+            if (_candidates.Contains(exp))
             {
-                members.Push(p.Member);
-                p = (MemberExpression)p.Expression;
+                if (exp.NodeType == ExpressionType.MemberAccess)
+                    _fields.Add(GetFieldName((MemberExpression)exp));
             }
-
-            if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
-            {
-                members.Push(p.Member);
-                string fieldName = string.Join(".", members.Select(member => member.Name).ToArray());
-                _fields.Add(new FieldDeclaration(fieldName, m));
-
-                return new FieldExpression(m);
-            }
-
-            throw new NotSupportedException(string.Format("The member '{0}' is not supported", m.Member.Name));
+            return base.Visit(exp);
         }
 
-        private class Nominator : MongoExpressionVisitor
+        public class FieldProjection
         {
-            private Func<Expression, bool> _canBeField;
-            private HashSet<Expression> _candidates;
-            private bool _isBlocked;
+            private readonly ReadOnlyCollection<string> _fields;
+            private readonly Expression _projector;
 
-            public Nominator(Func<Expression, bool> canBeField)
+            public ReadOnlyCollection<string> Fields
             {
-                _canBeField = canBeField;
+                get { return _fields; }
             }
 
-            public HashSet<Expression> Nominate(Expression expression)
+            public Expression Projector
             {
-                _candidates = new HashSet<Expression>();
-                _isBlocked = false;
-                Visit(expression);
-                return _candidates;
+                get { return _projector; }
             }
 
-            protected override Expression Visit(Expression expression)
+            public FieldProjection(ReadOnlyCollection<string> fields, Expression projector)
             {
-                if (expression != null)
-                {
-                    var saveIsBlocked = _isBlocked;
-                    _isBlocked = false;
-                    base.Visit(expression);
-                    if (!_isBlocked)
-                    {
-                        if (_canBeField(expression))
-                        {
-                            _candidates.Add(expression);
-                        }
-                        else
-                        {
-                            _isBlocked = true;
-                        }
-                    }
-                    _isBlocked |= saveIsBlocked;
-                }
-                return expression;
+                _fields = fields;
+                _projector = projector;
             }
         }
     }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
+
+using MongoDB.Driver.Linq.Expressions;
 
 namespace MongoDB.Driver.Linq
 {
@@ -75,20 +77,6 @@ namespace MongoDB.Driver.Linq
             if (source == m.Expression)
                 return m;
 
-            //var members = new Stack<MemberInfo>();
-            //var p = m;
-            //while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
-            //{
-            //    members.Push(p.Member);
-            //    p = (MemberExpression)p.Expression;
-            //}
-
-            //if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
-            //{
-            //    members.Push(p.Member);
-            //    return new FieldExpression(
-            //}
-
             return Expression.MakeMemberAccess(source, m.Member);
         }
 
@@ -126,7 +114,7 @@ namespace MongoDB.Driver.Linq
         {
             var collection = (IMongoQueryable)value;
             var bindings = new List<MemberBinding>();
-            var fields = new List<FieldDeclaration>();
+            var fields = new List<string>();
             var resultType = typeof(IEnumerable<>).MakeGenericType(collection.ElementType);
             return new ProjectionExpression(
                 new SelectExpression(resultType, fields, new CollectionExpression(resultType, collection.Database, collection.CollectionName, collection.ElementType), null),
@@ -135,7 +123,7 @@ namespace MongoDB.Driver.Linq
 
         private static bool CanBeField(Expression expression)
         {
-            return expression.NodeType == (ExpressionType)MongoExpressionType.Field;
+            return expression.NodeType == ExpressionType.Parameter || expression.NodeType == ExpressionType.MemberAccess;
         }
 
         private static bool IsCollection(object value)
