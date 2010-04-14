@@ -105,6 +105,12 @@ namespace MongoDB.Driver.Linq
                 }
             }
 
+            if (s.Limit != null)
+                _queryObject.NumberToLimit = (int)((ConstantExpression)Visit(s.Limit)).Value;
+
+            if (s.Skip!= null)
+                _queryObject.NumberToSkip = (int)((ConstantExpression)Visit(s.Skip)).Value;
+
             return s;
         }
 

@@ -136,7 +136,16 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
-        public void OddQuery()
+        public void SkipAndTake()
+        {
+            var names = personCollection.Linq().OrderBy(x => x.Age).Skip(2).Take(1).ToList();
+
+            Assert.AreEqual(1, names.Count);
+            Assert.AreEqual(names[0].FirstName, "Bob");
+        }
+
+        [Test]
+        public void Two_Selects()
         {
             var names = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).Select(t => t.FirstName).ToList();
 
@@ -144,6 +153,7 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        [ExpectedException(typeof(InvalidQueryException))]
         public void NestedQuery()
         {
             var query = from p in personCollection.Linq()

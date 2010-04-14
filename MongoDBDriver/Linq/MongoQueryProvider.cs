@@ -98,8 +98,24 @@ namespace MongoDB.Driver.Linq
             return queryObject;
         }
 
-        private static bool CanBeEvaluatedLocally(Expression expression)
+        private bool CanBeEvaluatedLocally(Expression expression)
         {
+            // any operation on a query can't be done locally
+            ConstantExpression cex = expression as ConstantExpression;
+            if (cex != null)
+            {
+                IQueryable query = cex.Value as IQueryable;
+                if (query != null && query.Provider == this)
+                    return false;
+            }
+            MethodCallExpression mc = expression as MethodCallExpression;
+            if (mc != null && (mc.Method.DeclaringType == typeof(Enumerable) || mc.Method.DeclaringType == typeof(Queryable) || mc.Method.DeclaringType == typeof(MongoQueryable) || typeof(Document).IsAssignableFrom(mc.Method.DeclaringType)))
+            {
+                return false;
+            }
+            if (expression.NodeType == ExpressionType.Convert &&
+                expression.Type == typeof(object))
+                return true;
             return expression.NodeType != ExpressionType.Parameter &&
                    expression.NodeType != ExpressionType.Lambda;
         }

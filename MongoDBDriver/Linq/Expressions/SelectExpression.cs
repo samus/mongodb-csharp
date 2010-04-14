@@ -9,10 +9,18 @@ namespace MongoDB.Driver.Linq.Expressions
 {
     internal class SelectExpression : Expression
     {
+        private readonly bool _distinct;
         private readonly ReadOnlyCollection<string> _fields;
         private readonly Expression _from;
+        private readonly Expression _limit;
         private readonly ReadOnlyCollection<OrderExpression> _order;
+        private readonly Expression _skip;
         private readonly Expression _where;
+
+        public bool Distinct
+        {
+            get { return _distinct; }
+        }
 
         public ReadOnlyCollection<string> Fields
         {
@@ -24,9 +32,19 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _from; }
         }
 
+        public Expression Limit
+        {
+            get { return _limit; }
+        }
+
         public ReadOnlyCollection<OrderExpression> Order
         {
             get { return _order; }
+        }
+
+        public Expression Skip
+        {
+            get { return _skip; }
         }
 
         public Expression Where
@@ -34,7 +52,11 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _where; }
         }
 
-        public SelectExpression(Type type, IEnumerable<string> fields, Expression from, Expression where, IEnumerable<OrderExpression> order)
+        public SelectExpression(Type type, IEnumerable<string> fields, Expression from, Expression where)
+            : this(type, fields, from, where, null, false, null, null)
+        { }
+
+        public SelectExpression(Type type, IEnumerable<string> fields, Expression from, Expression where, IEnumerable<OrderExpression> order, bool distinct, Expression skip, Expression limit)
             : base((ExpressionType)MongoExpressionType.Select, type)
         {
             _fields = fields as ReadOnlyCollection<string>;
@@ -45,8 +67,11 @@ namespace MongoDB.Driver.Linq.Expressions
             if (_order == null && order != null)
                 _order = new List<OrderExpression>(order).AsReadOnly();
 
+            _distinct = distinct;
             _from = from;
+            _limit = limit;
             _where = where;
+            _skip = skip;
         }
     }
 }

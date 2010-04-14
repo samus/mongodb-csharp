@@ -142,6 +142,16 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        public void SkipAndTake()
+        {
+            var people = collection.Linq().Skip(2).Take(1);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(1, queryObject.NumberToLimit);
+            Assert.AreEqual(2, queryObject.NumberToSkip);
+        }
+
+        [Test]
         public void DocumentQuery()
         {
             var people = from p in documentCollection.Linq()

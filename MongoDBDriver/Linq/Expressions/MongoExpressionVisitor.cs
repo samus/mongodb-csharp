@@ -73,7 +73,7 @@ namespace MongoDB.Driver.Linq.Expressions
             var where = Visit(s.Where);
             var order = VisitOrderBy(s.Order);
             if (from != s.From || where != s.Where || order != s.Order)
-                return new SelectExpression(s.Type, s.Fields, from, where, order);
+                return new SelectExpression(s.Type, s.Fields, from, where, order, s.Distinct, s.Skip, s.Limit);
             return s;
         }
 
