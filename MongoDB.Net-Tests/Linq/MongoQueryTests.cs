@@ -129,19 +129,51 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void OrderBy()
         {
-            var names = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).OrderBy(x => x.Age).ToList();
+            var people = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).OrderBy(x => x.Age).ToList();
 
-            Assert.AreEqual(names[0].FirstName, "Jane");
-            Assert.AreEqual(names[1].FirstName, "Bob");
+            Assert.AreEqual(people[0].FirstName, "Jane");
+            Assert.AreEqual(people[1].FirstName, "Bob");
         }
 
         [Test]
         public void SkipAndTake()
         {
-            var names = personCollection.Linq().OrderBy(x => x.Age).Skip(2).Take(1).ToList();
+            var people = personCollection.Linq().OrderBy(x => x.Age).Skip(2).Take(1).ToList();
 
-            Assert.AreEqual(1, names.Count);
-            Assert.AreEqual(names[0].FirstName, "Bob");
+            Assert.AreEqual(1, people.Count);
+            Assert.AreEqual(people[0].FirstName, "Bob");
+        }
+
+        [Test]
+        public void First()
+        {
+            var name = personCollection.Linq().OrderBy(x => x.Age).Select(x => x.FirstName).First();
+
+            Assert.AreEqual(name, "Joe");
+        }
+
+        [Test]
+        public void FirstOrDefault()
+        {
+            var name = personCollection.Linq().Where(x => x.Age < 10).Select(x => x.FirstName).FirstOrDefault();
+
+            Assert.IsNull(name);
+        }
+
+        [Test]
+        public void Single()
+        {
+            var name = personCollection.Linq().Where(x => x.Age == 21).Select(x => x.FirstName).Single();
+
+            Assert.AreEqual(name, "Joe");
+        }
+
+        [Test]
+        public void SingleOrDefault()
+        {
+            var name = personCollection.Linq().Where(x => x.Age == 21).Select(x => x.FirstName).SingleOrDefault();
+
+            Assert.AreEqual(name, "Joe");
         }
 
         [Test]

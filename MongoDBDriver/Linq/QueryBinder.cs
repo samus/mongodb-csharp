@@ -11,13 +11,17 @@ namespace MongoDB.Driver.Linq
 {
     internal class QueryBinder : ExpressionVisitor
     {
-        private FieldProjector _projector;
         private Dictionary<ParameterExpression, Expression> _map;
+        private FieldProjector _projector;
+        private IQueryProvider _provider;
+        private Expression _root;
         private List<OrderExpression> _thenBy;
 
-        public QueryBinder()
+        public QueryBinder(IQueryProvider provider, Expression root)
         {
             _projector = new FieldProjector(CanBeField);
+            _provider = provider;
+            _root = root;
         }
 
         public Expression Bind(Expression expression)
@@ -51,6 +55,18 @@ namespace MongoDB.Driver.Linq
                     case "Skip":
                         if (m.Arguments.Count == 2)
                             return this.BindSkip(m.Arguments[0], m.Arguments[1]);
+                        break;
+                    case "First":
+                    case "FirstOrDefault":
+                    case "Single":
+                    case "SingleOrDefault":
+                        if(m.Arguments.Count == 1)
+                            return BindFirstOrSingle(m.Arguments[0], null, m.Method.Name, m == _root);
+                        else if(m.Arguments.Count == 2)
+                        {
+                            var predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                            return BindFirstOrSingle(m.Arguments[0], predicate, m.Method.Name, m == _root);
+                        }
                         break;
                 }
                 throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
@@ -136,6 +152,37 @@ namespace MongoDB.Driver.Linq
             return new ProjectionExpression(
                 new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, true, null, null),
                 fieldProjection.Projector);
+        }
+
+        private Expression BindFirstOrSingle(Expression source, LambdaExpression predicate, string kind, bool isRoot)
+        {
+            var projection = (ProjectionExpression)Visit(source);
+            Expression where = null;
+            if (predicate != null)
+            {
+                _map[predicate.Parameters[0]] = projection.Projector;
+                where = Visit(predicate.Body);
+            }
+
+            Expression limit = kind.StartsWith("First") ? Expression.Constant(1) : null;
+            if (limit == null & kind.StartsWith("Single"))
+                limit = Expression.Constant(2);
+
+            if (limit != null || where != null)
+            {
+                var fieldProjection = _projector.ProjectFields(projection.Projector);
+                projection = new ProjectionExpression(
+                    new SelectExpression(source.Type, fieldProjection.Fields, projection.Source, where, null, false, null, limit),
+                    fieldProjection.Projector);
+            }
+            if (isRoot)
+            {
+                var elementType = projection.Projector.Type;
+                var p = Expression.Parameter(typeof(IEnumerable<>).MakeGenericType(elementType), "p");
+                var lambda = Expression.Lambda(Expression.Call(typeof(Enumerable), kind, new Type[] { elementType }, p), p);
+                return new ProjectionExpression(projection.Source, projection.Projector, lambda);
+            }
+            return projection;
         }
 
         private Expression BindOrderBy(Type resultType, Expression source, LambdaExpression orderSelector, OrderType orderType)

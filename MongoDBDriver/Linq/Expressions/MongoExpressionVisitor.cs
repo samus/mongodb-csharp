@@ -43,7 +43,7 @@ namespace MongoDB.Driver.Linq.Expressions
             var source = (SelectExpression)Visit(p.Source);
             var projector = Visit(p.Projector);
             if (source != p.Source || projector != p.Projector)
-                return new ProjectionExpression(source, projector);
+                return new ProjectionExpression(source, projector, p.Aggregator);
             return p;
         }
 
@@ -72,8 +72,10 @@ namespace MongoDB.Driver.Linq.Expressions
             var from = VisitSource(s.From);
             var where = Visit(s.Where);
             var order = VisitOrderBy(s.Order);
-            if (from != s.From || where != s.Where || order != s.Order)
-                return new SelectExpression(s.Type, s.Fields, from, where, order, s.Distinct, s.Skip, s.Limit);
+            var skip = Visit(s.Skip);
+            var limit = Visit(s.Limit);
+            if (from != s.From || where != s.Where || order != s.Order || skip != s.Skip || limit != s.Limit)
+                return new SelectExpression(s.Type, s.Fields, from, where, order, s.Distinct, skip, limit);
             return s;
         }
 

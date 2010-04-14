@@ -10,6 +10,7 @@ namespace MongoDB.Driver.Linq.Expressions
     {
         private readonly SelectExpression _source;
         private readonly Expression _projector;
+        private readonly LambdaExpression _aggregator;
 
         public SelectExpression Source
         {
@@ -21,11 +22,21 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _projector; }
         }
 
+        public LambdaExpression Aggregator
+        {
+            get { return _aggregator; }
+        }
+
         public ProjectionExpression(SelectExpression source, Expression projector)
+            : this(source, projector, null)
+        { }
+
+        public ProjectionExpression(SelectExpression source, Expression projector, LambdaExpression aggregator)
             : base((ExpressionType)MongoExpressionType.Projection, source.Type)
         {
             _source = source;
             _projector = projector;
+            _aggregator = aggregator;
         }
     }
 }

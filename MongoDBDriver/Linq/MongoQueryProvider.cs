@@ -80,23 +80,20 @@ namespace MongoDB.Driver.Linq
             cursorType.GetMethod("Limit").Invoke(cursor, new object[] { queryObject.NumberToLimit });
             cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
 
-            var projector = queryObject.Projector.Compile();
-            return Activator.CreateInstance(
-                typeof(ProjectionReader<,>).MakeGenericType(queryObject.DocumentType, projector.Method.ReturnType),
-                BindingFlags.Instance | BindingFlags.Public,
-                null,
-                new object[] { cursor, projector },
-                null);
+            var executor = GetExecutor(queryObject.DocumentType, queryObject.Projector, queryObject.Aggregator, true);
+            return executor.Compile().DynamicInvoke(cursor);
         }
 
         internal MongoQueryObject GetQueryObject(Expression expression)
         {
             expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
-            var projection = (ProjectionExpression)new QueryBinder().Bind(expression);
+            var projection = (ProjectionExpression)new QueryBinder(this, expression).Bind(expression);
             var queryObject = new QueryFormatter().Format(projection.Source);
             queryObject.Projector = new ProjectionBuilder().Build(queryObject.DocumentType, projection.Projector);
+            queryObject.Aggregator = projection.Aggregator;
             return queryObject;
         }
+
 
         private bool CanBeEvaluatedLocally(Expression expression)
         {
@@ -118,6 +115,42 @@ namespace MongoDB.Driver.Linq
                 return true;
             return expression.NodeType != ExpressionType.Parameter &&
                    expression.NodeType != ExpressionType.Lambda;
+        }
+
+        private static LambdaExpression GetExecutor(Type documentType, LambdaExpression projector, LambdaExpression aggregator, bool boxReturn)
+        {
+            var cursor = Expression.Parameter(typeof(ICursor<>).MakeGenericType(documentType), "cursor");
+            Expression body = Expression.New(typeof(ProjectionReader<,>).MakeGenericType(documentType, projector.Body.Type).GetConstructors()[0], cursor, projector);
+            if (aggregator != null)
+                body = Expression.Invoke(aggregator, body);
+            if (boxReturn && body.Type != typeof(object))
+                body = Expression.Convert(body, typeof(object));
+
+            return Expression.Lambda(body, cursor);
+        }
+
+        // attempt to isolate a sub-expression that accesses a Query<T> object
+        private class RootQueryableFinder : MongoExpressionVisitor
+        {
+            private Expression _root;
+
+            public Expression Find(Expression expression)
+            {
+                Visit(expression);
+                return _root;
+            }
+
+            protected override Expression Visit(Expression exp)
+            {
+                Expression result = base.Visit(exp);
+
+                if (this._root == null && result != null && typeof(IQueryable).IsAssignableFrom(result.Type))
+                {
+                    this._root = result;
+                }
+
+                return result;
+            }
         }
     }
 }

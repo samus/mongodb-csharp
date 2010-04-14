@@ -36,33 +36,5 @@ namespace MongoDB.Driver.Linq
         {
             throw new InvalidQueryException("Nested queries are not currently supported.");
         }
-
-        //protected override Expression VisitProjection(ProjectionExpression p)
-        //{
-        //    var subQuery = Expression.Lambda(base.VisitProjection(p), _document);
-        //    var elementType = TypeSystem.GetElementType(subQuery.Body.Type);
-        //    var mi = typeof(ProjectionBuilder)
-        //        .GetMethod("ExecuteSubQuery", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
-        //        .MakeGenericMethod(elementType);
-
-        //    return Expression.Convert(
-        //        Expression.Call(mi, Expression.Constant(subQuery)),
-        //        p.Type);
-        //}
-
-        //private static IEnumerable<T> ExecuteSubQuery<T>(LambdaExpression subQuery)
-        //{
-        //    //var projection = (ProjectionExpression)new Replacer().Replace(subQuery.Body, subQuery.Parameters[0], Expression.Constant(this));
-        //    var projection = (ProjectionExpression)PartialEvaluator.Evaluate(subQuery.Body, CanBeEvaluatedLocally);
-        //    return null;
-        //}
-
-        //private static bool CanBeEvaluatedLocally(Expression expression)
-        //{
-        //    if(expression.NodeType == ExpressionType.Parameter)
-        //        return false;
-
-        //    return true;
-        //}
     }
 }
