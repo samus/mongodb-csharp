@@ -5,12 +5,9 @@ using System.Text;
 
 namespace MongoDB.Driver.Linq.Expressions
 {
-    internal enum MongoExpressionType
+    internal enum OrderType
     {
-        Collection = 1000,
-        Field,
-        Select,
-        Projection,
-        Order
+        Ascending,
+        Descending
     }
 }

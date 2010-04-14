@@ -94,6 +94,17 @@ namespace MongoDB.Driver.Linq
             foreach (var field in s.Fields)
                 _queryObject.Fields[field] = 1;
 
+            if (s.Order != null)
+            {
+                foreach (var order in s.Order)
+                {
+                    var field = Visit(order.Expression) as FieldExpression;
+                    if (field == null)
+                        throw new InvalidQueryException("Could not find the field name from the order expression.");
+                    _queryObject.AddOrderBy(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
+                }
+            }
+
             return s;
         }
 

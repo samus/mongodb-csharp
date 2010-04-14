@@ -8,7 +8,9 @@ namespace MongoDB.Driver.Linq
 {
     internal class MongoQueryObject
     {
-        private Stack<Scope> _scopes;
+        private bool _hasOrder;
+        private Document _query;
+        private readonly Stack<Scope> _scopes;
 
         /// <summary>
         /// Gets or sets the name of the collection.
@@ -47,12 +49,6 @@ namespace MongoDB.Driver.Linq
         public int NumberToLimit { get; set; }
 
         /// <summary>
-        /// Gets or sets the order.
-        /// </summary>
-        /// <value>The order.</value>
-        public Document Order { get; set; }
-
-        /// <summary>
         /// Gets or sets the projector.
         /// </summary>
         /// <value>The projector.</value>
@@ -62,13 +58,17 @@ namespace MongoDB.Driver.Linq
         /// Gets or sets the query.
         /// </summary>
         /// <value>The query.</value>
-        public Document Query { get; set; }
+        public Document Query
+        {
+            get { return _query; }
+        }
 
         public MongoQueryObject()
         {
             Fields = new Document();
-            Order = new Document();
-            Query = new Document();
+            _query = new Document();
+
+            _hasOrder = false;
 
             _scopes = new Stack<Scope>();
         }
@@ -76,6 +76,18 @@ namespace MongoDB.Driver.Linq
         public void AddCondition(object value)
         {
             _scopes.Peek().AddCondition(value);
+        }
+
+        public void AddOrderBy(string name, int value)
+        {
+            if (!_hasOrder)
+            {
+                _query = new Document("query", _query);
+                _query.Add("orderby", new Document());
+                _hasOrder = true;
+            }
+
+            ((Document)_query["orderby"]).Add(name, value);
         }
 
         public void PushConditionScope(string name)
@@ -89,7 +101,9 @@ namespace MongoDB.Driver.Linq
         public void PopConditionScope()
         {
             var scope = _scopes.Pop();
-            var doc = Query;
+            var doc = _query;
+            if (_hasOrder)
+                doc = (Document)doc["query"];
             foreach (var s in _scopes.Reverse()) //as if it were a queue
             {
                 var sub = doc[s.Key];

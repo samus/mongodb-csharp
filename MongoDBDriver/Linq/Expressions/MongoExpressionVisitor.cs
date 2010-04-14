@@ -47,12 +47,33 @@ namespace MongoDB.Driver.Linq.Expressions
             return p;
         }
 
+        protected ReadOnlyCollection<OrderExpression> VisitOrderBy(ReadOnlyCollection<OrderExpression> expressions)
+        {
+            if (expressions != null) 
+            {
+                List<OrderExpression> alternate = null;
+                for (int i = 0, n = expressions.Count; i < n; i++) 
+                {
+                    OrderExpression expr = expressions[i];
+                    Expression e = this.Visit(expr.Expression);
+                    if (alternate == null && e != expr.Expression) 
+                        alternate = expressions.Take(i).ToList();
+                    if (alternate != null) 
+                        alternate.Add(new OrderExpression(expr.OrderType, e));
+                }
+                if (alternate != null) 
+                    return alternate.AsReadOnly();
+            }
+            return expressions;
+        }
+
         protected virtual Expression VisitSelect(SelectExpression s)
         {
             var from = VisitSource(s.From);
             var where = Visit(s.Where);
-            if (from != s.From || where != s.Where)
-                return new SelectExpression(s.Type, s.Fields, from, where);
+            var order = VisitOrderBy(s.Order);
+            if (from != s.From || where != s.Where || order != s.Order)
+                return new SelectExpression(s.Type, s.Fields, from, where, order);
             return s;
         }
 
@@ -60,7 +81,5 @@ namespace MongoDB.Driver.Linq.Expressions
         {
             return Visit(source);
         }
-
-
     }
 }

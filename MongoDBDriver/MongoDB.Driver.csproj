@@ -108,6 +108,8 @@
     <Compile Include="Linq\Expressions\FieldExpression.cs" />
     <Compile Include="Linq\Expressions\MongoExpressionType.cs" />
     <Compile Include="Linq\Expressions\Nominator.cs" />
+    <Compile Include="Linq\Expressions\OrderExpression.cs" />
+    <Compile Include="Linq\Expressions\OrderType.cs" />
     <Compile Include="Linq\Expressions\ProjectionExpression.cs" />
     <Compile Include="Linq\Expressions\Replacer.cs" />
     <Compile Include="Linq\Expressions\SelectExpression.cs" />

@@ -127,6 +127,15 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        public void OrderBy()
+        {
+            var names = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).OrderBy(x => x.Age).ToList();
+
+            Assert.AreEqual(names[0].FirstName, "Jane");
+            Assert.AreEqual(names[1].FirstName, "Bob");
+        }
+
+        [Test]
         public void OddQuery()
         {
             var names = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).Select(t => t.FirstName).ToList();

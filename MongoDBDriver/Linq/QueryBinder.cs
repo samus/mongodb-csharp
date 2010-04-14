@@ -13,6 +13,7 @@ namespace MongoDB.Driver.Linq
     {
         private FieldProjector _projector;
         private Dictionary<ParameterExpression, Expression> _map;
+        private List<OrderExpression> _thenBy;
 
         public QueryBinder()
         {
@@ -35,6 +36,14 @@ namespace MongoDB.Driver.Linq
                         return BindWhere(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
                     case "Select":
                         return BindSelect(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
+                    case "OrderBy":
+                        return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Ascending);
+                    case "OrderByDescending":
+                        return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Descending);
+                    case "ThenBy":
+                        return BindThenBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Ascending);
+                    case "ThenByDescending":
+                        return BindThenBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Descending);
                 }
                 throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
             }
@@ -111,6 +120,41 @@ namespace MongoDB.Driver.Linq
             return p;
         }
 
+        private Expression BindOrderBy(Type resultType, Expression source, LambdaExpression orderSelector, OrderType orderType)
+        {
+            List<OrderExpression> thenBye = _thenBy;
+            _thenBy = null;
+            var projection = (ProjectionExpression)Visit(source);
+
+            _map[orderSelector.Parameters[0]] = projection.Projector;
+            var orderings = new List<OrderExpression>();
+            orderings.Add(new OrderExpression(orderType, Visit(orderSelector.Body)));
+            if (thenBye != null)
+            {
+                for (int i = thenBye.Count - 1; i >= 0; i--)
+                {
+                    var oe = thenBye[i];
+                    var lambda = (LambdaExpression)oe.Expression;
+                    _map[lambda.Parameters[0]] = projection.Projector;
+                    orderings.Add(new OrderExpression(oe.OrderType, Visit(lambda.Body)));
+                }
+            }
+
+            var fieldProjection = _projector.ProjectFields(projection.Projector);
+            return new ProjectionExpression(
+                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, null, orderings.AsReadOnly()),
+                fieldProjection.Projector);
+        }
+
+        private Expression BindThenBy(Expression source, LambdaExpression orderSelector, OrderType orderType)
+        {
+            if (_thenBy == null)
+                _thenBy = new List<OrderExpression>();
+
+            _thenBy.Add(new OrderExpression(orderType, orderSelector));
+            return Visit(source);
+        }
+
         private Expression BindSelect(Type resultType, Expression source, LambdaExpression selector)
         {
             var projection = (ProjectionExpression)Visit(source);
@@ -118,7 +162,7 @@ namespace MongoDB.Driver.Linq
             var expression = Visit(selector.Body);
             var fieldProjection = _projector.ProjectFields(expression);
             return new ProjectionExpression(
-                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, null),
+                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, null, null),
                 fieldProjection.Projector);
         }
 
@@ -129,7 +173,7 @@ namespace MongoDB.Driver.Linq
             var where = Visit(predicate.Body);
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, where),
+                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, where, null),
                 fieldProjection.Projector);
         }
 
@@ -140,7 +184,7 @@ namespace MongoDB.Driver.Linq
             var fields = new List<string>();
             var resultType = typeof(IEnumerable<>).MakeGenericType(collection.ElementType);
             return new ProjectionExpression(
-                new SelectExpression(resultType, fields, new CollectionExpression(resultType, collection.Database, collection.CollectionName, collection.ElementType), null),
+                new SelectExpression(resultType, fields, new CollectionExpression(resultType, collection.Database, collection.CollectionName, collection.ElementType), null, null),
                 Expression.Parameter(collection.ElementType, "document"));
         }
 

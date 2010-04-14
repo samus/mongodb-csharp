@@ -11,6 +11,7 @@ namespace MongoDB.Driver.Linq.Expressions
     {
         private readonly ReadOnlyCollection<string> _fields;
         private readonly Expression _from;
+        private readonly ReadOnlyCollection<OrderExpression> _order;
         private readonly Expression _where;
 
         public ReadOnlyCollection<string> Fields
@@ -23,17 +24,26 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _from; }
         }
 
+        public ReadOnlyCollection<OrderExpression> Order
+        {
+            get { return _order; }
+        }
+
         public Expression Where
         {
             get { return _where; }
         }
 
-        public SelectExpression(Type type, IEnumerable<string> fields, Expression from, Expression where)
+        public SelectExpression(Type type, IEnumerable<string> fields, Expression from, Expression where, IEnumerable<OrderExpression> order)
             : base((ExpressionType)MongoExpressionType.Select, type)
         {
             _fields = fields as ReadOnlyCollection<string>;
             if (_fields == null)
                 _fields = new List<string>(fields).AsReadOnly();
+
+            _order = order as ReadOnlyCollection<OrderExpression>;
+            if (_order == null && order != null)
+                _order = new List<OrderExpression>(order).AsReadOnly();
 
             _from = from;
             _where = where;
