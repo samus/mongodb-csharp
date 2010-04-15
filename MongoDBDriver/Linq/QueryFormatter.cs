@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 
 using MongoDB.Driver.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace MongoDB.Driver.Linq
 {
@@ -47,32 +48,27 @@ namespace MongoDB.Driver.Linq
             if (right.NodeType != ExpressionType.Constant)
                 throw new InvalidQueryException();
 
-            _queryObject.PushConditionScope(((FieldExpression)left).Name);
+            var fieldName = ((FieldExpression)left).Name;
+
             switch (b.NodeType)
             {
                 case ExpressionType.Equal:
-                    _queryObject.AddCondition(EvaluateConstant((ConstantExpression)right));
-                    _queryObject.PopConditionScope();
+                    _queryObject.AddCondition(fieldName, EvaluateConstant((ConstantExpression)right));
                     break;
                 case ExpressionType.GreaterThan:
-                    _queryObject.AddCondition(Op.GreaterThan(EvaluateConstant((ConstantExpression)right)));
-                    _queryObject.PopConditionScope();
+                    _queryObject.AddCondition(fieldName, Op.GreaterThan(EvaluateConstant((ConstantExpression)right)));
                     break;
                 case ExpressionType.GreaterThanOrEqual:
-                    _queryObject.AddCondition(Op.GreaterThanOrEqual(EvaluateConstant((ConstantExpression)right)));
-                    _queryObject.PopConditionScope();
+                    _queryObject.AddCondition(fieldName, Op.GreaterThanOrEqual(EvaluateConstant((ConstantExpression)right)));
                     break;
                 case ExpressionType.LessThan:
-                    _queryObject.AddCondition(Op.LessThan(EvaluateConstant((ConstantExpression)right)));
-                    _queryObject.PopConditionScope();
+                    _queryObject.AddCondition(fieldName, Op.LessThan(EvaluateConstant((ConstantExpression)right)));
                     break;
                 case ExpressionType.LessThanOrEqual:
-                    _queryObject.AddCondition(Op.LessThanOrEqual(EvaluateConstant((ConstantExpression)right)));
-                    _queryObject.PopConditionScope();
+                    _queryObject.AddCondition(fieldName, Op.LessThanOrEqual(EvaluateConstant((ConstantExpression)right)));
                     break;
                 case ExpressionType.NotEqual:
-                    _queryObject.AddCondition(Op.NotEqual(EvaluateConstant((ConstantExpression)right)));
-                    _queryObject.PopConditionScope();
+                    _queryObject.AddCondition(fieldName, Op.NotEqual(EvaluateConstant((ConstantExpression)right)));
                     break;
             }
 
@@ -81,35 +77,43 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            var field = m.Object as FieldExpression;
-            if(field != null)
+            if (m.Method.DeclaringType == typeof(string))
             {
-                _queryObject.PushConditionScope(field.Name);
-                if (m.Method.DeclaringType == typeof(string))
+                var field = m.Object as FieldExpression;
+                if (field == null)
+                    throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
+
+                var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
+                if (m.Method.Name == "StartsWith")
+                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format("{0}.*", value)));
+                else if (m.Method.Name == "EndsWith")
+                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format(".*{0}", value)));
+                else if (m.Method.Name == "Contains")
+                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format(".*{0}.*", value)));
+                else
+                    throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
+
+                return m;
+            }
+            else if (m.Method.DeclaringType == typeof(Regex))
+            {
+                if (m.Method.Name == "IsMatch")
                 {
-                    if (m.Method.Name == "StartsWith")
-                    {
-                        var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
-                        _queryObject.AddCondition(new MongoRegex(string.Format("{0}.*", value)));
-                        _queryObject.PopConditionScope();
-                        return m;
-                    }
-                    else if (m.Method.Name == "EndsWith")
-                    {
-                        var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
-                        _queryObject.AddCondition(new MongoRegex(string.Format(".*{0}", value)));
-                        _queryObject.PopConditionScope();
-                        return m;
-                    }
-                    else if (m.Method.Name == "Contains")
-                    {
-                        var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
-                        _queryObject.AddCondition(new MongoRegex(string.Format(".*{0}.*", value)));
-                        _queryObject.PopConditionScope();
-                        return m;
-                    }
+                    var field = m.Arguments[0] as FieldExpression;
+                    if (field == null)
+                        throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
+
+                    string value = null;
+                    if(m.Object == null)
+                        value = (string)((ConstantExpression)Visit(m.Arguments[1])).Value;
+                    else
+                        throw new InvalidQueryException(string.Format("Only the static Regex.IsMatch is supported.", m.Method.Name));
+
+                    _queryObject.AddCondition(field.Name, new MongoRegex(value));
+                    return m;
                 }
             }
+
             throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
         }
 

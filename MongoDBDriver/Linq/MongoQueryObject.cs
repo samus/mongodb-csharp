@@ -84,6 +84,13 @@ namespace MongoDB.Driver.Linq
             _scopes.Peek().AddCondition(value);
         }
 
+        public void AddCondition(string name, object value)
+        {
+            PushConditionScope(name);
+            AddCondition(value);
+            PopConditionScope();
+        }
+
         public void AddOrderBy(string name, int value)
         {
             if (!_hasOrder)
