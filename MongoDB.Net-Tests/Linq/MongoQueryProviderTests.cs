@@ -164,5 +164,47 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("Age", Op.GreaterThan(21)), queryObject.Query);
         }
+
+        [Test]
+        public void String_StartsWith()
+        {
+            var people = from p in collection.Linq()
+                         where p.FirstName.StartsWith("J")
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("FirstName", new MongoRegex("J.*")), queryObject.Query);
+        }
+
+        [Test]
+        public void String_EndsWith()
+        {
+            var people = from p in collection.Linq()
+                         where p.FirstName.EndsWith("e")
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("FirstName", new MongoRegex(".*e")), queryObject.Query);
+        }
+
+        [Test]
+        public void String_Contains()
+        {
+            var people = from p in collection.Linq()
+                         where p.FirstName.Contains("o")
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("FirstName", new MongoRegex(".*o.*")), queryObject.Query);
+        }
     }
 }

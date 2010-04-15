@@ -81,6 +81,35 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
+            var field = m.Object as FieldExpression;
+            if(field != null)
+            {
+                _queryObject.PushConditionScope(field.Name);
+                if (m.Method.DeclaringType == typeof(string))
+                {
+                    if (m.Method.Name == "StartsWith")
+                    {
+                        var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
+                        _queryObject.AddCondition(new MongoRegex(string.Format("{0}.*", value)));
+                        _queryObject.PopConditionScope();
+                        return m;
+                    }
+                    else if (m.Method.Name == "EndsWith")
+                    {
+                        var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
+                        _queryObject.AddCondition(new MongoRegex(string.Format(".*{0}", value)));
+                        _queryObject.PopConditionScope();
+                        return m;
+                    }
+                    else if (m.Method.Name == "Contains")
+                    {
+                        var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
+                        _queryObject.AddCondition(new MongoRegex(string.Format(".*{0}.*", value)));
+                        _queryObject.PopConditionScope();
+                        return m;
+                    }
+                }
+            }
             throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
         }
 
