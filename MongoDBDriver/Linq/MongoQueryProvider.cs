@@ -106,7 +106,7 @@ namespace MongoDB.Driver.Linq
                     return false;
             }
             MethodCallExpression mc = expression as MethodCallExpression;
-            if (mc != null && (mc.Method.DeclaringType == typeof(Enumerable) || mc.Method.DeclaringType == typeof(Queryable) || mc.Method.DeclaringType == typeof(MongoQueryable) || typeof(Document).IsAssignableFrom(mc.Method.DeclaringType)))
+            if (mc != null && (mc.Method.DeclaringType == typeof(Enumerable) || mc.Method.DeclaringType == typeof(Queryable) || mc.Method.DeclaringType == typeof(MongoQueryable)))
             {
                 return false;
             }

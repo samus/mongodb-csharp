@@ -6,6 +6,7 @@ using System.Text;
 using MongoDB.Driver.Linq;
 
 using NUnit.Framework;
+using System.Text.RegularExpressions;
 
 namespace MongoDB.Driver.Tests.Linq
 {
