@@ -30,6 +30,15 @@ namespace MongoDB.Driver.Linq
             return Visit(expression);
         }
 
+        protected override Expression VisitBinary(BinaryExpression b)
+        {
+            //reverse the conditionals if the left one is a constant to make things easier in the formatter...
+            if (b.Left.NodeType == ExpressionType.Constant)
+                b = Expression.MakeBinary(b.NodeType, b.Right, b.Left, b.IsLiftedToNull, b.Method, b.Conversion);
+
+            return base.VisitBinary(b);
+        }
+
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
             if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))

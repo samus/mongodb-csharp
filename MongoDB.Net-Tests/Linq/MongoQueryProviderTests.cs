@@ -47,7 +47,7 @@ namespace MongoDB.Driver.Tests.Linq
         [Test]
         public void SingleEqualConstraint()
         {
-            var people = collection.Linq().Where(p => p.FirstName == "Jack");
+            var people = collection.Linq().Where(p => "Jack" == p.FirstName);
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
 
