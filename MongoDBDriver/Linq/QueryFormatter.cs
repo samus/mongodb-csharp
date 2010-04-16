@@ -22,57 +22,48 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
-            if (b.NodeType == ExpressionType.And || b.NodeType == ExpressionType.AndAlso)
-            {
-                Visit(b.Left);
-                Visit(b.Right);
-                return b;
-            }
-
-            var left = b.Left;
-            var right = b.Right;
-
-            //xor operation
-            if (left.NodeType != (ExpressionType)MongoExpressionType.Field && right.NodeType != (ExpressionType)MongoExpressionType.Field)
-                throw new InvalidQueryException();
-            else if (left.NodeType == (ExpressionType)MongoExpressionType.Field && right.NodeType == (ExpressionType)MongoExpressionType.Field)
-                throw new InvalidQueryException();
-
-            if (right.NodeType == (ExpressionType)MongoExpressionType.Field)
-            {
-                left = b.Right;
-                right = b.Left;
-                //reverse the order so that the field is on the left side...
-            }
-
-            if (right.NodeType != ExpressionType.Constant)
-                throw new InvalidQueryException();
-
-            var fieldName = ((FieldExpression)left).Name;
+            int scopeDepth = _queryObject.ScopeDepth;
+            Visit(b.Left);
 
             switch (b.NodeType)
             {
                 case ExpressionType.Equal:
-                    _queryObject.AddCondition(fieldName, EvaluateConstant((ConstantExpression)right));
                     break;
                 case ExpressionType.GreaterThan:
-                    _queryObject.AddCondition(fieldName, Op.GreaterThan(EvaluateConstant((ConstantExpression)right)));
+                    _queryObject.PushConditionScope("$gt");
                     break;
                 case ExpressionType.GreaterThanOrEqual:
-                    _queryObject.AddCondition(fieldName, Op.GreaterThanOrEqual(EvaluateConstant((ConstantExpression)right)));
+                    _queryObject.PushConditionScope("$gte");
                     break;
                 case ExpressionType.LessThan:
-                    _queryObject.AddCondition(fieldName, Op.LessThan(EvaluateConstant((ConstantExpression)right)));
+                    _queryObject.PushConditionScope("$lt");
                     break;
                 case ExpressionType.LessThanOrEqual:
-                    _queryObject.AddCondition(fieldName, Op.LessThanOrEqual(EvaluateConstant((ConstantExpression)right)));
+                    _queryObject.PushConditionScope("$lte");
                     break;
                 case ExpressionType.NotEqual:
-                    _queryObject.AddCondition(fieldName, Op.NotEqual(EvaluateConstant((ConstantExpression)right)));
+                    _queryObject.PushConditionScope("$ne");
                     break;
             }
 
+            Visit(b.Right);
+
+            while (_queryObject.ScopeDepth > scopeDepth)
+                _queryObject.PopConditionScope();
+
             return b;
+        }
+
+        protected override Expression VisitConstant(ConstantExpression c)
+        {
+            _queryObject.AddCondition(c.Value);
+            return c;
+        }
+
+        protected override Expression VisitField(FieldExpression f)
+        {
+            _queryObject.PushConditionScope(f.Name);
+            return f;
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
@@ -82,17 +73,19 @@ namespace MongoDB.Driver.Linq
                 var field = m.Object as FieldExpression;
                 if (field == null)
                     throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
+                Visit(field);
 
-                var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
+                var value = EvaluateConstant<string>(m.Arguments[0]);
                 if (m.Method.Name == "StartsWith")
-                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format("^{0}", value)));
+                    _queryObject.AddCondition(new MongoRegex(string.Format("^{0}", value)));
                 else if (m.Method.Name == "EndsWith")
-                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format("{0}$", value)));
+                    _queryObject.AddCondition(new MongoRegex(string.Format("{0}$", value)));
                 else if (m.Method.Name == "Contains")
-                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format("{0}", value)));
+                    _queryObject.AddCondition(new MongoRegex(string.Format("{0}", value)));
                 else
                     throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
 
+                _queryObject.PopConditionScope();
                 return m;
             }
             else if (m.Method.DeclaringType == typeof(Regex))
@@ -103,13 +96,15 @@ namespace MongoDB.Driver.Linq
                     if (field == null)
                         throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
 
+                    Visit(field);
                     string value = null;
-                    if(m.Object == null)
-                        value = (string)((ConstantExpression)Visit(m.Arguments[1])).Value;
+                    if (m.Object == null)
+                        value = EvaluateConstant<string>(m.Arguments[1]);
                     else
                         throw new InvalidQueryException(string.Format("Only the static Regex.IsMatch is supported.", m.Method.Name));
 
-                    _queryObject.AddCondition(field.Name, new MongoRegex(value));
+                    _queryObject.AddCondition(new MongoRegex(value));
+                    _queryObject.PopConditionScope();
                     return m;
                 }
             }
@@ -139,10 +134,10 @@ namespace MongoDB.Driver.Linq
             }
 
             if (s.Limit != null)
-                _queryObject.NumberToLimit = (int)((ConstantExpression)Visit(s.Limit)).Value;
+                _queryObject.NumberToLimit = EvaluateConstant<int>(s.Limit);
 
             if (s.Skip!= null)
-                _queryObject.NumberToSkip = (int)((ConstantExpression)Visit(s.Skip)).Value;
+                _queryObject.NumberToSkip = EvaluateConstant<int>(s.Skip);
 
             return s;
         }
@@ -182,9 +177,12 @@ namespace MongoDB.Driver.Linq
             return u;
         }
 
-        private static object EvaluateConstant(ConstantExpression c)
+        private static T EvaluateConstant<T>(Expression e)
         {
-            return c.Value;
+            if (e.NodeType != ExpressionType.Constant)
+                throw new ArgumentException("Expression must be a constant.");
+
+            return (T)((ConstantExpression)e).Value;
         }
 
         private static Expression StripQuotes(Expression e)

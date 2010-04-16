@@ -69,6 +69,15 @@ namespace MongoDB.Driver.Linq
             get { return _query; }
         }
 
+        /// <summary>
+        /// Gets the scope depth.
+        /// </summary>
+        /// <value>The scope depth.</value>
+        public int ScopeDepth
+        {
+            get { return _scopes.Count; }
+        }
+
         public MongoQueryObject()
         {
             Fields = new Document();
@@ -114,6 +123,9 @@ namespace MongoDB.Driver.Linq
         public void PopConditionScope()
         {
             var scope = _scopes.Pop();
+            if (scope.Value == null)
+                return;
+
             var doc = _query;
             if (_hasOrder)
                 doc = (Document)doc["query"];
