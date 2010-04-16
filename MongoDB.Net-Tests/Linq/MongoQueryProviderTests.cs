@@ -177,7 +177,7 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("FirstName", new MongoRegex("J.*")), queryObject.Query);
+            Assert.AreEqual(new Document("FirstName", new MongoRegex("^J")), queryObject.Query);
         }
 
         [Test]
@@ -191,7 +191,7 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("FirstName", new MongoRegex(".*e")), queryObject.Query);
+            Assert.AreEqual(new Document("FirstName", new MongoRegex("e$")), queryObject.Query);
         }
 
         [Test]
@@ -205,21 +205,21 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("FirstName", new MongoRegex(".*o.*")), queryObject.Query);
+            Assert.AreEqual(new Document("FirstName", new MongoRegex("o")), queryObject.Query);
         }
 
         [Test]
         public void Regex_IsMatch()
         {
             var people = from p in collection.Linq()
-                         where Regex.IsMatch(p.FirstName, "Joe.*")
+                         where Regex.IsMatch(p.FirstName, "Joe")
                          select p;
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("FirstName", new MongoRegex("Joe.*")), queryObject.Query);
+            Assert.AreEqual(new Document("FirstName", new MongoRegex("Joe")), queryObject.Query);
         }
     }
 }

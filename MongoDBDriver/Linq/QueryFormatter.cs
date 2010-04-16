@@ -85,11 +85,11 @@ namespace MongoDB.Driver.Linq
 
                 var value = (string)((ConstantExpression)Visit(m.Arguments[0])).Value;
                 if (m.Method.Name == "StartsWith")
-                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format("{0}.*", value)));
+                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format("^{0}", value)));
                 else if (m.Method.Name == "EndsWith")
-                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format(".*{0}", value)));
+                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format("{0}$", value)));
                 else if (m.Method.Name == "Contains")
-                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format(".*{0}.*", value)));
+                    _queryObject.AddCondition(field.Name, new MongoRegex(string.Format("{0}", value)));
                 else
                     throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
 
