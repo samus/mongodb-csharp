@@ -9,7 +9,7 @@ using MongoDB.Driver.Linq.Expressions;
 
 namespace MongoDB.Driver.Linq
 {
-    internal class QueryBinder : ExpressionVisitor
+    internal class QueryBinder : MongoExpressionVisitor
     {
         private Dictionary<ParameterExpression, Expression> _map;
         private FieldProjector _projector;
@@ -80,20 +80,6 @@ namespace MongoDB.Driver.Linq
                 }
                 throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
             }
-            else if (m.Method.DeclaringType == typeof(MongoQueryable))
-            {
-                if (m.Method.Name == "Key")
-                {
-                    return new FieldExpression((string)((ConstantExpression)m.Arguments[1]).Value, m);
-                }
-            }
-            else if (typeof(Document).IsAssignableFrom(m.Method.DeclaringType))
-            {
-                if (m.Method.Name == "get_Item") //TODO: does this work for VB?
-                {
-                    return new FieldExpression((string)((ConstantExpression)m.Arguments[0]).Value, m);
-                }
-            }
             return base.VisitMethodCall(m);
         }
 
@@ -106,8 +92,6 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
-            var fieldName = GetFieldName(m);
-
             var source = Visit(m.Expression);
             switch (source.NodeType)
             {
@@ -133,16 +117,10 @@ namespace MongoDB.Driver.Linq
                     break;
             }
 
-            Expression ret;
             if (source == m.Expression)
-                ret = m;
-            else
-                ret = Expression.MakeMemberAccess(source, m.Member);
+                return m;
 
-            if (fieldName != null)
-                ret = new FieldExpression(fieldName, ret);
-
-            return ret;
+            return m = Expression.MakeMemberAccess(source, m.Member);
         }
 
         protected override Expression VisitParameter(ParameterExpression p)
@@ -313,23 +291,6 @@ namespace MongoDB.Driver.Linq
             return e;
         }
 
-        private static string GetFieldName(MemberExpression m)
-        {
-            var memberNames = new Stack<string>();
-            var p = m;
-            while (p.Expression != null && p.Expression.NodeType == ExpressionType.MemberAccess)
-            {
-                memberNames.Push(p.Member.Name);
-                p = (MemberExpression)p.Expression;
-            }
-
-            if (p.Expression != null && p.Expression.NodeType == ExpressionType.Parameter)
-            {
-                memberNames.Push(p.Member.Name);
-                return string.Join(".", memberNames.ToArray());
-            }
-
-            return null;
-        }
+        
     }
 }

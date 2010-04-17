@@ -87,13 +87,13 @@ namespace MongoDB.Driver.Linq
         internal MongoQueryObject GetQueryObject(Expression expression)
         {
             expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
+            expression = new FieldBinder().Bind(expression);
             var projection = (ProjectionExpression)new QueryBinder(this, expression).Bind(expression);
             var queryObject = new QueryFormatter().Format(projection.Source);
             queryObject.Projector = new ProjectionBuilder().Build(queryObject.DocumentType, projection.Projector);
             queryObject.Aggregator = projection.Aggregator;
             return queryObject;
         }
-
 
         private bool CanBeEvaluatedLocally(Expression expression)
         {

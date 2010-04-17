@@ -35,6 +35,10 @@ namespace MongoDB.Driver.Linq.Expressions
 
         protected virtual Expression VisitField(FieldExpression f)
         {
+            var exp = Visit(f.Expression);
+            if (exp != f.Expression)
+                f = new FieldExpression(f.Name, exp);
+
             return f;
         }
 

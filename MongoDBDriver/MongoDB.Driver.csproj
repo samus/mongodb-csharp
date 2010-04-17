@@ -114,6 +114,7 @@
     <Compile Include="Linq\Expressions\Replacer.cs" />
     <Compile Include="Linq\Expressions\SelectExpression.cs" />
     <Compile Include="Linq\Expressions\ExpressionVisitor.cs" />
+    <Compile Include="Linq\FieldBinder.cs" />
     <Compile Include="Linq\IMongoQueryable.cs" />
     <Compile Include="Linq\InvalidQueryException.cs" />
     <Compile Include="Linq\LinqExtensions.cs" />

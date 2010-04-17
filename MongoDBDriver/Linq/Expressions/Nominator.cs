@@ -46,5 +46,10 @@ namespace MongoDB.Driver.Linq.Expressions
             }
             return expression;
         }
+
+        protected override Expression VisitField(FieldExpression f)
+        {
+            return f;
+        }
     }
 }
