@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using MongoDB.Driver.Linq;
 
 using NUnit.Framework;
-using System.Text.RegularExpressions;
 
 namespace MongoDB.Driver.Tests.Linq
 {
@@ -20,6 +20,13 @@ namespace MongoDB.Driver.Tests.Linq
             public string LastName { get; set; }
 
             public int Age { get; set; }
+
+            public List<Address> Addresses { get; set; }
+        }
+
+        private class Address
+        {
+            public string City { get; set; }
         }
 
         private IMongoCollection<Person> collection;
@@ -234,6 +241,20 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("FirstName", new MongoRegex("Joe")), queryObject.Query);
+        }
+
+        [Test]
+        public void NestedCollection_Count()
+        {
+            var people = from p in collection.Linq()
+                         where p.Addresses.Count == 10
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("Addresses", Op.Size(10)), queryObject.Query);
         }
     }
 }
