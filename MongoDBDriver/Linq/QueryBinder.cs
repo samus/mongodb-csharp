@@ -43,42 +43,46 @@ namespace MongoDB.Driver.Linq
         {
             if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
             {
-                switch (m.Method.Name)
+                //if we are running off a field expression, things get handled in the QueryFormatter
+                if ((m.Arguments[0].NodeType != (ExpressionType)MongoExpressionType.Field))
                 {
-                    case "Where":
-                        return BindWhere(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
-                    case "Select":
-                        return BindSelect(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
-                    case "OrderBy":
-                        return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Ascending);
-                    case "OrderByDescending":
-                        return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Descending);
-                    case "ThenBy":
-                        return BindThenBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Ascending);
-                    case "ThenByDescending":
-                        return BindThenBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Descending);
-                    case "Take":
-                        if (m.Arguments.Count == 2)
-                            return this.BindTake(m.Arguments[0], m.Arguments[1]);
-                        break;
-                    case "Skip":
-                        if (m.Arguments.Count == 2)
-                            return this.BindSkip(m.Arguments[0], m.Arguments[1]);
-                        break;
-                    case "First":
-                    case "FirstOrDefault":
-                    case "Single":
-                    case "SingleOrDefault":
-                        if(m.Arguments.Count == 1)
-                            return BindFirstOrSingle(m.Arguments[0], null, m.Method.Name, m == _root);
-                        else if(m.Arguments.Count == 2)
-                        {
-                            var predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
-                            return BindFirstOrSingle(m.Arguments[0], predicate, m.Method.Name, m == _root);
-                        }
-                        break;
+                    switch (m.Method.Name)
+                    {
+                        case "Where":
+                            return BindWhere(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
+                        case "Select":
+                            return BindSelect(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
+                        case "OrderBy":
+                            return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Ascending);
+                        case "OrderByDescending":
+                            return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Descending);
+                        case "ThenBy":
+                            return BindThenBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Ascending);
+                        case "ThenByDescending":
+                            return BindThenBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Descending);
+                        case "Take":
+                            if (m.Arguments.Count == 2)
+                                return this.BindTake(m.Arguments[0], m.Arguments[1]);
+                            break;
+                        case "Skip":
+                            if (m.Arguments.Count == 2)
+                                return this.BindSkip(m.Arguments[0], m.Arguments[1]);
+                            break;
+                        case "First":
+                        case "FirstOrDefault":
+                        case "Single":
+                        case "SingleOrDefault":
+                            if (m.Arguments.Count == 1)
+                                return BindFirstOrSingle(m.Arguments[0], null, m.Method.Name, m == _root);
+                            else if (m.Arguments.Count == 2)
+                            {
+                                var predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                                return BindFirstOrSingle(m.Arguments[0], predicate, m.Method.Name, m == _root);
+                            }
+                            break;
+                    }
+                    throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
                 }
-                throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
             }
             return base.VisitMethodCall(m);
         }
@@ -291,6 +295,6 @@ namespace MongoDB.Driver.Linq
             return e;
         }
 
-        
+
     }
 }

@@ -256,5 +256,17 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("Addresses", Op.Size(10)), queryObject.Query);
         }
+
+        [Test]
+        public void NestedCollection_Queryable_Count()
+        {
+            var people = collection.Linq().Where(x => x.Addresses.Count() == 10);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("Addresses", Op.Size(10)), queryObject.Query);
+        }
     }
 }

@@ -120,7 +120,21 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Method.DeclaringType == typeof(string))
+            if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
+            {
+                switch (m.Method.Name)
+                {
+                    case "Count":
+                        if (m.Arguments.Count == 1)
+                        {
+                            Visit(m.Arguments[0]);
+                            _queryObject.PushConditionScope("$size");
+                            return m;
+                        }
+                        throw new NotSupportedException("The method Count with a predicate is not supported for field.");
+                }
+            }
+            else if (m.Method.DeclaringType == typeof(string))
             {
                 var field = m.Object as FieldExpression;
                 if (field == null)
