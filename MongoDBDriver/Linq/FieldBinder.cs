@@ -13,7 +13,7 @@ namespace MongoDB.Driver.Linq
     {
         private static HashSet<Type> _collectionTypes = new HashSet<Type>()
         {
-            typeof(ICollection), typeof(ICollection<>), typeof(IList), typeof(IList<>)
+            typeof(ICollection), typeof(ICollection<>)
         };
         public Expression Bind(Expression expression)
         {

@@ -6,6 +6,7 @@ using System.Text;
 
 using MongoDB.Driver.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace MongoDB.Driver.Linq
 {
@@ -44,6 +45,11 @@ namespace MongoDB.Driver.Linq
                 case ExpressionType.NotEqual:
                     _queryObject.PushConditionScope("$ne");
                     break;
+                case ExpressionType.And:
+                case ExpressionType.AndAlso:
+                    break;
+                default:
+                    throw new NotSupportedException(string.Format("The operation {0} is not supported.", b.NodeType));
             }
 
             Visit(b.Right);
@@ -68,9 +74,40 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
-            if (m.Member.DeclaringType == typeof(string))
+            var type = m.Member.DeclaringType;
+            if (m.Member.DeclaringType.IsGenericType)
+                type = m.Member.DeclaringType.GetGenericTypeDefinition();
+
+            if (type == typeof(string))
             {
                 if (m.Member.Name == "Length")
+                {
+                    Visit(m.Expression);
+                    _queryObject.PushConditionScope("$size");
+                    return m;
+                }
+            }
+            else if (type == typeof(Array))
+            {
+                if (m.Member.Name == "Length")
+                {
+                    Visit(m.Expression);
+                    _queryObject.PushConditionScope("$size");
+                    return m;
+                }
+            }
+            else if (typeof(ICollection).IsAssignableFrom(type))
+            {
+                if (m.Member.Name == "Count")
+                {
+                    Visit(m.Expression);
+                    _queryObject.PushConditionScope("$size");
+                    return m;
+                }
+            }
+            else if (typeof(ICollection<>).IsAssignableFrom(type))
+            {
+                if (m.Member.Name == "Count")
                 {
                     Visit(m.Expression);
                     _queryObject.PushConditionScope("$size");
