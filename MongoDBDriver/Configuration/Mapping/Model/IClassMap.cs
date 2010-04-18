@@ -89,6 +89,12 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         IEnumerable<PersistentMemberMap> MemberMaps { get; }
 
         /// <summary>
+        /// Gets the sub class maps.
+        /// </summary>
+        /// <value>The sub class maps.</value>
+        IEnumerable<SubClassMap> SubClassMaps { get; }
+
+        /// <summary>
         /// Creates an instance of the entity.
         /// </summary>
         /// <returns></returns>

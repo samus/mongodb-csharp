@@ -52,17 +52,6 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         }
 
         /// <summary>
-        /// Gets a value indicating whether this class map is polymorphic.
-        /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this class map is polymorphic; otherwise, <c>false</c>.
-        /// </value>
-        public override bool IsPolymorphic
-        {
-            get { return false; }
-        }
-
-        /// <summary>
         /// Gets a value indicating whether this class map is a subclass.
         /// </summary>
         /// <value>
@@ -99,14 +88,5 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         public SubClassMap(Type classType)
             : base(classType)
         { }
-
-        /// <summary>
-        /// Gets the class map from discriminator.
-        /// </summary>
-        /// <param name="discriminator">The discriminator.</param>
-        /// <returns></returns>
-        public override IClassMap GetClassMapFromDiscriminator(object discriminator){
-            return Discriminator.Equals(discriminator) ? this : null;
-        }
     }
 }

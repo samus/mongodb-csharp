@@ -184,10 +184,10 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
         public ConventionProfile()
         {
             _aliasConvention = new DelegateAliasConvention(m => m.Name);
-            _collectionNameConvention = new DelegateCollectionNameConvention(delegate(Type t) { return t.Name; });
+            _collectionNameConvention = new DelegateCollectionNameConvention(t =>  t.Name);
             _collectionAdapterConvention = DefaultCollectionAdapterConvention.Instance;
             _defaultValueConvention = DefaultDefaultValueConvention.Instance;
-            _discriminatorConvention = new DelegateDiscriminatorConvention(delegate(Type t) { return t.Name; });
+            _discriminatorConvention = new DelegateDiscriminatorConvention(t => t.Name);
             _discriminatorAliasConvention = new DelegateDiscriminatorAliasConvention(delegate(Type t) { return "_t"; });
             _extendedPropertiesConvention = new NamedExtendedPropertiesConvention("ExtendedProperties");
             _idConvention = new NamedIdConvention("Id");

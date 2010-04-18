@@ -18,11 +18,12 @@ namespace MongoDB.Driver.Serialization.Builders
             get
             {
                 var profile = new AutoMappingProfile();
-                profile.IsSubClass = t => t == typeof(ClassA) || t == typeof(ClassB);
+                profile.IsSubClass = t => t.IsSubclassOf(typeof(BaseClass));
                 var store = new AutoMappingStore(profile);
                 //eagerly automap so they are known at deserialization time...
                 store.GetClassMap(typeof(ClassA));
                 store.GetClassMap(typeof(ClassB));
+                store.GetClassMap(typeof(ClassD));
                 return store;
             }
         }
@@ -42,11 +43,16 @@ namespace MongoDB.Driver.Serialization.Builders
             public string C { get; set; }
         }
 
-        [Test]
-        public void CanDeserializeDirectly()
+        public class ClassD : ClassA
         {
-            //{_t: "ClassB", A: "a", C: "c" }
-            const string bson = "JgAAAAJfdAAHAAAAQ2xhc3NCAAJBAAIAAABhAAJDAAIAAABjAAA=";
+            public string E { get; set; }
+        }
+
+        [Test]
+        public void CanDeserializeMiddleClassDirectly()
+        {
+            var doc = new Document("_t", "ClassB").Add("A", "a").Add("C", "c");
+            var bson = Serialize(doc);
             var classB = Deserialize<ClassB>(bson);
             Assert.IsInstanceOfType(typeof(ClassB), classB);
             Assert.AreEqual("a", classB.A);
@@ -54,14 +60,26 @@ namespace MongoDB.Driver.Serialization.Builders
         }
 
         [Test]
-        public void CanDeserializeIndirectly()
+        public void CanDeserializeMiddleClassIndirectly()
         {
-            //{_t: "ClassB", A: "a", C: "c" }
-            const string bson = "JgAAAAJfdAAHAAAAQ2xhc3NCAAJBAAIAAABhAAJDAAIAAABjAAA=";
+            var doc = new Document("_t", "ClassB").Add("A", "a").Add("C", "c");
+            var bson = Serialize(doc);
             var classB = Deserialize<BaseClass>(bson);
             Assert.IsInstanceOfType(typeof(ClassB), classB);
             Assert.AreEqual("a", classB.A);
             Assert.AreEqual("c", ((ClassB)classB).C);
+        }
+
+        [Test]
+        public void CanDeserializeLeafClassIndirectly()
+        {
+            var doc = new Document("_t", new [] { "ClassA", "ClassD" }).Add("A", "a").Add("B", "b").Add("E", "e");
+            var bson = Serialize(doc);
+            var classD = Deserialize<BaseClass>(bson);
+            Assert.IsInstanceOfType(typeof(ClassD), classD);
+            Assert.AreEqual("a", classD.A);
+            Assert.AreEqual("b", ((ClassA)classD).B);
+            Assert.AreEqual("e", ((ClassD)classD).E);
         }
     }
 }
