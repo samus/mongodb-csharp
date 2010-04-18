@@ -209,6 +209,20 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        public void String_Length()
+        {
+            var people = from p in collection.Linq()
+                         where p.FirstName.Length == 3
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("FirstName", Op.Size(3)), queryObject.Query);
+        }
+
+        [Test]
         public void Regex_IsMatch()
         {
             var people = from p in collection.Linq()

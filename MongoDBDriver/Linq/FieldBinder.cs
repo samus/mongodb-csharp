@@ -5,11 +5,16 @@ using System.Linq.Expressions;
 using System.Text;
 
 using MongoDB.Driver.Linq.Expressions;
+using System.Collections;
 
 namespace MongoDB.Driver.Linq
 {
     internal class FieldBinder : ExpressionVisitor
     {
+        private static HashSet<Type> _collectionTypes = new HashSet<Type>()
+        {
+            typeof(ICollection), typeof(ICollection<>), typeof(IList), typeof(IList<>)
+        };
         public Expression Bind(Expression expression)
         {
             return Visit(expression);
@@ -17,7 +22,8 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMemberAccess(System.Linq.Expressions.MemberExpression m)
         {
-            if (CanBeField(m.Member.DeclaringType))
+            var declaringType = m.Member.DeclaringType;
+            if (!IsNativeToMongo(declaringType) && !IsCollection(declaringType))
             {
                 var fieldName = GetFieldName(m);
                 if (fieldName != null)
@@ -69,6 +75,36 @@ namespace MongoDB.Driver.Linq
             }
 
             return null;
+        }
+
+        private static bool IsCollection(Type type)
+        {
+            //HACK: this is going to generally subvert custom objects that implement ICollection or ICollection<T>, 
+            //but are not collections
+            if (type.IsGenericType)
+                type = type.GetGenericTypeDefinition();
+
+            return _collectionTypes.Any(x => x.IsAssignableFrom(type));
+        }
+
+        private static bool IsNativeToMongo(Type type)
+        {
+            //TODO: this code exists here and in BsonClassMapDescriptor.  Should probably be centralized...
+            var typeCode = Type.GetTypeCode(type);
+
+            if (typeCode != TypeCode.Object)
+                return true;
+
+            if (type == typeof(Guid))
+                return true;
+
+            if (type == typeof(Oid))
+                return true;
+
+            if (type == typeof(byte[]))
+                return true;
+
+            return false;
         }
     }
 }

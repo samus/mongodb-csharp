@@ -66,6 +66,21 @@ namespace MongoDB.Driver.Linq
             return f;
         }
 
+        protected override Expression VisitMemberAccess(MemberExpression m)
+        {
+            if (m.Member.DeclaringType == typeof(string))
+            {
+                if (m.Member.Name == "Length")
+                {
+                    Visit(m.Expression);
+                    _queryObject.PushConditionScope("$size");
+                    return m;
+                }
+            }
+
+            throw new NotSupportedException(string.Format("The member {0} is not supported.", m.Member.Name));
+        }
+
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
             if (m.Method.DeclaringType == typeof(string))
