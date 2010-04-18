@@ -64,6 +64,9 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
             if (classMapFinder == null)
                 throw new ArgumentNullException("classMapFinder");
 
+            if (classType.IsInterface)
+                throw new NotSupportedException("Only classes can be mapped currently.");
+
             if (!_filter(classType))
                 return null;
 
@@ -109,14 +112,27 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
             IClassMap superClassMap = classMapFinder(classType.BaseType);
             if (superClassMap == null)
                 throw new InvalidOperationException(string.Format("Unable to find super class map for subclass {0}", classType));
-            if (superClassMap is SubClassMap)
-                throw new NotSupportedException("2-level inheritance hierarchies are not currently supported.");
-            if (classType.IsInterface || classType.IsAbstract)
-                throw new NotSupportedException("Only concrete classes can be subclasses.");
 
             SubClassMap subClassMap = new SubClassMap(classType);
-            ((ClassMap)superClassMap).AddSubClassMap(subClassMap);
-            subClassMap.Discriminator = _profile.GetDiscriminator(classType);
+            ((ClassMapBase)superClassMap).AddSubClassMap(subClassMap);
+            var discriminator = _profile.GetDiscriminator(classType);
+            var parentDiscriminator = superClassMap.Discriminator;
+            if (parentDiscriminator == null)
+                subClassMap.Discriminator = discriminator;
+            else
+            {
+                Array array = null;
+                if (parentDiscriminator.GetType().IsArray)
+                    array = Array.CreateInstance(typeof(object), ((Array)parentDiscriminator).Length + 1);
+                else
+                {
+                    array = Array.CreateInstance(typeof(object), 2);
+                    array.SetValue(parentDiscriminator, 0);
+                }
+
+                array.SetValue(discriminator, array.Length - 1);
+                subClassMap.Discriminator = array;
+            }
 
             foreach (MemberInfo member in _profile.FindMembers(classType))
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Collections;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
@@ -11,6 +12,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
     public abstract class ClassMapBase : IClassMap
     {
         private readonly List<PersistentMemberMap> _memberMaps;
+        private readonly List<SubClassMap> _subClassMaps;
 
         /// <summary>
         /// Gets the type of class to which this map pertains.
@@ -85,7 +87,10 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// <value>
         /// 	<c>true</c> if this class map is polymorphic; otherwise, <c>false</c>.
         /// </value>
-        public abstract bool IsPolymorphic { get; }
+        public virtual bool IsPolymorphic
+        {
+            get { return _subClassMaps.Count > 0; }
+        }
 
         /// <summary>
         /// Gets a value indicating whether this class map is a subclass.
@@ -101,7 +106,16 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// <value>The member maps.</value>
         public virtual IEnumerable<PersistentMemberMap> MemberMaps
         {
-            get { return new ReadOnlyCollection<PersistentMemberMap>(_memberMaps); }
+            get { return _memberMaps.AsReadOnly(); }
+        }
+
+        /// <summary>
+        /// Gets the sub class maps.
+        /// </summary>
+        /// <value>The sub class maps.</value>
+        public IEnumerable<SubClassMap> SubClassMaps
+        {
+            get { return _subClassMaps.AsReadOnly(); }
         }
 
         /// <summary>
@@ -115,6 +129,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
 
             ClassType = classType;
             _memberMaps = new List<PersistentMemberMap>();
+            _subClassMaps = new List<SubClassMap>();
         }
 
         /// <summary>
@@ -138,7 +153,10 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// </summary>
         /// <param name="discriminator">The discriminator.</param>
         /// <returns></returns>
-        public abstract IClassMap GetClassMapFromDiscriminator(object discriminator);
+        public virtual IClassMap GetClassMapFromDiscriminator(object discriminator)
+        {
+            return GetClassMapFromDiscriminator(this, discriminator);
+        }
 
         /// <summary>
         /// Gets the id of the specified entitiy.
@@ -207,6 +225,66 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         internal void AddMemberMaps(IEnumerable<PersistentMemberMap> memberMaps)
         {
             _memberMaps.AddRange(memberMaps);
+        }
+
+        /// <summary>
+        /// Adds the sub class map.
+        /// </summary>
+        /// <param name="subClassMap">The sub class map.</param>
+        internal void AddSubClassMap(SubClassMap subClassMap)
+        {
+            _subClassMaps.Add(subClassMap);
+            subClassMap.SuperClassMap = this;
+        }
+
+        /// <summary>
+        /// Adds the sub class maps.
+        /// </summary>
+        /// <param name="subClassMaps">The sub class maps.</param>
+        internal void AddSubClassMaps(IEnumerable<SubClassMap> subClassMaps)
+        {
+            foreach (var subClassMap in subClassMaps)
+                AddSubClassMap(subClassMap);
+        }
+
+        private IClassMap GetClassMapFromDiscriminator(IClassMap classMap, object discriminator)
+        {
+            if (AreObjectsEqual(classMap.Discriminator, discriminator))
+                return classMap;
+
+            foreach (var subClassMap in classMap.SubClassMaps)
+            {
+                var subSubClassMap = GetClassMapFromDiscriminator(subClassMap, discriminator);
+                if (subSubClassMap != null)
+                    return subSubClassMap;
+            }
+
+            return null;
+        }
+
+        private bool AreObjectsEqual(object a, object b)
+        {
+            if (a == null && b == null)
+                return true;
+            else if (a == null || b == null)
+                return false;
+
+            if (a is IEnumerable && b is IEnumerable)
+            {
+                var aEnum = ((IEnumerable)a).GetEnumerator();
+                var bEnum = ((IEnumerable)b).GetEnumerator();
+                while(aEnum.MoveNext() && bEnum.MoveNext())
+                {
+                    var v = AreObjectsEqual(aEnum.Current, bEnum.Current);
+                    if (!v)
+                        return false;
+                }
+                return true;
+            }
+            else if(a is IEnumerable && b is IEnumerable)
+                return false;
+
+            return a.Equals(b);
         }
     }
 }
