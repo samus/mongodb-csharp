@@ -29,7 +29,7 @@ namespace MongoDB.Driver.Configuration
                     });
 
                 })
-                .Build();
+                .BuildSerializationFactory();
         }
 
     }

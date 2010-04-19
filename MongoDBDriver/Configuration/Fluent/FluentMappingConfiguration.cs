@@ -12,16 +12,35 @@ namespace MongoDB.Driver.Configuration.Fluent
         private List<IAutoMapper> _autoMappers;
         private IAutoMappingProfile _defaultProfile;
         private ClassOverridesMap _overrides;
+        private List<Type> _eagerMaps;
 
-        public FluentMappingConfiguration()
+        internal IAutoMappingProfile DefaultProfile
         {
+            get { return _defaultProfile; }
+        }
+
+        internal IEnumerable<Type> TypesToEagerMap
+        {
+            get { return _eagerMaps; }
+        }
+
+        public FluentMappingConfiguration(IAutoMappingProfile defaultProfile, ClassOverridesMap overrides)
+        {
+            if (defaultProfile == null)
+                throw new ArgumentNullException("defaultProfile");
+            if (overrides == null)
+                throw new ArgumentNullException("overrides");
+
             _autoMappers = new List<IAutoMapper>();
-            _overrides = new ClassOverridesMap();
+            _defaultProfile = defaultProfile;
+            _eagerMaps = new List<Type>();
+            _overrides = overrides;
         }
 
         public void ConfigureDefaultProfile(Action<FluentAutoMappingProfileConfiguration> config)
         {
-            _defaultProfile = new AutoMappingProfile();
+            if(!(_defaultProfile is AutoMappingProfile))
+                _defaultProfile = new AutoMappingProfile();
             var configuration = new FluentAutoMappingProfileConfiguration((AutoMappingProfile)_defaultProfile);
             config(configuration);
         }
@@ -45,23 +64,20 @@ namespace MongoDB.Driver.Configuration.Fluent
             config(configuration);
         }
 
+        public void Map<T>()
+        {
+            _eagerMaps.Add(typeof(T));
+        }
+
         public void SetDefaultProfile(IAutoMappingProfile defaultProfile)
         {
             _defaultProfile = defaultProfile;
         }
 
-        internal IAutoMapper BuildAutoMapper()
+        internal IEnumerable<IAutoMapper> GetAutoMappers()
         {
-            if (_autoMappers.Count > 0)
-            {
-                var aggregate = new AggregateAutoMapper();
-                foreach (var am in _autoMappers)
-                    aggregate.AddAutoMapper(am);
-                aggregate.AddAutoMapper(new AutoMapper(CreateOverridableProfile(_defaultProfile ?? new AutoMappingProfile())));
-                return aggregate;
-            }
-            else
-                return new AutoMapper(CreateOverridableProfile(_defaultProfile ?? new AutoMappingProfile()));
+            foreach (var am in _autoMappers)
+                yield return am;
         }
 
         private IAutoMappingProfile CreateOverridableProfile(IAutoMappingProfile profile)
