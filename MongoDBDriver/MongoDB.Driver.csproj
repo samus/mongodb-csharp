@@ -103,6 +103,12 @@
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
+    <Compile Include="Configuration\Fluently.cs" />
+    <Compile Include="Configuration\Fluent\FluentAutoMappingProfileConfiguration.cs" />
+    <Compile Include="Configuration\Fluent\FluentClassMapConfiguration.cs" />
+    <Compile Include="Configuration\Fluent\FluentConfiguration.cs" />
+    <Compile Include="Configuration\Fluent\FluentMappingConfiguration.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />
@@ -165,8 +171,8 @@
     <Compile Include="Configuration\Mapping\Conventions\IIdConvention.cs" />
     <Compile Include="Configuration\Mapping\Conventions\IIdGeneratorConvention.cs" />
     <Compile Include="Configuration\Mapping\Conventions\IIdUnsavedValueConvention.cs" />
-    <Compile Include="Configuration\Mapping\Conventions\NamedExtendedPropertiesConvention.cs" />
-    <Compile Include="Configuration\Mapping\Conventions\NamedIdConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateExtendedPropertiesConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateIdConvention.cs" />
     <Compile Include="Configuration\Mapping\IMappingStore.cs" />
     <Compile Include="Configuration\Mapping\Model\ClassMap.cs" />
     <Compile Include="Configuration\Mapping\Model\ClassMapBase.cs" />
