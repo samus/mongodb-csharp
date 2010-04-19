@@ -13,15 +13,6 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
     public interface IAutoMappingProfile
     {
         /// <summary>
-        /// Indicates whether the class type should be mapped as a subclass.
-        /// </summary>
-        /// <value>The is sub class.</value>
-        /// <returns>
-        /// 	<c>true</c> if [is sub class] [the specified class type]; otherwise, <c>false</c>.
-        /// </returns>
-        Func<Type, bool> IsSubClass { get; }
-
-        /// <summary>
         /// Finds the extended properties member.
         /// </summary>
         /// <param name="classType">Type of the class.</param>
@@ -114,18 +105,20 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         object GetIdUnsavedValue(Type classType, MemberInfo member);
 
         /// <summary>
-        /// Gets the class overrides for the class type.
-        /// </summary>
-        /// <param name="classType">Type of the entity.</param>
-        /// <returns></returns>
-        ClassOverrides GetOverridesFor(Type classType);
-
-        /// <summary>
         /// Gets a value indicating whether the member should be persisted if it is null.
         /// </summary>
         /// <param name="classType">Type of the class.</param>
         /// <param name="member">The member.</param>
         /// <returns></returns>
         bool GetPersistNull(Type classType, MemberInfo member);
+
+        /// <summary>
+        /// Indicates whether the class type is a sub class.
+        /// </summary>
+        /// <param name="classType">Type of the class.</param>
+        /// <returns>
+        /// 	<c>true</c> if the classType is a sub class; otherwise, <c>false</c>.
+        /// </returns>
+        bool IsSubClass(Type classType);
     }
 }

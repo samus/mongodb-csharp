@@ -106,7 +106,7 @@ namespace MongoDB.Driver.Configuration.Fluent
 
         public FluentAutoMappingProfileConfiguration SubClassesAre(Func<Type, bool> isSubClass)
         {
-            _profile.IsSubClass = isSubClass;
+            _profile.IsSubClassDelegate = isSubClass;
             return this;
         }
 

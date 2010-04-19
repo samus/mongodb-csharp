@@ -18,7 +18,7 @@ namespace MongoDB.Driver.Serialization.Builders
             get
             {
                 var profile = new AutoMappingProfile();
-                profile.IsSubClass = t => t.IsSubclassOf(typeof(BaseClass));
+                profile.IsSubClassDelegate = t => t.IsSubclassOf(typeof(BaseClass));
                 var store = new AutoMappingStore(profile);
                 //eagerly automap so they are known at deserialization time...
                 store.GetClassMap(typeof(ClassA));

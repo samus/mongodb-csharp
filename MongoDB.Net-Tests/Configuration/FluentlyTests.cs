@@ -14,7 +14,6 @@ namespace MongoDB.Driver.Configuration
                 .Mappings(m =>
                 {
 
-
                 })
                 .Build();
         }
