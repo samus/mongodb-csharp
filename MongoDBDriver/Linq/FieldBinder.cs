@@ -88,7 +88,11 @@ namespace MongoDB.Driver.Linq
 
             protected override Expression VisitMethodCall(MethodCallExpression m)
             {
-                if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
+                var declaringType = m.Method.DeclaringType;
+                if (declaringType.IsGenericType)
+                    declaringType = declaringType.GetGenericTypeDefinition();
+
+                if (declaringType == typeof(Queryable) || declaringType == typeof(Enumerable))
                 {
                     if (m.Method.Name == "ElementAt" || m.Method.Name == "ElementAtOrDefault")
                     {
@@ -97,7 +101,7 @@ namespace MongoDB.Driver.Linq
                         return m;
                     }
                 }
-                else if (m.Method.DeclaringType == typeof(MongoQueryable))
+                else if (declaringType == typeof(MongoQueryable))
                 {
                     if (m.Method.Name == "Key")
                     {
@@ -106,11 +110,20 @@ namespace MongoDB.Driver.Linq
                         return m;
                     }
                 }
-                else if (typeof(Document).IsAssignableFrom(m.Method.DeclaringType))
+                else if (typeof(Document).IsAssignableFrom(declaringType))
                 {
                     if (m.Method.Name == "get_Item") //TODO: does this work for VB?
                     {
                         _fieldParts.Push((string)((ConstantExpression)m.Arguments[0]).Value);
+                        Visit(m.Object);
+                        return m;
+                    }
+                }
+                else if (typeof(IList<>).IsAssignableFrom(declaringType) || typeof(IList).IsAssignableFrom(declaringType))
+                {
+                    if (m.Method.Name == "get_Item")
+                    {
+                        _fieldParts.Push(((int)((ConstantExpression)m.Arguments[0]).Value).ToString());
                         Visit(m.Object);
                         return m;
                     }
