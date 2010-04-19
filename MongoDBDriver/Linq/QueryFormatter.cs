@@ -236,6 +236,10 @@ namespace MongoDB.Driver.Linq
                     Visit(u.Operand);
                     _queryObject.PopConditionScope();
                     break;
+                case ExpressionType.ArrayLength:
+                    Visit(u.Operand);
+                    _queryObject.PushConditionScope("$size");
+                    break;
                 default:
                     throw new NotSupportedException(string.Format("The unary operator {0} is not supported.", u.NodeType));
             }

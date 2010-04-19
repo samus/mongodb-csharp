@@ -24,8 +24,10 @@ namespace MongoDB.Driver.Tests.Linq
             public Address PrimaryAddress { get; set; }
 
             public List<Address> Addresses { get; set; }
-        }
 
+            public int[] EmployerIds { get; set; }
+
+        }
         private class Address
         {
             public string City { get; set; }
@@ -177,8 +179,8 @@ namespace MongoDB.Driver.Tests.Linq
         public void DocumentQuery()
         {
             var people = from p in documentCollection.Linq()
-                        where p.Key("Age") > 21
-                        select (string)p["FirstName"];
+                         where p.Key("Age") > 21
+                         select (string)p["FirstName"];
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(new Document("FirstName", 1), queryObject.Fields);
@@ -258,6 +260,20 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        public void NestedArray_Length()
+        {
+            var people = from p in collection.Linq()
+                         where p.EmployerIds.Length == 10
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("EmployerIds", Op.Size(10)), queryObject.Query);
+        }
+
+        [Test]
         public void NestedCollection_Count()
         {
             var people = from p in collection.Linq()
@@ -272,7 +288,7 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
-        public void NestedCollection_Queryable_Count()
+        public void Nested_Queryable_Count()
         {
             var people = collection.Linq().Where(x => x.Addresses.Count() == 10);
 
@@ -284,7 +300,7 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
-        public void NestedCollection_Queryable_ElementAt()
+        public void Nested_Queryable_ElementAt()
         {
             var people = collection.Linq().Where(x => x.Addresses.ElementAt(10).City == "my city");
 
@@ -296,7 +312,19 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
-        public void NestedCollection_List_indexer()
+        public void NestedArray_indexer()
+        {
+            var people = collection.Linq().Where(x => x.EmployerIds[10] == 42);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("EmployerIds.10", 42), queryObject.Query);
+        }
+
+        [Test]
+        public void NestedList_indexer()
         {
             var people = collection.Linq().Where(x => x.Addresses[10].City == "my city");
 

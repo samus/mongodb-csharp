@@ -62,6 +62,7 @@ namespace MongoDB.Driver.Linq
 
                 switch (exp.NodeType)
                 {
+                    case ExpressionType.ArrayIndex:
                     case ExpressionType.Call:
                     case ExpressionType.MemberAccess:
                     case ExpressionType.Parameter:
@@ -70,6 +71,14 @@ namespace MongoDB.Driver.Linq
                         _isBlocked = true;
                         return exp;
                 }
+            }
+
+            protected override Expression VisitBinary(BinaryExpression b)
+            {
+                //this is an ArrayIndex Node
+                _fieldParts.Push(((int)((ConstantExpression)b.Right).Value).ToString());
+                Visit(b.Left);
+                return b;
             }
 
             protected override Expression VisitMemberAccess(System.Linq.Expressions.MemberExpression m)
