@@ -88,7 +88,16 @@ namespace MongoDB.Driver.Linq
 
             protected override Expression VisitMethodCall(MethodCallExpression m)
             {
-                if (m.Method.DeclaringType == typeof(MongoQueryable))
+                if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
+                {
+                    if (m.Method.Name == "ElementAt" || m.Method.Name == "ElementAtOrDefault")
+                    {
+                        _fieldParts.Push(((int)((ConstantExpression)m.Arguments[1]).Value).ToString());
+                        Visit(m.Arguments[0]);
+                        return m;
+                    }
+                }
+                else if (m.Method.DeclaringType == typeof(MongoQueryable))
                 {
                     if (m.Method.Name == "Key")
                     {

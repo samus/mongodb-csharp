@@ -16,6 +16,7 @@ namespace MongoDB.Driver.Linq
         private IQueryProvider _provider;
         private Expression _root;
         private List<OrderExpression> _thenBy;
+        private bool _inField;
 
         public QueryBinder(IQueryProvider provider, Expression root)
         {
@@ -26,6 +27,7 @@ namespace MongoDB.Driver.Linq
 
         public Expression Bind(Expression expression)
         {
+            _inField = false;
             _map = new Dictionary<ParameterExpression, Expression>();
             return Visit(expression);
         }
@@ -39,12 +41,20 @@ namespace MongoDB.Driver.Linq
             return base.VisitBinary(b);
         }
 
+        protected override Expression VisitField(FieldExpression f)
+        {
+            _inField = true;
+            var e = base.VisitField(f);
+            _inField = false;
+            return e;
+        }
+
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
             if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
             {
                 //if we are running off a field expression, things get handled in the QueryFormatter
-                if ((m.Arguments[0].NodeType != (ExpressionType)MongoExpressionType.Field))
+                if (!_inField && m.Arguments[0].NodeType != (ExpressionType)MongoExpressionType.Field)
                 {
                     switch (m.Method.Name)
                     {

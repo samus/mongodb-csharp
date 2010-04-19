@@ -21,6 +21,8 @@ namespace MongoDB.Driver.Tests.Linq
 
             public int Age { get; set; }
 
+            public Address PrimaryAddress { get; set; }
+
             public List<Address> Addresses { get; set; }
         }
 
@@ -73,6 +75,18 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("Age", new Document().Merge(Op.GreaterThan(21)).Merge(Op.LessThan(42))), queryObject.Query);
+        }
+
+        [Test]
+        public void NestedClassConstraint()
+        {
+            var people = collection.Linq().Where(p => p.PrimaryAddress.City == "my city");
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("PrimaryAddress.City", "my city"), queryObject.Query);
         }
 
         [Test]
@@ -267,6 +281,18 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("Addresses", Op.Size(10)), queryObject.Query);
+        }
+
+        [Test]
+        public void NestedCollection_Queryable_ElementAt()
+        {
+            var people = collection.Linq().Where(x => x.Addresses.ElementAt(10).City == "my city");
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("Addresses.10.City", "my city"), queryObject.Query);
         }
     }
 }
