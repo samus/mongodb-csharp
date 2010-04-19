@@ -16,6 +16,7 @@ namespace MongoDB.Driver.Configuration.Fluent
         public FluentMappingConfiguration()
         {
             _autoMappers = new List<IAutoMapper>();
+            _overrides = new ClassOverridesMap();
         }
 
         public void ConfigureDefaultProfile(Action<FluentAutoMappingProfileConfiguration> config)
@@ -38,9 +39,10 @@ namespace MongoDB.Driver.Configuration.Fluent
             AddCustomProfile(match, CreateOverridableProfile(profile));
         }
 
-        public void For<T>(Action<FluentClassMapConfiguration> config)
+        public void For<T>(Action<FluentClassMapConfiguration<T>> config)
         {
-
+            var configuration = new FluentClassMapConfiguration<T>(_overrides.GetOverridesForType(typeof(T)));
+            config(configuration);
         }
 
         public void SetDefaultProfile(IAutoMappingProfile defaultProfile)
@@ -55,11 +57,11 @@ namespace MongoDB.Driver.Configuration.Fluent
                 var aggregate = new AggregateAutoMapper();
                 foreach (var am in _autoMappers)
                     aggregate.AddAutoMapper(am);
-                aggregate.AddAutoMapper(new AutoMapper(CreateOverridableProfile(_defaultProfile)));
+                aggregate.AddAutoMapper(new AutoMapper(CreateOverridableProfile(_defaultProfile ?? new AutoMappingProfile())));
                 return aggregate;
             }
             else
-                return new AutoMapper(CreateOverridableProfile(_defaultProfile));
+                return new AutoMapper(CreateOverridableProfile(_defaultProfile ?? new AutoMappingProfile()));
         }
 
         private IAutoMappingProfile CreateOverridableProfile(IAutoMappingProfile profile)

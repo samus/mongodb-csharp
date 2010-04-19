@@ -9,6 +9,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
     {
         private Dictionary<Type, ClassOverrides> _overrides;
 
+        public ClassOverridesMap()
+        {
+            _overrides = new Dictionary<Type, ClassOverrides>();
+        }
+
         /// <summary>
         /// Gets the class overrides for the type.
         /// </summary>
