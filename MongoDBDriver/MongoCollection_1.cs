@@ -483,7 +483,7 @@ namespace MongoDB.Driver
 
             if(value == null){
                 //Likely a new document
-                descriptor.SetPropertyValue(document, "_id", value = Oid.NewOid());
+                descriptor.SetPropertyValue(document, "_id", value = descriptor.GenerateId(value));
                 upsert = UpdateFlags.Upsert;
             }
             selector["_id"] = value;
