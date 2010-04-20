@@ -6,13 +6,13 @@ using MongoDB.Driver.Configuration.Mapping.Auto;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace MongoDB.Driver.Configuration.Fluent
+namespace MongoDB.Driver.Configuration
 {
-    public class FluentClassMapConfiguration<T>
+    public class ClassMapConfiguration<T>
     {
         private readonly ClassOverrides _overrides;
 
-        internal FluentClassMapConfiguration(ClassOverrides overrides)
+        internal ClassMapConfiguration(ClassOverrides overrides)
         {
             if (overrides == null)
                 throw new ArgumentNullException("overrides");
@@ -20,18 +20,18 @@ namespace MongoDB.Driver.Configuration.Fluent
             _overrides = overrides;
         }
 
-        public void CollectionNameIs(string name)
+        public void CollectionName(string name)
         {
             _overrides.CollectionName = name;
         }
 
-        public FluentMemberMapConfiguration Member(MemberInfo member)
+        public MemberMapConfiguration Member(MemberInfo member)
         {
             var overrides = _overrides.GetOverridesFor(member);
-            return new FluentMemberMapConfiguration(overrides);
+            return new MemberMapConfiguration(overrides);
         }
 
-        public FluentMemberMapConfiguration Member(string name)
+        public MemberMapConfiguration Member(string name)
         {
             var members = typeof(T).GetMember(name, MemberTypes.Field | MemberTypes.Property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if (members == null || members.Length == 0)
@@ -42,7 +42,7 @@ namespace MongoDB.Driver.Configuration.Fluent
             return Member(members[0]);
         }
 
-        public FluentMemberMapConfiguration Member(Expression<Func<T, object>> member)
+        public MemberMapConfiguration Member(Expression<Func<T, object>> member)
         {
             throw new NotImplementedException();
         }

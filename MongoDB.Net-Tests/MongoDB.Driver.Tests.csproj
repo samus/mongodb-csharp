@@ -92,7 +92,7 @@
     <Compile Include="Bson\BsonTestBase.cs" />
     <Compile Include="Bson\TestBsonBinary.cs" />
     <Compile Include="Bson\TestRoundTrips.cs" />
-    <Compile Include="Configuration\FluentlyTests.cs" />
+    <Compile Include="Configuration\MongoConfigurationTests.cs" />
     <Compile Include="Connections\TestConnection.cs" />
     <Compile Include="Connections\TestConnectionFactory.cs" />
     <Compile Include="Connections\TestPooledConnectionFactory.cs" />

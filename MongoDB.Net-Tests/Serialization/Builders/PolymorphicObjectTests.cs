@@ -3,30 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using NUnit.Framework;
 using MongoDB.Driver;
-using MongoDB.Driver.Configuration.Mapping.Auto;
-using MongoDB.Driver.Configuration.Mapping;
 using MongoDB.Driver.Configuration;
+using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Driver.Configuration.Mapping.Auto;
+
+using NUnit.Framework;
 
 namespace MongoDB.Driver.Serialization.Builders
 {
     [TestFixture]
     public class PolymorphicObjectTests : SerializationTestBase
     {
-        protected override MongoDB.Driver.Configuration.Mapping.IMappingStore MappingStore
+        protected override IMappingStore MappingStore
         {
             get
             {
-                return Fluently.Configure()
-                    .Mappings(m =>
-                    {
-                        m.ConfigureDefaultProfile(p => p.SubClassesAre(t => t.IsSubclassOf(typeof(BaseClass))));
-                        m.Map<ClassA>();
-                        m.Map<ClassB>();
-                        m.Map<ClassD>();
-                    })
-                    .BuildMappingStore();
+                var configure = new MongoConfiguration();
+                configure.DefaultProfile(p =>
+                {
+                    p.SubClassesAre(t => t.IsSubclassOf(typeof(BaseClass)));
+                });
+
+                configure.Map<ClassA>();
+                configure.Map<ClassB>();
+                configure.Map<ClassD>();
+
+                return configure.BuildMappingStore();
             }
         }
 
