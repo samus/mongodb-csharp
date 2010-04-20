@@ -13,68 +13,25 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
     /// <summary>
     /// 
     /// </summary>
-    public class AutoMappingProfile : IAutoMappingProfile
+    public class OverridableAutoMappingProfile : IAutoMappingProfile
     {
-        private ConventionProfile _conventions;
-        private Func<Type, bool> _isSubClass;
-        private IMemberFinder _memberFinder;
-
-        /// <summary>
-        /// Gets or sets the conventions.
-        /// </summary>
-        /// <value>The conventions.</value>
-        public ConventionProfile Conventions
-        {
-            get { return _conventions; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                _conventions = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the member finder.
-        /// </summary>
-        /// <value>The member finder.</value>
-        public IMemberFinder MemberFinder
-        {
-            get { return _memberFinder; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                _memberFinder = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the is sub class.
-        /// </summary>
-        /// <value>The is sub class.</value>
-        public Func<Type, bool> IsSubClassDelegate
-        {
-            get { return _isSubClass; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                _isSubClass = value;
-            }
-        }
+        private ClassOverridesMap _overrides;
+        private IAutoMappingProfile _profile;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoMappingProfile"/> class.
         /// </summary>
-        public AutoMappingProfile()
+        /// <param name="profile">The profile.</param>
+        /// <param name="overrides">The overrides.</param>
+        public OverridableAutoMappingProfile(IAutoMappingProfile profile, ClassOverridesMap overrides)
         {
-            _conventions = new ConventionProfile();
-            _isSubClass = t => false;
-            _memberFinder = PublicMemberFinder.Instance;
+            if (overrides == null)
+	            throw new ArgumentNullException("overrides");
+            if (profile == null)
+            	throw new ArgumentNullException("profile");
+
+            _overrides = overrides;
+            _profile = profile;
         }
 
         /// <summary>
@@ -84,7 +41,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public MemberInfo FindExtendedPropertiesMember(Type classType)
         {
-            return _conventions.ExtendedPropertiesConvention.GetExtendedPropertiesMember(classType);
+            return _profile.FindExtendedPropertiesMember(classType);
         }
 
         /// <summary>
@@ -94,7 +51,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public MemberInfo FindIdMember(Type classType)
         {
-            return _conventions.IdConvention.GetIdMember(classType);
+            return _profile.FindIdMember(classType);
         }
 
         /// <summary>
@@ -104,12 +61,10 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public IEnumerable<MemberInfo> FindMembers(Type classType)
         {
-            foreach (MemberInfo memberInfo in _memberFinder.FindMembers(classType))
+            foreach(var member in _profile.FindMembers(classType))
             {
-                var doMap = memberInfo.GetCustomAttribute<MongoIgnoreAttribute>(true) == null;
-
-                if (doMap)
-                    yield return memberInfo;
+                if((bool)GetMemberOverrideValue(classType, member,o => !o.Ignore,v => v.HasValue, true))
+                    yield return member;
             }
         }
 
@@ -119,16 +74,14 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <param name="classType">Type of the entity.</param>
         /// <param name="member">The member.</param>
         /// <returns></returns>
-        public virtual string GetAlias(Type classType, MemberInfo member)
+        public string GetAlias(Type classType, MemberInfo member)
         {
-            string alias = null;
-            var att = member.GetCustomAttribute<MongoNameAttribute>(true);
-            if (att != null)
-                alias = att.Name;
-            if (string.IsNullOrEmpty(alias))
-                alias = _conventions.AliasConvention.GetAlias(member) ?? member.Name;
+            string alias = _profile.GetAlias(classType, member);
 
-            return alias;
+            return GetMemberOverrideValue(classType, member,
+                o => o.Alias,
+                s => !string.IsNullOrEmpty(s),
+                alias);
         }
 
         /// <summary>
@@ -136,9 +89,12 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// </summary>
         /// <param name="classType">Type of the entity.</param>
         /// <returns></returns>
-        public virtual string GetCollectionName(Type classType)
-        {
-            return _conventions.CollectionNameConvention.GetCollectionName(classType) ?? classType.Name;
+        public string GetCollectionName(Type classType){
+
+            return GetClassOverrideValue(classType,
+                o => o.CollectionName,
+                s => !string.IsNullOrEmpty(s),
+                _profile.GetCollectionName(classType));
         }
 
         /// <summary>
@@ -150,7 +106,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public ICollectionAdapter GetCollectionAdapter(Type classType, MemberInfo member, Type memberReturnType)
         {
-            return _conventions.CollectionAdapterConvention.GetCollectionType(memberReturnType);
+            return _profile.GetCollectionAdapter(classType, member, memberReturnType);
         }
 
         /// <summary>
@@ -162,7 +118,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public Type GetCollectionElementType(Type classType, MemberInfo member, Type memberReturnType)
         {
-            return _conventions.CollectionAdapterConvention.GetElementType(memberReturnType);
+            return _profile.GetCollectionElementType(classType, member, memberReturnType);
         }
 
         /// <summary>
@@ -171,16 +127,14 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <param name="classType">Type of the class.</param>
         /// <param name="member">The member.</param>
         /// <returns></returns>
-        public virtual object GetDefaultValue(Type classType, MemberInfo member)
+        public object GetDefaultValue(Type classType, MemberInfo member)
         {
-            object defaultValue = null;
-            var att = member.GetCustomAttribute<MongoDefaultAttribute>(true);
-            if (att != null)
-                defaultValue = att.Value;
-            if (defaultValue == null)
-                defaultValue = _conventions.DefaultValueConvention.GetDefaultValue(member.GetReturnType());
+            object defaultValue = _profile.GetDefaultValue(classType, member);
 
-            return defaultValue;
+            return GetMemberOverrideValue(classType, member,
+                o => o.DefaultValue,
+                v => v != null,
+                defaultValue);
         }
 
         /// <summary>
@@ -190,7 +144,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public object GetDiscriminator(Type classType)
         {
-            return _conventions.DiscriminatorConvention.GetDiscriminator(classType);
+            return _profile.GetDiscriminator(classType);
         }
 
         /// <summary>
@@ -200,7 +154,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public string GetDiscriminatorAlias(Type classType)
         {
-            return _conventions.DiscriminatorAliasConvention.GetDiscriminatorAlias(classType);
+            return _profile.GetDiscriminatorAlias(classType);
         }
 
         /// <summary>
@@ -211,7 +165,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public IIdGenerator GetIdGenerator(Type classType, MemberInfo member)
         {
-            return _conventions.IdGeneratorConvention.GetGenerator(member.GetReturnType());
+            return _profile.GetIdGenerator(classType, member);
         }
 
         /// <summary>
@@ -222,7 +176,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public object GetIdUnsavedValue(Type classType, MemberInfo member)
         {
-            return _conventions.IdUnsavedValueConvention.GetUnsavedValue(member.GetReturnType());
+            return _profile.GetIdUnsavedValue(classType, member);
         }
 
         /// <summary>
@@ -233,7 +187,10 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// <returns></returns>
         public bool GetPersistNull(Type classType, MemberInfo member)
         {
-            return false;
+            return (bool)GetMemberOverrideValue(classType, member,
+                o => o.PersistIfNull,
+                v => v.HasValue,
+                _profile.GetPersistNull(classType, member));
         }
 
         /// <summary>
@@ -245,7 +202,50 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         /// </returns>
         public bool IsSubClass(Type classType)
         {
-            return _isSubClass(classType);
+            return _profile.IsSubClass(classType);
+        }
+
+        /// <summary>
+        /// Gets the class override value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="classType">Type of the class.</param>
+        /// <param name="overrides">The overrides.</param>
+        /// <param name="accept">The accept.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns></returns>
+        private T GetClassOverrideValue<T>(Type classType, Func<ClassOverrides, T> overrides, Func<T, bool> accept, T defaultValue)
+        {
+            if (!_overrides.HasOverridesForType(classType))
+                return defaultValue;
+
+            var value = overrides(_overrides.GetOverridesForType(classType));
+            if (!accept(value))
+                return defaultValue;
+
+            return value;
+        }
+
+        /// <summary>
+        /// Gets the member override value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="classType">Type of the class.</param>
+        /// <param name="member">The member.</param>
+        /// <param name="overrides">The overrides.</param>
+        /// <param name="accept">The accept.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns></returns>
+        private T GetMemberOverrideValue<T>(Type classType, MemberInfo member, Func<MemberOverrides, T> overrides, Func<T, bool> accept, T defaultValue)
+        {
+            if (!_overrides.HasOverridesForType(classType))
+                return defaultValue;
+
+            var value = overrides(_overrides.GetOverridesForType(classType).GetOverridesFor(member));
+            if (!accept(value))
+                return defaultValue;
+
+            return value;
         }
     }
 }

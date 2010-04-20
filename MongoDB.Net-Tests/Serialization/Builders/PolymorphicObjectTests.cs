@@ -7,6 +7,7 @@ using NUnit.Framework;
 using MongoDB.Driver;
 using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Driver.Configuration;
 
 namespace MongoDB.Driver.Serialization.Builders
 {
@@ -17,14 +18,15 @@ namespace MongoDB.Driver.Serialization.Builders
         {
             get
             {
-                var profile = new AutoMappingProfile();
-                profile.IsSubClass = t => t.IsSubclassOf(typeof(BaseClass));
-                var store = new AutoMappingStore(profile);
-                //eagerly automap so they are known at deserialization time...
-                store.GetClassMap(typeof(ClassA));
-                store.GetClassMap(typeof(ClassB));
-                store.GetClassMap(typeof(ClassD));
-                return store;
+                return Fluently.Configure()
+                    .Mappings(m =>
+                    {
+                        m.ConfigureDefaultProfile(p => p.SubClassesAre(t => t.IsSubclassOf(typeof(BaseClass))));
+                        m.Map<ClassA>();
+                        m.Map<ClassB>();
+                        m.Map<ClassD>();
+                    })
+                    .BuildMappingStore();
             }
         }
 

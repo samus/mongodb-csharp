@@ -189,8 +189,8 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
             _defaultValueConvention = DefaultDefaultValueConvention.Instance;
             _discriminatorConvention = new DelegateDiscriminatorConvention(t => t.Name);
             _discriminatorAliasConvention = new DelegateDiscriminatorAliasConvention(delegate(Type t) { return "_t"; });
-            _extendedPropertiesConvention = new NamedExtendedPropertiesConvention("ExtendedProperties");
-            _idConvention = new NamedIdConvention("Id");
+            _extendedPropertiesConvention = new DelegateExtendedPropertiesConvention(m => m.Name == "ExtendedProperties");
+            _idConvention = new DelegateIdConvention(m => m.Name == "Id");
             _idGeneratorConvention = DefaultIdGeneratorConvention.Instance;
             _idUnsavedValueConvention = DefaultIdUnsavedValueConvention.Instance;
         }
