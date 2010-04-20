@@ -68,7 +68,7 @@ namespace MongoDB.Driver.Linq
 
         internal object ExecuteQueryObject(MongoQueryObject queryObject)
         {
-            var miGetCollection = typeof(IMongoDatabase).GetMethods().Where(m => m.Name == "GetCollection" && m.GetGenericArguments().Length == 1).Single().MakeGenericMethod(queryObject.DocumentType);
+            var miGetCollection = typeof(IMongoDatabase).GetMethods().Where(m => m.Name == "GetCollection" && m.GetGenericArguments().Length == 1 && m.GetParameters().Length == 1).Single().MakeGenericMethod(queryObject.DocumentType);
 
             var collection = miGetCollection.Invoke(queryObject.Database, new [] { queryObject.CollectionName });
 
