@@ -12,7 +12,7 @@ namespace MongoDB.Driver.Configuration.Fluent
     {
         private readonly ClassOverrides _overrides;
 
-        public FluentClassMapConfiguration(ClassOverrides overrides)
+        internal FluentClassMapConfiguration(ClassOverrides overrides)
         {
             if (overrides == null)
                 throw new ArgumentNullException("overrides");

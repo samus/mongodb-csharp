@@ -24,7 +24,7 @@ namespace MongoDB.Driver.Configuration.Fluent
             get { return _eagerMaps; }
         }
 
-        public FluentMappingConfiguration(IAutoMappingProfile defaultProfile, ClassOverridesMap overrides)
+        internal FluentMappingConfiguration(IAutoMappingProfile defaultProfile, ClassOverridesMap overrides)
         {
             if (defaultProfile == null)
                 throw new ArgumentNullException("defaultProfile");

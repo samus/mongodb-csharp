@@ -15,7 +15,7 @@ namespace MongoDB.Driver.Configuration.Fluent
         private List<Type> _eagerMaps;
         private ClassOverridesMap _overrides;
 
-        public FluentConfiguration()
+        internal FluentConfiguration()
         {
             _autoMappers = new List<IAutoMapper>();
             _defaultProfile = new AutoMappingProfile();

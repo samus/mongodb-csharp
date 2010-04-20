@@ -12,7 +12,7 @@ namespace MongoDB.Driver.Configuration.Fluent
     {
         private readonly AutoMappingProfile _profile;
 
-        public FluentAutoMappingProfileConfiguration(AutoMappingProfile profile)
+        internal FluentAutoMappingProfileConfiguration(AutoMappingProfile profile)
         {
             if (profile == null)
                 throw new ArgumentNullException("profile");
