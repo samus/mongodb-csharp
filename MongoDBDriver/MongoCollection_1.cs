@@ -474,21 +474,20 @@ namespace MongoDB.Driver
         public void Save(object document){
             //Try to generate a selector using _id for an existing document.
             //otherwise just set the upsert flag to 1 to insert and send onward.
-            var selector = new Document();
-            var upsert = UpdateFlags.None;
 
             var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
 
             var value = descriptor.GetPropertyValue(document, "_id");
 
-            if(value == null){
+            if(value == null)
+            {
                 //Likely a new document
-                descriptor.SetPropertyValue(document, "_id", value = descriptor.GenerateId(value));
-                upsert = UpdateFlags.Upsert;
-            }
-            selector["_id"] = value;
+                descriptor.SetPropertyValue(document, "_id", descriptor.GenerateId(value));
 
-            Update(document, selector, upsert);
+                Insert(document);
+            }
+            else
+                Update(document, new Document("_id", value), UpdateFlags.Upsert);
         }
 
         /// <summary>
