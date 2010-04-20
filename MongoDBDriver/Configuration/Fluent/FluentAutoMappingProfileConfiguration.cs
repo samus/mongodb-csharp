@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Reflection;
+
 using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Configuration.Mapping.Conventions;
-using System.Reflection;
+using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver.Configuration.Fluent
 {
@@ -20,9 +19,33 @@ namespace MongoDB.Driver.Configuration.Fluent
             _profile = profile;
         }
 
+        public FluentAutoMappingProfileConfiguration AliasesAreCamelCased()
+        {
+            _profile.Conventions.AliasConvention = new DelegateAliasConvention(m => Inflector.ToCamelCase(m.Name));
+            return this;
+        }
+
+        public FluentAutoMappingProfileConfiguration AliasesAre(Func<MemberInfo, string> alias)
+        {
+            _profile.Conventions.AliasConvention = new DelegateAliasConvention(alias);
+            return this;
+        }
+
         public FluentAutoMappingProfileConfiguration CollectionsAreNamed(Func<Type, string> collectionName)
         {
             _profile.Conventions.CollectionNameConvention = new DelegateCollectionNameConvention(collectionName);
+            return this;
+        }
+
+        public FluentAutoMappingProfileConfiguration CollectionNamesAreCamelCased()
+        {
+            _profile.Conventions.CollectionNameConvention = new DelegateCollectionNameConvention(t => Inflector.ToCamelCase(t.Name));
+            return this;
+        }
+
+        public FluentAutoMappingProfileConfiguration CollectionNamesAreCamelCasedAndPlural()
+        {
+            _profile.Conventions.CollectionNameConvention = new DelegateCollectionNameConvention(t => Inflector.MakePlural(Inflector.ToCamelCase(t.Name)));
             return this;
         }
 
@@ -95,12 +118,6 @@ namespace MongoDB.Driver.Configuration.Fluent
         public FluentAutoMappingProfileConfiguration IdsAreNamed(string name, MemberTypes memberTypes, BindingFlags bindingFlags)
         {
             _profile.Conventions.IdConvention = new DelegateIdConvention(m => m.Name == name, memberTypes, bindingFlags);
-            return this;
-        }
-
-        public FluentAutoMappingProfileConfiguration MembersAreAliasedWith(Func<MemberInfo, string> alias)
-        {
-            _profile.Conventions.AliasConvention = new DelegateAliasConvention(alias);
             return this;
         }
 

@@ -109,6 +109,7 @@
     <Compile Include="Configuration\Fluent\FluentConfiguration.cs" />
     <Compile Include="Configuration\Fluent\FluentMappingConfiguration.cs" />
     <Compile Include="Configuration\Fluent\FluentMemberMapConfiguration.cs" />
+    <Compile Include="Configuration\Fluent\Inflector.cs" />
     <Compile Include="Configuration\Mapping\Auto\ClassOverridesMap.cs" />
     <Compile Include="Configuration\Mapping\Auto\OverridableAutoMappingProfile.cs" />
     <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
