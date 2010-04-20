@@ -121,6 +121,16 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
+        /// Gets the collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IMongoCollection<T> GetCollection<T>() where T : class{
+            string collectionName = _serializationFactory.GetCollectionName(typeof(T));
+            return GetCollection<T>(collectionName);
+        }
+
+        /// <summary>
         /// Gets the document that a reference is pointing to.
         /// </summary>
         /// <param name="reference">The reference.</param>

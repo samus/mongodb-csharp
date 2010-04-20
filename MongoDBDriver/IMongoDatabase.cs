@@ -54,6 +54,13 @@ namespace MongoDB.Driver
         IMongoCollection<T> GetCollection<T>(String name) where T : class;
 
         /// <summary>
+        /// Gets the collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IMongoCollection<T> GetCollection<T>() where T : class;
+
+        /// <summary>
         /// Gets the document that a reference is pointing to.
         /// </summary>
         /// <param name="reference">The reference.</param>
