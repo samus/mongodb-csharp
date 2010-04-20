@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using NUnit.Framework;
-using MongoDB.Driver;
+﻿using NUnit.Framework;
 using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Configuration.Mapping;
 
@@ -13,7 +7,7 @@ namespace MongoDB.Driver.Serialization.Builders
     [TestFixture]
     public class PolymorphicObjectTests : SerializationTestBase
     {
-        protected override MongoDB.Driver.Configuration.Mapping.IMappingStore MappingStore
+        protected override IMappingStore MappingStore
         {
             get
             {
