@@ -103,13 +103,10 @@
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
-    <Compile Include="Configuration\Fluently.cs" />
-    <Compile Include="Configuration\Fluent\FluentAutoMappingProfileConfiguration.cs" />
-    <Compile Include="Configuration\Fluent\FluentClassMapConfiguration.cs" />
-    <Compile Include="Configuration\Fluent\FluentConfiguration.cs" />
-    <Compile Include="Configuration\Fluent\FluentMappingConfiguration.cs" />
-    <Compile Include="Configuration\Fluent\FluentMemberMapConfiguration.cs" />
-    <Compile Include="Configuration\Fluent\Inflector.cs" />
+    <Compile Include="Configuration\MongoConfiguration.cs" />
+    <Compile Include="Configuration\AutoMappingProfileConfiguration.cs" />
+    <Compile Include="Configuration\ClassMapConfiguration.cs" />
+    <Compile Include="Configuration\MemberMapConfiguration.cs" />
     <Compile Include="Configuration\Mapping\Auto\ClassOverridesMap.cs" />
     <Compile Include="Configuration\Mapping\Auto\OverridableAutoMappingProfile.cs" />
     <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
@@ -283,6 +280,7 @@
     <Compile Include="Serialization\ISerializationFactory.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
+    <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\JsonFormatter.cs" />
     <Compile Include="Configuration\MongoConfigurationSection.cs" />
     <Compile Include="Configuration\ConnectionElement.cs" />
