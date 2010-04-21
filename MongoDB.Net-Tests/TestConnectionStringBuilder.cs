@@ -136,5 +136,12 @@ namespace MongoDB.Driver
             Assert.AreEqual("server3", builder.Servers[2].Host);
             Assert.AreEqual(MongoServerEndPoint.DefaultPort, builder.Servers[2].Port);
         }
+
+        [Test]
+        public void TestUriWithPropertys(){
+            var builder = new MongoConnectionStringBuilder("mongodb://server1/database?pooled=false&connectionlifetime=10");
+            Assert.AreEqual(false, builder.Pooled);
+            Assert.AreEqual(10.0, builder.ConnectionLifetime.TotalSeconds);
+        }
     }
 }

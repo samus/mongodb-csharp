@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace MongoDB.Driver.Configuration.Mapping.Model
 {
@@ -62,6 +63,18 @@ namespace MongoDB.Driver.Configuration.Mapping.Model
         /// <param name="value">The value.</param>
         public virtual void SetValue(object instance, object value)
         {
+            var valueType = value != null ? value.GetType() : typeof(object);
+
+            if(valueType!=_memberReturnType)
+            {
+                var code = Convert.GetTypeCode(value);
+
+                if(code!=TypeCode.Object)
+                {
+                    value = Convert.ChangeType(value, _memberReturnType);
+                }
+            }
+            
             _setter(instance, value);
         }
     }
