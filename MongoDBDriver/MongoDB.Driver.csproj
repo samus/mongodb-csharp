@@ -106,6 +106,13 @@
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
+    <Compile Include="Configuration\MongoConfiguration.cs" />
+    <Compile Include="Configuration\AutoMappingProfileConfiguration.cs" />
+    <Compile Include="Configuration\ClassMapConfiguration.cs" />
+    <Compile Include="Configuration\MemberMapConfiguration.cs" />
+    <Compile Include="Configuration\Mapping\Auto\ClassOverridesMap.cs" />
+    <Compile Include="Configuration\Mapping\Auto\OverridableAutoMappingProfile.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />
@@ -168,8 +175,8 @@
     <Compile Include="Configuration\Mapping\Conventions\IIdConvention.cs" />
     <Compile Include="Configuration\Mapping\Conventions\IIdGeneratorConvention.cs" />
     <Compile Include="Configuration\Mapping\Conventions\IIdUnsavedValueConvention.cs" />
-    <Compile Include="Configuration\Mapping\Conventions\NamedExtendedPropertiesConvention.cs" />
-    <Compile Include="Configuration\Mapping\Conventions\NamedIdConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateExtendedPropertiesConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateIdConvention.cs" />
     <Compile Include="Configuration\Mapping\IMappingStore.cs" />
     <Compile Include="Configuration\Mapping\Model\ClassMap.cs" />
     <Compile Include="Configuration\Mapping\Model\ClassMapBase.cs" />
@@ -247,6 +254,7 @@
     <Compile Include="Serialization\ISerializationFactory.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />
+    <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\JsonFormatter.cs" />
     <Compile Include="Configuration\MongoConfigurationSection.cs" />
     <Compile Include="Configuration\ConnectionElement.cs" />

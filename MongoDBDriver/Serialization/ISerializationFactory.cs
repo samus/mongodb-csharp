@@ -23,6 +23,13 @@ namespace MongoDB.Driver.Serialization
         IBsonObjectDescriptor GetBsonDescriptor(Type rootType);
 
         /// <summary>
+        /// Gets the name of the collection given the rootType.
+        /// </summary>
+        /// <param name="rootType">Type of the root.</param>
+        /// <returns></returns>
+        string GetCollectionName(Type rootType);
+
+        /// <summary>
         /// Gets the object descriptor.
         /// </summary>
         /// <param name="type">The type.</param>

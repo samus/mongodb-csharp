@@ -12,7 +12,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
             get
             {
                 var profile = new AutoMappingProfile();
-                profile.IsSubClass = t => t == typeof(ClassA) || t == typeof(ClassB);
+                profile.IsSubClassDelegate = t => t == typeof(ClassA) || t == typeof(ClassB);
                 var store = new AutoMappingStore(profile);
                 //eagerly automap so they are known at deserialization time...
                 store.GetClassMap(typeof(ClassA));

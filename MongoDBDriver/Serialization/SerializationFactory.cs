@@ -55,6 +55,22 @@ namespace MongoDB.Driver.Serialization
         }
 
         /// <summary>
+        /// Gets the name of the collection given the rootType.
+        /// </summary>
+        /// <param name="rootType">Type of the root.</param>
+        /// <returns></returns>
+        public string GetCollectionName(Type rootType)
+        {
+            if (rootType == null)
+                throw new ArgumentNullException("rootType");
+
+            if (typeof(Document).IsAssignableFrom(rootType))
+                throw new InvalidOperationException("Documents cannot have a default collection name.");
+
+            return _mappingStore.GetClassMap(rootType).CollectionName;
+        }
+
+        /// <summary>
         /// Gets the object descriptor.
         /// </summary>
         /// <param name="type">The type.</param>
