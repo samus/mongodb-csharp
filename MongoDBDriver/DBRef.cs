@@ -11,22 +11,11 @@ namespace MongoDB.Driver
     ///   does no special handling of them. Any referential integrity must be maintained by the application
     ///   not the database.
     /// </remarks>
-    public class DBRef
+    public sealed class DBRef
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string IdName = "$id";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string MetaName = "metadata";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string RefName = "$ref";
+        internal const string IdName = "$id";
+        internal const string MetaName = "metadata";
+        internal const string RefName = "$ref";
 
         private readonly Document _document;
         private string _collectionName;
@@ -44,13 +33,31 @@ namespace MongoDB.Driver
         ///   Constructs a DBRef from a document that matches the DBref specification.
         /// </summary>
         public DBRef(Document document){
+            if(document == null)
+                throw new ArgumentNullException("document");
             if(IsDocumentDBRef(document) == false)
                 throw new ArgumentException("Document is not a valid DBRef");
+
             _collectionName = (String)document[RefName];
             _id = document[IdName];
-            this._document = document;
+            _document = document;
             if(document.Contains("metadata"))
                 MetaData = (Document)document["metadata"];
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DBRef"/> class.
+        /// </summary>
+        /// <param name="databaseReference">The database reference.</param>
+        public DBRef(DBRef databaseReference){
+            if(databaseReference == null)
+                throw new ArgumentNullException("databaseReference");
+
+            _document = new Document();
+            CollectionName = databaseReference.CollectionName;
+            Id = databaseReference.Id;
+            if(databaseReference.MetaData != null)
+                MetaData = new Document().Merge(databaseReference.MetaData);
         }
 
         /// <summary>
@@ -59,6 +66,11 @@ namespace MongoDB.Driver
         /// <param name="collectionName">Name of the collection.</param>
         /// <param name="id">The id.</param>
         public DBRef(string collectionName, object id){
+            if(collectionName == null)
+                throw new ArgumentNullException("collectionName");
+            if(id == null)
+                throw new ArgumentNullException("id");
+
             _document = new Document();
             CollectionName = collectionName;
             Id = id;
