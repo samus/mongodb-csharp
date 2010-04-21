@@ -218,7 +218,6 @@
     <Compile Include="Configuration\Mapping\Model\PersistentMemberMap.cs" />
     <Compile Include="Configuration\Mapping\Model\SubClassMap.cs" />
     <Compile Include="Connections\RawConnection.cs" />
-    <Compile Include="IMongoDatabase.cs" />
     <Compile Include="CollectionMetadata.cs" />
     <Compile Include="Connections\Connection.cs" />
     <Compile Include="Connections\ConnectionFactory.cs" />
