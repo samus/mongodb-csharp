@@ -38,7 +38,7 @@ namespace MongoDB.Driver
 
         private static readonly Regex PairRegex = new Regex (@"^\s*(.*)\s*=\s*(.*)\s*$");
         private static readonly Regex ServerRegex = new Regex (@"^\s*([^:]+)(?::(\d+))?\s*$");
-        private static readonly Regex UriRegex = new Regex(@"^mongodb://(?:([^:]*):([^@]*)@)?([^/]*)(?:/(.*))?$");
+        private static readonly Regex UriRegex = new Regex(@"^mongodb://(?:([^:]*):([^@]*)@)?([^/]*)(?:/([^?]*))?(?:\?(.*))?$");
         
         private readonly List<MongoServerEndPoint> _servers = new List<MongoServerEndPoint> ();
 
@@ -161,6 +161,11 @@ namespace MongoDB.Driver
             var database = uriMatch.Groups[4].Value;
             if(!string.IsNullOrEmpty(database))
                 Database = database;
+
+            var values = uriMatch.Groups[5].Value;
+            if(!string.IsNullOrEmpty(values))
+                foreach(var pair in values.Split('&'))
+                    ParseValuePair(pair);
         }
 
         /// <summary>
@@ -174,95 +179,112 @@ namespace MongoDB.Driver
             var segments = connectionString.Split (';');
             
             foreach (var segment in segments) {
-                var pairMatch = PairRegex.Match (segment);
-                if (!pairMatch.Success)
-                    throw new FormatException (string.Format ("Invalid connection string on: {0}", pairMatch.Value));
-                
-                var key = pairMatch.Groups[1].Value;
-                var value = pairMatch.Groups[2].Value;
-                
-                switch (key) {
-                    case "Username":
-                    case "User Id":
-                    case "User":
-                    {
-                        Username = value;
-                        break;
-                    }
-                    case "Password":
-                    {
-                        Password = value;
-                        break;
-                    }
-                    case "Pooled":
-                    {
-                        try {
-                            Pooled = bool.Parse(value);
-                        } catch(FormatException exception) {
-                            throw new FormatException("Invalid string for Pooled in connection string", exception);
-                        }
-                        break;
-                    }
-                    case "Database":
-                    case "Data Source":
-                    {
-                        Database = value;
-                        break;
-                    }
-                    case "MaximumPoolSize":
-                    case "Max Pool Size":
-                    {
-                        try {
-                            MaximumPoolSize = int.Parse (value);
-                        } catch (FormatException exception) {
-                            throw new FormatException ("Invalid number for MaximumPoolSize in connection string", exception);
-                        }
-                        break;
-                    }
-                    case "MinimumPoolSize":
-                    case "Min Pool Size":
-                    {
-                        try {
-                            MinimumPoolSize = int.Parse (value);
-                        } catch (FormatException exception) {
-                            throw new FormatException ("Invalid number for MinimumPoolSize in connection string", exception);
-                        }
-                        break;
-                    }
-                    case "ConnectionLifetime":
-                    case "Connection Lifetime":
-                    {
-                        try {
-                            var seconds = double.Parse (value);
-                            
-                            ConnectionLifetime = seconds > 0 ? TimeSpan.FromSeconds (seconds) : DefaultConnectionLifeTime;
-                        } catch (FormatException exception) {
-                            throw new FormatException ("Invalid number for ConnectionLifetime in connection string", exception);
-                        }
-                        break;
-                    }
-                    case "ConnectionTimeout":
-                    case "ConnectTimeout":
-                    {
-                        try {
-                            var seconds = double.Parse(value);
+                ParseValuePair(segment);
+            }
+        }
 
-                            ConnectionTimeout = seconds > 0 ? TimeSpan.FromSeconds(seconds) : DefaultConnectionTimeout;
-                        } catch(FormatException exception) {
-                            throw new FormatException("Invalid number for ConnectionTimeout in connection string", exception);
-                        }
-                        break;
-                    }
-                    case "Server":
-                    case "Servers":
-                    {
-                        ParseServers(value);
+        /// <summary>
+        /// Parses the value pair.
+        /// </summary>
+        /// <param name="pair">The pair.</param>
+        private void ParseValuePair(string pair){
+            var pairMatch = PairRegex.Match(pair);
+            if(!pairMatch.Success)
+                throw new FormatException(string.Format("Invalid connection string on: {0}", pairMatch.Value));
 
-                        break;
-                    }
-                    default:
-                        throw new FormatException (string.Format ("Unknown connection string option: {0}", key));
+            var key = pairMatch.Groups[1].Value;
+            var value = pairMatch.Groups[2].Value;
+
+            ParseValuePair(key, value);
+        }
+
+        /// <summary>
+        /// Parses the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        private void ParseValuePair(string key, string value){
+            switch (key.ToLower()) {
+                case "username":
+                case "user id":
+                case "user":
+                {
+                    Username = value;
+                    break;
                 }
+                case "password":
+                {
+                    Password = value;
+                    break;
+                }
+                case "pooled":
+                {
+                    try {
+                        Pooled = bool.Parse(value);
+                    } catch(FormatException exception) {
+                        throw new FormatException("Invalid string for Pooled in connection string", exception);
+                    }
+                    break;
+                }
+                case "database":
+                case "data source":
+                {
+                    Database = value;
+                    break;
+                }
+                case "maximumpoolsize":
+                case "max pool size":
+                {
+                    try {
+                        MaximumPoolSize = int.Parse (value);
+                    } catch (FormatException exception) {
+                        throw new FormatException ("Invalid number for MaximumPoolSize in connection string", exception);
+                    }
+                    break;
+                }
+                case "minimumpoolsize":
+                case "min pool size":
+                {
+                    try {
+                        MinimumPoolSize = int.Parse (value);
+                    } catch (FormatException exception) {
+                        throw new FormatException ("Invalid number for MinimumPoolSize in connection string", exception);
+                    }
+                    break;
+                }
+                case "connectionlifetime":
+                case "connection lifetime":
+                {
+                    try {
+                        var seconds = double.Parse (value);
+                            
+                        ConnectionLifetime = seconds > 0 ? TimeSpan.FromSeconds (seconds) : DefaultConnectionLifeTime;
+                    } catch (FormatException exception) {
+                        throw new FormatException ("Invalid number for ConnectionLifetime in connection string", exception);
+                    }
+                    break;
+                }
+                case "connectiontimeout":
+                case "connecttimeout":
+                {
+                    try {
+                        var seconds = double.Parse(value);
+
+                        ConnectionTimeout = seconds > 0 ? TimeSpan.FromSeconds(seconds) : DefaultConnectionTimeout;
+                    } catch(FormatException exception) {
+                        throw new FormatException("Invalid number for ConnectionTimeout in connection string", exception);
+                    }
+                    break;
+                }
+                case "server":
+                case "servers":
+                {
+                    ParseServers(value);
+
+                    break;
+                }
+                default:
+                    throw new FormatException (string.Format ("Unknown connection string option: {0}", key));
             }
         }
 
