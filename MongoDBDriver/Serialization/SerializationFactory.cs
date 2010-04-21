@@ -20,16 +20,18 @@ namespace MongoDB.Driver.Serialization
         /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
         /// </summary>
         public SerializationFactory()
-            : this(null)
+            : this(new AutoMappingStore())
         { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
         /// </summary>
         /// <param name="mappingStore">The mapping store.</param>
-        public SerializationFactory(IMappingStore mappingStore)
-        {
-            _mappingStore = mappingStore ?? new AutoMappingStore();
+        public SerializationFactory(IMappingStore mappingStore){
+            if(mappingStore == null)
+                throw new ArgumentNullException("mappingStore");
+
+            _mappingStore = mappingStore;
         }
 
         /// <summary>
