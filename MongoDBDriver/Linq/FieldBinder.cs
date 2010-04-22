@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
 using MongoDB.Driver.Linq.Expressions;
-using System.Collections;
+using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver.Linq
 {
@@ -97,11 +98,7 @@ namespace MongoDB.Driver.Linq
 
             protected override Expression VisitMethodCall(MethodCallExpression m)
             {
-                var declaringType = m.Method.DeclaringType;
-                if (declaringType.IsGenericType)
-                    declaringType = declaringType.GetGenericTypeDefinition();
-
-                if (declaringType == typeof(Queryable) || declaringType == typeof(Enumerable))
+                if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
                 {
                     if (m.Method.Name == "ElementAt" || m.Method.Name == "ElementAtOrDefault")
                     {
@@ -110,7 +107,7 @@ namespace MongoDB.Driver.Linq
                         return m;
                     }
                 }
-                else if (declaringType == typeof(MongoQueryable))
+                else if (m.Method.DeclaringType == typeof(MongoQueryable))
                 {
                     if (m.Method.Name == "Key")
                     {
@@ -119,7 +116,7 @@ namespace MongoDB.Driver.Linq
                         return m;
                     }
                 }
-                else if (typeof(Document).IsAssignableFrom(declaringType))
+                else if (typeof(Document).IsAssignableFrom(m.Method.DeclaringType))
                 {
                     if (m.Method.Name == "get_Item") //TODO: does this work for VB?
                     {
@@ -128,7 +125,7 @@ namespace MongoDB.Driver.Linq
                         return m;
                     }
                 }
-                else if (typeof(IList<>).IsAssignableFrom(declaringType) || typeof(IList).IsAssignableFrom(declaringType))
+                else if (typeof(IList<>).IsOpenTypeAssignableFrom(m.Method.DeclaringType) || typeof(IList).IsAssignableFrom(m.Method.DeclaringType))
                 {
                     if (m.Method.Name == "get_Item")
                     {

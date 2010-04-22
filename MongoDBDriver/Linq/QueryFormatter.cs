@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using MongoDB.Driver.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.Collections;
+using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver.Linq
 {
@@ -74,11 +75,7 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
-            var type = m.Member.DeclaringType;
-            if (m.Member.DeclaringType.IsGenericType)
-                type = m.Member.DeclaringType.GetGenericTypeDefinition();
-
-            if (type == typeof(string))
+            if (m.Member.DeclaringType == typeof(string))
             {
                 if (m.Member.Name == "Length")
                 {
@@ -87,7 +84,7 @@ namespace MongoDB.Driver.Linq
                     return m;
                 }
             }
-            else if (type == typeof(Array))
+            else if (m.Member.DeclaringType == typeof(Array))
             {
                 if (m.Member.Name == "Length")
                 {
@@ -96,7 +93,7 @@ namespace MongoDB.Driver.Linq
                     return m;
                 }
             }
-            else if (typeof(ICollection).IsAssignableFrom(type))
+            else if (typeof(ICollection).IsAssignableFrom(m.Member.DeclaringType))
             {
                 if (m.Member.Name == "Count")
                 {
@@ -105,7 +102,7 @@ namespace MongoDB.Driver.Linq
                     return m;
                 }
             }
-            else if (typeof(ICollection<>).IsAssignableFrom(type))
+            else if (typeof(ICollection<>).IsOpenTypeAssignableFrom(m.Member.DeclaringType))
             {
                 if (m.Member.Name == "Count")
                 {
@@ -124,6 +121,17 @@ namespace MongoDB.Driver.Linq
             {
                 switch (m.Method.Name)
                 {
+                    case "Contains":
+                        if (m.Arguments.Count != 2)
+                            throw new NotSupportedException("Only the Contains method with 2 arguments is supported.");
+
+                        var field = m.Arguments[1] as FieldExpression;
+                        if (field == null)
+                            throw new InvalidQueryException(string.Format("The mongo field must be the 2nd argument in method {0}.", m.Method.Name));
+                        Visit(field);
+                        _queryObject.AddCondition("$in", EvaluateConstant<IEnumerable>(m.Arguments[0]));
+                        _queryObject.PopConditionScope();
+                        return m;
                     case "Count":
                         if (m.Arguments.Count == 1)
                         {
@@ -132,6 +140,20 @@ namespace MongoDB.Driver.Linq
                             return m;
                         }
                         throw new NotSupportedException("The method Count with a predicate is not supported for field.");
+                }
+            }
+            else if(typeof(ICollection<>).IsOpenTypeAssignableFrom(m.Method.DeclaringType) || typeof(IList).IsAssignableFrom(m.Method.DeclaringType))
+            {
+                switch(m.Method.Name)
+                {
+                    case "Contains":
+                        var field = m.Arguments[0] as FieldExpression;
+                        if (field == null)
+                            throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
+                        Visit(field);
+                        _queryObject.AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
+                        _queryObject.PopConditionScope();
+                        return m;
                 }
             }
             else if (m.Method.DeclaringType == typeof(string))

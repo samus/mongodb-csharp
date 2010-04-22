@@ -33,5 +33,28 @@ namespace MongoDB.Driver.Util
 
             throw new NotSupportedException("Only fields, properties, and methods are supported.");
         }
+
+        public static bool IsOpenTypeAssignableFrom(this Type openType, Type closedType)
+        {
+            if (!openType.IsGenericTypeDefinition)
+                throw new ArgumentException("Must be an open generic type.", "openType");
+            if (!closedType.IsGenericType || closedType.IsGenericTypeDefinition)
+                return false;
+
+            var openArgs = openType.GetGenericArguments();
+            var closedArgs = closedType.GetGenericArguments();
+            if (openArgs.Length != closedArgs.Length)
+                return false;
+            try
+            {
+                var newType = openType.MakeGenericType(closedArgs);
+                return newType.IsAssignableFrom(closedType);
+            }
+            catch
+            {
+                //we don't really care here, it just means the answer is false.
+                return false;
+            }
+        }
     }
 }
