@@ -203,6 +203,19 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        public void LocalEnumerable_Contains()
+        {
+            var names = new[] { "Jack", "Bob" };
+            var people = collection.Linq().Where(x => names.Contains(x.FirstName));
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("FirstName", Op.In("Jack", "Bob")), queryObject.Query);
+        }
+
+        [Test]
         public void String_StartsWith()
         {
             var people = from p in collection.Linq()

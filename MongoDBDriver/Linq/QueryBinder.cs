@@ -54,7 +54,7 @@ namespace MongoDB.Driver.Linq
             if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
             {
                 //if we are running off a field expression, things get handled in the QueryFormatter
-                if (!_inField && m.Arguments[0].NodeType != (ExpressionType)MongoExpressionType.Field)
+                if (!IsOperationOnAField(m))
                 {
                     switch (m.Method.Name)
                     {
@@ -274,6 +274,13 @@ namespace MongoDB.Driver.Linq
             return new ProjectionExpression(
                 new SelectExpression(resultType, fields, new CollectionExpression(resultType, collection.Database, collection.CollectionName, collection.ElementType), null),
                 Expression.Parameter(collection.ElementType, "document"));
+        }
+
+        private bool IsOperationOnAField(MethodCallExpression m)
+        {
+            return _inField
+                || m.Arguments[0].NodeType == (ExpressionType)MongoExpressionType.Field
+                || (m.Arguments.Count == 2 && m.Arguments[1].NodeType == (ExpressionType)MongoExpressionType.Field);
         }
 
         private static bool CanBeField(Expression expression)
