@@ -125,9 +125,19 @@ namespace MongoDB.Driver.Linq
                         if (m.Arguments.Count != 2)
                             throw new NotSupportedException("Only the Contains method with 2 arguments is supported.");
 
-                        var field = m.Arguments[1] as FieldExpression;
+                        FieldExpression field;
+                        field = m.Arguments[0] as FieldExpression;
+                        if (field != null)
+                        {
+                            Visit(field);
+                            _queryObject.AddCondition(EvaluateConstant<object>(m.Arguments[1]));
+                            _queryObject.PopConditionScope();
+                            return m;
+                        }
+
+                        field = m.Arguments[1] as FieldExpression;
                         if (field == null)
-                            throw new InvalidQueryException(string.Format("The mongo field must be the 2nd argument in method {0}.", m.Method.Name));
+                            throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
                         Visit(field);
                         _queryObject.AddCondition("$in", EvaluateConstant<IEnumerable>(m.Arguments[0]));
                         _queryObject.PopConditionScope();
