@@ -372,5 +372,17 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("EmployerIds", 20), queryObject.Query);
         }
+
+        [Test]
+        public void NestedQueryable_Any()
+        {
+            var people = collection.Linq().Where(x => x.Addresses.Any(a => a.City == "London"));
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("Addresses", new Document("$elemMatch", new Document("City", "London"))), queryObject.Query);
+        }
     }
 }

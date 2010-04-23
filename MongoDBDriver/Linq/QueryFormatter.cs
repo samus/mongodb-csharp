@@ -117,15 +117,29 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
+            FieldExpression field;
             if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
             {
                 switch (m.Method.Name)
                 {
+                    case "Any":
+                        if(m.Arguments.Count != 2)
+                            throw new NotSupportedException("Only the Any method with 2 arguments is supported.");
+
+                        field = m.Arguments[0] as FieldExpression;
+                        if (field == null)
+                            throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
+                        Visit(field);
+                        _queryObject.PushConditionScope("$elemMatch");
+                        Visit(m.Arguments[1]);
+                        _queryObject.PopConditionScope(); //elemMatch
+                        _queryObject.PopConditionScope(); //field
+                        return m;
+
                     case "Contains":
                         if (m.Arguments.Count != 2)
                             throw new NotSupportedException("Only the Contains method with 2 arguments is supported.");
 
-                        FieldExpression field;
                         field = m.Arguments[0] as FieldExpression;
                         if (field != null)
                         {
@@ -157,7 +171,7 @@ namespace MongoDB.Driver.Linq
                 switch(m.Method.Name)
                 {
                     case "Contains":
-                        var field = m.Arguments[0] as FieldExpression;
+                        field = m.Arguments[0] as FieldExpression;
                         if (field == null)
                             throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
                         Visit(field);
@@ -168,7 +182,7 @@ namespace MongoDB.Driver.Linq
             }
             else if (m.Method.DeclaringType == typeof(string))
             {
-                var field = m.Object as FieldExpression;
+                field = m.Object as FieldExpression;
                 if (field == null)
                     throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
                 Visit(field);
@@ -190,7 +204,7 @@ namespace MongoDB.Driver.Linq
             {
                 if (m.Method.Name == "IsMatch")
                 {
-                    var field = m.Arguments[0] as FieldExpression;
+                    field = m.Arguments[0] as FieldExpression;
                     if (field == null)
                         throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
 
