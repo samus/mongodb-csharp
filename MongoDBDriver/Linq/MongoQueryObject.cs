@@ -149,6 +149,17 @@ namespace MongoDB.Driver.Linq
             doc[scope.Key] = scope.Value;
         }
 
+        public void SetWhereClause(string whereClause)
+        {
+            if (_hasOrder)
+            {
+                _query.Add("$where", new Code(whereClause));
+                _query.Remove("query");
+            }
+            else
+                _query = new Document("$where", new Code(whereClause));
+        }
+
         public override string ToString()
         {
             throw new NotImplementedException();
@@ -175,10 +186,6 @@ namespace MongoDB.Driver.Linq
 
                     ((Document)Value).Merge((Document)value);
                 }
-                else if (Value is Document)
-                    throw new InvalidQueryException();
-                else if(Value != null)
-                    throw new InvalidQueryException();
                 else
                     Value = value;
             }

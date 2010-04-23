@@ -13,12 +13,19 @@ namespace MongoDB.Driver.Linq
 {
     internal class QueryFormatter : MongoExpressionVisitor
     {
+        private bool _isComplex;
         private MongoQueryObject _queryObject;
+        private StringBuilder _where;
 
         internal MongoQueryObject Format(Expression e)
         {
+            _isComplex = false;
+            _where = new StringBuilder();
             _queryObject = new MongoQueryObject();
             Visit(e);
+            if (_isComplex)
+                _queryObject.SetWhereClause(_where.ToString());
+
             return _queryObject;
         }
 
@@ -33,44 +40,99 @@ namespace MongoDB.Driver.Linq
         protected override Expression VisitBinary(BinaryExpression b)
         {
             int scopeDepth = _queryObject.ScopeDepth;
+            _where.Append("(");
             Visit(b.Left);
 
             switch (b.NodeType)
             {
                 case ExpressionType.Equal:
+                    _where.Append(" === ");
                     break;
                 case ExpressionType.GreaterThan:
+                    _where.Append(" > ");
                     _queryObject.PushConditionScope("$gt");
                     break;
                 case ExpressionType.GreaterThanOrEqual:
+                    _where.Append(" >= ");
                     _queryObject.PushConditionScope("$gte");
                     break;
                 case ExpressionType.LessThan:
+                    _where.Append(" < ");
                     _queryObject.PushConditionScope("$lt");
                     break;
                 case ExpressionType.LessThanOrEqual:
+                    _where.Append(" <= ");
                     _queryObject.PushConditionScope("$lte");
                     break;
                 case ExpressionType.NotEqual:
+                    _where.Append(" != ");
                     _queryObject.PushConditionScope("$ne");
                     break;
+                case ExpressionType.Modulo:
+                    throw new NotImplementedException();
                 case ExpressionType.And:
                 case ExpressionType.AndAlso:
+                    _where.Append(" && ");
+                    break;
+                case ExpressionType.Or:
+                case ExpressionType.OrElse:
+                    _where.Append(" || ");
+                    _isComplex = true;
+                    break;
+                case ExpressionType.Add:
+                case ExpressionType.AddChecked:
+                    _where.Append(" + ");
+                    _isComplex = true;
+                    break;
+                case ExpressionType.Coalesce:
+                    _where.Append(" || ");
+                    _isComplex = true;
+                    break;
+                case ExpressionType.Divide:
+                    _where.Append(" / ");
+                    _isComplex = true;
+                    break;
+                case ExpressionType.ExclusiveOr:
+                    _where.Append(" ^ ");
+                    _isComplex = true;
+                    break;
+                case ExpressionType.LeftShift:
+                    _where.Append(" << ");
+                    _isComplex = true;
+                    break;
+                case ExpressionType.Multiply:
+                case ExpressionType.MultiplyChecked:
+                    _where.Append(" * ");
+                    _isComplex = true;
+                    break;
+                case ExpressionType.RightShift:
+                    _where.Append(" >> ");
+                    _isComplex = true;
+                    break;
+                case ExpressionType.Subtract:
+                case ExpressionType.SubtractChecked:
+                    _where.Append(" - ");
+                    _isComplex = true;
                     break;
                 default:
                     throw new NotSupportedException(string.Format("The operation {0} is not supported.", b.NodeType));
             }
+
+            if (b.Right.NodeType != ExpressionType.Constant)
+                _isComplex = true;
 
             Visit(b.Right);
 
             while (_queryObject.ScopeDepth > scopeDepth)
                 _queryObject.PopConditionScope();
 
+            _where.Append(")");
             return b;
         }
 
         protected override Expression VisitConstant(ConstantExpression c)
         {
+            _where.Append(GetJavascriptValueForConstant(c));
             _queryObject.AddCondition(c.Value);
             return c;
         }
@@ -78,6 +140,7 @@ namespace MongoDB.Driver.Linq
         protected override Expression VisitField(FieldExpression f)
         {
             _queryObject.PushConditionScope(f.Name);
+            _where.AppendFormat("this.{0}", f.Name);
             return f;
         }
 
@@ -88,6 +151,7 @@ namespace MongoDB.Driver.Linq
                 if (m.Member.Name == "Length")
                 {
                     Visit(m.Expression);
+                    _where.Append(".length");
                     _queryObject.PushConditionScope("$size");
                     return m;
                 }
@@ -97,6 +161,7 @@ namespace MongoDB.Driver.Linq
                 if (m.Member.Name == "Count")
                 {
                     Visit(m.Expression);
+                    _where.Append(".length");
                     _queryObject.PushConditionScope("$size");
                     return m;
                 }
@@ -106,6 +171,7 @@ namespace MongoDB.Driver.Linq
                 if (m.Member.Name == "Count")
                 {
                     Visit(m.Expression);
+                    _where.Append(".length");
                     _queryObject.PushConditionScope("$size");
                     return m;
                 }
@@ -129,6 +195,7 @@ namespace MongoDB.Driver.Linq
                         if (field == null)
                             throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
                         Visit(field);
+                        //TODO: _where
                         _queryObject.PushConditionScope("$elemMatch");
                         Visit(m.Arguments[1]);
                         _queryObject.PopConditionScope(); //elemMatch
@@ -152,6 +219,7 @@ namespace MongoDB.Driver.Linq
                         if (field == null)
                             throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
                         Visit(field);
+                        //TODO: _where
                         _queryObject.AddCondition("$in", EvaluateConstant<IEnumerable>(m.Arguments[0]));
                         _queryObject.PopConditionScope();
                         return m;
@@ -159,6 +227,7 @@ namespace MongoDB.Driver.Linq
                         if (m.Arguments.Count == 1)
                         {
                             Visit(m.Arguments[0]);
+                            _where.Append(".length");
                             _queryObject.PushConditionScope("$size");
                             return m;
                         }
@@ -174,6 +243,7 @@ namespace MongoDB.Driver.Linq
                         if (field == null)
                             throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
                         Visit(field);
+                        //TODO: _where
                         _queryObject.AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
                         _queryObject.PopConditionScope();
                         return m;
@@ -188,11 +258,20 @@ namespace MongoDB.Driver.Linq
 
                 var value = EvaluateConstant<string>(m.Arguments[0]);
                 if (m.Method.Name == "StartsWith")
+                {
+                    _where.AppendFormat("/^{0}/", value);
                     _queryObject.AddCondition(new MongoRegex(string.Format("^{0}", value)));
+                }
                 else if (m.Method.Name == "EndsWith")
+                {
+                    _where.AppendFormat("/{0}$/", value);
                     _queryObject.AddCondition(new MongoRegex(string.Format("{0}$", value)));
+                }
                 else if (m.Method.Name == "Contains")
+                {
+                    _where.AppendFormat("/{0}/", value);
                     _queryObject.AddCondition(new MongoRegex(string.Format("{0}", value)));
+                }
                 else
                     throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
 
@@ -214,6 +293,7 @@ namespace MongoDB.Driver.Linq
                     else
                         throw new InvalidQueryException(string.Format("Only the static Regex.IsMatch is supported.", m.Method.Name));
 
+                    _where.AppendFormat("/{0}/", value);
                     _queryObject.AddCondition(new MongoRegex(value));
                     _queryObject.PopConditionScope();
                     return m;
@@ -282,9 +362,11 @@ namespace MongoDB.Driver.Linq
             switch (u.NodeType)
             {
                 case ExpressionType.Not:
+                    _where.Append("!(");
                     _queryObject.PushConditionScope("$not");
                     Visit(u.Operand);
                     _queryObject.PopConditionScope();
+                    _where.Append(")");
                     break;
                 case ExpressionType.ArrayLength:
                     Visit(u.Operand);
@@ -305,11 +387,14 @@ namespace MongoDB.Driver.Linq
             return (T)((ConstantExpression)e).Value;
         }
 
-        private static Expression StripQuotes(Expression e)
+        private static string GetJavascriptValueForConstant(ConstantExpression c)
         {
-            while (e.NodeType == ExpressionType.Quote)
-                e = ((UnaryExpression)e).Operand;
-            return e;
+            if(c.Value == null)
+                return "null";
+            if (c.Type == typeof(string) || c.Type == typeof(StringBuilder))
+                return string.Format(@"""{0}""", c.Value.ToString());
+            
+            return c.Value.ToString();
         }
     }
 }

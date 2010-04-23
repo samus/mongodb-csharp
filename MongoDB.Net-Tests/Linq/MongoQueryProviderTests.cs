@@ -328,5 +328,17 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("Addresses", new Document("$elemMatch", new Document("City", "London"))), queryObject.Query);
         }
+
+        [Test]
+        public void Disjunction()
+        {
+            var people = collection.Linq().Where(x => x.Age == 21 || x.Age == 35);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("$where", new Code("((this.Age === 21) || (this.Age === 35))")), queryObject.Query);
+        }
     }
 }

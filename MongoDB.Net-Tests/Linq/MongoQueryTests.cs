@@ -327,5 +327,21 @@ namespace MongoDB.Driver.Tests.Linq
 
             Assert.AreEqual(2, people.Count);
         }
+
+        [Test]
+        public void Complex_Disjunction()
+        {
+            var people = collection.Linq().Where(x => x.Age == 21 || x.Age == 35).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void Complex_Addition()
+        {
+            var people = collection.Linq().Where(x => x.Age + 23 < 50).ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
     }
 }
