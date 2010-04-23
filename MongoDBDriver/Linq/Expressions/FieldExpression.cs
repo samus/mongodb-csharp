@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MongoDB.Driver.Linq.Expressions
 {
-    public class FieldExpression : Expression
+    internal class FieldExpression : Expression
     {
         private readonly Expression _expression;
         private readonly string _name;
