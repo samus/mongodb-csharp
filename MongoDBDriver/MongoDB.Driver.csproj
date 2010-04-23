@@ -106,6 +106,7 @@
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
+    <Compile Include="Configuration\CollectionAdapters\ArrayCollectionAdapter.cs" />
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="Configuration\AutoMappingProfileConfiguration.cs" />
     <Compile Include="Configuration\ClassMapConfiguration.cs" />

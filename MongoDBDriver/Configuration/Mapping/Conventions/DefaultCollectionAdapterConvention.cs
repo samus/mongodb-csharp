@@ -67,6 +67,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
             if (CollectionTypes.TryGetValue(type, out factory))
                 return factory();
 
+            if (type.IsArray)
+            {
+                return new ArrayCollectionAdapter();
+            }
+
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
             {
                 Type genericType = type.GetGenericTypeDefinition();
@@ -87,6 +92,11 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
             ElementTypeFactoryDelegate factory;
             if (ElementTypes.TryGetValue(type, out factory))
                 return factory(type);
+
+            if (type.IsArray)
+            {
+                return type.GetElementType();
+            }
 
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
             {
