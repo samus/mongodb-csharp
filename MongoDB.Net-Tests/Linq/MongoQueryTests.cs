@@ -6,211 +6,302 @@ using System.Text;
 using MongoDB.Driver.Linq;
 
 using NUnit.Framework;
+using System.Text.RegularExpressions;
 
 namespace MongoDB.Driver.Tests.Linq
 {
     [TestFixture]
-    public class MongoQueryTests : MongoTestBase
+    public class MongoQueryTests : LinqTestsBase
     {
-        private class Person
+        public override void TestSetup()
         {
-            public string FirstName { get; set; }
+            base.TestSetup();
 
-            public string LastName { get; set; }
+            collection.Delete(new { }, true);
+            collection.Insert(
+                new Person
+                {
+                    FirstName = "Bob",
+                    LastName = "McBob",
+                    Age = 42,
+                    PrimaryAddress = new Address { City = "London" },
+                    Addresses = new List<Address> 
+                    {
+                        new Address { City = "London" },
+                        new Address { City = "Tokyo" }, 
+                        new Address { City = "Seattle" } 
+                    },
+                    EmployerIds = new [] { 1, 2}
+                }, true);
 
-            public int Age { get; set; }
+            collection.Insert(
+                new Person
+                {
+                    FirstName = "Jane",
+                    LastName = "McJane",
+                    Age = 35,
+                    PrimaryAddress = new Address { City = "Paris" },
+                    Addresses = new List<Address> 
+                    {
+                        new Address { City = "Paris" }
+                    },
+                    EmployerIds = new[] { 1 }
 
-            public Address Address { get; set; }
-        }
+                }, true);
 
-        private class Address
-        {
-            public string City { get; set; }
-        }
-
-        private class Organization
-        {
-            public string Name { get; set; }
-
-            public Address Address { get; set; }
-        }
-
-        private IMongoCollection<Person> personCollection;
-        private IMongoCollection<Organization> orgCollection;
-
-        public override string TestCollections
-        {
-            get { return "people"; }
-        }
-
-        [SetUp]
-        public void TestSetup()
-        {
-            personCollection = this.DB.GetCollection<Person>("people");
-            personCollection.Delete(new { }, true);
-            personCollection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42, Address = new Address { City = "London" } }, true);
-            personCollection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35, Address = new Address { City = "Paris" } }, true);
-            personCollection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21, Address = new Address { City = "Chicago" } }, true);
-
-            orgCollection = this.DB.GetCollection<Organization>("orgs");
-            orgCollection.Delete(new { }, true);
-            orgCollection.Insert(new Organization { Name = "The Muffler Shanty", Address = new Address { City = "London" } }, true);
+            collection.Insert(
+                new Person
+                {
+                    FirstName = "Joe",
+                    LastName = "McJoe",
+                    Age = 21,
+                    PrimaryAddress = new Address { City = "Chicago" },
+                    Addresses = new List<Address> 
+                    {
+                        new Address { City = "Chicago" },
+                        new Address { City = "London" }
+                    },
+                    EmployerIds = new [] { 3 }
+                }, true);
         }
 
         [Test]
-        public void Simple()
+        public void WithoutConstraints()
         {
-            var people = personCollection.Linq().ToList();
+            var people = collection.Linq().ToList();
 
-            Assert.AreEqual(3, people.Count());            
+            Assert.AreEqual(3, people.Count);
         }
 
         [Test]
-        public void SimpleConstraint()
+        public void SingleEqualConstraint()
         {
-            var people = personCollection.Linq().Where(p => p.FirstName == "Bob").ToList();
+            var people = collection.Linq().Where(p => "Joe" == p.FirstName).ToList();
 
-            Assert.AreEqual(1, people.Count());
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test]
+        public void ConjuctionConstraint()
+        {
+            var people = collection.Linq().Where(p => p.Age > 21 && p.Age < 42).ToList();
+
+            Assert.AreEqual(1, people.Count);
         }
 
         [Test]
         public void NestedClassConstraint()
         {
-            var people = personCollection.Linq().Where(p => p.Address.City == "London").ToList();
+            var people = collection.Linq().Where(p => p.PrimaryAddress.City == "London").ToList();
 
-            Assert.AreEqual(1, people.Count());
+            Assert.AreEqual(1, people.Count);
         }
 
         [Test]
-        public void ConjunctiveConstraint()
+        public void Projection()
         {
-            var people = personCollection.Linq().Where(p => p.Age > 21 && p.Age < 42).ToList();
+            var people = (from p in collection.Linq()
+                          select new { Name = p.FirstName + p.LastName }).ToList();
 
-            Assert.AreEqual(1, people.Count());
-        }
-
-        [Test]
-        public void SimpleProjection()
-        {
-            var names = (from p in personCollection.Linq()
-                         select new { Name = p.FirstName + " " + p.LastName })
-                         .ToList();
-
-            Assert.AreEqual(3, names.Count());
-        }
-
-        [Test]
-        public void NestedClassProjection()
-        {
-            var cities = personCollection.Linq().Select(p => p.Address.City).ToList();
-
-            Assert.AreEqual(3, cities.Count());
+            Assert.AreEqual(3, people.Count);
         }
 
         [Test]
         public void ProjectionWithConstraints()
         {
-            var names = (from p in personCollection.Linq()
-                         where p.Age > 21
-                         select p.FirstName)
-                         .ToList();
+            var people = (from p in collection.Linq()
+                          where p.Age > 21 && p.Age < 42
+                          select new { Name = p.FirstName + p.LastName }).ToList();
 
-            Assert.AreEqual(2, names.Count());
+            Assert.AreEqual(1, people.Count);
         }
 
         [Test]
-        public void ProjectionWithConstraintsInReverse()
+        public void ConstraintsAgainstLocalVariable()
         {
-            var names = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).ToList();
+            int age = 21;
+            var people = collection.Linq().Where(p => p.Age > age).ToList();
 
-            Assert.AreEqual(2, names.Count());
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void ConstraintsAgainstLocalReferenceMember()
+        {
+            var local = new { Test = new { Age = 21 } };
+            var people = collection.Linq().Where(p => p.Age > local.Test.Age).ToList();
+
+            Assert.AreEqual(2, people.Count);
         }
 
         [Test]
         public void OrderBy()
         {
-            var people = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).OrderBy(x => x.Age).ToList();
+            var people = collection.Linq().OrderBy(x => x.Age).ThenByDescending(x => x.LastName).ToList();
 
-            Assert.AreEqual(people[0].FirstName, "Jane");
-            Assert.AreEqual(people[1].FirstName, "Bob");
+            Assert.AreEqual("Joe", people[0].FirstName);
+            Assert.AreEqual("Jane", people[1].FirstName);
+            Assert.AreEqual("Bob", people[2].FirstName);
         }
 
         [Test]
         public void SkipAndTake()
         {
-            var people = personCollection.Linq().OrderBy(x => x.Age).Skip(2).Take(1).ToList();
+            var people = collection.Linq().OrderBy(x => x.Age).Skip(2).Take(1).ToList();
 
-            Assert.AreEqual(1, people.Count);
-            Assert.AreEqual(people[0].FirstName, "Bob");
+            Assert.AreEqual("Bob", people[0].FirstName);
         }
 
         [Test]
         public void First()
         {
-            var name = personCollection.Linq().OrderBy(x => x.Age).Select(x => x.FirstName).First();
+            var person = collection.Linq().OrderBy(x => x.Age).First();
 
-            Assert.AreEqual(name, "Joe");
-        }
-
-        [Test]
-        public void FirstOrDefault()
-        {
-            var name = personCollection.Linq().Where(x => x.Age < 10).Select(x => x.FirstName).FirstOrDefault();
-
-            Assert.IsNull(name);
+            Assert.AreEqual("Joe", person.FirstName);
         }
 
         [Test]
         public void Single()
         {
-            var name = personCollection.Linq().Where(x => x.Age == 21).Select(x => x.FirstName).Single();
+            var person = collection.Linq().Where(x => x.Age == 21).Single();
 
-            Assert.AreEqual(name, "Joe");
-        }
-
-        [Test]
-        public void SingleOrDefault()
-        {
-            var name = personCollection.Linq().Where(x => x.Age == 21).Select(x => x.FirstName).SingleOrDefault();
-
-            Assert.AreEqual(name, "Joe");
-        }
-
-        [Test]
-        public void Two_Selects()
-        {
-            var names = personCollection.Linq().Select(p => new { FirstName = p.FirstName, Age = p.Age }).Where(n => n.Age > 21).Select(t => t.FirstName).ToList();
-
-            Assert.AreEqual(2, names.Count());
-        }
-
-        [Test]
-        [ExpectedException(typeof(InvalidQueryException))]
-        public void NestedQuery()
-        {
-            var query = from p in personCollection.Linq()
-                        select new
-                        {
-                            Name = p.FirstName + " " + p.LastName,
-                            SameCityOrgs = from o in orgCollection.Linq()
-                                           where o.Address.City == p.Address.City
-                                           select o.Name
-                        };
-
-            var results = query.ToList();
+            Assert.AreEqual("Joe", person.FirstName);
         }
 
         [Test]
         public void DocumentQuery()
         {
-            var query = from p in DB.GetCollection("people").Linq()
-                        where p.Key("Age") > 21
-                        select (string)p["FirstName"];
+            var people = (from p in documentCollection.Linq()
+                          where p.Key("Age") > 21
+                          select (string)p["FirstName"]).ToList();
 
-            var names = query.ToList();
-
-            Assert.AreEqual(2, names.Count);
+            Assert.AreEqual(2, people.Count);
         }
 
+        [Test]
+        public void LocalList_Contains()
+        {
+            var names = new List<string>() { "Joe", "Bob" };
+            var people = collection.Linq().Where(x => names.Contains(x.FirstName)).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void LocalEnumerable_Contains()
+        {
+            var names = new[] { "Joe", "Bob" };
+            var people = collection.Linq().Where(x => names.Contains(x.FirstName)).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void String_StartsWith()
+        {
+            var people = (from p in collection.Linq()
+                          where p.FirstName.StartsWith("J")
+                          select p).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void String_EndsWith()
+        {
+            var people = (from p in collection.Linq()
+                          where p.FirstName.EndsWith("e")
+                          select p).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void String_Contains()
+        {
+            var people = (from p in collection.Linq()
+                          where p.FirstName.Contains("o")
+                          select p).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void Regex_IsMatch()
+        {
+            var people = (from p in collection.Linq()
+                          where Regex.IsMatch(p.FirstName, "Joe")
+                          select p).ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test]
+        public void NestedArray_Length()
+        {
+            var people = (from p in collection.Linq()
+                          where p.EmployerIds.Length == 1
+                          select p).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void NestedCollection_Count()
+        {
+            var people = (from p in collection.Linq()
+                          where p.Addresses.Count == 1
+                          select p).ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test]
+        public void Nested_Queryable_Count()
+        {
+            var people = collection.Linq().Where(x => x.Addresses.Count() == 1).ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test(Description = "This will fail < 1.4")]
+        public void Nested_Queryable_ElementAt()
+        {
+            var people = collection.Linq().Where(x => x.Addresses.ElementAt(1).City == "Tokyo").ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test(Description = "This will fail < 1.4")]
+        public void NestedArray_indexer()
+        {
+            var people = collection.Linq().Where(x => x.EmployerIds[0] == 1).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test(Description = "This will fail < 1.4")]
+        public void NestedList_indexer()
+        {
+            var people = collection.Linq().Where(x => x.Addresses[1].City == "Tokyo").ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test]
+        public void NestedQueryable_Contains()
+        {
+            var people = collection.Linq().Where(x => x.EmployerIds.Contains(1)).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
+        public void NestedQueryable_Any()
+        {
+            var people = collection.Linq().Where(x => x.Addresses.Any(a => a.City == "London")).ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
     }
 }

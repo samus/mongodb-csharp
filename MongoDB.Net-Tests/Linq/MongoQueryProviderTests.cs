@@ -11,38 +11,8 @@ using NUnit.Framework;
 namespace MongoDB.Driver.Tests.Linq
 {
     [TestFixture]
-    public class MongoQueryProviderTests
+    public class MongoQueryProviderTests : LinqTestsBase
     {
-        private class Person
-        {
-            public string FirstName { get; set; }
-
-            public string LastName { get; set; }
-
-            public int Age { get; set; }
-
-            public Address PrimaryAddress { get; set; }
-
-            public List<Address> Addresses { get; set; }
-
-            public int[] EmployerIds { get; set; }
-
-        }
-        private class Address
-        {
-            public string City { get; set; }
-        }
-
-        private IMongoCollection<Person> collection;
-        private IMongoCollection documentCollection;
-
-        [SetUp]
-        public void TestSetup()
-        {
-            collection = new Mongo().GetDatabase("tests").GetCollection<Person>("people");
-            documentCollection = new Mongo().GetDatabase("tests").GetCollection("people");
-        }
-
         [Test]
         public void WithoutConstraints()
         {
@@ -89,18 +59,6 @@ namespace MongoDB.Driver.Tests.Linq
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("PrimaryAddress.City", "my city"), queryObject.Query);
-        }
-
-        [Test]
-        public void Simple()
-        {
-            var people = from p in collection.Linq()
-                         select p;
-
-            var queryObject = ((IMongoQueryable)people).GetQueryObject();
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Query.Count);
         }
 
         [Test]
@@ -258,20 +216,6 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
-        public void String_Length()
-        {
-            var people = from p in collection.Linq()
-                         where p.FirstName.Length == 3
-                         select p;
-
-            var queryObject = ((IMongoQueryable)people).GetQueryObject();
-            Assert.AreEqual(0, queryObject.Fields.Count);
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("FirstName", Op.Size(3)), queryObject.Query);
-        }
-
-        [Test]
         public void Regex_IsMatch()
         {
             var people = from p in collection.Linq()
@@ -289,88 +233,88 @@ namespace MongoDB.Driver.Tests.Linq
         public void NestedArray_Length()
         {
             var people = from p in collection.Linq()
-                         where p.EmployerIds.Length == 10
+                         where p.EmployerIds.Length == 1
                          select p;
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("EmployerIds", Op.Size(10)), queryObject.Query);
+            Assert.AreEqual(new Document("EmployerIds", Op.Size(1)), queryObject.Query);
         }
 
         [Test]
         public void NestedCollection_Count()
         {
             var people = from p in collection.Linq()
-                         where p.Addresses.Count == 10
+                         where p.Addresses.Count == 1
                          select p;
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("Addresses", Op.Size(10)), queryObject.Query);
+            Assert.AreEqual(new Document("Addresses", Op.Size(1)), queryObject.Query);
         }
 
         [Test]
         public void Nested_Queryable_Count()
         {
-            var people = collection.Linq().Where(x => x.Addresses.Count() == 10);
+            var people = collection.Linq().Where(x => x.Addresses.Count() == 1);
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("Addresses", Op.Size(10)), queryObject.Query);
+            Assert.AreEqual(new Document("Addresses", Op.Size(1)), queryObject.Query);
         }
 
         [Test]
         public void Nested_Queryable_ElementAt()
         {
-            var people = collection.Linq().Where(x => x.Addresses.ElementAt(10).City == "my city");
+            var people = collection.Linq().Where(x => x.Addresses.ElementAt(1).City == "Tokyo");
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("Addresses.10.City", "my city"), queryObject.Query);
+            Assert.AreEqual(new Document("Addresses.1.City", "Tokyo"), queryObject.Query);
         }
 
         [Test]
         public void NestedArray_indexer()
         {
-            var people = collection.Linq().Where(x => x.EmployerIds[10] == 42);
+            var people = collection.Linq().Where(x => x.EmployerIds[0] == 1);
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("EmployerIds.10", 42), queryObject.Query);
+            Assert.AreEqual(new Document("EmployerIds.0", 1), queryObject.Query);
         }
 
         [Test]
         public void NestedList_indexer()
         {
-            var people = collection.Linq().Where(x => x.Addresses[10].City == "my city");
+            var people = collection.Linq().Where(x => x.Addresses[1].City == "Tokyo");
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("Addresses.10.City", "my city"), queryObject.Query);
+            Assert.AreEqual(new Document("Addresses.1.City", "Tokyo"), queryObject.Query);
         }
 
         [Test]
         public void NestedQueryable_Contains()
         {
-            var people = collection.Linq().Where(x => x.EmployerIds.Contains(20));
+            var people = collection.Linq().Where(x => x.EmployerIds.Contains(1));
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("EmployerIds", 20), queryObject.Query);
+            Assert.AreEqual(new Document("EmployerIds", 1), queryObject.Query);
         }
 
         [Test]

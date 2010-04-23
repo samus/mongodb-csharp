@@ -75,16 +75,7 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
-            if (m.Member.DeclaringType == typeof(string))
-            {
-                if (m.Member.Name == "Length")
-                {
-                    Visit(m.Expression);
-                    _queryObject.PushConditionScope("$size");
-                    return m;
-                }
-            }
-            else if (m.Member.DeclaringType == typeof(Array))
+            if (m.Member.DeclaringType == typeof(Array))
             {
                 if (m.Member.Name == "Length")
                 {
