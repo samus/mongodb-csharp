@@ -23,9 +23,20 @@ namespace MongoDB.Driver.Linq.Expressions
                     return VisitProjection((ProjectionExpression)exp);
                 case MongoExpressionType.Select:
                     return VisitSelect((SelectExpression)exp);
+                case MongoExpressionType.Aggregate:
+                    return VisitAggregate((AggregateExpression)exp);
                 default:
                     return base.Visit(exp);
             }
+        }
+
+        protected virtual Expression VisitAggregate(AggregateExpression a)
+        {
+            var exp = Visit(a.Argument);
+            if (exp != a.Argument)
+                return new AggregateExpression(a.Type, a.AggregateType, exp);
+
+            return a;
         }
 
         protected virtual Expression VisitCollection(CollectionExpression c)

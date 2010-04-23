@@ -116,6 +116,8 @@
     <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="IMongoFindExecutor.cs" />
+    <Compile Include="Linq\Expressions\AggregateExpression.cs" />
+    <Compile Include="Linq\Expressions\AggregateType.cs" />
     <Compile Include="Linq\Expressions\CollectionExpression.cs" />
     <Compile Include="Linq\Expressions\FieldExpression.cs" />
     <Compile Include="Linq\Expressions\MongoExpressionType.cs" />

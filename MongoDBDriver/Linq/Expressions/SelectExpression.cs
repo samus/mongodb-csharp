@@ -10,7 +10,7 @@ namespace MongoDB.Driver.Linq.Expressions
     internal class SelectExpression : Expression
     {
         private readonly bool _distinct;
-        private readonly ReadOnlyCollection<string> _fields;
+        private readonly ReadOnlyCollection<FieldExpression> _fields;
         private readonly Expression _from;
         private readonly Expression _limit;
         private readonly ReadOnlyCollection<OrderExpression> _order;
@@ -22,7 +22,7 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _distinct; }
         }
 
-        public ReadOnlyCollection<string> Fields
+        public ReadOnlyCollection<FieldExpression> Fields
         {
             get { return _fields; }
         }
@@ -52,16 +52,16 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _where; }
         }
 
-        public SelectExpression(Type type, IEnumerable<string> fields, Expression from, Expression where)
+        public SelectExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where)
             : this(type, fields, from, where, null, false, null, null)
         { }
 
-        public SelectExpression(Type type, IEnumerable<string> fields, Expression from, Expression where, IEnumerable<OrderExpression> order, bool distinct, Expression skip, Expression limit)
+        public SelectExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where, IEnumerable<OrderExpression> order, bool distinct, Expression skip, Expression limit)
             : base((ExpressionType)MongoExpressionType.Select, type)
         {
-            _fields = fields as ReadOnlyCollection<string>;
+            _fields = fields as ReadOnlyCollection<FieldExpression>;
             if (_fields == null)
-                _fields = new List<string>(fields).AsReadOnly();
+                _fields = new List<FieldExpression>(fields).AsReadOnly();
 
             _order = order as ReadOnlyCollection<OrderExpression>;
             if (_order == null && order != null)

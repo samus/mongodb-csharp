@@ -169,6 +169,30 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        public void Count()
+        {
+            var count = collection.Linq().Count();
+
+            Assert.AreEqual(3, count);
+        }
+
+        [Test]
+        public void Count_without_predicate()
+        {
+            var count = collection.Linq().Where(x => x.Age > 21).Count();
+
+            Assert.AreEqual(2, count);
+        }
+
+        [Test]
+        public void Count_with_predicate()
+        {
+            var count = collection.Linq().Count(x => x.Age > 21);
+
+            Assert.AreEqual(2, count);
+        }
+
+        [Test]
         public void DocumentQuery()
         {
             var people = (from p in documentCollection.Linq()

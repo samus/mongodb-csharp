@@ -43,6 +43,12 @@ namespace MongoDB.Driver.Linq
         public Document Fields { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this is a count query.
+        /// </summary>
+        /// <value><c>true</c> if this is a count query; otherwise, <c>false</c>.</value>
+        public bool IsCount { get; set; }
+
+        /// <summary>
         /// Gets or sets the number to skip.
         /// </summary>
         /// <value>The number to skip.</value>

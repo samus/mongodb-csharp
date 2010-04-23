@@ -13,7 +13,7 @@ namespace MongoDB.Driver.Linq
     internal class FieldProjector : MongoExpressionVisitor
     {
         private HashSet<Expression> _candidates;
-        private List<string> _fields;
+        private List<FieldExpression> _fields;
         private Nominator _nominator;
 
         public FieldProjector(Func<Expression, bool> canBeField)
@@ -23,7 +23,7 @@ namespace MongoDB.Driver.Linq
 
         public FieldProjection ProjectFields(Expression expression)
         {
-            _fields = new List<string>();
+            _fields = new List<FieldExpression>();
             _candidates = _nominator.Nominate(expression);
             return new FieldProjection(_fields.AsReadOnly(), Visit(expression));
         }
@@ -33,17 +33,17 @@ namespace MongoDB.Driver.Linq
             if (_candidates.Contains(exp))
             {
                 if (exp.NodeType == (ExpressionType)MongoExpressionType.Field)
-                    _fields.Add(((FieldExpression)exp).Name);
+                    _fields.Add((FieldExpression)exp);
             }
             return base.Visit(exp);
         }
 
         public class FieldProjection
         {
-            private readonly ReadOnlyCollection<string> _fields;
+            private readonly ReadOnlyCollection<FieldExpression> _fields;
             private readonly Expression _projector;
 
-            public ReadOnlyCollection<string> Fields
+            public ReadOnlyCollection<FieldExpression> Fields
             {
                 get { return _fields; }
             }
@@ -53,7 +53,7 @@ namespace MongoDB.Driver.Linq
                 get { return _projector; }
             }
 
-            public FieldProjection(ReadOnlyCollection<string> fields, Expression projector)
+            public FieldProjection(ReadOnlyCollection<FieldExpression> fields, Expression projector)
             {
                 _fields = fields;
                 _projector = projector;

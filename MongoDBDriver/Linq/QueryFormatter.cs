@@ -22,6 +22,14 @@ namespace MongoDB.Driver.Linq
             return _queryObject;
         }
 
+        protected override Expression VisitAggregate(AggregateExpression a)
+        {
+            if (a.AggregateType == AggregateType.Count)
+                _queryObject.IsCount = true;
+
+            return base.VisitAggregate(a);
+        }
+
         protected override Expression VisitBinary(BinaryExpression b)
         {
             int scopeDepth = _queryObject.ScopeDepth;
@@ -223,7 +231,12 @@ namespace MongoDB.Driver.Linq
                 Visit(s.Where);
 
             foreach (var field in s.Fields)
-                _queryObject.Fields[field] = 1;
+            {
+                if (field.Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)
+                    Visit(field.Expression);
+                else
+                    _queryObject.Fields[field.Name] = 1;
+            }
 
             if (s.Order != null)
             {

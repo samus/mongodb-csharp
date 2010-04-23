@@ -90,6 +90,16 @@ namespace MongoDB.Driver.Linq
                                 return BindFirstOrSingle(m.Arguments[0], predicate, m.Method.Name, m == _root);
                             }
                             break;
+                        case "Count":
+                            if(m.Arguments.Count == 1)
+                                return BindAggregate(m.Arguments[0], m.Method, null);
+                            else if(m.Arguments.Count == 2)
+                            {
+                                var argument = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                                return BindAggregate(m.Arguments[0], m.Method, argument);
+                            }
+                            break;
+
                     }
                     throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
                 }
@@ -143,6 +153,39 @@ namespace MongoDB.Driver.Linq
             if (_map.TryGetValue(p, out e))
                 return e;
             return p;
+        }
+
+        private Expression BindAggregate(Expression source, MethodInfo method, LambdaExpression argument)
+        {
+            var returnType = method.ReturnType;
+            var aggregateType = GetAggregateType(method.Name);
+            bool hasPredicateArgument = HasPredicateArgument(aggregateType);
+
+            if (argument != null && hasPredicateArgument)
+            {
+                source = Expression.Call(typeof(Queryable), "Where", method.GetGenericArguments(), source, argument);
+                argument = null;
+            }
+
+            var projection = (ProjectionExpression)Visit(source);
+            Expression argExpression = null;
+            if (argument != null)
+            {
+                _map[argument.Parameters[0]] = projection.Projector;
+                argExpression = Visit(argument.Body);
+            }
+            else
+                argExpression = projection.Projector;
+
+            var fieldProjection = _projector.ProjectFields(projection.Projector);
+            var aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression);
+            var selectType = typeof(IEnumerable<>).MakeGenericType(returnType);
+            var select = new SelectExpression(selectType, new[] { new FieldExpression("", aggregateExpression) }, projection.Source, null);
+            var parameter = Expression.Parameter(selectType, "p");
+            var projector = Expression.Lambda(Expression.Call(typeof(Enumerable), "Single", new[] { returnType }, parameter), parameter);
+            return new ProjectionExpression(
+                select,
+                projector);
         }
 
         private Expression BindDistinct(Expression source)
@@ -269,7 +312,7 @@ namespace MongoDB.Driver.Linq
         {
             var collection = (IMongoQueryable)value;
             var bindings = new List<MemberBinding>();
-            var fields = new List<string>();
+            var fields = new List<FieldExpression>();
             var resultType = typeof(IEnumerable<>).MakeGenericType(collection.ElementType);
             return new ProjectionExpression(
                 new SelectExpression(resultType, fields, new CollectionExpression(resultType, collection.Database, collection.CollectionName, collection.ElementType), null),
@@ -286,6 +329,22 @@ namespace MongoDB.Driver.Linq
         private static bool CanBeField(Expression expression)
         {
             return expression.NodeType == (ExpressionType)MongoExpressionType.Field;
+        }
+
+        private static AggregateType GetAggregateType(string methodName)
+        {
+            switch (methodName)
+            {
+                case "Count":
+                    return AggregateType.Count;
+            }
+
+            throw new NotSupportedException(string.Format("Aggregate of type '{0}' is not supported.", methodName));
+        }
+
+        private static bool HasPredicateArgument(AggregateType aggregateType)
+        {
+            return aggregateType == AggregateType.Count;
         }
 
         private static bool IsCollection(object value)
