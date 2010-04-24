@@ -9,15 +9,15 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
     public class DelegateExtendedPropertiesConvention : MemberFinderBase, IExtendedPropertiesConvention
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NamedExtendedPropertiesConvention"/> class.
+        /// Initializes a new instance of the <see cref="DelegateExtendedPropertiesConvention"/> class.
         /// </summary>
-        /// <param name="memberName">Name of the member.</param>
+        /// <param name="predicate">The predicate.</param>
         public DelegateExtendedPropertiesConvention(Func<MemberInfo, bool> predicate)
             : base(predicate)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NamedExtendedPropertiesConvention"/> class.
+        /// Initializes a new instance of the <see cref="DelegateExtendedPropertiesConvention"/> class.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="memberTypes">The member types.</param>

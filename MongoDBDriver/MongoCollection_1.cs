@@ -5,6 +5,7 @@ using MongoDB.Driver.Connections;
 using MongoDB.Driver.Protocol;
 using MongoDB.Driver.Results;
 using MongoDB.Driver.Serialization;
+using MongoDB.Driver.Util;
 
 namespace MongoDB.Driver
 {

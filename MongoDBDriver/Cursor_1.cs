@@ -78,15 +78,6 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
-        public ICursor<T> Spec(Document spec){
-            return Spec((object)spec);
-        }
-
-        /// <summary>
-        /// Specs the specified spec.
-        /// </summary>
-        /// <param name="spec">The spec.</param>
-        /// <returns></returns>
         public ICursor<T> Spec(object spec){
             TryModify();
             _spec = spec;
@@ -113,15 +104,6 @@ namespace MongoDB.Driver
             TryModify();
             _skip = skip;
             return this;
-        }
-
-        /// <summary>
-        /// Fieldses the specified fields.
-        /// </summary>
-        /// <param name="fields">The fields.</param>
-        /// <returns></returns>
-        public ICursor<T> Fields(Document fields){
-            return Fields((object)fields);
         }
 
         /// <summary>
@@ -159,28 +141,10 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        public ICursor<T> Sort(Document fields){
-            return Sort((object)fields);
-        }
-
-        /// <summary>
-        /// Sorts the specified fields.
-        /// </summary>
-        /// <param name="fields">The fields.</param>
-        /// <returns></returns>
         public ICursor<T> Sort(object fields){
             TryModify();
             AddOrRemoveSpecOpt("$orderby", fields);
             return this;
-        }
-
-        /// <summary>
-        ///   Hints the specified index.
-        /// </summary>
-        /// <param name = "index">The index.</param>
-        /// <returns></returns>
-        public ICursor<T> Hint(Document index){
-            return Hint((object)index);
         }
 
         /// <summary>

@@ -1,17 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MongoDB.Driver.Configuration.Mapping.Auto;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace MongoDB.Driver.Configuration
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ClassMapConfiguration<T>
     {
         private readonly ClassOverrides _overrides;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClassMapConfiguration&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="overrides">The overrides.</param>
         internal ClassMapConfiguration(ClassOverrides overrides)
         {
             if (overrides == null)
@@ -20,28 +25,47 @@ namespace MongoDB.Driver.Configuration
             _overrides = overrides;
         }
 
+        /// <summary>
+        /// Collections the name.
+        /// </summary>
+        /// <param name="name">The name.</param>
         public void CollectionName(string name)
         {
             _overrides.CollectionName = name;
         }
 
+        /// <summary>
+        /// Members the specified member.
+        /// </summary>
+        /// <param name="member">The member.</param>
+        /// <returns></returns>
         public MemberMapConfiguration Member(MemberInfo member)
         {
             var overrides = _overrides.GetOverridesFor(member);
             return new MemberMapConfiguration(overrides);
         }
 
+        /// <summary>
+        /// Members the specified name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public MemberMapConfiguration Member(string name)
         {
             var members = typeof(T).GetMember(name, MemberTypes.Field | MemberTypes.Property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if (members == null || members.Length == 0)
                 throw new InvalidOperationException("No member was found.");
-            else if (members.Length > 1)
+            if (members.Length > 1)
                 throw new InvalidOperationException("More than one member matched the specified name.");
 
             return Member(members[0]);
         }
 
+        /// <summary>
+        /// Members the specified member.
+        /// </summary>
+        /// <param name="member">The member.</param>
+        /// <returns></returns>
         public MemberMapConfiguration Member(Expression<Func<T, object>> member)
         {
             throw new NotImplementedException();

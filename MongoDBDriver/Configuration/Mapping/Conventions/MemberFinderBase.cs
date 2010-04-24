@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace MongoDB.Driver.Configuration.Mapping.Conventions
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class MemberFinderBase
     {
         private readonly BindingFlags _bindingFlags;
@@ -13,7 +16,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
         private readonly Func<MemberInfo, bool> _predicate;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NamedIdConvention"/> class.
+        /// Initializes a new instance of the <see cref="MemberFinderBase"/> class.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         public MemberFinderBase(Func<MemberInfo, bool> predicate)
@@ -21,7 +24,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NamedIdConvention"/> class.
+        /// Initializes a new instance of the <see cref="MemberFinderBase"/> class.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         /// <param name="memberTypes">The member types.</param>

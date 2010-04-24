@@ -1,30 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 
 using MongoDB.Driver.Linq.Expressions;
 
 namespace MongoDB.Driver.Linq
 {
-
     internal static class PartialEvaluator
     {
-
         /// <summary>
-        /// Performs evaluation & replacement of independent sub-trees
+        /// Performs evaluation and replacement of independent sub-trees
         /// </summary>
         /// <param name="expression">The root of the expression tree.</param>
-        /// <param name="fnCanBeEvaluated">A function that decides whether a given expression node can be part of the local function.</param>
-        /// <returns>A new tree with sub-trees evaluated and replaced.</returns>
+        /// <param name="canBeEvaluated">A function that decides whether a given expression node can be part of the local function.</param>
+        /// <returns>
+        /// A new tree with sub-trees evaluated and replaced.
+        /// </returns>
         public static Expression Evaluate(Expression expression, Func<Expression, bool> canBeEvaluated)
         {
             return new SubtreeEvaluator(new Nominator(canBeEvaluated).Nominate(expression)).Eval(expression);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private class SubtreeEvaluator : ExpressionVisitor
         {
-            private HashSet<Expression> _candidates;
+            private readonly HashSet<Expression> _candidates;
 
             internal SubtreeEvaluator(HashSet<Expression> candidates)
             {
