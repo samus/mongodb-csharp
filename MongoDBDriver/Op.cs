@@ -162,7 +162,7 @@ namespace MongoDB.Driver
             if(javascript == null)
                 throw new ArgumentNullException("javascript");
 
-            return (Op)new Op().Add("$where", javascript);
+            return (Op)new Op().Add("$where", new Code(javascript));
         }
 
         /// <summary>

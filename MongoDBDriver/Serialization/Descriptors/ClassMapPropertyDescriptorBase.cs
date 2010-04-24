@@ -13,6 +13,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
     internal abstract class ClassMapPropertyDescriptorBase : IPropertyDescriptor
     {
         private readonly IMappingStore _mappingStore;
+        private readonly JavascriptMemberNameReplacer _codeReplacer;
         /// <summary>
         /// 
         /// </summary>
@@ -32,6 +33,7 @@ namespace MongoDB.Driver.Serialization.Descriptors
 
             _mappingStore = mappingStore;
             ClassMap = classMap;
+            _codeReplacer = new JavascriptMemberNameReplacer(_mappingStore);
         }
 
         /// <summary>
@@ -157,12 +159,129 @@ namespace MongoDB.Driver.Serialization.Descriptors
             return sb.ToString();
         }
 
+        protected string TranslateJavascript(string code)
+        {
+            return _codeReplacer.Replace(code, ClassMap);
+        }
+
         private static bool IsNumeric(string s)
         {
             for (int i = 0; i < s.Length; i++)
                 if (!char.IsDigit(s[i]))
                     return false;
             return true;
+        }
+
+        /// <summary>
+        /// This is an extremely rudimentart lexer designed solely for efficiency.
+        /// </summary>
+        private class JavascriptMemberNameReplacer
+        {
+            private const char EOF = '\0';
+            private IMappingStore _mappingStore;
+            private IClassMap _classMap;
+            private string _input;
+            private int _position;
+            private StringBuilder _output;
+            private bool _done;
+
+            private char Current
+            {
+                get 
+                {
+                    if (_position >= _input.Length)
+                        return EOF;
+
+                    return _input[_position]; 
+                }
+            }
+
+            public JavascriptMemberNameReplacer(IMappingStore mappingStore)
+            {
+                _mappingStore = mappingStore;
+            }
+
+            public string Replace(string input, IClassMap classMap)
+            {
+                _classMap = classMap;
+                _input = input;
+                _done = false;
+                _output = new StringBuilder();
+                _position = 0;
+                while (Read()) ;
+                return _output.ToString();
+            }
+
+            private bool Read()
+            {
+                if (ReadChar(true) == 't' && ReadChar(true) == 'h' && ReadChar(true) == 'i' && ReadChar(true) == 's' && ReadChar(true) == '.')
+                {
+                    MatchMembers();
+                }
+                return Current != EOF;
+            }
+
+            private char ReadChar(bool includeInOutput)
+            {
+                char c = Current;
+                _position++;
+                if(c != EOF && includeInOutput)
+                    _output.Append(c);
+                return c;
+            }
+
+            private void MatchMembers()
+            {
+                Type currentType = _classMap.ClassType;
+            Member:
+                string memberName = MatchMember();
+                var classMap = _mappingStore.GetClassMap(currentType);
+                var memberMap = classMap.GetMemberMapFromMemberName(memberName);
+                if (memberMap == null)
+                {
+                    _output.Append(memberName);
+                    return;
+                }
+                
+                _output.Append(memberMap.Alias);
+                currentType = memberMap.MemberReturnType;
+
+                var c = ReadChar(true);
+                if (c == '[')
+                {
+                    MatchIndexer();
+                    if (memberMap is CollectionMemberMap)
+                        currentType = ((CollectionMemberMap)memberMap).ElementType;
+                    c = ReadChar(true);
+                }
+                
+                if (c == '.')
+                    goto Member;
+            }
+
+            private string MatchMember()
+            {
+                StringBuilder memberName = new StringBuilder();
+                char c = Current;
+                while (c != '.' && c != ' ' && c != '(' && c != '[' && c != EOF)
+                {
+                    ReadChar(false);
+                    memberName.Append(c);
+                    c = Current;
+                }
+
+                return memberName.ToString();
+            }
+
+            private void MatchIndexer()
+            {
+                var c = ReadChar(true);
+                while (c != ']' && c != EOF)
+                {
+                    c = ReadChar(true);
+                }
+            }
+
         }
     }
 }

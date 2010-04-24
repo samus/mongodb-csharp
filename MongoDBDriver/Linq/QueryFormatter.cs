@@ -118,8 +118,9 @@ namespace MongoDB.Driver.Linq
                     throw new NotSupportedException(string.Format("The operation {0} is not supported.", b.NodeType));
             }
 
-            if (b.Right.NodeType != ExpressionType.Constant)
-                _isComplex = true;
+            //TODO: figure out how to test this...
+            //if (b.Right.NodeType != ExpressionType.Constant)
+            //    _isComplex = true;
 
             Visit(b.Right);
 

@@ -53,6 +53,12 @@ namespace MongoDB.Driver.Serialization.Descriptors
                 return new BsonPropertyValue(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
 
             var value = _document[name];
+            if (value != null && typeof(Code).IsAssignableFrom(value.GetType()))
+            {
+                Code code = (Code)value;
+                code.Value = TranslateJavascript(code.Value);
+                return new BsonPropertyValue(typeof(Code), code);
+            }
 
             var memberMap = GetMemberMapFromMemberName(name);
             var type = typeof(Document);

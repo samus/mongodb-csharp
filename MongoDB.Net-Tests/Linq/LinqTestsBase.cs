@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using MongoDB.Driver.Attributes;
 
 namespace MongoDB.Driver.Tests.Linq
 {
@@ -25,22 +26,28 @@ namespace MongoDB.Driver.Tests.Linq
 
         protected class Person
         {
+            [MongoName("fn")]
             public string FirstName { get; set; }
 
+            [MongoName("ln")]
             public string LastName { get; set; }
 
+            [MongoName("age")]
             public int Age { get; set; }
 
+            [MongoName("add")]
             public Address PrimaryAddress { get; set; }
 
+            [MongoName("otherAdds")]
             public List<Address> Addresses { get; set; }
 
+            [MongoName("emps")]
             public int[] EmployerIds { get; set; }
-
         }
 
         protected class Address
         {
+            [MongoName("city")]
             public string City { get; set; }
         }
     }
