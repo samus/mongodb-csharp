@@ -19,13 +19,6 @@ namespace MongoDB.Driver{
         /// </summary>
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
-        ICursor<T> Spec(Document spec);
-
-        /// <summary>
-        /// Specs the specified spec.
-        /// </summary>
-        /// <param name="spec">The spec.</param>
-        /// <returns></returns>
         ICursor<T> Spec(object spec);
 
         /// <summary>
@@ -41,13 +34,6 @@ namespace MongoDB.Driver{
         /// <param name="skip">The skip.</param>
         /// <returns></returns>
         ICursor<T> Skip(int skip);
-
-        /// <summary>
-        /// Fieldses the specified fields.
-        /// </summary>
-        /// <param name="fields">The fields.</param>
-        /// <returns></returns>
-        ICursor<T> Fields(Document fields);
 
         /// <summary>
         /// Fieldses the specified fields.
@@ -83,21 +69,7 @@ namespace MongoDB.Driver{
         /// </summary>
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
-        ICursor<T> Sort(Document fields);
-
-        /// <summary>
-        /// Sorts the specified fields.
-        /// </summary>
-        /// <param name="fields">The fields.</param>
-        /// <returns></returns>
         ICursor<T> Sort(object fields);
-
-        /// <summary>
-        /// Hints the specified index.
-        /// </summary>
-        /// <param name="index">The index.</param>
-        /// <returns></returns>
-        ICursor<T> Hint(Document index);
 
         /// <summary>
         /// Hints the specified index.
