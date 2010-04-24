@@ -1,5 +1,4 @@
 ﻿using System;
-using MongoDB.Driver;
 
 namespace MongoDB.Driver.Linq {
 

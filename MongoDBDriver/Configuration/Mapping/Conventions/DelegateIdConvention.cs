@@ -9,7 +9,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
     public class DelegateIdConvention : MemberFinderBase, IIdConvention
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NamedIdConvention"/> class.
+        /// Initializes a new instance of the <see cref="DelegateIdConvention"/> class.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
         public DelegateIdConvention(Func<MemberInfo, bool> predicate)
@@ -17,9 +17,9 @@ namespace MongoDB.Driver.Configuration.Mapping.Conventions
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NamedIdConvention"/> class.
+        /// Initializes a new instance of the <see cref="DelegateIdConvention"/> class.
         /// </summary>
-        /// <param name="memberName">Name of the member.</param>
+        /// <param name="predicate">The predicate.</param>
         /// <param name="memberTypes">The member types.</param>
         /// <param name="bindingFlags">The binding flags.</param>
         public DelegateIdConvention(Func<MemberInfo, bool> predicate, MemberTypes memberTypes, BindingFlags bindingFlags)
