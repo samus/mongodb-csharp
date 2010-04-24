@@ -3,8 +3,7 @@ using System.Collections;
 using System.Globalization;
 using System.Text;
 
-
-namespace MongoDB.Driver
+namespace MongoDB.Driver.Util
 {
     /// <summary>
     /// Lightweight routines to handle basic json serializing.
