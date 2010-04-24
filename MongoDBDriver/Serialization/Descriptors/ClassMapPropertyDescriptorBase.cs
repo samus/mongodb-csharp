@@ -79,10 +79,20 @@ namespace MongoDB.Driver.Serialization.Descriptors
 
             var parts = name.Split('.');
             memberMap = ClassMap.GetMemberMapFromMemberName(parts[0]);
+            var currentType = memberMap.MemberReturnType;
             for (int i = 1; i < parts.Length && memberMap != null; i++)
             {
-                var classMap = _mappingStore.GetClassMap(memberMap.MemberReturnType);
+                if (IsNumeric(parts[i])) //we are an array indexer
+                {
+                    currentType = ((CollectionMemberMap)memberMap).ElementType;
+                    continue;
+                }
+                var classMap = _mappingStore.GetClassMap(currentType);
                 memberMap = classMap.GetMemberMapFromAlias(parts[i]);
+                if (memberMap != null)
+                    currentType = memberMap.MemberReturnType;
+                else
+                    break;
             }
 
             return memberMap;
@@ -119,21 +129,40 @@ namespace MongoDB.Driver.Serialization.Descriptors
                 return name;
 
             sb.Append(memberMap.Alias);
+            var currentType = memberMap.MemberReturnType;
             for (int i = 1; i < parts.Length; i++)
             {
                 if(memberMap != null)
                 {
-                    var classMap = _mappingStore.GetClassMap(memberMap.MemberReturnType);
+                    if (IsNumeric(parts[i])) //we are an array indexer
+                    {
+                        currentType = ((CollectionMemberMap)memberMap).ElementType;
+                        sb.Append(".").Append(parts[i]);
+                        continue;
+                    }
+
+                    var classMap = _mappingStore.GetClassMap(currentType);
                     memberMap = classMap.GetMemberMapFromMemberName(parts[i]);
                 }
 
                 if (memberMap == null)
                     sb.Append(".").Append(parts[i]);
                 else
+                {
                     sb.Append(".").Append(memberMap.Alias);
+                    currentType = memberMap.MemberReturnType;
+                }
             }
 
             return sb.ToString();
+        }
+
+        private static bool IsNumeric(string s)
+        {
+            for (int i = 0; i < s.Length; i++)
+                if (!char.IsDigit(s[i]))
+                    return false;
+            return true;
         }
     }
 }

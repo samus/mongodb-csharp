@@ -108,6 +108,7 @@
     <Compile Include="Serialization\Builders\GenericListPropertyTests.cs" />
     <Compile Include="Serialization\Builders\PolymorphicObjectTests.cs" />
     <Compile Include="Serialization\Builders\ValueConversionTests.cs" />
+    <Compile Include="Serialization\Descriptors\DotPropertyTests.cs" />
     <Compile Include="Serialization\Descriptors\ModifierTests.cs" />
     <Compile Include="Serialization\Descriptors\DocumentPropertyTests.cs" />
     <Compile Include="Serialization\Descriptors\EmbeddedClassPropertyTests.cs" />
