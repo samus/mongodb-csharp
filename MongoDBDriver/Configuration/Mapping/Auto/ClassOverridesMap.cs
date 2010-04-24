@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MongoDB.Driver.Configuration.Mapping.Auto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ClassOverridesMap
     {
-        private Dictionary<Type, ClassOverrides> _overrides;
+        private readonly Dictionary<Type, ClassOverrides> _overrides;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClassOverridesMap"/> class.
+        /// </summary>
         public ClassOverridesMap()
         {
             _overrides = new Dictionary<Type, ClassOverrides>();

@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-
 using MongoDB.Driver.Linq.Expressions;
 using MongoDB.Driver.Util;
 
@@ -12,13 +10,11 @@ namespace MongoDB.Driver.Linq
 {
     internal class FieldBinder : ExpressionVisitor
     {
-        private static HashSet<Type> _collectionTypes = new HashSet<Type>()
+        private static readonly HashSet<Type> CollectionTypes = new HashSet<Type>()
         {
             typeof(ICollection), typeof(ICollection<>)
         };
 
-        private bool _canBeField;
-        private Stack<string> _fieldParts;
         private FieldFinder _finder;
 
         public Expression Bind(Expression expression)
@@ -146,7 +142,7 @@ namespace MongoDB.Driver.Linq
                 if (type.IsGenericType)
                     type = type.GetGenericTypeDefinition();
 
-                return _collectionTypes.Any(x => x.IsAssignableFrom(type));
+                return CollectionTypes.Any(x => x.IsAssignableFrom(type));
             }
 
             private static bool IsNativeToMongo(Type type)
