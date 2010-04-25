@@ -145,6 +145,7 @@
     <Compile Include="Linq\QueryFormatter.cs" />
     <Compile Include="Linq\PartialEvaluator.cs" />
     <Compile Include="Linq\ProjectionReader.cs" />
+    <Compile Include="Linq\SelectMerger.cs" />
     <Compile Include="Linq\TypeSystem.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />

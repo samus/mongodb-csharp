@@ -126,9 +126,16 @@ namespace MongoDB.Driver.Linq
         /// <returns></returns>
         internal MongoQueryObject GetQueryObject(Expression expression)
         {
-            expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
-            expression = new FieldBinder().Bind(expression);
-            var projection = (ProjectionExpression)new QueryBinder(this, expression).Bind(expression);
+            var projection = expression as ProjectionExpression;
+            if(projection == null)
+            {
+                expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
+                expression = new FieldBinder().Bind(expression);
+                expression = new QueryBinder(this, expression).Bind(expression);
+                expression = new SelectMerger().Merge(expression);
+                projection = (ProjectionExpression)expression;
+            }
+
             var queryObject = new QueryFormatter().Format(projection.Source);
             queryObject.Projector = new ProjectionBuilder().Build(queryObject.DocumentType, projection.Projector);
             queryObject.Aggregator = projection.Aggregator;

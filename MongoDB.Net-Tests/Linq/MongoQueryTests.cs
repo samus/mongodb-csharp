@@ -329,6 +329,18 @@ namespace MongoDB.Driver.Tests.Linq
         }
 
         [Test]
+        public void Chained()
+        {
+            var people = collection.Linq()
+                .Select(x => new { Name = x.FirstName + x.LastName, Age = x.Age })
+                .Where(x => x.Age > 21)
+                .Select(x => x.Name)
+                .ToList();
+
+            Assert.AreEqual(2, people.Count);
+        }
+
+        [Test]
         public void Complex_Disjunction()
         {
             var people = collection.Linq().Where(x => x.Age == 21 || x.Age == 35).ToList();
