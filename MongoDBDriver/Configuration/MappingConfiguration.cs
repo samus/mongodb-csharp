@@ -15,6 +15,36 @@ namespace MongoDB.Driver.Configuration
         private readonly ClassOverridesMap _overrides;
         private readonly List<FilteredProfile> _profiles;
 
+        /// <summary>
+        /// Gets the mapping store.
+        /// </summary>
+        /// <value>The mapping store.</value>
+        public IMappingStore MappingStore
+        {
+            get
+            {
+                IAutoMapper autoMapper;
+                if (_profiles.Count > 0)
+                {
+                    var agg = new AggregateAutoMapper();
+                    foreach (var p in _profiles)
+                        agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(p.Profile), p.Filter));
+
+                    agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile())));
+                    autoMapper = agg;
+                }
+                else
+                    autoMapper = new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile()));
+
+                var store = new AutoMappingStore(autoMapper);
+
+                foreach (var type in _eagerMapTypes)
+                    store.GetClassMap(type);
+
+                return store;
+            }
+        }
+
         public MappingConfiguration()
         {
             _eagerMapTypes = new List<Type>();
@@ -101,42 +131,6 @@ namespace MongoDB.Driver.Configuration
             var c = new ClassMapConfiguration<T>(_overrides.GetOverridesForType(typeof(T)));
             config(c);
             Map<T>();
-        }
-
-        /// <summary>
-        /// Builds the mapping store.
-        /// </summary>
-        /// <returns></returns>
-        IMappingStore IMappingConfiguration.BuildMappingStore()
-        {
-            IAutoMapper autoMapper;
-            if (_profiles.Count > 0)
-            {
-                var agg = new AggregateAutoMapper();
-                foreach (var p in _profiles)
-                    agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(p.Profile), p.Filter));
-
-                agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile())));
-                autoMapper = agg;
-            }
-            else
-                autoMapper = new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile()));
-
-            var store = new AutoMappingStore(autoMapper);
-
-            foreach (var type in _eagerMapTypes)
-                store.GetClassMap(type);
-
-            return store;
-        }
-
-        /// <summary>
-        /// Builds the serialization factory.
-        /// </summary>
-        /// <returns></returns>
-        ISerializationFactory IMappingConfiguration.BuildSerializationFactory()
-        {
-            return new SerializationFactory(((IMappingConfiguration)this).BuildMappingStore());
         }
 
         /// <summary>

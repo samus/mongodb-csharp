@@ -9,15 +9,15 @@ namespace MongoDB.Driver.Configuration
     public interface IMongoConfiguration
     {
         /// <summary>
-        /// Builds the connection string.
+        /// Gets the connection string.
         /// </summary>
-        /// <returns></returns>
-        string BuildConnectionString();
+        /// <value>The connection string.</value>
+        string ConnectionString { get; }
 
         /// <summary>
-        /// Builds the serialization factory.
+        /// Gets the serialization factory.
         /// </summary>
-        /// <returns></returns>
-        ISerializationFactory BuildSerializationFactory();
+        /// <value>The serialization factory.</value>
+        ISerializationFactory SerializationFactory { get; }
     }
 }

@@ -11,15 +11,9 @@ namespace MongoDB.Driver.Configuration
     public interface IMappingConfiguration
     {
         /// <summary>
-        /// Builds the mapping store.
+        /// Gets the mapping store.
         /// </summary>
-        /// <returns></returns>
-        IMappingStore BuildMappingStore();
-
-        /// <summary>
-        /// Builds the serialization factory.
-        /// </summary>
-        /// <returns></returns>
-        ISerializationFactory BuildSerializationFactory();
+        /// <value>The mapping store.</value>
+        IMappingStore MappingStore { get; }
     }
 }
