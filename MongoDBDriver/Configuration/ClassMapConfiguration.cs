@@ -68,7 +68,8 @@ namespace MongoDB.Driver.Configuration
         /// <returns></returns>
         public MemberMapConfiguration Member(Expression<Func<T, object>> member)
         {
-            throw new NotImplementedException();
+            var mex = (MemberExpression)member.Body;
+            return Member(mex.Member.Name);
         }
     }
 }
