@@ -306,6 +306,10 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitSelect(SelectExpression s)
         {
+            //We couldn't reduce it to a single query...
+            if (s.From.NodeType != (ExpressionType)MongoExpressionType.Collection)
+                throw new NotSupportedException("The query is too complex to be processed by MongoDB. Try building a map-reduce query by hand or simplifying the query.");
+
             if(s.From != null)
                 VisitSource(s.From);
             if (s.Where != null)

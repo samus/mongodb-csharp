@@ -68,7 +68,17 @@ namespace MongoDB.Driver.Linq
         
         private static bool CanMergeWithFrom(SelectExpression select, bool isTopLevel)
         {
-            return select.From is SelectExpression;
+            var fromSelect = select.From as SelectExpression;
+            if (fromSelect == null)
+                return false;
+
+            if (select.Limit != null && fromSelect.Limit != null)
+                return false;
+
+            if (select.Skip != null && fromSelect.Skip != null)
+                return false;
+
+            return true;
         }
 
         private class SelectRemover : MongoExpressionVisitor
