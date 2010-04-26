@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MongoDB.Driver.Configuration.Mapping;
 using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Serialization;
+using System.Configuration;
 
 namespace MongoDB.Driver.Configuration
 {
@@ -48,6 +49,15 @@ namespace MongoDB.Driver.Configuration
             var builder = new MongoConnectionStringBuilder();
             config(builder);
             _connectionString = builder.ToString();
+        }
+
+        /// <summary>
+        /// Connections the string app setting key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        public void ConnectionStringAppSettingKey(string key)
+        {
+            _connectionString = ConfigurationManager.AppSettings[key];
         }
 
         /// <summary>
