@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using MongoDB.Driver.Serialization;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.Configuration
 {
     public interface IMongoConfiguration
     {

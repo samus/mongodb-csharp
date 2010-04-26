@@ -1,4 +1,5 @@
 using System;
+using MongoDB.Driver.Configuration;
 using MongoDB.Driver.Connections;
 using MongoDB.Driver.Serialization;
 

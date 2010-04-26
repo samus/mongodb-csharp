@@ -14,16 +14,19 @@ namespace MongoDB.Driver.Serialization.Builders
             get
             {
                 var configure = new MongoConfiguration();
-                configure.DefaultProfile(p =>
+                configure.Mapping(mapping =>
                 {
-                    p.SubClassesAre(t => t.IsSubclassOf(typeof(BaseClass)));
+                    mapping.DefaultProfile(p =>
+                    {
+                        p.SubClassesAre(t => t.IsSubclassOf(typeof(BaseClass)));
+                    });
+
+                    mapping.Map<ClassA>();
+                    mapping.Map<ClassB>();
+                    mapping.Map<ClassD>();
                 });
 
-                configure.Map<ClassA>();
-                configure.Map<ClassB>();
-                configure.Map<ClassD>();
-
-                return configure.BuildMappingStore();
+                return ((IMappingConfiguration)configure).BuildMappingStore();
             }
         }
 
