@@ -17,8 +17,7 @@ namespace MongoDB.Driver.Bson
         private readonly byte[] _seqRange3 = new byte[]{224, 239}; //Range of 3-byte sequence
         private readonly byte[] _seqRange4 = new byte[]{240, 244}; //Range of 4-byte sequence
         private readonly Stream _stream;
-        private readonly bool _convertToLocalTime;
-        private readonly bool _readAsLocalTime;
+        private readonly bool _readLocalTime;
 
         private byte[] _byteBuffer;
         private char[] _charBuffer;
@@ -34,8 +33,7 @@ namespace MongoDB.Driver.Bson
                 throw new ArgumentNullException("settings");
             
             _builder = settings.Builder;
-            _convertToLocalTime = settings.ConvertToLocalTime;
-            _readAsLocalTime = settings.ReadAsLocalTime;
+            _readLocalTime = settings.ReadLocalTime;
             Position = 0;
             _stream = stream;
             _reader = new BinaryReader(_stream);
@@ -181,10 +179,8 @@ namespace MongoDB.Driver.Bson
             Position += 8;
             var milliseconds = _reader.ReadInt64();
             var time = BsonInfo.Epoch.AddMilliseconds(milliseconds);
-            if(_convertToLocalTime)
+            if(_readLocalTime)
                 time = time.ToLocalTime();
-            else if(_readAsLocalTime)
-                time = new DateTime(time.Year,time.Month,time.Day, time.Hour,time.Minute,time.Second,time.Millisecond,DateTimeKind.Local);
             return time;
         }
 

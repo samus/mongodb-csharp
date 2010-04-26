@@ -178,12 +178,11 @@ namespace MongoDB.Driver.Serialization.Descriptors
         private class JavascriptMemberNameReplacer
         {
             private const char EOF = '\0';
-            private IMappingStore _mappingStore;
+            private readonly IMappingStore _mappingStore;
             private IClassMap _classMap;
             private string _input;
             private int _position;
             private StringBuilder _output;
-            private bool _done;
 
             private char Current
             {
@@ -205,7 +204,6 @@ namespace MongoDB.Driver.Serialization.Descriptors
             {
                 _classMap = classMap;
                 _input = input;
-                _done = false;
                 _output = new StringBuilder();
                 _position = 0;
                 while (Read()) ;

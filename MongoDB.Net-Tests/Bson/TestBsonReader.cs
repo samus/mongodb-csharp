@@ -285,22 +285,12 @@ namespace MongoDB.Driver.Bson
         }
 
         [Test]
-        public void TestConvertUtcTimeToLocalTime(){
-            var settings = new BsonReaderSettings {ConvertToLocalTime = true};
+        public void TestReadUtcTimeToLocalTime(){
+            var settings = new BsonReaderSettings {ReadLocalTime = true};
 
             var document = Deserialize("EwAAAAl0aW1lAADJU+klAQAAAA==", settings);
 
             var dateTime = new DateTime(2010, 1, 1, 11, 0, 0, DateTimeKind.Local);
-            Assert.AreEqual(dateTime, document["time"]);
-        }
-
-        [Test]
-        public void TestReadUtcAsLocalTime(){
-            var settings = new BsonReaderSettings { ReadAsLocalTime = true };
-
-            var document = Deserialize("EwAAAAl0aW1lAADJU+klAQAAAA==", settings);
-
-            var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Local);
             Assert.AreEqual(dateTime, document["time"]);
         }
     }

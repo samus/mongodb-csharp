@@ -144,17 +144,6 @@ namespace MongoDB.Driver.Bson
         }
 
         [Test]
-        public void TestWriteLocalTime()
-        {
-            var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Local);
-
-            var settings = new BsonWriterSettings {WriteLocalTime = true};
-            var base64 = Serialize(new Document("time", dateTime), settings);
-
-            Assert.AreEqual("EwAAAAl0aW1lAADJU+klAQAAAA==",base64);
-        }
-
-        [Test]
         public void TestLocalDateTimeIsWrittenAsUtcTime()
         {
             var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Local);
