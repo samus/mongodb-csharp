@@ -41,7 +41,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="mongoConfiguration">The mongo configuration.</param>
         public Mongo(IMongoConfiguration mongoConfiguration)
-            : this(mongoConfiguration.BuildConnectionString(), mongoConfiguration.BuildSerializationFactory())
+            : this(mongoConfiguration.ConnectionString, mongoConfiguration.SerializationFactory)
         { }
 
         /// <summary>

@@ -19,9 +19,9 @@ namespace MongoDB.Driver.Configuration
         [Test]
         public void Test()
         {
-            var configure = new MongoConfiguration();
+            var configure = new FluentConfiguration();
 
-            configure.ConnectionString(cs =>
+            configure.BuildConnectionString(cs =>
             {
                 cs.Pooled = true;
             });

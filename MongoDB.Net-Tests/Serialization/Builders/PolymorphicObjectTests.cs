@@ -13,7 +13,7 @@ namespace MongoDB.Driver.Serialization.Builders
         {
             get
             {
-                var configure = new MongoConfiguration();
+                var configure = new FluentConfiguration();
                 configure.Mapping(mapping =>
                 {
                     mapping.DefaultProfile(p =>
@@ -26,7 +26,7 @@ namespace MongoDB.Driver.Serialization.Builders
                     mapping.Map<ClassD>();
                 });
 
-                return ((IMappingConfiguration)configure).BuildMappingStore();
+                return configure.MappingStore;
             }
         }
 
