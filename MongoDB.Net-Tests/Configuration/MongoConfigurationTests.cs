@@ -21,19 +21,25 @@ namespace MongoDB.Driver.Configuration
         {
             var configure = new MongoConfiguration();
 
-            configure.DefaultProfile(p =>
+            configure.ConnectionString(cs =>
             {
-                p.AliasesAreCamelCased();
-                p.CollectionNamesAreCamelCasedAndPlural();
+                cs.Pooled = true;
             });
 
-            configure.Map<Person>(m =>
+            configure.Mapping(mapping => 
             {
-                m.CollectionName("people");
-                m.Member("Name").Alias("name").DefaultValue("something").Ignore();
-            });
+                mapping.DefaultProfile(p =>
+                {
+                    p.AliasesAreCamelCased();
+                    p.CollectionNamesAreCamelCasedAndPlural();
+                });
 
-            configure.BuildSerializationFactory();
+                mapping.Map<Person>(m =>
+                {
+                    m.CollectionName("people");
+                    m.Member("Name").Alias("name").DefaultValue("something").Ignore();
+                });
+            });
         }
 
     }

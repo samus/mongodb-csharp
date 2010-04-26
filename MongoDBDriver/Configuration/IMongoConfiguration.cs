@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver.Serialization;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.Configuration
 {
     /// <summary>
     /// 

@@ -108,6 +108,8 @@
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
     <Compile Include="Configuration\CollectionAdapters\ArrayCollectionAdapter.cs" />
+    <Compile Include="Configuration\IMappingConfiguration.cs" />
+    <Compile Include="Configuration\MappingConfiguration.cs" />
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="Configuration\AutoMappingProfileConfiguration.cs" />
     <Compile Include="Configuration\ClassMapConfiguration.cs" />
@@ -115,7 +117,7 @@
     <Compile Include="Configuration\Mapping\Auto\ClassOverridesMap.cs" />
     <Compile Include="Configuration\Mapping\Auto\OverridableAutoMappingProfile.cs" />
     <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
-    <Compile Include="IMongoConfiguration.cs" />
+    <Compile Include="Configuration\IMongoConfiguration.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="IMongoFindExecutor.cs" />
     <Compile Include="Linq\Expressions\AggregateExpression.cs" />
