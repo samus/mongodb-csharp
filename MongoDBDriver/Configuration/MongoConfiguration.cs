@@ -15,6 +15,7 @@ namespace MongoDB.Driver.Configuration
         private readonly List<Type> _eagerMapTypes;
         private readonly ClassOverridesMap _overrides;
         private readonly List<FilteredProfile> _profiles;
+        private string _connectionString;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoConfiguration"/> class.
@@ -27,7 +28,30 @@ namespace MongoDB.Driver.Configuration
         }
 
         /// <summary>
-        /// Defaults the profile.
+        /// Sets the connection string.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        public void ConnectionString(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        /// <summary>
+        /// Sets the connection string.
+        /// </summary>
+        /// <param name="config">The config.</param>
+        public void ConnectionString(Action<MongoConnectionStringBuilder> config)
+        {
+            if (config == null)
+                throw new ArgumentNullException("config");
+
+            var builder = new MongoConnectionStringBuilder();
+            config(builder);
+            _connectionString = builder.ToString();
+        }
+
+        /// <summary>
+        /// Configures the default profile.
         /// </summary>
         /// <param name="config">The config.</param>
         public void DefaultProfile(Action<AutoMappingProfileConfiguration> config)
@@ -45,7 +69,7 @@ namespace MongoDB.Driver.Configuration
         }
 
         /// <summary>
-        /// Defaults the profile.
+        /// Configures the default profile.
         /// </summary>
         /// <param name="defaultProfile">The default profile.</param>
         public void DefaultProfile(IAutoMappingProfile defaultProfile)
@@ -57,7 +81,7 @@ namespace MongoDB.Driver.Configuration
         }
 
         /// <summary>
-        /// Customs the profile.
+        /// Configures a custom profile.
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="config">The config.</param>
@@ -72,7 +96,7 @@ namespace MongoDB.Driver.Configuration
         }
 
         /// <summary>
-        /// Customs the profile.
+        /// Adds a custom profile.
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="profile">The profile.</param>
@@ -141,6 +165,19 @@ namespace MongoDB.Driver.Configuration
         public ISerializationFactory BuildSerializationFactory()
         {
             return new SerializationFactory(BuildMappingStore());
+        }
+
+        /// <summary>
+        /// Builds the mongo factory.
+        /// </summary>
+        /// <returns></returns>
+        public IMongoFactory BuildMongoFactory()
+        {
+            return new MongoFactory()
+            {
+                ConnectionString = _connectionString,
+                SerializationFactory = BuildSerializationFactory()
+            };
         }
 
         /// <summary>

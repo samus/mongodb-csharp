@@ -26,28 +26,28 @@ namespace MongoDB.Driver.Tests.Linq
 
         protected class Person
         {
-            [MongoName("fn")]
+            [MongoAlias("fn")]
             public string FirstName { get; set; }
 
-            [MongoName("ln")]
+            [MongoAlias("ln")]
             public string LastName { get; set; }
 
-            [MongoName("age")]
+            [MongoAlias("age")]
             public int Age { get; set; }
 
-            [MongoName("add")]
+            [MongoAlias("add")]
             public Address PrimaryAddress { get; set; }
 
-            [MongoName("otherAdds")]
+            [MongoAlias("otherAdds")]
             public List<Address> Addresses { get; set; }
 
-            [MongoName("emps")]
+            [MongoAlias("emps")]
             public int[] EmployerIds { get; set; }
         }
 
         protected class Address
         {
-            [MongoName("city")]
+            [MongoAlias("city")]
             public string City { get; set; }
         }
     }

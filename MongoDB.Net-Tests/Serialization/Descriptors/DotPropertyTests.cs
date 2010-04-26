@@ -9,22 +9,22 @@ namespace MongoDB.Driver.Serialization.Descriptors
     {
         public class DotClass
         {
-            [MongoName("a")]
+            [MongoAlias("a")]
             public List<DotChildA> A { get; set; }
 
-            [MongoName("c")]
+            [MongoAlias("c")]
             public DotChildC C { get; set; }
         }
 
         public class DotChildA
         {
-            [MongoName("b")]
+            [MongoAlias("b")]
             public int B { get; set; }
         }
 
         public class DotChildC
         {
-            [MongoName("d")]
+            [MongoAlias("d")]
             public int D { get; set; }
         }
 

@@ -122,7 +122,7 @@ namespace MongoDB.Driver.Configuration.Mapping.Auto
         public virtual string GetAlias(Type classType, MemberInfo member)
         {
             string alias = null;
-            var att = member.GetCustomAttribute<MongoNameAttribute>(true);
+            var att = member.GetCustomAttribute<MongoAliasAttribute>(true);
             if (att != null)
                 alias = att.Name;
             if (string.IsNullOrEmpty(alias))

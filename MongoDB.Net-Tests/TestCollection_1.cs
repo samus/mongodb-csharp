@@ -19,7 +19,7 @@ namespace MongoDB.Driver
 
             public string First { get; set; }
 
-            [MongoName("cnt")]
+            [MongoAlias("cnt")]
             public int Coolness { get; set; }
         }
 
@@ -27,10 +27,10 @@ namespace MongoDB.Driver
         {
             public int x { get; set; }
 
-            [MongoName("h")]
+            [MongoAlias("h")]
             public string Text { get; set; }
 
-            [MongoName("j")]
+            [MongoAlias("j")]
             public int Index { get; set; }
 
             public int n { get; set; }
@@ -43,34 +43,34 @@ namespace MongoDB.Driver
 
         private class InsertsEntity
         {
-            [MongoName("song")]
+            [MongoAlias("song")]
             public string Song { get; set; }
 
-            [MongoName("artist")]
+            [MongoAlias("artist")]
             public string Artist { get; set; }
 
-            [MongoName("year")]
+            [MongoAlias("year")]
             public int Year { get; set; }
         }
 
         private class Album
         {
-            [MongoName("artist")]
+            [MongoAlias("artist")]
             public string Artist { get; set; }
 
-            [MongoName("title")]
+            [MongoAlias("title")]
             public string Title { get; set; }
 
-            [MongoName("songs")]
+            [MongoAlias("songs")]
             public List<Song> Songs { get; set; }
         }
 
         private class Song
         {
-            [MongoName("title")]
+            [MongoAlias("title")]
             public string Title { get; set; }
 
-            [MongoName("length")]
+            [MongoAlias("length")]
             public string Length { get; set; }
         }
 

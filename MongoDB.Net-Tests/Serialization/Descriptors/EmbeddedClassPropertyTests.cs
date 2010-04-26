@@ -40,13 +40,13 @@ namespace MongoDB.Driver.Serialization.Descriptors
 
         public class SuperClass
         {
-            [MongoName("a")]
+            [MongoAlias("a")]
             public SuperClassA A { get; set; }
         }
 
         public class SuperClassA
         {
-            [MongoName("b")]
+            [MongoAlias("b")]
             public string B { get; set; }
         }
 

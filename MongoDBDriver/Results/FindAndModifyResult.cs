@@ -8,7 +8,7 @@ namespace MongoDB.Driver.Results
         /// Gets or sets the value.
         /// </summary>
         /// <value>The value.</value>
-        [MongoName("value")]
+        [MongoAlias("value")]
         public T Value { get; set; }
     }
 }

@@ -116,6 +116,7 @@
     <Compile Include="Configuration\Mapping\Auto\OverridableAutoMappingProfile.cs" />
     <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
     <Compile Include="IMongoDatabase.cs" />
+    <Compile Include="IMongoFactory.cs" />
     <Compile Include="IMongoFindExecutor.cs" />
     <Compile Include="Linq\Expressions\AggregateExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateType.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Linq\SelectMerger.cs" />
     <Compile Include="Linq\TypeSystem.cs" />
     <Compile Include="Mo.cs" />
+    <Compile Include="MongoFactory.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />
     <Compile Include="Serialization\Builders\ArrayBuilder.cs" />
     <Compile Include="Serialization\Builders\ConcreteClassMapBuilder.cs" />
@@ -283,7 +285,7 @@
     <Compile Include="QueryOptions.cs" />
     <Compile Include="Attributes\MongoDefaultAttribute.cs" />
     <Compile Include="Attributes\MongoIgnoreAttribute.cs" />
-    <Compile Include="Attributes\MongoNameAttribute.cs" />
+    <Compile Include="Attributes\MongoAliasAttribute.cs" />
     <Compile Include="Serialization\ISerializationFactory.cs" />
     <Compile Include="UpdateFlags.cs" />
     <Compile Include="Util\ErrorTranslator.cs" />

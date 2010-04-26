@@ -9,22 +9,22 @@ namespace MongoDB.Driver.Serialization.Descriptors
     {
         public class WhereClass
         {
-            [MongoName("a")]
+            [MongoAlias("a")]
             public List<WhereChildA> A { get; set; }
 
-            [MongoName("c")]
+            [MongoAlias("c")]
             public WhereChildC C { get; set; }
         }
 
         public class WhereChildA
         {
-            [MongoName("b")]
+            [MongoAlias("b")]
             public int B { get; set; }
         }
 
         public class WhereChildC
         {
-            [MongoName("d")]
+            [MongoAlias("d")]
             public int D { get; set; }
         }
 

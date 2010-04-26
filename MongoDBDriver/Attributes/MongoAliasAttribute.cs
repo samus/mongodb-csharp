@@ -6,7 +6,7 @@ namespace MongoDB.Driver.Attributes
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class MongoNameAttribute : Attribute
+    public sealed class MongoAliasAttribute : Attribute
     {
         /// <summary>
         /// Gets or sets the name.
@@ -15,10 +15,10 @@ namespace MongoDB.Driver.Attributes
         public string Name { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoNameAttribute"/> class.
+        /// Initializes a new instance of the <see cref="MongoAliasAttribute"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        public MongoNameAttribute(string name){
+        public MongoAliasAttribute(string name){
             if(name == null)
                 throw new ArgumentNullException("name");
             Name = name;
