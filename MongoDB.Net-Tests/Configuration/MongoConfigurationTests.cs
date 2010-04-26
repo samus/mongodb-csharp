@@ -20,6 +20,7 @@ namespace MongoDB.Driver.Configuration
         public void Test()
         {
             var configure = new MongoConfiguration();
+
             configure.DefaultProfile(p =>
             {
                 p.AliasesAreCamelCased();

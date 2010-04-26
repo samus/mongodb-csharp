@@ -16,7 +16,7 @@ namespace MongoDB.Driver
         /// Initializes a new instance of the <see cref="Mongo"/> class.
         /// </summary>
         public Mongo ()
-            : this(string.Empty, SerializationFactory.Default)
+            : this(null, null)
         { }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="serializationFactory">The serialization factory.</param>
         public Mongo(ISerializationFactory serializationFactory)
-            : this(string.Empty, serializationFactory)
+            : this(null, serializationFactory)
         { }
 
         /// <summary>
@@ -32,7 +32,15 @@ namespace MongoDB.Driver
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         public Mongo(string connectionString)
-            : this(connectionString, SerializationFactory.Default)
+            : this(connectionString, null)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mongo"/> class.
+        /// </summary>
+        /// <param name="mongoConfiguration">The mongo configuration.</param>
+        public Mongo(IMongoConfiguration mongoConfiguration)
+            : this(mongoConfiguration.BuildConnectionString(), mongoConfiguration.BuildSerializationFactory())
         { }
 
         /// <summary>
@@ -42,10 +50,10 @@ namespace MongoDB.Driver
         /// <param name="serializationFactory">The serialization factory.</param>
         public Mongo (string connectionString, ISerializationFactory serializationFactory)
         {
-            if(connectionString == null)
-                throw new ArgumentNullException("connectionString");
-            if(serializationFactory == null)
-                throw new ArgumentNullException("serializationFactory");
+            if (connectionString == null)
+                connectionString = string.Empty;
+            if (serializationFactory == null)
+                serializationFactory = SerializationFactory.Default;
             
             _connection = ConnectionFactory.GetConnection(connectionString);
             _serializationFactory = serializationFactory;

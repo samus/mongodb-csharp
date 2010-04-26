@@ -10,7 +10,7 @@ namespace MongoDB.Driver.Configuration
     /// <summary>
     /// 
     /// </summary>
-    public class MongoConfiguration
+    public class MongoConfiguration : IMongoConfiguration
     {
         private IAutoMappingProfile _defaultProfile;
         private readonly List<Type> _eagerMapTypes;
@@ -169,25 +169,21 @@ namespace MongoDB.Driver.Configuration
         }
 
         /// <summary>
+        /// Builds the connection string.
+        /// </summary>
+        /// <returns></returns>
+        public string BuildConnectionString()
+        {
+            return _connectionString;
+        }
+
+        /// <summary>
         /// Builds the serialization factory.
         /// </summary>
         /// <returns></returns>
         public ISerializationFactory BuildSerializationFactory()
         {
             return new SerializationFactory(BuildMappingStore());
-        }
-
-        /// <summary>
-        /// Builds the mongo factory.
-        /// </summary>
-        /// <returns></returns>
-        public IMongoFactory BuildMongoFactory()
-        {
-            return new MongoFactory()
-            {
-                ConnectionString = _connectionString,
-                SerializationFactory = BuildSerializationFactory()
-            };
         }
 
         /// <summary>
