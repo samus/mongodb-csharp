@@ -7,6 +7,10 @@ namespace MongoDB.Driver.Linq.Expressions
 {
     internal enum AggregateType
     {
-        Count
+        Count,
+        Min,
+        Max,
+        Average,
+        Sum
     }
 }

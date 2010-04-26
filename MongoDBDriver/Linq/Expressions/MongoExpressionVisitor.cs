@@ -25,6 +25,10 @@ namespace MongoDB.Driver.Linq.Expressions
                     return VisitSelect((SelectExpression)exp);
                 case MongoExpressionType.Aggregate:
                     return VisitAggregate((AggregateExpression)exp);
+                case MongoExpressionType.AggregateSubquery:
+                    return VisitAggregateSubquery((AggregateSubqueryExpression)exp);
+                case MongoExpressionType.Scalar:
+                    return VisitScalar((ScalarExpression)exp);
                 default:
                     return base.Visit(exp);
             }
@@ -34,9 +38,18 @@ namespace MongoDB.Driver.Linq.Expressions
         {
             var exp = Visit(a.Argument);
             if (exp != a.Argument)
-                return new AggregateExpression(a.Type, a.AggregateType, exp);
+                return new AggregateExpression(a.Type, a.AggregateType, exp, a.Distinct);
 
             return a;
+        }
+
+        protected virtual Expression VisitAggregateSubquery(AggregateSubqueryExpression aggregate)
+        {
+            Expression e = Visit(aggregate.AggregateAsSubquery);
+            ScalarExpression subquery = (ScalarExpression)e;
+            if (subquery != aggregate.AggregateAsSubquery)
+                return new AggregateSubqueryExpression(aggregate.AggregateInGroupSelect, subquery);
+            return aggregate;
         }
 
         protected virtual Expression VisitCollection(CollectionExpression c)
@@ -82,21 +95,40 @@ namespace MongoDB.Driver.Linq.Expressions
             return expressions;
         }
 
+        protected virtual Expression VisitScalar(ScalarExpression scalar)
+        {
+            SelectExpression select = (SelectExpression)Visit(scalar.Select);
+            if (select != scalar.Select)
+                return new ScalarExpression(scalar.Type, select);
+            return scalar;
+        }
+
         protected virtual Expression VisitSelect(SelectExpression s)
         {
             var from = VisitSource(s.From);
             var where = Visit(s.Where);
-            var order = VisitOrderBy(s.Order);
+            var groupBy = VisitExpressionList(s.GroupBy);
+            var orderBy = VisitOrderBy(s.OrderBy);
             var skip = Visit(s.Skip);
             var limit = Visit(s.Limit);
-            if (from != s.From || where != s.Where || order != s.Order || skip != s.Skip || limit != s.Limit)
-                return new SelectExpression(s.Type, s.Fields, from, where, order, s.Distinct, skip, limit);
+            if (from != s.From || where != s.Where || orderBy != s.OrderBy || groupBy != s.GroupBy || skip != s.Skip || limit != s.Limit)
+                return new SelectExpression(s.Type, s.Fields, from, where, orderBy, groupBy, s.Distinct, skip, limit);
             return s;
         }
 
         protected virtual Expression VisitSource(Expression source)
         {
             return Visit(source);
+        }
+
+        protected virtual Expression VisitSubquery(SubqueryExpression subquery)
+        {
+            switch ((MongoExpressionType)subquery.NodeType)
+            {
+                case MongoExpressionType.Scalar:
+                    return VisitScalar((ScalarExpression)subquery);
+            }
+            return subquery;
         }
     }
 }

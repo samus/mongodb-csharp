@@ -11,6 +11,8 @@ namespace MongoDB.Driver.Linq
 {
     internal class QueryBinder : MongoExpressionVisitor
     {
+        private Expression _currentGroupElement;
+        private Dictionary<Expression, Expression> _groupByMap;
         private Dictionary<ParameterExpression, Expression> _map;
         private FieldProjector _projector;
         private IQueryProvider _provider;
@@ -29,6 +31,7 @@ namespace MongoDB.Driver.Linq
         {
             _inField = false;
             _map = new Dictionary<ParameterExpression, Expression>();
+            _groupByMap = new Dictionary<Expression, Expression>();
             return Visit(expression);
         }
 
@@ -41,12 +44,52 @@ namespace MongoDB.Driver.Linq
             return base.VisitBinary(b);
         }
 
+        protected override Expression VisitConstant(ConstantExpression c)
+        {
+            if (IsCollection(c.Value))
+                return GetCollectionProjection(c.Value);
+            return base.VisitConstant(c);
+        }
+
         protected override Expression VisitField(FieldExpression f)
         {
             _inField = true;
             var e = base.VisitField(f);
             _inField = false;
             return e;
+        }
+
+        protected override Expression VisitMemberAccess(MemberExpression m)
+        {
+            var source = Visit(m.Expression);
+            switch (source.NodeType)
+            {
+                case ExpressionType.MemberInit:
+                    var init = (MemberInitExpression)source;
+                    for (int i = 0, n = init.Bindings.Count; i < n; i++)
+                    {
+                        var ma = init.Bindings[i] as MemberAssignment;
+                        if (ma != null && MembersMatch(ma.Member, m.Member))
+                            return ma.Expression;
+                    }
+                    break;
+                case ExpressionType.New:
+                    var nex = (NewExpression)source;
+                    if (nex.Members != null)
+                    {
+                        for (int i = 0, n = nex.Members.Count; i < n; i++)
+                        {
+                            if (MembersMatch(nex.Members[i], m.Member))
+                                return nex.Arguments[i];
+                        }
+                    }
+                    break;
+            }
+
+            if (source == m.Expression)
+                return m;
+
+            return m = Expression.MakeMemberAccess(source, m.Member);
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
@@ -91,60 +134,31 @@ namespace MongoDB.Driver.Linq
                             }
                             break;
                         case "Count":
-                            if(m.Arguments.Count == 1)
-                                return BindAggregate(m.Arguments[0], m.Method, null);
-                            else if(m.Arguments.Count == 2)
+                        case "Sum":
+                        case "Average":
+                        case "Min":
+                        case "Max":
+                            if (m.Arguments.Count == 1)
+                                return BindAggregate(m.Arguments[0], m.Method, null, m == _root);
+                            else if (m.Arguments.Count == 2)
                             {
                                 var argument = (LambdaExpression)StripQuotes(m.Arguments[1]);
-                                return BindAggregate(m.Arguments[0], m.Method, argument);
+                                return BindAggregate(m.Arguments[0], m.Method, argument, m == _root);
                             }
                             break;
-
+                        case "GroupBy":
+                            if (m.Arguments.Count == 2)
+                                return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), null, null);
+                            else if(m.Arguments.Count == 3)
+                                return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), (LambdaExpression)StripQuotes(m.Arguments[2]), null);
+                            else if (m.Arguments.Count == 4)
+                                return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), (LambdaExpression)StripQuotes(m.Arguments[2]), (LambdaExpression)StripQuotes(m.Arguments[3]));
+                            break;
                     }
                     throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
                 }
             }
             return base.VisitMethodCall(m);
-        }
-
-        protected override Expression VisitConstant(ConstantExpression c)
-        {
-            if (IsCollection(c.Value))
-                return GetCollectionProjection(c.Value);
-            return base.VisitConstant(c);
-        }
-
-        protected override Expression VisitMemberAccess(MemberExpression m)
-        {
-            var source = Visit(m.Expression);
-            switch (source.NodeType)
-            {
-                case ExpressionType.MemberInit:
-                    var init = (MemberInitExpression)source;
-                    for (int i = 0, n = init.Bindings.Count; i < n; i++)
-                    {
-                        var ma = init.Bindings[i] as MemberAssignment;
-                        if (ma != null && MembersMatch(ma.Member, m.Member))
-                            return ma.Expression;
-                    }
-                    break;
-                case ExpressionType.New:
-                    var nex = (NewExpression)source;
-                    if (nex.Members != null)
-                    {
-                        for (int i = 0, n = nex.Members.Count; i < n; i++)
-                        {
-                            if (MembersMatch(nex.Members[i], m.Member))
-                                return nex.Arguments[i];
-                        }
-                    }
-                    break;
-            }
-
-            if (source == m.Expression)
-                return m;
-
-            return m = Expression.MakeMemberAccess(source, m.Member);
         }
 
         protected override Expression VisitParameter(ParameterExpression p)
@@ -155,16 +169,30 @@ namespace MongoDB.Driver.Linq
             return p;
         }
 
-        private Expression BindAggregate(Expression source, MethodInfo method, LambdaExpression argument)
+        private Expression BindAggregate(Expression source, MethodInfo method, LambdaExpression argument, bool isRoot)
         {
             var returnType = method.ReturnType;
             var aggregateType = GetAggregateType(method.Name);
             bool hasPredicateArgument = HasPredicateArgument(aggregateType);
+            bool distinct = false;
+            bool argumentWasPredicate = false;
+
+            var methodCallExpression = source as MethodCallExpression;
+            if (methodCallExpression != null && !hasPredicateArgument && argument == null)
+            {
+                if(methodCallExpression.Method.Name == "Distinct" && methodCallExpression.Arguments.Count == 1 
+                    && (methodCallExpression.Method.DeclaringType == typeof(Queryable) || methodCallExpression.Method.DeclaringType == typeof(Enumerable)))
+                {
+                    source = methodCallExpression.Arguments[0];
+                    distinct = true;
+                }
+            }
 
             if (argument != null && hasPredicateArgument)
             {
                 source = Expression.Call(typeof(Queryable), "Where", method.GetGenericArguments(), source, argument);
                 argument = null;
+                argumentWasPredicate = true;
             }
 
             var projection = (ProjectionExpression)Visit(source);
@@ -174,18 +202,45 @@ namespace MongoDB.Driver.Linq
                 _map[argument.Parameters[0]] = projection.Projector;
                 argExpression = Visit(argument.Body);
             }
-            else
+            else if(!hasPredicateArgument)
                 argExpression = projection.Projector;
 
             var fieldProjection = _projector.ProjectFields(projection.Projector);
-            var aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression);
+            Expression aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression, distinct);
             var selectType = typeof(IEnumerable<>).MakeGenericType(returnType);
             var select = new SelectExpression(selectType, new[] { new FieldExpression("", aggregateExpression) }, projection.Source, null);
-            var parameter = Expression.Parameter(selectType, "p");
-            var projector = Expression.Lambda(Expression.Call(typeof(Enumerable), "Single", new[] { returnType }, parameter), parameter);
-            return new ProjectionExpression(
-                select,
-                projector);
+
+            if (isRoot)
+            {
+                var parameter = Expression.Parameter(selectType, "p");
+                var projector = Expression.Lambda(Expression.Call(typeof(Enumerable), "Single", new[] { returnType }, parameter), parameter);
+                return new ProjectionExpression(
+                    select,
+                    projector); //TODO: maybe incorrect
+            }
+
+            var subquery = new ScalarExpression(returnType, select);
+
+            Expression groupBy;
+            if(!argumentWasPredicate && _groupByMap.TryGetValue(projection, out groupBy))
+            {
+                if(argument != null)
+                {
+                    _map[argument.Parameters[0]] = groupBy;
+                    aggregateExpression = Visit(argument.Body);
+                }
+                else if(!hasPredicateArgument)
+                    argExpression = groupBy;
+
+                aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression, distinct);
+
+                if(projection == _currentGroupElement)
+                    return aggregateExpression;
+
+                return new AggregateSubqueryExpression(aggregateExpression, subquery);
+            }
+
+            return subquery;
         }
 
         private Expression BindDistinct(Expression source)
@@ -194,7 +249,7 @@ namespace MongoDB.Driver.Linq
             var select = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, true, null, null),
+                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, null, true, null, null),
                 fieldProjection.Projector);
         }
 
@@ -216,7 +271,7 @@ namespace MongoDB.Driver.Linq
             {
                 var fieldProjection = _projector.ProjectFields(projection.Projector);
                 projection = new ProjectionExpression(
-                    new SelectExpression(source.Type, fieldProjection.Fields, projection.Source, where, null, false, null, limit),
+                    new SelectExpression(source.Type, fieldProjection.Fields, projection.Source, where, null, null, false, null, limit),
                     fieldProjection.Projector);
             }
             if (isRoot)
@@ -227,6 +282,74 @@ namespace MongoDB.Driver.Linq
                 return new ProjectionExpression(projection.Source, projection.Projector, lambda);
             }
             return projection;
+        }
+
+        protected virtual Expression BindGroupBy(Expression source, LambdaExpression keySelector, LambdaExpression elementSelector, LambdaExpression resultSelector)
+        {
+            var projection = (ProjectionExpression)Visit(source);
+            
+            _map[keySelector.Parameters[0]] = projection.Projector;
+            var keyExpression = Visit(keySelector.Body);
+
+            var elementExpression = projection.Projector;
+            if (elementSelector != null)
+            {
+                _map[elementSelector.Parameters[0]] = projection.Projector;
+                elementExpression = Visit(elementSelector.Body);
+            }
+
+            var keyProjection = _projector.ProjectFields(keyExpression);
+            var keyGroupExpressions = keyProjection.Fields.Select(f => f.Expression);
+
+            var subqueryBasis = (ProjectionExpression)Visit(source);
+            _map[keySelector.Parameters[0]] = subqueryBasis.Projector;
+            var subqueryKey = Visit(keySelector.Body);
+
+            var subqueryKeyProjection = _projector.ProjectFields(subqueryKey);
+            var subqueryGroupExpressions = subqueryKeyProjection.Fields.Select(f => f.Expression);
+            var subqueryCorrelation = BuildPredicateEqual(subqueryGroupExpressions, keyGroupExpressions);
+
+            var subqueryElementExpression = subqueryBasis.Projector;
+            if (elementSelector != null)
+            {
+                _map[elementSelector.Parameters[0]] = subqueryBasis.Projector;
+                subqueryElementExpression = Visit(elementSelector.Body);
+            }
+
+            var elementProjection = _projector.ProjectFields(subqueryElementExpression);
+            var elementSubquery =
+                new ProjectionExpression(
+                    new SelectExpression(TypeSystem.GetSequenceType(subqueryElementExpression.Type), elementProjection.Fields, subqueryBasis.Source, subqueryCorrelation),
+                    elementProjection.Projector);
+
+            _groupByMap[elementSubquery] = elementExpression;
+
+            Expression resultExpression;
+            if (resultSelector != null)
+            {
+                var saveGroupElement = _currentGroupElement;
+                _currentGroupElement = elementSubquery;
+
+                _map[resultSelector.Parameters[0]] = keyProjection.Projector;
+                _map[resultSelector.Parameters[1]] = elementSubquery;
+                resultExpression = Visit(resultSelector.Body);
+                _currentGroupElement = saveGroupElement;
+            }
+            else
+            {
+                resultExpression = Expression.New(
+                    typeof(Grouping<,>).MakeGenericType(keyExpression.Type, subqueryElementExpression.Type).GetConstructors()[0],
+                    new[] { keyExpression, elementSubquery });
+            }
+
+            var fieldProjection = _projector.ProjectFields(resultExpression);
+
+            var projectedElementSubquery = ((NewExpression)fieldProjection.Projector).Arguments[1];
+            _groupByMap[projectedElementSubquery] = elementExpression;
+
+            return new ProjectionExpression(
+                new SelectExpression(TypeSystem.GetSequenceType(resultExpression.Type), fieldProjection.Fields, projection.Source, null, null, keyGroupExpressions, false, null, null),
+                fieldProjection.Projector);
         }
 
         private Expression BindOrderBy(Type resultType, Expression source, LambdaExpression orderSelector, OrderType orderType)
@@ -251,7 +374,7 @@ namespace MongoDB.Driver.Linq
 
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, null, orderings.AsReadOnly(), false, null, null),
+                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, null, orderings.AsReadOnly(), null, false, null, null),
                 fieldProjection.Projector);
         }
 
@@ -273,7 +396,7 @@ namespace MongoDB.Driver.Linq
             var select = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, false, skip, null),
+                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, null, false, skip, null),
                 fieldProjection.Projector);
         }
 
@@ -284,7 +407,7 @@ namespace MongoDB.Driver.Linq
             var select = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, false, null, take),
+                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, null, false, null, take),
                 fieldProjection.Projector);
         }
 
@@ -326,6 +449,19 @@ namespace MongoDB.Driver.Linq
                 || (m.Arguments.Count == 2 && m.Arguments[1].NodeType == (ExpressionType)MongoExpressionType.Field);
         }
 
+        private Expression BuildPredicateEqual(IEnumerable<Expression> source1, IEnumerable<Expression> source2)
+        {
+            var en1 = source1.GetEnumerator();
+            var en2 = source2.GetEnumerator();
+            Expression result = null;
+            while (en1.MoveNext() && en2.MoveNext())
+            {
+                Expression compare = Expression.Equal(en1.Current, en2.Current);
+                result = (result == null) ? compare : Expression.And(result, compare);
+            }
+            return result;
+        }
+
         private static bool CanBeField(Expression expression)
         {
             return expression.NodeType == (ExpressionType)MongoExpressionType.Field;
@@ -337,6 +473,14 @@ namespace MongoDB.Driver.Linq
             {
                 case "Count":
                     return AggregateType.Count;
+                case "Sum":
+                    return AggregateType.Sum;
+                case "Average":
+                    return AggregateType.Average;
+                case "Min":
+                    return AggregateType.Min;
+                case "Max":
+                    return AggregateType.Max;
             }
 
             throw new NotSupportedException(string.Format("Aggregate of type '{0}' is not supported.", methodName));

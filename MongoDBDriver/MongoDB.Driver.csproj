@@ -122,6 +122,7 @@
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="IMongoFindExecutor.cs" />
     <Compile Include="Linq\Expressions\AggregateExpression.cs" />
+    <Compile Include="Linq\Expressions\AggregateSubqueryExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateType.cs" />
     <Compile Include="Linq\Expressions\CollectionExpression.cs" />
     <Compile Include="Linq\Expressions\FieldExpression.cs" />
@@ -131,9 +132,12 @@
     <Compile Include="Linq\Expressions\OrderType.cs" />
     <Compile Include="Linq\Expressions\ProjectionExpression.cs" />
     <Compile Include="Linq\Expressions\Replacer.cs" />
+    <Compile Include="Linq\Expressions\ScalarExpression.cs" />
     <Compile Include="Linq\Expressions\SelectExpression.cs" />
     <Compile Include="Linq\Expressions\ExpressionVisitor.cs" />
+    <Compile Include="Linq\Expressions\SubqueryExpression.cs" />
     <Compile Include="Linq\FieldBinder.cs" />
+    <Compile Include="Linq\Grouping.cs" />
     <Compile Include="Linq\IMongoQueryable.cs" />
     <Compile Include="Linq\InvalidQueryException.cs" />
     <Compile Include="Linq\LinqExtensions.cs" />

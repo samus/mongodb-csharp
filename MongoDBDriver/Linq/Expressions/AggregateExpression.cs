@@ -10,6 +10,7 @@ namespace MongoDB.Driver.Linq.Expressions
     {
         private readonly AggregateType _aggregateType;
         private readonly Expression _argument;
+        private readonly bool _distinct;
 
         public AggregateType AggregateType
         {
@@ -21,11 +22,17 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _argument; }
         }
 
-        public AggregateExpression(Type type, AggregateType aggregateType, Expression argument)
+        public bool Distinct
+        {
+            get { return _distinct; }
+        }
+
+        public AggregateExpression(Type type, AggregateType aggregateType, Expression argument, bool distinct)
             : base((ExpressionType)MongoExpressionType.Aggregate, type)
         {
             _aggregateType = aggregateType;
             _argument = argument;
+            _distinct = distinct;
         }
     }
 }

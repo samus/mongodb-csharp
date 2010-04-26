@@ -42,6 +42,9 @@ namespace MongoDB.Driver.Linq
 
             public string Find(Expression expression)
             {
+                if (expression.NodeType == ExpressionType.Parameter)
+                    return null;
+
                 _fieldParts = new Stack<string>();
                 _isBlocked = false;
                 Visit(expression);

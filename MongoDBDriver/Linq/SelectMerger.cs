@@ -47,19 +47,21 @@ namespace MongoDB.Driver.Linq
                         where = fromSelect.Where;
                 }
 
-                var order = s.Order != null && s.Order.Count > 0 ? s.Order : fromSelect.Order;
+                var groupBy = s.GroupBy != null && s.GroupBy.Count > 0 ? s.GroupBy : fromSelect.GroupBy;
+                var orderBy = s.OrderBy != null && s.OrderBy.Count > 0 ? s.OrderBy : fromSelect.OrderBy;
                 var skip = s.Skip != null ? s.Skip : fromSelect.Skip;
                 var limit = s.Limit != null ? s.Limit : fromSelect.Limit;
                 bool distinct = s.Distinct | fromSelect.Distinct;
                 
 
                 if (where != s.Where
-                    || order != s.Order
+                    || groupBy != s.GroupBy
+                    || orderBy != s.OrderBy
                     || distinct != s.Distinct
                     || skip != s.Skip
                     || limit != s.Limit)
                 {
-                    s = new SelectExpression(s.Type, fields, s.From, where, order, distinct, skip, limit);
+                    s = new SelectExpression(s.Type, fields, s.From, where, orderBy, groupBy, distinct, skip, limit);
                 }
             }
 
@@ -76,6 +78,9 @@ namespace MongoDB.Driver.Linq
                 return false;
 
             if (select.Skip != null && fromSelect.Skip != null)
+                return false;
+
+            if (select.GroupBy != null && select.GroupBy.Count > 0 && fromSelect.GroupBy != null && fromSelect.GroupBy.Count > 0)
                 return false;
 
             return true;
@@ -114,6 +119,11 @@ namespace MongoDB.Driver.Linq
                     _map.Add(field);
 
                 return _map.AsReadOnly();
+            }
+
+            protected override Expression VisitAggregate(AggregateExpression a)
+            {
+                return a;
             }
 
             protected override Expression VisitField(FieldExpression f)

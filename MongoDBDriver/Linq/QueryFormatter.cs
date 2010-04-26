@@ -323,9 +323,9 @@ namespace MongoDB.Driver.Linq
                     _queryObject.Fields[field.Name] = 1;
             }
 
-            if (s.Order != null)
+            if (s.OrderBy != null)
             {
-                foreach (var order in s.Order)
+                foreach (var order in s.OrderBy)
                 {
                     var field = Visit(order.Expression) as FieldExpression;
                     if (field == null)

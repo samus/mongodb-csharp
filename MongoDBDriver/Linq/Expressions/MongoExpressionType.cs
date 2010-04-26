@@ -12,6 +12,8 @@ namespace MongoDB.Driver.Linq.Expressions
         Select,
         Projection,
         Order,
-        Aggregate
+        Aggregate,
+        AggregateSubquery,
+        Scalar
     }
 }

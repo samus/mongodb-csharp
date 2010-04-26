@@ -12,8 +12,9 @@ namespace MongoDB.Driver.Linq.Expressions
         private readonly bool _distinct;
         private readonly ReadOnlyCollection<FieldExpression> _fields;
         private readonly Expression _from;
+        private readonly ReadOnlyCollection<Expression> _groupBy;
         private readonly Expression _limit;
-        private readonly ReadOnlyCollection<OrderExpression> _order;
+        private readonly ReadOnlyCollection<OrderExpression> _orderBy;
         private readonly Expression _skip;
         private readonly Expression _where;
 
@@ -32,14 +33,19 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _from; }
         }
 
+        public ReadOnlyCollection<Expression> GroupBy
+        {
+            get { return _groupBy; }
+        }
+
         public Expression Limit
         {
             get { return _limit; }
         }
 
-        public ReadOnlyCollection<OrderExpression> Order
+        public ReadOnlyCollection<OrderExpression> OrderBy
         {
-            get { return _order; }
+            get { return _orderBy; }
         }
 
         public Expression Skip
@@ -53,19 +59,23 @@ namespace MongoDB.Driver.Linq.Expressions
         }
 
         public SelectExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where)
-            : this(type, fields, from, where, null, false, null, null)
+            : this(type, fields, from, where, null, null, false, null, null)
         { }
 
-        public SelectExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where, IEnumerable<OrderExpression> order, bool distinct, Expression skip, Expression limit)
+        public SelectExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, IEnumerable<Expression> groupBy, bool distinct, Expression skip, Expression limit)
             : base((ExpressionType)MongoExpressionType.Select, type)
         {
             _fields = fields as ReadOnlyCollection<FieldExpression>;
             if (_fields == null)
                 _fields = new List<FieldExpression>(fields).AsReadOnly();
 
-            _order = order as ReadOnlyCollection<OrderExpression>;
-            if (_order == null && order != null)
-                _order = new List<OrderExpression>(order).AsReadOnly();
+            _orderBy = orderBy as ReadOnlyCollection<OrderExpression>;
+            if (_orderBy == null && orderBy != null)
+                _orderBy = new List<OrderExpression>(orderBy).AsReadOnly();
+
+            _groupBy = groupBy as ReadOnlyCollection<Expression>;
+            if (_groupBy == null && groupBy != null)
+                _groupBy = new List<Expression>(groupBy).AsReadOnly();
 
             _distinct = distinct;
             _from = from;

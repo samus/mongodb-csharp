@@ -33,7 +33,10 @@ namespace MongoDB.Driver.Linq
             if (_candidates.Contains(exp))
             {
                 if (exp.NodeType == (ExpressionType)MongoExpressionType.Field)
+                {
                     _fields.Add((FieldExpression)exp);
+                    return exp;
+                }
             }
             return base.Visit(exp);
         }

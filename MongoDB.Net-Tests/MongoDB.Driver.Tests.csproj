@@ -97,6 +97,7 @@
     <Compile Include="Connections\TestConnectionFactory.cs" />
     <Compile Include="Connections\TestPooledConnectionFactory.cs" />
     <Compile Include="Connections\TestSimpleConnectionFactory.cs" />
+    <Compile Include="Linq\MapReduceTests.cs" />
     <Compile Include="Linq\LinqExtensionsTests.cs" />
     <Compile Include="Linq\LinqTestsBase.cs" />
     <Compile Include="Linq\MongoQueryTests.cs" />
