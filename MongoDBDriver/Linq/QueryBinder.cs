@@ -208,18 +208,18 @@ namespace MongoDB.Driver.Linq
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             Expression aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression, distinct);
             var selectType = typeof(IEnumerable<>).MakeGenericType(returnType);
-            var select = new SelectExpression(selectType, new[] { new FieldExpression("", aggregateExpression) }, projection.Source, null);
+            var find = new FindExpression(selectType, new[] { new FieldExpression("", aggregateExpression) }, projection.Source, null);
 
             if (isRoot)
             {
                 var parameter = Expression.Parameter(selectType, "p");
                 var projector = Expression.Lambda(Expression.Call(typeof(Enumerable), "Single", new[] { returnType }, parameter), parameter);
                 return new ProjectionExpression(
-                    select,
+                    find,
                     projector); //TODO: maybe incorrect
             }
 
-            var subquery = new ScalarExpression(returnType, select);
+            var subquery = new ScalarExpression(returnType, find);
 
             Expression groupBy;
             if(!argumentWasPredicate && _groupByMap.TryGetValue(projection, out groupBy))
@@ -246,10 +246,10 @@ namespace MongoDB.Driver.Linq
         private Expression BindDistinct(Expression source)
         {
             var projection = VisitSequence(source);
-            var select = projection.Source;
+            var find = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, null, true, null, null),
+                new FindExpression(find.Type, fieldProjection.Fields, projection.Source, null, null, null, true, null, null),
                 fieldProjection.Projector);
         }
 
@@ -271,7 +271,7 @@ namespace MongoDB.Driver.Linq
             {
                 var fieldProjection = _projector.ProjectFields(projection.Projector);
                 projection = new ProjectionExpression(
-                    new SelectExpression(source.Type, fieldProjection.Fields, projection.Source, where, null, null, false, null, limit),
+                    new FindExpression(source.Type, fieldProjection.Fields, projection.Source, where, null, null, false, null, limit),
                     fieldProjection.Projector);
             }
             if (isRoot)
@@ -319,7 +319,7 @@ namespace MongoDB.Driver.Linq
             var elementProjection = _projector.ProjectFields(subqueryElementExpression);
             var elementSubquery =
                 new ProjectionExpression(
-                    new SelectExpression(TypeSystem.GetSequenceType(subqueryElementExpression.Type), elementProjection.Fields, subqueryBasis.Source, subqueryCorrelation),
+                    new FindExpression(TypeSystem.GetSequenceType(subqueryElementExpression.Type), elementProjection.Fields, subqueryBasis.Source, subqueryCorrelation),
                     elementProjection.Projector);
 
             _groupByMap[elementSubquery] = elementExpression;
@@ -348,7 +348,7 @@ namespace MongoDB.Driver.Linq
             _groupByMap[projectedElementSubquery] = elementExpression;
 
             return new ProjectionExpression(
-                new SelectExpression(TypeSystem.GetSequenceType(resultExpression.Type), fieldProjection.Fields, projection.Source, null, null, keyGroupExpressions, false, null, null),
+                new FindExpression(TypeSystem.GetSequenceType(resultExpression.Type), fieldProjection.Fields, projection.Source, null, null, keyGroupExpressions, false, null, null),
                 fieldProjection.Projector);
         }
 
@@ -374,7 +374,7 @@ namespace MongoDB.Driver.Linq
 
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, null, orderings.AsReadOnly(), null, false, null, null),
+                new FindExpression(resultType, fieldProjection.Fields, projection.Source, null, orderings.AsReadOnly(), null, false, null, null),
                 fieldProjection.Projector);
         }
 
@@ -385,7 +385,7 @@ namespace MongoDB.Driver.Linq
             var expression = Visit(selector.Body);
             var fieldProjection = _projector.ProjectFields(expression);
             return new ProjectionExpression(
-                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, null),
+                new FindExpression(resultType, fieldProjection.Fields, projection.Source, null),
                 fieldProjection.Projector);
         }
 
@@ -393,10 +393,10 @@ namespace MongoDB.Driver.Linq
         {
             var projection = VisitSequence(source);
             skip = Visit(skip);
-            var select = projection.Source;
+            var find = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, null, false, skip, null),
+                new FindExpression(find.Type, fieldProjection.Fields, projection.Source, null, null, null, false, skip, null),
                 fieldProjection.Projector);
         }
 
@@ -404,10 +404,10 @@ namespace MongoDB.Driver.Linq
         {
             var projection = VisitSequence(source);
             take = Visit(take);
-            var select = projection.Source;
+            var find = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(select.Type, fieldProjection.Fields, projection.Source, null, null, null, false, null, take),
+                new FindExpression(find.Type, fieldProjection.Fields, projection.Source, null, null, null, false, null, take),
                 fieldProjection.Projector);
         }
 
@@ -427,7 +427,7 @@ namespace MongoDB.Driver.Linq
             var where = Visit(predicate.Body);
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new SelectExpression(resultType, fieldProjection.Fields, projection.Source, where),
+                new FindExpression(resultType, fieldProjection.Fields, projection.Source, where),
                 fieldProjection.Projector);
         }
 
@@ -438,7 +438,7 @@ namespace MongoDB.Driver.Linq
             var fields = new List<FieldExpression>();
             var resultType = typeof(IEnumerable<>).MakeGenericType(collection.ElementType);
             return new ProjectionExpression(
-                new SelectExpression(resultType, fields, new CollectionExpression(resultType, collection.Database, collection.CollectionName, collection.ElementType), null),
+                new FindExpression(resultType, fields, new CollectionExpression(resultType, collection.Database, collection.CollectionName, collection.ElementType), null),
                 Expression.Parameter(collection.ElementType, "document"));
         }
 

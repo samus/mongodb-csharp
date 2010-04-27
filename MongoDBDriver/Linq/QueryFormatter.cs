@@ -145,6 +145,45 @@ namespace MongoDB.Driver.Linq
             return f;
         }
 
+        protected override Expression VisitFind(FindExpression f)
+        {
+            //We couldn't reduce it to a single query...
+            if (f.From.NodeType != (ExpressionType)MongoExpressionType.Collection)
+                throw new NotSupportedException("The query is too complex to be processed by MongoDB. Try building a map-reduce query by hand or simplifying the query.");
+
+            if (f.From != null)
+                VisitSource(f.From);
+            if (f.Where != null)
+                Visit(f.Where);
+
+            foreach (var field in f.Fields)
+            {
+                if (field.Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)
+                    Visit(field.Expression);
+                else
+                    _queryObject.Fields[field.Name] = 1;
+            }
+
+            if (f.OrderBy != null)
+            {
+                foreach (var order in f.OrderBy)
+                {
+                    var field = Visit(order.Expression) as FieldExpression;
+                    if (field == null)
+                        throw new InvalidQueryException("Could not find the field name from the order expression.");
+                    _queryObject.AddOrderBy(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
+                }
+            }
+
+            if (f.Limit != null)
+                _queryObject.NumberToLimit = EvaluateConstant<int>(f.Limit);
+
+            if (f.Skip != null)
+                _queryObject.NumberToSkip = EvaluateConstant<int>(f.Skip);
+
+            return f;
+        }
+
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
             if (m.Member.DeclaringType == typeof(Array))
@@ -302,45 +341,6 @@ namespace MongoDB.Driver.Linq
             }
 
             throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
-        }
-
-        protected override Expression VisitSelect(SelectExpression s)
-        {
-            //We couldn't reduce it to a single query...
-            if (s.From.NodeType != (ExpressionType)MongoExpressionType.Collection)
-                throw new NotSupportedException("The query is too complex to be processed by MongoDB. Try building a map-reduce query by hand or simplifying the query.");
-
-            if(s.From != null)
-                VisitSource(s.From);
-            if (s.Where != null)
-                Visit(s.Where);
-
-            foreach (var field in s.Fields)
-            {
-                if (field.Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)
-                    Visit(field.Expression);
-                else
-                    _queryObject.Fields[field.Name] = 1;
-            }
-
-            if (s.OrderBy != null)
-            {
-                foreach (var order in s.OrderBy)
-                {
-                    var field = Visit(order.Expression) as FieldExpression;
-                    if (field == null)
-                        throw new InvalidQueryException("Could not find the field name from the order expression.");
-                    _queryObject.AddOrderBy(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
-                }
-            }
-
-            if (s.Limit != null)
-                _queryObject.NumberToLimit = EvaluateConstant<int>(s.Limit);
-
-            if (s.Skip!= null)
-                _queryObject.NumberToSkip = EvaluateConstant<int>(s.Skip);
-
-            return s;
         }
 
         protected override Expression VisitSource(Expression source)

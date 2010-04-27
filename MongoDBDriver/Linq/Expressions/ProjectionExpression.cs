@@ -8,11 +8,11 @@ namespace MongoDB.Driver.Linq.Expressions
 {
     internal class ProjectionExpression : Expression
     {
-        private readonly SelectExpression _source;
+        private readonly FindExpression _source;
         private readonly Expression _projector;
         private readonly LambdaExpression _aggregator;
 
-        public SelectExpression Source
+        public FindExpression Source
         {
             get { return _source; }
         }
@@ -27,11 +27,11 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _aggregator; }
         }
 
-        public ProjectionExpression(SelectExpression source, Expression projector)
+        public ProjectionExpression(FindExpression source, Expression projector)
             : this(source, projector, null)
         { }
 
-        public ProjectionExpression(SelectExpression source, Expression projector, LambdaExpression aggregator)
+        public ProjectionExpression(FindExpression source, Expression projector, LambdaExpression aggregator)
             : base((ExpressionType)MongoExpressionType.Projection, source.Type)
         {
             _source = source;

@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace MongoDB.Driver.Linq
 {
-    internal class SelectMerger : MongoExpressionVisitor
+    internal class FindMerger : MongoExpressionVisitor
     {
         private bool _isTopLevel;
 
@@ -19,26 +19,26 @@ namespace MongoDB.Driver.Linq
             return Visit(expression);
         }
 
-        protected override Expression VisitSelect(SelectExpression s)
+        protected override Expression VisitFind(FindExpression f)
         {
             bool wasTopLevel = _isTopLevel;
             _isTopLevel = false;
 
-            s = (SelectExpression)base.VisitSelect(s);
+            f = (FindExpression)base.VisitFind(f);
 
-            while (CanMergeWithFrom(s, wasTopLevel))
+            while (CanMergeWithFrom(f, wasTopLevel))
             {
-                var fromSelect = (SelectExpression)s.From;
+                var fromSelect = (FindExpression)f.From;
 
-                s = (SelectExpression)new SelectRemover().Remove(s, new[] { fromSelect });
+                f = (FindExpression)new FindRemover().Remove(f, new[] { fromSelect });
 
-                var oldFields = s.Fields.Count > 0 ? s.Fields : fromSelect.Fields;
+                var oldFields = f.Fields.Count > 0 ? f.Fields : fromSelect.Fields;
 
                 var fields = new List<FieldExpression>();
                 foreach(var field in oldFields)
                     fields.AddRange(new FieldExpander().Expand(field));
                     
-                var where = s.Where;
+                var where = f.Where;
                 if(fromSelect.Where != null)
                 {
                     if (where != null)
@@ -47,30 +47,30 @@ namespace MongoDB.Driver.Linq
                         where = fromSelect.Where;
                 }
 
-                var groupBy = s.GroupBy != null && s.GroupBy.Count > 0 ? s.GroupBy : fromSelect.GroupBy;
-                var orderBy = s.OrderBy != null && s.OrderBy.Count > 0 ? s.OrderBy : fromSelect.OrderBy;
-                var skip = s.Skip != null ? s.Skip : fromSelect.Skip;
-                var limit = s.Limit != null ? s.Limit : fromSelect.Limit;
-                bool distinct = s.Distinct | fromSelect.Distinct;
+                var groupBy = f.GroupBy != null && f.GroupBy.Count > 0 ? f.GroupBy : fromSelect.GroupBy;
+                var orderBy = f.OrderBy != null && f.OrderBy.Count > 0 ? f.OrderBy : fromSelect.OrderBy;
+                var skip = f.Skip != null ? f.Skip : fromSelect.Skip;
+                var limit = f.Limit != null ? f.Limit : fromSelect.Limit;
+                bool distinct = f.Distinct | fromSelect.Distinct;
                 
 
-                if (where != s.Where
-                    || groupBy != s.GroupBy
-                    || orderBy != s.OrderBy
-                    || distinct != s.Distinct
-                    || skip != s.Skip
-                    || limit != s.Limit)
+                if (where != f.Where
+                    || groupBy != f.GroupBy
+                    || orderBy != f.OrderBy
+                    || distinct != f.Distinct
+                    || skip != f.Skip
+                    || limit != f.Limit)
                 {
-                    s = new SelectExpression(s.Type, fields, s.From, where, orderBy, groupBy, distinct, skip, limit);
+                    f = new FindExpression(f.Type, fields, f.From, where, orderBy, groupBy, distinct, skip, limit);
                 }
             }
 
-            return s;
+            return f;
         }
         
-        private static bool CanMergeWithFrom(SelectExpression select, bool isTopLevel)
+        private static bool CanMergeWithFrom(FindExpression select, bool isTopLevel)
         {
-            var fromSelect = select.From as SelectExpression;
+            var fromSelect = select.From as FindExpression;
             if (fromSelect == null)
                 return false;
 
@@ -86,22 +86,22 @@ namespace MongoDB.Driver.Linq
             return true;
         }
 
-        private class SelectRemover : MongoExpressionVisitor
+        private class FindRemover : MongoExpressionVisitor
         {
-            private HashSet<SelectExpression> _selectsToRemove;
+            private HashSet<FindExpression> _selectsToRemove;
 
-            public Expression Remove(SelectExpression outerSelect, IEnumerable<SelectExpression> selectsToRemove)
+            public Expression Remove(FindExpression outerSelect, IEnumerable<FindExpression> selectsToRemove)
             {
-                _selectsToRemove = new HashSet<SelectExpression>(selectsToRemove);
+                _selectsToRemove = new HashSet<FindExpression>(selectsToRemove);
                 return Visit(outerSelect);
             }
 
-            protected override Expression VisitSelect(SelectExpression s)
+            protected override Expression VisitFind(FindExpression s)
             {
                 if (_selectsToRemove.Contains(s))
                     return Visit(s.From);
 
-                return base.VisitSelect(s);
+                return base.VisitFind(s);
             }
         }
 

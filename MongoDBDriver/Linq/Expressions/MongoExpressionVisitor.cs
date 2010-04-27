@@ -22,7 +22,7 @@ namespace MongoDB.Driver.Linq.Expressions
                 case MongoExpressionType.Projection:
                     return VisitProjection((ProjectionExpression)exp);
                 case MongoExpressionType.Select:
-                    return VisitSelect((SelectExpression)exp);
+                    return VisitFind((FindExpression)exp);
                 case MongoExpressionType.Aggregate:
                     return VisitAggregate((AggregateExpression)exp);
                 case MongoExpressionType.AggregateSubquery:
@@ -66,9 +66,22 @@ namespace MongoDB.Driver.Linq.Expressions
             return f;
         }
 
+        protected virtual Expression VisitFind(FindExpression f)
+        {
+            var from = VisitSource(f.From);
+            var where = Visit(f.Where);
+            var groupBy = VisitExpressionList(f.GroupBy);
+            var orderBy = VisitOrderBy(f.OrderBy);
+            var skip = Visit(f.Skip);
+            var limit = Visit(f.Limit);
+            if (from != f.From || where != f.Where || orderBy != f.OrderBy || groupBy != f.GroupBy || skip != f.Skip || limit != f.Limit)
+                return new FindExpression(f.Type, f.Fields, from, where, orderBy, groupBy, f.Distinct, skip, limit);
+            return f;
+        }
+
         protected virtual Expression VisitProjection(ProjectionExpression p)
         {
-            var source = (SelectExpression)Visit(p.Source);
+            var source = (FindExpression)Visit(p.Source);
             var projector = Visit(p.Projector);
             if (source != p.Source || projector != p.Projector)
                 return new ProjectionExpression(source, projector, p.Aggregator);
@@ -97,23 +110,10 @@ namespace MongoDB.Driver.Linq.Expressions
 
         protected virtual Expression VisitScalar(ScalarExpression scalar)
         {
-            SelectExpression select = (SelectExpression)Visit(scalar.Select);
-            if (select != scalar.Select)
-                return new ScalarExpression(scalar.Type, select);
+            FindExpression find = (FindExpression)Visit(scalar.Find);
+            if (find != scalar.Find)
+                return new ScalarExpression(scalar.Type, find);
             return scalar;
-        }
-
-        protected virtual Expression VisitSelect(SelectExpression s)
-        {
-            var from = VisitSource(s.From);
-            var where = Visit(s.Where);
-            var groupBy = VisitExpressionList(s.GroupBy);
-            var orderBy = VisitOrderBy(s.OrderBy);
-            var skip = Visit(s.Skip);
-            var limit = Visit(s.Limit);
-            if (from != s.From || where != s.Where || orderBy != s.OrderBy || groupBy != s.GroupBy || skip != s.Skip || limit != s.Limit)
-                return new SelectExpression(s.Type, s.Fields, from, where, orderBy, groupBy, s.Distinct, skip, limit);
-            return s;
         }
 
         protected virtual Expression VisitSource(Expression source)

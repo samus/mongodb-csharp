@@ -132,7 +132,7 @@
     <Compile Include="Linq\Expressions\ProjectionExpression.cs" />
     <Compile Include="Linq\Expressions\Replacer.cs" />
     <Compile Include="Linq\Expressions\ScalarExpression.cs" />
-    <Compile Include="Linq\Expressions\SelectExpression.cs" />
+    <Compile Include="Linq\Expressions\FindExpression.cs" />
     <Compile Include="Linq\Expressions\ExpressionVisitor.cs" />
     <Compile Include="Linq\Expressions\SubqueryExpression.cs" />
     <Compile Include="Linq\FieldBinder.cs" />
@@ -152,7 +152,7 @@
     <Compile Include="Linq\QueryFormatter.cs" />
     <Compile Include="Linq\PartialEvaluator.cs" />
     <Compile Include="Linq\ProjectionReader.cs" />
-    <Compile Include="Linq\SelectMerger.cs" />
+    <Compile Include="Linq\FindMerger.cs" />
     <Compile Include="Linq\TypeSystem.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />

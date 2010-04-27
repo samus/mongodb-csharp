@@ -8,17 +8,17 @@ namespace MongoDB.Driver.Linq.Expressions
 {
     internal abstract class SubqueryExpression : Expression
     {
-        private SelectExpression _select;
+        private FindExpression _find;
 
-        public SelectExpression Select
+        public FindExpression Find
         {
-            get { return _select; }
+            get { return _find; }
         }
 
-        protected SubqueryExpression(MongoExpressionType nodeType, Type type, SelectExpression select)
+        protected SubqueryExpression(MongoExpressionType nodeType, Type type, FindExpression find)
             : base((ExpressionType)nodeType, type)
         {
-            _select = select;
+            _find = find;
         }
     }
 }

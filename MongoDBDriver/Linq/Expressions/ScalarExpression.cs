@@ -7,7 +7,7 @@ namespace MongoDB.Driver.Linq.Expressions
 {
     internal class ScalarExpression : SubqueryExpression
     {
-        public ScalarExpression(Type type, SelectExpression select)
+        public ScalarExpression(Type type, FindExpression select)
             : base(MongoExpressionType.Scalar, type, select)
         { }
     }
