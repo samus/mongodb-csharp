@@ -5,12 +5,12 @@ using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Configuration.Mapping.Conventions;
 using MongoDB.Driver.Util;
 
-namespace MongoDB.Driver.Configuration
+namespace MongoDB.Driver.Configuration.Builders
 {
     /// <summary>
     /// 
     /// </summary>
-    public class AutoMappingProfileConfiguration
+    public class AutoMappingProfileBuilder
     {
         private readonly AutoMappingProfile _profile;
 
@@ -18,7 +18,7 @@ namespace MongoDB.Driver.Configuration
         /// Initializes a new instance of the <see cref="AutoMappingProfileConfiguration"/> class.
         /// </summary>
         /// <param name="profile">The profile.</param>
-        internal AutoMappingProfileConfiguration(AutoMappingProfile profile)
+        internal AutoMappingProfileBuilder(AutoMappingProfile profile)
         {
             if (profile == null)
                 throw new ArgumentNullException("profile");
@@ -30,7 +30,7 @@ namespace MongoDB.Driver.Configuration
         /// Aliaseses the are camel cased.
         /// </summary>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration AliasesAreCamelCased()
+        public AutoMappingProfileBuilder AliasesAreCamelCased()
         {
             _profile.Conventions.AliasConvention = new DelegateAliasConvention(m => Inflector.ToCamelCase(m.Name));
             return this;
@@ -41,7 +41,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="alias">The alias.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration AliasesAre(Func<MemberInfo, string> alias)
+        public AutoMappingProfileBuilder AliasesAre(Func<MemberInfo, string> alias)
         {
             _profile.Conventions.AliasConvention = new DelegateAliasConvention(alias);
             return this;
@@ -52,7 +52,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="collectionName">Name of the collection.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration CollectionsAreNamed(Func<Type, string> collectionName)
+        public AutoMappingProfileBuilder CollectionsAreNamed(Func<Type, string> collectionName)
         {
             _profile.Conventions.CollectionNameConvention = new DelegateCollectionNameConvention(collectionName);
             return this;
@@ -62,7 +62,7 @@ namespace MongoDB.Driver.Configuration
         /// Collections the names are camel cased.
         /// </summary>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration CollectionNamesAreCamelCased()
+        public AutoMappingProfileBuilder CollectionNamesAreCamelCased()
         {
             _profile.Conventions.CollectionNameConvention = new DelegateCollectionNameConvention(t => Inflector.ToCamelCase(t.Name));
             return this;
@@ -72,7 +72,7 @@ namespace MongoDB.Driver.Configuration
         /// Collections the names are camel cased and plural.
         /// </summary>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration CollectionNamesAreCamelCasedAndPlural()
+        public AutoMappingProfileBuilder CollectionNamesAreCamelCasedAndPlural()
         {
             _profile.Conventions.CollectionNameConvention = new DelegateCollectionNameConvention(t => Inflector.MakePlural(Inflector.ToCamelCase(t.Name)));
             return this;
@@ -83,7 +83,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="conventions">The conventions.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration ConventionsAre(ConventionProfile conventions)
+        public AutoMappingProfileBuilder ConventionsAre(ConventionProfile conventions)
         {
             _profile.Conventions = conventions;
             return this;
@@ -94,7 +94,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="discriminatorAlias">The discriminator alias.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration DiscriminatorAliasesAre(Func<Type, string> discriminatorAlias)
+        public AutoMappingProfileBuilder DiscriminatorAliasesAre(Func<Type, string> discriminatorAlias)
         {
             _profile.Conventions.DiscriminatorAliasConvention = new DelegateDiscriminatorAliasConvention(discriminatorAlias);
             return this;
@@ -105,7 +105,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="discriminator">The discriminator.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration DiscriminatorValuesAre(Func<Type, object> discriminator)
+        public AutoMappingProfileBuilder DiscriminatorValuesAre(Func<Type, object> discriminator)
         {
             _profile.Conventions.DiscriminatorConvention = new DelegateDiscriminatorConvention(discriminator);
             return this;
@@ -116,7 +116,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="extendedProperty">The extended property.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration ExtendedPropertiesAre(Func<MemberInfo, bool> extendedProperty)
+        public AutoMappingProfileBuilder ExtendedPropertiesAre(Func<MemberInfo, bool> extendedProperty)
         {
             _profile.Conventions.ExtendedPropertiesConvention = new DelegateExtendedPropertiesConvention(extendedProperty);
             return this;
@@ -129,7 +129,7 @@ namespace MongoDB.Driver.Configuration
         /// <param name="memberTypes">The member types.</param>
         /// <param name="bindingFlags">The binding flags.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration ExtendedPropertiesAre(Func<MemberInfo, bool> extendedProperty, MemberTypes memberTypes, BindingFlags bindingFlags)
+        public AutoMappingProfileBuilder ExtendedPropertiesAre(Func<MemberInfo, bool> extendedProperty, MemberTypes memberTypes, BindingFlags bindingFlags)
         {
             _profile.Conventions.ExtendedPropertiesConvention = new DelegateExtendedPropertiesConvention(extendedProperty, memberTypes, bindingFlags);
             return this;
@@ -140,7 +140,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration ExtendedPropertiesAreNamed(string name)
+        public AutoMappingProfileBuilder ExtendedPropertiesAreNamed(string name)
         {
             _profile.Conventions.ExtendedPropertiesConvention = new DelegateExtendedPropertiesConvention(m => m.Name == name);
             return this;
@@ -153,7 +153,7 @@ namespace MongoDB.Driver.Configuration
         /// <param name="memberTypes">The member types.</param>
         /// <param name="bindingFlags">The binding flags.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration ExtendedPropertiesAreNamed(string name, MemberTypes memberTypes, BindingFlags bindingFlags)
+        public AutoMappingProfileBuilder ExtendedPropertiesAreNamed(string name, MemberTypes memberTypes, BindingFlags bindingFlags)
         {
             _profile.Conventions.ExtendedPropertiesConvention = new DelegateExtendedPropertiesConvention(m => m.Name == name, memberTypes, bindingFlags);
             return this;
@@ -164,7 +164,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="memberFinder">The member finder.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration FindMembersWith(IMemberFinder memberFinder)
+        public AutoMappingProfileBuilder FindMembersWith(IMemberFinder memberFinder)
         {
             _profile.MemberFinder = memberFinder;
             return this;
@@ -175,7 +175,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="id">The id.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration IdsAre(Func<MemberInfo, bool> id)
+        public AutoMappingProfileBuilder IdsAre(Func<MemberInfo, bool> id)
         {
             _profile.Conventions.IdConvention = new DelegateIdConvention(id);
             return this;
@@ -188,7 +188,7 @@ namespace MongoDB.Driver.Configuration
         /// <param name="memberTypes">The member types.</param>
         /// <param name="bindingFlags">The binding flags.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration IdsAre(Func<MemberInfo, bool> id, MemberTypes memberTypes, BindingFlags bindingFlags)
+        public AutoMappingProfileBuilder IdsAre(Func<MemberInfo, bool> id, MemberTypes memberTypes, BindingFlags bindingFlags)
         {
             _profile.Conventions.IdConvention = new DelegateIdConvention(id, memberTypes, bindingFlags);
             return this;
@@ -199,7 +199,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration IdsAreNamed(string name)
+        public AutoMappingProfileBuilder IdsAreNamed(string name)
         {
             _profile.Conventions.IdConvention = new DelegateIdConvention(m => m.Name == name);
             return this;
@@ -212,7 +212,7 @@ namespace MongoDB.Driver.Configuration
         /// <param name="memberTypes">The member types.</param>
         /// <param name="bindingFlags">The binding flags.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration IdsAreNamed(string name, MemberTypes memberTypes, BindingFlags bindingFlags)
+        public AutoMappingProfileBuilder IdsAreNamed(string name, MemberTypes memberTypes, BindingFlags bindingFlags)
         {
             _profile.Conventions.IdConvention = new DelegateIdConvention(m => m.Name == name, memberTypes, bindingFlags);
             return this;
@@ -223,7 +223,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="isSubClass">The is sub class.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration SubClassesAre(Func<Type, bool> isSubClass)
+        public AutoMappingProfileBuilder SubClassesAre(Func<Type, bool> isSubClass)
         {
             _profile.IsSubClassDelegate = isSubClass;
             return this;
@@ -234,7 +234,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="collectionAdapterConvention">The collection adapter convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseCollectionAdapterConvention(ICollectionAdapterConvention collectionAdapterConvention)
+        public AutoMappingProfileBuilder UseCollectionAdapterConvention(ICollectionAdapterConvention collectionAdapterConvention)
         {
             _profile.Conventions.CollectionAdapterConvention = collectionAdapterConvention;
             return this;
@@ -245,7 +245,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="collectionNameConvention">The collection name convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseCollectionNameConvention(ICollectionNameConvention collectionNameConvention)
+        public AutoMappingProfileBuilder UseCollectionNameConvention(ICollectionNameConvention collectionNameConvention)
         {
             _profile.Conventions.CollectionNameConvention = collectionNameConvention;
             return this;
@@ -256,7 +256,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="defaultValueConvention">The default value convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseDefaultValueConvention(IDefaultValueConvention defaultValueConvention)
+        public AutoMappingProfileBuilder UseDefaultValueConvention(IDefaultValueConvention defaultValueConvention)
         {
             _profile.Conventions.DefaultValueConvention = defaultValueConvention;
             return this;
@@ -267,7 +267,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="discriminatorAliasConvention">The discriminator alias convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseDiscriminatorAliasConvention(IDiscriminatorAliasConvention discriminatorAliasConvention)
+        public AutoMappingProfileBuilder UseDiscriminatorAliasConvention(IDiscriminatorAliasConvention discriminatorAliasConvention)
         {
             _profile.Conventions.DiscriminatorAliasConvention = discriminatorAliasConvention;
             return this;
@@ -278,7 +278,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="discriminatorConvention">The discriminator convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseDiscriminatorConvention(IDiscriminatorConvention discriminatorConvention)
+        public AutoMappingProfileBuilder UseDiscriminatorConvention(IDiscriminatorConvention discriminatorConvention)
         {
             _profile.Conventions.DiscriminatorConvention = discriminatorConvention;
             return this;
@@ -289,7 +289,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="extendedPropertiesConvention">The extended properties convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseExtendedPropertiesConvention(IExtendedPropertiesConvention extendedPropertiesConvention)
+        public AutoMappingProfileBuilder UseExtendedPropertiesConvention(IExtendedPropertiesConvention extendedPropertiesConvention)
         {
             _profile.Conventions.ExtendedPropertiesConvention = extendedPropertiesConvention;
             return this;
@@ -300,7 +300,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="idConvention">The id convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseIdConvention(IIdConvention idConvention)
+        public AutoMappingProfileBuilder UseIdConvention(IIdConvention idConvention)
         {
             _profile.Conventions.IdConvention = idConvention;
             return this;
@@ -311,7 +311,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="idGeneratorConvention">The id generator convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseIdGeneratorConvention(IIdGeneratorConvention idGeneratorConvention)
+        public AutoMappingProfileBuilder UseIdGeneratorConvention(IIdGeneratorConvention idGeneratorConvention)
         {
             _profile.Conventions.IdGeneratorConvention = idGeneratorConvention;
             return this;
@@ -322,7 +322,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="idUnsavedValueConvention">The id unsaved value convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseIdUnsavedValueConvention(IIdUnsavedValueConvention idUnsavedValueConvention)
+        public AutoMappingProfileBuilder UseIdUnsavedValueConvention(IIdUnsavedValueConvention idUnsavedValueConvention)
         {
             _profile.Conventions.IdUnsavedValueConvention = idUnsavedValueConvention;
             return this;
@@ -333,7 +333,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="aliasConvention">The alias convention.</param>
         /// <returns></returns>
-        public AutoMappingProfileConfiguration UseMemberAliasConvention(IAliasConvention aliasConvention)
+        public AutoMappingProfileBuilder UseMemberAliasConvention(IAliasConvention aliasConvention)
         {
             _profile.Conventions.AliasConvention = aliasConvention;
             return this;

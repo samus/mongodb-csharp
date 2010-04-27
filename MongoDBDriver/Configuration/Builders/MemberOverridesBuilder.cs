@@ -1,12 +1,12 @@
 ﻿using System;
 using MongoDB.Driver.Configuration.Mapping.Auto;
 
-namespace MongoDB.Driver.Configuration
+namespace MongoDB.Driver.Configuration.Builders
 {
     /// <summary>
     /// 
     /// </summary>
-    public class MemberMapConfiguration
+    public class MemberOverridesBuilder
     {
         private readonly MemberOverrides _overrides;
 
@@ -14,7 +14,7 @@ namespace MongoDB.Driver.Configuration
         /// Initializes a new instance of the <see cref="MemberMapConfiguration"/> class.
         /// </summary>
         /// <param name="overrides">The overrides.</param>
-        internal MemberMapConfiguration(MemberOverrides overrides)
+        internal MemberOverridesBuilder(MemberOverrides overrides)
         {
             if (overrides == null)
                 throw new ArgumentNullException("overrides");
@@ -27,7 +27,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public MemberMapConfiguration Alias(string name)
+        public MemberOverridesBuilder Alias(string name)
         {
             _overrides.Alias = name;
             return this;
@@ -38,7 +38,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="defaultValue">The default value.</param>
         /// <returns></returns>
-        public MemberMapConfiguration DefaultValue(object defaultValue)
+        public MemberOverridesBuilder DefaultValue(object defaultValue)
         {
             _overrides.DefaultValue = defaultValue;
             return this;
@@ -48,7 +48,7 @@ namespace MongoDB.Driver.Configuration
         /// Ignores this instance.
         /// </summary>
         /// <returns></returns>
-        public MemberMapConfiguration Ignore()
+        public MemberOverridesBuilder Ignore()
         {
             _overrides.Ignore = true;
             return this;
@@ -58,7 +58,7 @@ namespace MongoDB.Driver.Configuration
         /// Persists the null.
         /// </summary>
         /// <returns></returns>
-        public MemberMapConfiguration PersistNull()
+        public MemberOverridesBuilder PersistNull()
         {
             _overrides.PersistIfNull = true;
             return this;

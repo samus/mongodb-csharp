@@ -6,46 +6,16 @@ using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Serialization;
 using MongoDB.Driver.Configuration.Mapping;
 
-namespace MongoDB.Driver.Configuration
+namespace MongoDB.Driver.Configuration.Builders
 {
-    public class MappingConfiguration : IMappingConfiguration
+    public class MappingStoreBuilder
     {
         private IAutoMappingProfile _defaultProfile;
         private readonly List<Type> _eagerMapTypes;
         private readonly ClassOverridesMap _overrides;
         private readonly List<FilteredProfile> _profiles;
 
-        /// <summary>
-        /// Gets the mapping store.
-        /// </summary>
-        /// <value>The mapping store.</value>
-        public IMappingStore MappingStore
-        {
-            get
-            {
-                IAutoMapper autoMapper;
-                if (_profiles.Count > 0)
-                {
-                    var agg = new AggregateAutoMapper();
-                    foreach (var p in _profiles)
-                        agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(p.Profile), p.Filter));
-
-                    agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile())));
-                    autoMapper = agg;
-                }
-                else
-                    autoMapper = new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile()));
-
-                var store = new AutoMappingStore(autoMapper);
-
-                foreach (var type in _eagerMapTypes)
-                    store.GetClassMap(type);
-
-                return store;
-            }
-        }
-
-        public MappingConfiguration()
+        public MappingStoreBuilder()
         {
             _eagerMapTypes = new List<Type>();
             _overrides = new ClassOverridesMap();
@@ -53,10 +23,37 @@ namespace MongoDB.Driver.Configuration
         }
 
         /// <summary>
+        /// Builds the mapping store.
+        /// </summary>
+        /// <returns></returns>
+        public IMappingStore BuildMappingStore()
+        {
+            IAutoMapper autoMapper;
+            if (_profiles.Count > 0)
+            {
+                var agg = new AggregateAutoMapper();
+                foreach (var p in _profiles)
+                    agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(p.Profile), p.Filter));
+
+                agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile())));
+                autoMapper = agg;
+            }
+            else
+                autoMapper = new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile()));
+
+            var store = new AutoMappingStore(autoMapper);
+
+            foreach (var type in _eagerMapTypes)
+                store.GetClassMap(type);
+
+            return store;
+        }
+
+        /// <summary>
         /// Configures the default profile.
         /// </summary>
         /// <param name="config">The config.</param>
-        public void DefaultProfile(Action<AutoMappingProfileConfiguration> config)
+        public void DefaultProfile(Action<AutoMappingProfileBuilder> config)
         {
             if (config == null)
                 throw new ArgumentNullException("config");
@@ -66,7 +63,7 @@ namespace MongoDB.Driver.Configuration
             if (dp == null)
                 dp = new AutoMappingProfile();
 
-            config(new AutoMappingProfileConfiguration(dp));
+            config(new AutoMappingProfileBuilder(dp));
             _defaultProfile = dp;
         }
 
@@ -87,13 +84,13 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="filter">The filter.</param>
         /// <param name="config">The config.</param>
-        public void CustomProfile(Func<Type, bool> filter, Action<AutoMappingProfileConfiguration> config)
+        public void CustomProfile(Func<Type, bool> filter, Action<AutoMappingProfileBuilder> config)
         {
             if (config == null)
                 throw new ArgumentNullException("config");
 
             var p = new AutoMappingProfile();
-            config(new AutoMappingProfileConfiguration(p));
+            config(new AutoMappingProfileBuilder(p));
             CustomProfile(filter, p);
         }
 
@@ -126,9 +123,9 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="config">The config.</param>
-        public void Map<T>(Action<ClassMapConfiguration<T>> config)
+        public void Map<T>(Action<ClassOverridesBuilder<T>> config)
         {
-            var c = new ClassMapConfiguration<T>(_overrides.GetOverridesForType(typeof(T)));
+            var c = new ClassOverridesBuilder<T>(_overrides.GetOverridesForType(typeof(T)));
             config(c);
             Map<T>();
         }

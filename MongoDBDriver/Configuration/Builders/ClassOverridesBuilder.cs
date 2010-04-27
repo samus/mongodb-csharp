@@ -3,13 +3,13 @@ using MongoDB.Driver.Configuration.Mapping.Auto;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace MongoDB.Driver.Configuration
+namespace MongoDB.Driver.Configuration.Builders
 {
     /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ClassMapConfiguration<T>
+    public class ClassOverridesBuilder<T>
     {
         private readonly ClassOverrides _overrides;
 
@@ -17,7 +17,7 @@ namespace MongoDB.Driver.Configuration
         /// Initializes a new instance of the <see cref="ClassMapConfiguration&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="overrides">The overrides.</param>
-        internal ClassMapConfiguration(ClassOverrides overrides)
+        internal ClassOverridesBuilder(ClassOverrides overrides)
         {
             if (overrides == null)
                 throw new ArgumentNullException("overrides");
@@ -39,10 +39,10 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="member">The member.</param>
         /// <returns></returns>
-        public MemberMapConfiguration Member(MemberInfo member)
+        public MemberOverridesBuilder Member(MemberInfo member)
         {
             var overrides = _overrides.GetOverridesFor(member);
-            return new MemberMapConfiguration(overrides);
+            return new MemberOverridesBuilder(overrides);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public MemberMapConfiguration Member(string name)
+        public MemberOverridesBuilder Member(string name)
         {
             var members = typeof(T).GetMember(name, MemberTypes.Field | MemberTypes.Property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if (members == null || members.Length == 0)
@@ -66,7 +66,7 @@ namespace MongoDB.Driver.Configuration
         /// </summary>
         /// <param name="member">The member.</param>
         /// <returns></returns>
-        public MemberMapConfiguration Member(Expression<Func<T, object>> member)
+        public MemberOverridesBuilder Member(Expression<Func<T, object>> member)
         {
             var mex = (MemberExpression)member.Body;
             return Member(mex.Member.Name);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 
+using MongoDB.Driver.Configuration.Builders;
 using MongoDB.Driver.Configuration.Mapping;
 using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Serialization;
@@ -11,56 +12,48 @@ namespace MongoDB.Driver.Configuration
     /// <summary>
     /// 
     /// </summary>
-    public class FluentConfiguration : IMongoConfiguration, IMappingConfiguration
+    public class MongoConfigurationBuilder
     {
         private string _connectionString;
-        private MappingConfiguration _mappingConfiguration;
+        private MappingStoreBuilder _mappingStoreBuilder;
 
         /// <summary>
-        /// Gets the connection string.
+        /// Builds the configuration.
         /// </summary>
-        /// <value>The connection string.</value>
-        public string ConnectionString
+        /// <returns></returns>
+        public IMongoConfiguration BuildConfiguration()
         {
-            get { return _connectionString; }
-            set { _connectionString = value; }
+            if (_mappingStoreBuilder == null)
+                return new MongoConfiguration() { ConnectionString = _connectionString, SerializationFactory = SerializationFactory.Default };
+
+            return new MongoConfiguration() { ConnectionString = _connectionString, SerializationFactory = new SerializationFactory(_mappingStoreBuilder.BuildMappingStore()) };
         }
 
         /// <summary>
-        /// Gets the mapping store.
+        /// Builds the mapping store.
         /// </summary>
-        /// <value>The mapping store.</value>
-        public IMappingStore MappingStore
+        public IMappingStore BuildMappingStore()
         {
-            get
-            {
-                if (_mappingConfiguration == null)
-                    return new AutoMappingStore();
+            if (_mappingStoreBuilder == null)
+                return new AutoMappingStore();
 
-                return _mappingConfiguration.MappingStore;
-            }
+            return _mappingStoreBuilder.BuildMappingStore();
         }
 
         /// <summary>
-        /// Gets the serialization factory.
+        /// Sets the connection string.
         /// </summary>
-        /// <value>The serialization factory.</value>
-        public ISerializationFactory SerializationFactory
+        /// <param name="connectionString">The connection string.</param>
+        public void ConnectionString(string connectionString)
         {
-            get
-            {
-                if (_mappingConfiguration == null)
-                    return Serialization.SerializationFactory.Default;
-
-                return new SerializationFactory(MappingStore);
-            }
+            _connectionString = connectionString;
         }
 
         /// <summary>
         /// Builds the connection string.
         /// </summary>
         /// <param name="config">The config.</param>
-        public void BuildConnectionString(Action<MongoConnectionStringBuilder> config)
+        public void ConnectionString(Action<MongoConnectionStringBuilder> config)
         {
             if (config == null)
                 throw new ArgumentNullException("config");
@@ -83,15 +76,15 @@ namespace MongoDB.Driver.Configuration
         /// Configures the mapping.
         /// </summary>
         /// <param name="config">The config.</param>
-        public void Mapping(Action<MappingConfiguration> config)
+        public void Mapping(Action<MappingStoreBuilder> config)
         {
             if (config == null)
                 throw new ArgumentNullException("config");
 
-            if (_mappingConfiguration == null)
-                _mappingConfiguration = new MappingConfiguration();
+            if (_mappingStoreBuilder == null)
+                _mappingStoreBuilder = new MappingStoreBuilder();
 
-            config(_mappingConfiguration);            
+            config(_mappingStoreBuilder);            
         }
     }
 }
