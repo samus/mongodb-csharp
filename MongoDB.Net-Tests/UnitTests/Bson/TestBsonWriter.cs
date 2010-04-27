@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Text;
-using MongoDB.Driver.Tests.Bson;
+using MongoDB.Driver.Bson;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Bson
+namespace MongoDB.Driver.UnitTests.Bson
 {
     [TestFixture]
     public class TestBsonWriter : BsonTestBase

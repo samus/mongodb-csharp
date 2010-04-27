@@ -5,7 +5,7 @@ using System;
 using MongoDB.Driver.Connections;
 using NUnit.Framework;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.IntegrationTests
 {
     [TestFixture(Description = "Requires start server with --auth")]
 	public class TestAuthentication

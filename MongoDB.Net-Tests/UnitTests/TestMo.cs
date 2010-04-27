@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.UnitTests
 {
     [TestFixture]
     public class TestMo

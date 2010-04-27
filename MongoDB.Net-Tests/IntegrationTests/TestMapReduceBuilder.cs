@@ -1,10 +1,7 @@
-
 using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.IntegrationTests
 {
     [TestFixture()]
     public class TestMapReduceBuilder : MongoTestBase

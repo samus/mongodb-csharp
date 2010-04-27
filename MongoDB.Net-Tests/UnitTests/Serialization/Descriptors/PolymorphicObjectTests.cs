@@ -2,7 +2,7 @@
 using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Configuration.Mapping;
 
-namespace MongoDB.Driver.Serialization.Descriptors
+namespace MongoDB.Driver.UnitTests.Serialization.Descriptors
 {
     [TestFixture]
     public class PolymorphicObjectTests : SerializationTestBase

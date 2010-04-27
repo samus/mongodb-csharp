@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-
 using NUnit.Framework;
-using MongoDB.Driver.Bson;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.IntegrationTests
 {
     [TestFixture]
     public class TestCollectionMetaData : MongoTestBase

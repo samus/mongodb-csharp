@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-
 using MongoDB.Driver.Linq;
-
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Tests.Linq
+namespace MongoDB.Driver.IntegrationTests.Linq
 {
     [TestFixture]
     public class MongoQueryProviderTests : LinqTestsBase

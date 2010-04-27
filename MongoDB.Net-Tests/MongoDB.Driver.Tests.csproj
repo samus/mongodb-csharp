@@ -35,7 +35,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <RootNamespace>MongoDB.Driver.Tests</RootNamespace>
+    <RootNamespace>MongoDB.Driver</RootNamespace>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\scorder\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
@@ -152,7 +152,7 @@
     <Compile Include="IntegrationTests\TestCollectionMetaData.cs" />
     <Compile Include="UnitTests\TestBinary.cs" />
     <Compile Include="UnitTests\TestOp.cs" />
-    <Compile Include="Util\TestJsonUtils.cs" />
+    <Compile Include="UnitTests\Util\TestJsonUtils.cs" />
     <Compile Include="UnitTests\Configuration\TestConfigurationSection.cs" />
     <Compile Include="UnitTests\TestMongoSymbol.cs" />
   </ItemGroup>

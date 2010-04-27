@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 
-
-namespace MongoDB.Driver.Serialization.Descriptors
+namespace MongoDB.Driver.UnitTests.Serialization.Descriptors
 {
     [TestFixture]
     public class EnumerablePropertyTests : SerializationTestBase

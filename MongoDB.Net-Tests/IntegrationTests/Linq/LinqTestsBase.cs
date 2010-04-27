@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using MongoDB.Driver.Attributes;
 
-namespace MongoDB.Driver.Tests.Linq
+namespace MongoDB.Driver.IntegrationTests.Linq
 {
     public class LinqTestsBase : MongoTestBase
     {

@@ -45,6 +45,9 @@ namespace MongoDB.Driver.Configuration
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MappingConfiguration"/> class.
+        /// </summary>
         public MappingConfiguration()
         {
             _eagerMapTypes = new List<Type>();

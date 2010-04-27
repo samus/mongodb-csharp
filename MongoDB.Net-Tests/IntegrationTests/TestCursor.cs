@@ -1,11 +1,7 @@
 using System;
 using NUnit.Framework;
 
-using MongoDB.Driver;
-using MongoDB.Driver.IO;
-using MongoDB.Driver.Bson;
-
-namespace MongoDB.Driver
+namespace MongoDB.Driver.IntegrationTests
 {
     [TestFixture]
     public class TestCursor : MongoTestBase

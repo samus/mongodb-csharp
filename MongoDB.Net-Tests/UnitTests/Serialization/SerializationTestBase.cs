@@ -2,8 +2,9 @@
 using System.IO;
 using MongoDB.Driver.Bson;
 using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Driver.Serialization;
 
-namespace MongoDB.Driver.Serialization
+namespace MongoDB.Driver.UnitTests.Serialization
 {
     public abstract class SerializationTestBase
     {

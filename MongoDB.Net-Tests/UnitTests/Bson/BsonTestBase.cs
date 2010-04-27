@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using MongoDB.Driver.Bson;
 
-namespace MongoDB.Driver.Tests.Bson
+namespace MongoDB.Driver.UnitTests.Bson
 {
     public abstract class BsonTestBase
     {

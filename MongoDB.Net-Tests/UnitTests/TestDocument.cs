@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
 
-using MongoDB.Driver;
-
-namespace MongoDB.Driver
+namespace MongoDB.Driver.UnitTests
 {
     [TestFixture]
     public class TestDocument

@@ -1,7 +1,7 @@
 using System.Text;
 using NUnit.Framework;
 
-namespace MongoDB.Driver
+namespace MongoDB.Driver.UnitTests
 {
     [TestFixture]
     public class TestMongoSymbol

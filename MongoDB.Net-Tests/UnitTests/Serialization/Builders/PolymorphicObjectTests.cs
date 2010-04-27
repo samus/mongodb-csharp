@@ -1,10 +1,8 @@
 ﻿using MongoDB.Driver.Configuration;
 using MongoDB.Driver.Configuration.Mapping;
-using MongoDB.Driver.Configuration.Mapping.Auto;
-
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Serialization.Builders
+namespace MongoDB.Driver.UnitTests.Serialization.Builders
 {
     [TestFixture]
     public class PolymorphicObjectTests : SerializationTestBase

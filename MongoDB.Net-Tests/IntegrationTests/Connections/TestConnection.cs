@@ -1,12 +1,11 @@
 using System;
 using System.IO;
 using MongoDB.Driver.Bson;
+using MongoDB.Driver.Connections;
 using MongoDB.Driver.Protocol;
-using MongoDB.Driver.Serialization;
 using NUnit.Framework;
-using MongoDB.Driver.IO;
 
-namespace MongoDB.Driver.Connections
+namespace MongoDB.Driver.IntegrationTests.Connections
 {
     [TestFixture()]
     public class TestConnection
@@ -14,7 +13,7 @@ namespace MongoDB.Driver.Connections
         [Test]
         public void TestSendQueryMessage(){
             //Connection conn = new Connection("10.141.153.2");
-            Connections.Connection conn = ConnectionFactory.GetConnection(string.Empty);
+            Connection conn = ConnectionFactory.GetConnection(string.Empty);
             conn.Open();
             
             var qmsg = generateQueryMessage();
@@ -25,7 +24,7 @@ namespace MongoDB.Driver.Connections
         
         [Test]
         public void TestReconnectOnce(){
-            Connections.Connection conn = ConnectionFactory.GetConnection(string.Empty);
+            Connection conn = ConnectionFactory.GetConnection(string.Empty);
             conn.Open();
                         
             WriteBadMessage(conn);
@@ -43,7 +42,7 @@ namespace MongoDB.Driver.Connections
             }
         }
         
-        protected void WriteBadMessage(Connections.Connection conn){
+        protected void WriteBadMessage(Connection conn){
             //Write a bad message to the socket to force mongo to shut down our connection.
             BinaryWriter writer = new BinaryWriter(conn.GetStream());
             System.Text.UTF8Encoding  encoding=new System.Text.UTF8Encoding(); 

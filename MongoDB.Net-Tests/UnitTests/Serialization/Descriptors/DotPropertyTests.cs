@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MongoDB.Driver.Attributes;
 
-namespace MongoDB.Driver.Serialization.Descriptors
+namespace MongoDB.Driver.UnitTests.Serialization.Descriptors
 {
     [TestFixture]
     public class DotPropertyTests : SerializationTestBase

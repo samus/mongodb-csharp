@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Serialization.Builders
+namespace MongoDB.Driver.UnitTests.Serialization.Builders
 {
     [TestFixture]
     public class ValueConversionTests : SerializationTestBase

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using MongoDB.Driver.Configuration;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.Configuration
+namespace MongoDB.Driver.UnitTests.Configuration
 {
     [TestFixture]
     public class MongoConfigurationTests

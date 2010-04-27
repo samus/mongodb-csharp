@@ -1,10 +1,9 @@
-
 using System;
 using System.IO;
 using MongoDB.Driver.Protocol;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IO
+namespace MongoDB.Driver.UnitTests.IO
 {
     [TestFixture()]
     public class TestMsgMessage
