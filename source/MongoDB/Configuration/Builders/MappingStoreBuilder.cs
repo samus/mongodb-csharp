@@ -15,6 +15,9 @@ namespace MongoDB.Configuration.Builders
         private readonly ClassOverridesMap _overrides;
         private readonly List<FilteredProfile> _profiles;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MappingStoreBuilder"/> class.
+        /// </summary>
         public MappingStoreBuilder()
         {
             _eagerMapTypes = new List<Type>();

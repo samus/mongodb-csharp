@@ -11,7 +11,7 @@ namespace MongoDB.Configuration.Builders
         private readonly MemberOverrides _overrides;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemberMapConfiguration"/> class.
+        /// Initializes a new instance of the <see cref="MemberOverridesBuilder"/> class.
         /// </summary>
         /// <param name="overrides">The overrides.</param>
         internal MemberOverridesBuilder(MemberOverrides overrides)

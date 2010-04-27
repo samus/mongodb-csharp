@@ -15,7 +15,7 @@ namespace MongoDB.Configuration.Builders
         private readonly AutoMappingProfile _profile;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoMappingProfileConfiguration"/> class.
+        /// Initializes a new instance of the <see cref="AutoMappingProfileBuilder"/> class.
         /// </summary>
         /// <param name="profile">The profile.</param>
         internal AutoMappingProfileBuilder(AutoMappingProfile profile)
