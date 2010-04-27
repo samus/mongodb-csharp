@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MongoDB.Driver.Configuration.Mapping.Auto;
-using MongoDB.Driver.Serialization;
 using MongoDB.Driver.Configuration.Mapping;
 
 namespace MongoDB.Driver.Configuration.Builders
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MappingStoreBuilder
     {
         private IAutoMappingProfile _defaultProfile;
@@ -23,7 +23,7 @@ namespace MongoDB.Driver.Configuration.Builders
         }
 
         /// <summary>
-        /// Builds the mapping store.
+        /// Gets the mapping store.
         /// </summary>
         /// <returns></returns>
         public IMappingStore BuildMappingStore()
@@ -35,16 +35,16 @@ namespace MongoDB.Driver.Configuration.Builders
                 foreach (var p in _profiles)
                     agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(p.Profile), p.Filter));
 
-                agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile())));
-                autoMapper = agg;
-            }
-            else
-                autoMapper = new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile()));
+                    agg.AddAutoMapper(new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile())));
+                    autoMapper = agg;
+                }
+                else
+                    autoMapper = new AutoMapper(CreateOverrideableProfile(_defaultProfile ?? new AutoMappingProfile()));
 
-            var store = new AutoMappingStore(autoMapper);
+                var store = new AutoMappingStore(autoMapper);
 
-            foreach (var type in _eagerMapTypes)
-                store.GetClassMap(type);
+                foreach (var type in _eagerMapTypes)
+                    store.GetClassMap(type);
 
             return store;
         }

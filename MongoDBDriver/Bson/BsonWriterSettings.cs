@@ -31,12 +31,5 @@ namespace MongoDB.Driver.Bson
         /// </summary>
         /// <value>The descriptor.</value>
         public IBsonObjectDescriptor Descriptor { get; private set; }
-
-        /// <summary>
-        /// MongoDB stores all time values in UTC timezone. If true 
-        /// time values are not converterd to UTC.
-        /// </summary>
-        /// <value><c>true</c> if [write as local time]; otherwise, <c>false</c>.</value>
-        public bool WriteLocalTime { get; set; }
     }
 }
