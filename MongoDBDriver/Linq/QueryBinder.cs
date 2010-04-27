@@ -195,7 +195,7 @@ namespace MongoDB.Driver.Linq
                 argumentWasPredicate = true;
             }
 
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
             Expression argExpression = null;
             if (argument != null)
             {
@@ -245,7 +245,7 @@ namespace MongoDB.Driver.Linq
 
         private Expression BindDistinct(Expression source)
         {
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
             var select = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
@@ -255,7 +255,7 @@ namespace MongoDB.Driver.Linq
 
         private Expression BindFirstOrSingle(Expression source, LambdaExpression predicate, string kind, bool isRoot)
         {
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
             Expression where = null;
             if (predicate != null)
             {
@@ -286,7 +286,7 @@ namespace MongoDB.Driver.Linq
 
         protected virtual Expression BindGroupBy(Expression source, LambdaExpression keySelector, LambdaExpression elementSelector, LambdaExpression resultSelector)
         {
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
             
             _map[keySelector.Parameters[0]] = projection.Projector;
             var keyExpression = Visit(keySelector.Body);
@@ -301,7 +301,7 @@ namespace MongoDB.Driver.Linq
             var keyProjection = _projector.ProjectFields(keyExpression);
             var keyGroupExpressions = keyProjection.Fields.Select(f => f.Expression);
 
-            var subqueryBasis = (ProjectionExpression)Visit(source);
+            var subqueryBasis = VisitSequence(source);
             _map[keySelector.Parameters[0]] = subqueryBasis.Projector;
             var subqueryKey = Visit(keySelector.Body);
 
@@ -356,7 +356,7 @@ namespace MongoDB.Driver.Linq
         {
             List<OrderExpression> thenBye = _thenBy;
             _thenBy = null;
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
 
             _map[orderSelector.Parameters[0]] = projection.Projector;
             var orderings = new List<OrderExpression>();
@@ -380,7 +380,7 @@ namespace MongoDB.Driver.Linq
 
         private Expression BindSelect(Type resultType, Expression source, LambdaExpression selector)
         {
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
             _map[selector.Parameters[0]] = projection.Projector;
             var expression = Visit(selector.Body);
             var fieldProjection = _projector.ProjectFields(expression);
@@ -391,7 +391,7 @@ namespace MongoDB.Driver.Linq
 
         private Expression BindSkip(Expression source, Expression skip)
         {
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
             skip = Visit(skip);
             var select = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
@@ -402,7 +402,7 @@ namespace MongoDB.Driver.Linq
 
         private Expression BindTake(Expression source, Expression take)
         {
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
             take = Visit(take);
             var select = projection.Source;
             var fieldProjection = _projector.ProjectFields(projection.Projector);
@@ -422,7 +422,7 @@ namespace MongoDB.Driver.Linq
 
         private Expression BindWhere(Type resultType, Expression source, LambdaExpression predicate)
         {
-            var projection = (ProjectionExpression)Visit(source);
+            var projection = VisitSequence(source);
             _map[predicate.Parameters[0]] = projection.Projector;
             var where = Visit(predicate.Body);
             var fieldProjection = _projector.ProjectFields(projection.Projector);
@@ -442,13 +442,6 @@ namespace MongoDB.Driver.Linq
                 Expression.Parameter(collection.ElementType, "document"));
         }
 
-        private bool IsOperationOnAField(MethodCallExpression m)
-        {
-            return _inField
-                || m.Arguments[0].NodeType == (ExpressionType)MongoExpressionType.Field
-                || (m.Arguments.Count == 2 && m.Arguments[1].NodeType == (ExpressionType)MongoExpressionType.Field);
-        }
-
         private Expression BuildPredicateEqual(IEnumerable<Expression> source1, IEnumerable<Expression> source2)
         {
             var en1 = source1.GetEnumerator();
@@ -460,6 +453,34 @@ namespace MongoDB.Driver.Linq
                 result = (result == null) ? compare : Expression.And(result, compare);
             }
             return result;
+        }
+
+        private ProjectionExpression ConvertToSequence(Expression expression)
+        {
+            switch (expression.NodeType)
+            {
+                case (ExpressionType)MongoExpressionType.Projection:
+                    return (ProjectionExpression)expression;
+                case ExpressionType.New:
+                    NewExpression newExpression = (NewExpression)expression;
+                    if (expression.Type.IsGenericType && expression.Type.GetGenericTypeDefinition() == typeof(Grouping<,>))
+                        return (ProjectionExpression)newExpression.Arguments[1];
+                    break;
+            }
+
+            throw new NotSupportedException(string.Format("The expression of type '{0}' is not a sequence", expression.Type));
+        }
+
+        private bool IsOperationOnAField(MethodCallExpression m)
+        {
+            return _inField
+                || m.Arguments[0].NodeType == (ExpressionType)MongoExpressionType.Field
+                || (m.Arguments.Count == 2 && m.Arguments[1].NodeType == (ExpressionType)MongoExpressionType.Field);
+        }
+
+        private ProjectionExpression VisitSequence(Expression source)
+        {
+            return ConvertToSequence(Visit(source));
         }
 
         private static bool CanBeField(Expression expression)
