@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 
 using MongoDB.Driver.Configuration.Mapping;
-using MongoDB.Driver.Configuration.Mapping.Auto;
 using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Configuration

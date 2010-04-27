@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using MongoDB.Driver.Serialization;
-using MongoDB.Driver.Configuration.Mapping;
+﻿using MongoDB.Driver.Configuration.Mapping;
 
 namespace MongoDB.Driver.Configuration
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IMappingConfiguration
     {
         /// <summary>
