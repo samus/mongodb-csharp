@@ -79,7 +79,7 @@ namespace MongoDB.Linq
             var findHasGroupBy = find.GroupBy != null && find.GroupBy.Count > 0;
             var findHasAggregates = new AggregateChecker().HasAggregates(find);
             var fromHasOrderBy = fromFind.OrderBy != null && fromFind.OrderBy.Count > 0;
-            var fromHasGroupBy = fromFind.GroupBy != null && fromFind.OrderBy.Count > 0;
+            var fromHasGroupBy = fromFind.GroupBy != null && fromFind.GroupBy.Count > 0;
 
             if (findHasOrderBy && fromHasOrderBy)
                 return false;
@@ -130,40 +130,6 @@ namespace MongoDB.Linq
                     return false;
 
             return true;
-        }
-
-        private class AggregateChecker : MongoExpressionVisitor
-        {
-            private bool _hasAggregate;
-
-            public AggregateChecker()
-            { }
-
-            public bool HasAggregates(Expression expression)
-            {
-                _hasAggregate = false;
-                Visit(expression);
-                return _hasAggregate;
-            }
-
-            protected override Expression VisitAggregate(AggregateExpression aggregate)
-            {
-                _hasAggregate = true;
-                return aggregate;
-            }
-
-            protected override Expression VisitFind(FindExpression find)
-            {
-                Visit(find.Where);
-                VisitOrderBy(find.OrderBy);
-                VisitFieldDeclarationList(find.Fields);
-                return find;
-            }
-
-            protected override Expression VisitSubquery(SubqueryExpression subquery)
-            {
-                return subquery;
-            }
         }
 
         private class FindRemover : MongoExpressionVisitor

@@ -57,6 +57,18 @@ namespace MongoDB.Linq
         public bool IsMapReduce { get; set; }
 
         /// <summary>
+        /// Gets or sets the map function.
+        /// </summary>
+        /// <value>The map function.</value>
+        public string MapFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reduce function.
+        /// </summary>
+        /// <value>The reduce function.</value>
+        public string ReduceFunction { get; set; }
+
+        /// <summary>
         /// Gets or sets the number to skip.
         /// </summary>
         /// <value>The number to skip.</value>

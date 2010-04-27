@@ -119,7 +119,10 @@
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="IMongoFindExecutor.cs" />
+    <Compile Include="Linq\AggregateChecker.cs" />
     <Compile Include="Linq\AggregateRewriter.cs" />
+    <Compile Include="Linq\Expressions\FieldGatherer.cs" />
+    <Compile Include="Linq\FreeFormQueryFormatter.cs" />
     <Compile Include="Linq\Expressions\AggregateExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateSubqueryExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateType.cs" />
@@ -149,10 +152,12 @@
     <Compile Include="Linq\QueryBinder.cs" />
     <Compile Include="Linq\MongoQueryProvider.cs" />
     <Compile Include="Linq\MongoQueryObject.cs" />
-    <Compile Include="Linq\QueryFormatter.cs" />
+    <Compile Include="Linq\OptimalQueryFormatter.cs" />
     <Compile Include="Linq\PartialEvaluator.cs" />
     <Compile Include="Linq\ProjectionReader.cs" />
     <Compile Include="Linq\FindMerger.cs" />
+    <Compile Include="Linq\QueryFormatter.cs" />
+    <Compile Include="Linq\QueryFormatterBase.cs" />
     <Compile Include="Linq\TypeSystem.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />
