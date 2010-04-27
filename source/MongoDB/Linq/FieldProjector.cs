@@ -64,6 +64,16 @@ namespace MongoDB.Linq
             return base.Visit(exp);
         }
 
+        protected override Expression VisitAggregate(AggregateExpression aggregate)
+        {
+            return aggregate;
+        }
+
+        protected override Expression VisitAggregateSubquery(AggregateSubqueryExpression aggregateSubquery)
+        {
+            return aggregateSubquery;
+        }
+
         private bool IsFieldNameInUse(string name)
         {
             return _fieldNames.Contains(name);

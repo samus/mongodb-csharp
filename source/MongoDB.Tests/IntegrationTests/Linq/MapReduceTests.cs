@@ -26,10 +26,6 @@ namespace MongoDB.IntegrationTests.Linq
             
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.IsTrue(queryObject.IsMapReduce);
-            Assert.AreEqual(2, queryObject.Fields.Count);
-            Assert.AreEqual(0, queryObject.NumberToLimit);
-            Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("Age", Op.GreaterThan(21)), queryObject.Query);
         }
     }
 }

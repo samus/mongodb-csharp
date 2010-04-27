@@ -150,7 +150,7 @@ namespace MongoDB.Linq
         {
             //We couldn't reduce it to a single query...
             if (f.From.NodeType != (ExpressionType)MongoExpressionType.Collection)
-                throw new NotSupportedException("The query is too complex to be processed by MongoDB. Try building a map-reduce query by hand or simplifying the query.");
+                throw new InvalidQueryException("The query is too complex to be processed by MongoDB. Try building a map-reduce query by hand or simplifying the query and using Linq-to-Objects.");
 
             if (f.From != null)
                 VisitSource(f.From);

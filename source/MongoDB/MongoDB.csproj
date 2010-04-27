@@ -154,7 +154,6 @@
     <Compile Include="Linq\ProjectionReader.cs" />
     <Compile Include="Linq\FindMerger.cs" />
     <Compile Include="Linq\TypeSystem.cs" />
-    <Compile Include="Linq\UnusedFieldRemover.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />
     <Compile Include="Serialization\Builders\ArrayBuilder.cs" />
