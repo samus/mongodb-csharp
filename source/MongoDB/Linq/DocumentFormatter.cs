@@ -12,20 +12,22 @@ using MongoDB.Util;
 
 namespace MongoDB.Linq
 {
-    internal class OptimalQueryFormatter : MongoExpressionVisitor
+    internal class DocumentFormatter : MongoExpressionVisitor
     {
-        private MongoQueryObject _queryObject;
+        private Document _query;
+        private Stack<Scope> _scopes;
 
-        internal MongoQueryObject Format(Expression expression)
+        internal Document FormatDocument(Expression expression)
         {
-            _queryObject = new MongoQueryObject();
+            _query = new Document();
+            _scopes = new Stack<Scope>();
             Visit(expression);
-            return _queryObject;
+            return _query;
         }
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
-            int scopeDepth = _queryObject.ScopeDepth;
+            int scopeDepth = _scopes.Count;
             Visit(b.Left);
 
             switch (b.NodeType)
@@ -33,19 +35,19 @@ namespace MongoDB.Linq
                 case ExpressionType.Equal:
                     break;
                 case ExpressionType.GreaterThan:
-                    _queryObject.PushConditionScope("$gt");
+                    PushConditionScope("$gt");
                     break;
                 case ExpressionType.GreaterThanOrEqual:
-                    _queryObject.PushConditionScope("$gte");
+                    PushConditionScope("$gte");
                     break;
                 case ExpressionType.LessThan:
-                    _queryObject.PushConditionScope("$lt");
+                    PushConditionScope("$lt");
                     break;
                 case ExpressionType.LessThanOrEqual:
-                    _queryObject.PushConditionScope("$lte");
+                    PushConditionScope("$lte");
                     break;
                 case ExpressionType.NotEqual:
-                    _queryObject.PushConditionScope("$ne");
+                    PushConditionScope("$ne");
                     break;
                 case ExpressionType.Modulo:
                     throw new NotImplementedException();
@@ -58,57 +60,22 @@ namespace MongoDB.Linq
 
             Visit(b.Right);
 
-            while (_queryObject.ScopeDepth > scopeDepth)
-                _queryObject.PopConditionScope();
+            while (_scopes.Count > scopeDepth)
+                PopConditionScope();
 
             return b;
         }
 
         protected override Expression VisitConstant(ConstantExpression c)
         {
-            _queryObject.AddCondition(c.Value);
+            AddCondition(c.Value);
             return c;
         }
 
         protected override Expression VisitField(FieldExpression f)
         {
-            _queryObject.PushConditionScope(f.Name);
+            PushConditionScope(f.Name);
             return f;
-        }
-
-        protected override Expression VisitFind(FindExpression find)
-        {
-            if (find.From != null)
-                VisitSource(find.From);
-            if (find.Where != null)
-                Visit(find.Where);
-
-            var fieldGatherer = new FieldGatherer();
-            foreach (var field in find.Fields)
-            {
-                var expandedFields = fieldGatherer.Gather(field.Expression);
-                foreach (var expandedField in expandedFields)
-                    _queryObject.Fields[expandedField.Name] = 1;
-            }
-
-            if (find.OrderBy != null)
-            {
-                foreach (var order in find.OrderBy)
-                {
-                    var field = Visit(order.Expression) as FieldExpression;
-                    if (field == null)
-                        throw new InvalidQueryException("Could not find the field name from the order expression.");
-                    _queryObject.AddOrderBy(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
-                }
-            }
-
-            if (find.Limit != null)
-                _queryObject.NumberToLimit = EvaluateConstant<int>(find.Limit);
-
-            if (find.Skip != null)
-                _queryObject.NumberToSkip = EvaluateConstant<int>(find.Skip);
-
-            return find;
         }
 
         protected override Expression VisitMemberAccess(MemberExpression m)
@@ -118,7 +85,7 @@ namespace MongoDB.Linq
                 if (m.Member.Name == "Length")
                 {
                     Visit(m.Expression);
-                    _queryObject.PushConditionScope("$size");
+                    PushConditionScope("$size");
                     return m;
                 }
             }
@@ -127,7 +94,7 @@ namespace MongoDB.Linq
                 if (m.Member.Name == "Count")
                 {
                     Visit(m.Expression);
-                    _queryObject.PushConditionScope("$size");
+                    PushConditionScope("$size");
                     return m;
                 }
             }
@@ -136,7 +103,7 @@ namespace MongoDB.Linq
                 if (m.Member.Name == "Count")
                 {
                     Visit(m.Expression);
-                    _queryObject.PushConditionScope("$size");
+                    PushConditionScope("$size");
                     return m;
                 }
             }
@@ -159,10 +126,10 @@ namespace MongoDB.Linq
                         if (field == null)
                             throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
                         Visit(field);
-                        _queryObject.PushConditionScope("$elemMatch");
+                        PushConditionScope("$elemMatch");
                         Visit(m.Arguments[1]);
-                        _queryObject.PopConditionScope(); //elemMatch
-                        _queryObject.PopConditionScope(); //field
+                        PopConditionScope(); //elemMatch
+                        PopConditionScope(); //field
                         return m;
 
                     case "Contains":
@@ -173,8 +140,8 @@ namespace MongoDB.Linq
                         if (field != null)
                         {
                             Visit(field);
-                            _queryObject.AddCondition(EvaluateConstant<object>(m.Arguments[1]));
-                            _queryObject.PopConditionScope();
+                            AddCondition(EvaluateConstant<object>(m.Arguments[1]));
+                            PopConditionScope();
                             return m;
                         }
 
@@ -182,14 +149,14 @@ namespace MongoDB.Linq
                         if (field == null)
                             throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
                         Visit(field);
-                        _queryObject.AddCondition("$in", EvaluateConstant<IEnumerable>(m.Arguments[0]));
-                        _queryObject.PopConditionScope();
+                        AddCondition("$in", EvaluateConstant<IEnumerable>(m.Arguments[0]));
+                        PopConditionScope();
                         return m;
                     case "Count":
                         if (m.Arguments.Count == 1)
                         {
                             Visit(m.Arguments[0]);
-                            _queryObject.PushConditionScope("$size");
+                            PushConditionScope("$size");
                             return m;
                         }
                         throw new NotSupportedException("The method Count with a predicate is not supported for field.");
@@ -204,8 +171,8 @@ namespace MongoDB.Linq
                         if (field == null)
                             throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
                         Visit(field);
-                        _queryObject.AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
-                        _queryObject.PopConditionScope();
+                        AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
+                        PopConditionScope();
                         return m;
                 }
             }
@@ -218,15 +185,15 @@ namespace MongoDB.Linq
 
                 var value = EvaluateConstant<string>(m.Arguments[0]);
                 if (m.Method.Name == "StartsWith")
-                    _queryObject.AddCondition(new MongoRegex(string.Format("^{0}", value)));
+                    AddCondition(new MongoRegex(string.Format("^{0}", value)));
                 else if (m.Method.Name == "EndsWith")
-                    _queryObject.AddCondition(new MongoRegex(string.Format("{0}$", value)));
+                    AddCondition(new MongoRegex(string.Format("{0}$", value)));
                 else if (m.Method.Name == "Contains")
-                    _queryObject.AddCondition(new MongoRegex(string.Format("{0}", value)));
+                    AddCondition(new MongoRegex(string.Format("{0}", value)));
                 else
                     throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
 
-                _queryObject.PopConditionScope();
+                PopConditionScope();
                 return m;
             }
             else if (m.Method.DeclaringType == typeof(Regex))
@@ -244,8 +211,8 @@ namespace MongoDB.Linq
                     else
                         throw new InvalidQueryException(string.Format("Only the static Regex.IsMatch is supported.", m.Method.Name));
 
-                    _queryObject.AddCondition(new MongoRegex(value));
-                    _queryObject.PopConditionScope();
+                    AddCondition(new MongoRegex(value));
+                    PopConditionScope();
                     return m;
                 }
             }
@@ -253,37 +220,18 @@ namespace MongoDB.Linq
             throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
         }
 
-        protected override Expression VisitSource(Expression source)
-        {
-            switch ((MongoExpressionType)source.NodeType)
-            {
-                case MongoExpressionType.Collection:
-                    var collection = (CollectionExpression)source;
-                    _queryObject.Database = collection.Database;
-                    _queryObject.CollectionName = collection.CollectionName;
-                    _queryObject.DocumentType = collection.DocumentType;
-                    break;
-                case MongoExpressionType.Select:
-                    Visit(source);
-                    break;
-                default:
-                    throw new InvalidOperationException("Select source is not valid type");
-            }
-            return source;
-        }
-
         protected override Expression VisitUnary(UnaryExpression u)
         {
             switch (u.NodeType)
             {
                 case ExpressionType.Not:
-                    _queryObject.PushConditionScope("$not");
+                    PushConditionScope("$not");
                     Visit(u.Operand);
-                    _queryObject.PopConditionScope();
+                    PopConditionScope();
                     break;
                 case ExpressionType.ArrayLength:
                     Visit(u.Operand);
-                    _queryObject.PushConditionScope("$size");
+                    PushConditionScope("$size");
                     break;
                 default:
                     throw new NotSupportedException(string.Format("The unary operator {0} is not supported.", u.NodeType));
@@ -292,12 +240,87 @@ namespace MongoDB.Linq
             return u;
         }
 
+        private void AddCondition(object value)
+        {
+            _scopes.Peek().AddCondition(value);
+        }
+
+        private void AddCondition(string name, object value)
+        {
+            PushConditionScope(name);
+            AddCondition(value);
+            PopConditionScope();
+        }
+
+        private void PushConditionScope(string name)
+        {
+            if (_scopes.Count == 0)
+                _scopes.Push(new Scope(name, _query[name]));
+            else
+                _scopes.Push(_scopes.Peek().CreateChildScope(name));
+        }
+
+        private void PopConditionScope()
+        {
+            var scope = _scopes.Pop();
+            if (scope.Value == null)
+                return;
+
+            var doc = _query;
+            foreach (var s in _scopes.Reverse()) //as if it were a queue
+            {
+                var sub = doc[s.Key];
+                if (sub == null)
+                    doc[s.Key] = sub = new Document();
+                else if (!(sub is Document))
+                    throw new InvalidQueryException();
+
+                doc = (Document)sub;
+            }
+
+            doc[scope.Key] = scope.Value;
+        }
+
         private static T EvaluateConstant<T>(Expression e)
         {
             if (e.NodeType != ExpressionType.Constant)
                 throw new ArgumentException("Expression must be a constant.");
 
             return (T)((ConstantExpression)e).Value;
+        }
+
+        private class Scope
+        {
+            public string Key { get; private set; }
+
+            public object Value { get; private set; }
+
+            public Scope(string key, object initialValue)
+            {
+                Key = key;
+                Value = initialValue;
+            }
+
+            public void AddCondition(object value)
+            {
+                if (Value is Document)
+                {
+                    if (!(value is Document))
+                        throw new InvalidQueryException();
+
+                    ((Document)Value).Merge((Document)value);
+                }
+                else
+                    Value = value;
+            }
+
+            public Scope CreateChildScope(string name)
+            {
+                if (Value is Document)
+                    return new Scope(name, ((Document)Value)[name]);
+
+                return new Scope(name, null);
+            }
         }
     }
 }

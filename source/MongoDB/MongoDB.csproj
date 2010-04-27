@@ -122,7 +122,6 @@
     <Compile Include="Linq\AggregateChecker.cs" />
     <Compile Include="Linq\AggregateRewriter.cs" />
     <Compile Include="Linq\Expressions\FieldGatherer.cs" />
-    <Compile Include="Linq\FreeFormQueryFormatter.cs" />
     <Compile Include="Linq\Expressions\AggregateExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateSubqueryExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateType.cs" />
@@ -139,6 +138,7 @@
     <Compile Include="Linq\Expressions\ExpressionVisitor.cs" />
     <Compile Include="Linq\Expressions\SubqueryExpression.cs" />
     <Compile Include="Linq\FieldBinder.cs" />
+    <Compile Include="Linq\JavascriptFormatter.cs" />
     <Compile Include="Linq\Grouping.cs" />
     <Compile Include="Linq\IMongoQueryable.cs" />
     <Compile Include="Linq\InvalidQueryException.cs" />
@@ -152,7 +152,7 @@
     <Compile Include="Linq\QueryBinder.cs" />
     <Compile Include="Linq\MongoQueryProvider.cs" />
     <Compile Include="Linq\MongoQueryObject.cs" />
-    <Compile Include="Linq\OptimalQueryFormatter.cs" />
+    <Compile Include="Linq\DocumentQueryFormatter.cs" />
     <Compile Include="Linq\PartialEvaluator.cs" />
     <Compile Include="Linq\ProjectionReader.cs" />
     <Compile Include="Linq\FindMerger.cs" />

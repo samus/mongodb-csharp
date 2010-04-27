@@ -9,7 +9,7 @@ namespace MongoDB.Linq.Expressions
     {
         Collection = 1000,
         Field,
-        Select,
+        Find,
         Projection,
         Order,
         Aggregate,

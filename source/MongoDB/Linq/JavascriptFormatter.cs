@@ -12,81 +12,79 @@ using MongoDB.Util;
 
 namespace MongoDB.Linq
 {
-    internal class FreeFormQueryFormatter : MongoExpressionVisitor
+    internal class JavascriptFormatter : MongoExpressionVisitor
     {
-        private MongoQueryObject _queryObject;
-        private StringBuilder _where;
+        private StringBuilder _js;
 
-        internal MongoQueryObject Format(Expression expression)
+        public string FormatJavascript(Expression expression)
         {
-            _where = new StringBuilder();
-            _queryObject = new MongoQueryObject();
+            _js = new StringBuilder();
             Visit(expression);
-            _queryObject.SetWhereClause(_where.ToString());
-            return _queryObject;
+            return _js.ToString();
         }
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
-            _where.Append("(");
+            _js.Append("(");
             Visit(b.Left);
 
             switch (b.NodeType)
             {
                 case ExpressionType.Equal:
-                    _where.Append(" === ");
+                    _js.Append(" === ");
                     break;
                 case ExpressionType.GreaterThan:
-                    _where.Append(" > ");
+                    _js.Append(" > ");
                     break;
                 case ExpressionType.GreaterThanOrEqual:
-                    _where.Append(" >= ");
+                    _js.Append(" >= ");
                     break;
                 case ExpressionType.LessThan:
-                    _where.Append(" < ");
+                    _js.Append(" < ");
                     break;
                 case ExpressionType.LessThanOrEqual:
-                    _where.Append(" <= ");
+                    _js.Append(" <= ");
                     break;
                 case ExpressionType.NotEqual:
-                    _where.Append(" != ");
+                    _js.Append(" != ");
                     break;
                 case ExpressionType.Modulo:
-                    throw new NotImplementedException();
+                    _js.Append(" % ");
+                    break;
                 case ExpressionType.And:
                 case ExpressionType.AndAlso:
-                    _where.Append(" && ");
+                    _js.Append(" && ");
                     break;
                 case ExpressionType.Or:
                 case ExpressionType.OrElse:
-                    _where.Append(" || ");
+                    _js.Append(" || ");
                     break;
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
-                    _where.Append(" + ");
+                    _js.Append(" + ");
                     break;
                 case ExpressionType.Coalesce:
-                    _where.Append(" || ");
+                    _js.Append(" || ");
                     break;
                 case ExpressionType.Divide:
-                    _where.Append(" / ");
+                    _js.Append(" / ");
                     break;
                 case ExpressionType.ExclusiveOr:
-                    _where.Append(" ^ ");
+                    _js.Append(" ^ ");
                     break;
                 case ExpressionType.LeftShift:
-                    _where.Append(" << ");
+                    _js.Append(" << ");
                     break;
                 case ExpressionType.Multiply:
                 case ExpressionType.MultiplyChecked:
-                    _where.Append(" * ");
+                    _js.Append(" * ");
                     break;
                 case ExpressionType.RightShift:
-                    _where.Append(" >> ");
+                    _js.Append(" >> ");
                     break;
                 case ExpressionType.Subtract:
                 case ExpressionType.SubtractChecked:
-                    _where.Append(" - ");
+                    _js.Append(" - ");
                     break;
                 default:
                     throw new NotSupportedException(string.Format("The operation {0} is not supported.", b.NodeType));
@@ -94,55 +92,20 @@ namespace MongoDB.Linq
 
             Visit(b.Right);
 
-            _where.Append(")");
+            _js.Append(")");
             return b;
         }
 
         protected override Expression VisitConstant(ConstantExpression c)
         {
-            _where.Append(GetJavascriptValueForConstant(c));
+            _js.Append(GetJavascriptValueForConstant(c));
             return c;
         }
 
         protected override Expression VisitField(FieldExpression f)
         {
-            _where.AppendFormat("this.{0}", f.Name);
+            _js.AppendFormat("this.{0}", f.Name);
             return f;
-        }
-
-        protected override Expression VisitFind(FindExpression find)
-        {
-            if (find.From != null)
-                VisitSource(find.From);
-            if (find.Where != null)
-                Visit(find.Where);
-
-            var fieldGatherer = new FieldGatherer();
-            foreach (var field in find.Fields)
-            {
-                var expandedFields = fieldGatherer.Gather(field.Expression);
-                foreach (var expandedField in expandedFields)
-                    _queryObject.Fields[expandedField.Name] = 1;
-            }
-            
-            if (find.OrderBy != null)
-            {
-                foreach (var order in find.OrderBy)
-                {
-                    var field = Visit(order.Expression) as FieldExpression;
-                    if (field == null)
-                        throw new InvalidQueryException("Could not find the field name from the order expression.");
-                    _queryObject.AddOrderBy(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
-                }
-            }
-
-            if (find.Limit != null)
-                _queryObject.NumberToLimit = EvaluateConstant<int>(find.Limit);
-
-            if (find.Skip != null)
-                _queryObject.NumberToSkip = EvaluateConstant<int>(find.Skip);
-
-            return find;
         }
 
         protected override Expression VisitMemberAccess(MemberExpression m)
@@ -152,7 +115,7 @@ namespace MongoDB.Linq
                 if (m.Member.Name == "Length")
                 {
                     Visit(m.Expression);
-                    _where.Append(".length");
+                    _js.Append(".length");
                     return m;
                 }
             }
@@ -161,7 +124,7 @@ namespace MongoDB.Linq
                 if (m.Member.Name == "Count")
                 {
                     Visit(m.Expression);
-                    _where.Append(".length");
+                    _js.Append(".length");
                     return m;
                 }
             }
@@ -170,7 +133,7 @@ namespace MongoDB.Linq
                 if (m.Member.Name == "Count")
                 {
                     Visit(m.Expression);
-                    _where.Append(".length");
+                    _js.Append(".length");
                     return m;
                 }
             }
@@ -189,7 +152,7 @@ namespace MongoDB.Linq
                         if (m.Arguments.Count == 1)
                         {
                             Visit(m.Arguments[0]);
-                            _where.Append(".length");
+                            _js.Append(".length");
                             return m;
                         }
                         throw new NotSupportedException("The method Count with a predicate is not supported for field.");
@@ -204,11 +167,11 @@ namespace MongoDB.Linq
 
                 var value = EvaluateConstant<string>(m.Arguments[0]);
                 if (m.Method.Name == "StartsWith")
-                    _where.AppendFormat("/^{0}/", value);
+                    _js.AppendFormat("/^{0}/", value);
                 else if (m.Method.Name == "EndsWith")
-                    _where.AppendFormat("/{0}$/", value);
+                    _js.AppendFormat("/{0}$/", value);
                 else if (m.Method.Name == "Contains")
-                    _where.AppendFormat("/{0}/", value);
+                    _js.AppendFormat("/{0}/", value);
                 else
                     throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
 
@@ -229,7 +192,7 @@ namespace MongoDB.Linq
                     else
                         throw new InvalidQueryException(string.Format("Only the static Regex.IsMatch is supported.", m.Method.Name));
 
-                    _where.AppendFormat("/{0}/", value);
+                    _js.AppendFormat("/{0}/", value);
                     return m;
                 }
             }
@@ -237,47 +200,20 @@ namespace MongoDB.Linq
             throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
         }
 
-        protected override Expression VisitSource(Expression source)
-        {
-            switch ((MongoExpressionType)source.NodeType)
-            {
-                case MongoExpressionType.Collection:
-                    var collection = (CollectionExpression)source;
-                    _queryObject.CollectionName = collection.CollectionName;
-                    _queryObject.Database = collection.Database;
-                    _queryObject.DocumentType = collection.DocumentType;
-                    break;
-                case MongoExpressionType.Select:
-                    Visit(source);
-                    break;
-                default:
-                    throw new InvalidOperationException("Select source is not valid type");
-            }
-            return source;
-        }
-
         protected override Expression VisitUnary(UnaryExpression u)
         {
             switch (u.NodeType)
             {
                 case ExpressionType.Not:
-                    _where.Append("!(");
+                    _js.Append("!(");
                     Visit(u.Operand);
-                    _where.Append(")");
-                    break;
-                case ExpressionType.ArrayLength:
-                    Visit(u.Operand);
+                    _js.Append(")");
                     break;
                 default:
                     throw new NotSupportedException(string.Format("The unary operator {0} is not supported.", u.NodeType));
             }
 
             return u;
-        }
-
-        private void BuildMapReduce(FindExpression find)
-        {
-
         }
 
         private static T EvaluateConstant<T>(Expression e)
@@ -290,11 +226,11 @@ namespace MongoDB.Linq
 
         private static string GetJavascriptValueForConstant(ConstantExpression c)
         {
-            if(c.Value == null)
+            if (c.Value == null)
                 return "null";
             if (c.Type == typeof(string) || c.Type == typeof(StringBuilder))
                 return string.Format(@"""{0}""", c.Value.ToString());
-            
+
             return c.Value.ToString();
         }
     }

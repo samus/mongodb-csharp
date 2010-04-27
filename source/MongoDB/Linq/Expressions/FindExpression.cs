@@ -69,7 +69,7 @@ namespace MongoDB.Linq.Expressions
         { }
 
         public FindExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, IEnumerable<Expression> groupBy, bool distinct, Expression skip, Expression limit)
-            : base((ExpressionType)MongoExpressionType.Select, type)
+            : base((ExpressionType)MongoExpressionType.Find, type)
         {
             _fields = fields as ReadOnlyCollection<FieldDeclaration>;
             if (_fields == null)

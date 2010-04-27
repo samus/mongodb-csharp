@@ -10,7 +10,6 @@ namespace MongoDB.Linq
     {
         private bool _hasOrder;
         private Document _query;
-        private readonly Stack<Scope> _scopes;
 
         /// <summary>
         /// Gets or sets the aggregator.
@@ -95,15 +94,6 @@ namespace MongoDB.Linq
             get { return _query; }
         }
 
-        /// <summary>
-        /// Gets the scope depth.
-        /// </summary>
-        /// <value>The scope depth.</value>
-        public int ScopeDepth
-        {
-            get { return _scopes.Count; }
-        }
-
         public MongoQueryObject()
         {
             Fields = new Document();
@@ -111,19 +101,6 @@ namespace MongoDB.Linq
 
             _hasOrder = false;
 
-            _scopes = new Stack<Scope>();
-        }
-
-        public void AddCondition(object value)
-        {
-            _scopes.Peek().AddCondition(value);
-        }
-
-        public void AddCondition(string name, object value)
-        {
-            PushConditionScope(name);
-            AddCondition(value);
-            PopConditionScope();
         }
 
         public void AddOrderBy(string name, int value)
@@ -138,35 +115,12 @@ namespace MongoDB.Linq
             ((Document)_query["orderby"]).Add(name, value);
         }
 
-        public void PushConditionScope(string name)
+        public void SetQueryDocument(Document document)
         {
-            if (_scopes.Count == 0)
-                _scopes.Push(new Scope(name, Query[name]));
-            else
-                _scopes.Push(_scopes.Peek().CreateChildScope(name));
-        }
-
-        public void PopConditionScope()
-        {
-            var scope = _scopes.Pop();
-            if (scope.Value == null)
-                return;
-
-            var doc = _query;
             if (_hasOrder)
-                doc = (Document)doc["query"];
-            foreach (var s in _scopes.Reverse()) //as if it were a queue
-            {
-                var sub = doc[s.Key];
-                if (sub == null)
-                    doc[s.Key] = sub = new Document();
-                else if (!(sub is Document))
-                    throw new InvalidQueryException();
-
-                doc = (Document)sub;
-            }
-
-            doc[scope.Key] = scope.Value;
+                _query["query"] = document;
+            else
+                _query = document;
         }
 
         public void SetWhereClause(string whereClause)
@@ -183,40 +137,6 @@ namespace MongoDB.Linq
         public override string ToString()
         {
             throw new NotImplementedException();
-        }
-
-        private class Scope
-        {
-            public string Key { get; private set; }
-
-            public object Value { get; private set; }
-
-            public Scope(string key, object initialValue)
-            {
-                Key = key;
-                Value = initialValue;
-            }
-
-            public void AddCondition(object value)
-            {
-                if (Value is Document)
-                {
-                    if (!(value is Document))
-                        throw new InvalidQueryException();
-
-                    ((Document)Value).Merge((Document)value);
-                }
-                else
-                    Value = value;
-            }
-
-            public Scope CreateChildScope(string name)
-            {
-                if (Value is Document)
-                    return new Scope(name, ((Document)Value)[name]);
-
-                return new Scope(name, null);
-            }
         }
     }
 }

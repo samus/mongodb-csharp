@@ -21,7 +21,7 @@ namespace MongoDB.Linq.Expressions
                     return VisitField((FieldExpression)exp);
                 case MongoExpressionType.Projection:
                     return VisitProjection((ProjectionExpression)exp);
-                case MongoExpressionType.Select:
+                case MongoExpressionType.Find:
                     return VisitFind((FindExpression)exp);
                 case MongoExpressionType.Aggregate:
                     return VisitAggregate((AggregateExpression)exp);
