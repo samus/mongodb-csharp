@@ -17,17 +17,12 @@
 *.cache
 *.ReSharper
 
-*/bin/*
-*/obj/*
-*/test-results/*
-/test-results/
+bin/
+obj/
+test-results/
+test-results/
 
 /Release/*
-
-/examples/*/bin/*
-/examples/*/test-results/*
-/examples/*/obj/*
-
 /_UpgradeReport_Files/*
 
 /redist/*.zip

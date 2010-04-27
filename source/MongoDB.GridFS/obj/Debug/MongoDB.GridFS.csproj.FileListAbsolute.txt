@@ -1,8 +1,0 @@
-c:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\source\MongoDB.GridFS\obj\Debug\ResolveAssemblyReference.cache
-c:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\source\MongoDB.GridFS\bin\Debug\MongoDB.GridFS.dll
-c:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\source\MongoDB.GridFS\bin\Debug\MongoDB.GridFS.pdb
-c:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\source\MongoDB.GridFS\bin\Debug\MongoDB.dll
-c:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\source\MongoDB.GridFS\bin\Debug\MongoDB.pdb
-c:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\source\MongoDB.GridFS\bin\Debug\MongoDB.xml
-c:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\source\MongoDB.GridFS\obj\Debug\MongoDB.GridFS.dll
-c:\Users\wagners\Documents\Development\Projects\mongodb-csharp__fork.git\source\MongoDB.GridFS\obj\Debug\MongoDB.GridFS.pdb
