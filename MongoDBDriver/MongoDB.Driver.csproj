@@ -132,7 +132,6 @@
     <Compile Include="Linq\Expressions\OrderExpression.cs" />
     <Compile Include="Linq\Expressions\OrderType.cs" />
     <Compile Include="Linq\Expressions\ProjectionExpression.cs" />
-    <Compile Include="Linq\Expressions\Replacer.cs" />
     <Compile Include="Linq\Expressions\ScalarExpression.cs" />
     <Compile Include="Linq\Expressions\FindExpression.cs" />
     <Compile Include="Linq\Expressions\ExpressionVisitor.cs" />
@@ -156,6 +155,7 @@
     <Compile Include="Linq\ProjectionReader.cs" />
     <Compile Include="Linq\FindMerger.cs" />
     <Compile Include="Linq\TypeSystem.cs" />
+    <Compile Include="Linq\UnusedFieldRemover.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />
     <Compile Include="Serialization\Builders\ArrayBuilder.cs" />
