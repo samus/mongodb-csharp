@@ -4,7 +4,6 @@ using NUnit.Framework;
 
 namespace MongoDB.Driver
 {
-
     public abstract class MongoTestBase
     {
         public Mongo Mongo{get;set;}

@@ -108,12 +108,11 @@
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
     <Compile Include="Configuration\CollectionAdapters\ArrayCollectionAdapter.cs" />
-    <Compile Include="Configuration\IMappingConfiguration.cs" />
-    <Compile Include="Configuration\MappingConfiguration.cs" />
-    <Compile Include="Configuration\FluentConfiguration.cs" />
-    <Compile Include="Configuration\AutoMappingProfileConfiguration.cs" />
-    <Compile Include="Configuration\ClassMapConfiguration.cs" />
-    <Compile Include="Configuration\MemberMapConfiguration.cs" />
+    <Compile Include="Configuration\Builders\MappingStoreBuilder.cs" />
+    <Compile Include="Configuration\MongoConfigurationBuilder.cs" />
+    <Compile Include="Configuration\Builders\AutoMappingProfileBuilder.cs" />
+    <Compile Include="Configuration\Builders\ClassOverridesBuilder.cs" />
+    <Compile Include="Configuration\Builders\MemberOverridesBuilder.cs" />
     <Compile Include="Configuration\Mapping\Auto\ClassOverridesMap.cs" />
     <Compile Include="Configuration\Mapping\Auto\OverridableAutoMappingProfile.cs" />
     <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />

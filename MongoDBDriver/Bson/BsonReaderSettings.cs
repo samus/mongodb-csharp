@@ -32,17 +32,10 @@ namespace MongoDB.Driver.Bson
         public IBsonObjectBuilder Builder { get; private set; }
 
         /// <summary>
-        /// MongoDB stores all time values in UTC timezone. If true the 
-        /// time is read as if it ware local time.
+        /// MongoDB stores all time values in UTC timezone. If true the
+        /// time is converted from UTC to local timezone after is was read.
         /// </summary>
-        /// <value><c>true</c> if [read as local time]; otherwise, <c>false</c>.</value>
-        public bool ReadAsLocalTime { get; set; }
-
-        /// <summary>
-        /// MongoDB stores all time values in UTC timezone. If true the 
-        /// time is converter to local timezone.
-        /// </summary>
-        /// <value><c>true</c> if [convert to local time]; otherwise, <c>false</c>.</value>
-        public bool ConvertToLocalTime { get; set; }
+        /// <value><c>true</c> if [read local time]; otherwise, <c>false</c>.</value>
+        public bool ReadLocalTime { get; set; }
     }
 }

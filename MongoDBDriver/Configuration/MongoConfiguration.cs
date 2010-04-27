@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MongoDB.Driver.Serialization;
+﻿using MongoDB.Driver.Serialization;
 
 namespace MongoDB.Driver.Configuration
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MongoConfiguration : IMongoConfiguration
     {
         /// <summary>
