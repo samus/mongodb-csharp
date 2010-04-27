@@ -144,7 +144,7 @@ namespace MongoDB.Driver.UnitTests
         {
             var op = Op.Where("return this.a == 3 || this.b == 4;");
 
-            Assert.AreEqual("return this.a == 3 || this.b == 4;",op["$where"]);
+            Assert.AreEqual(new Code("return this.a == 3 || this.b == 4;"),op["$where"]);
         }
     }
 }
