@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -42,9 +42,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MongoDBDriver\MongoDB.Driver.csproj">
+    <ProjectReference Include="..\..\source\MongoDB\MongoDB.csproj">
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
-      <Name>MongoDB.Driver</Name>
+      <Name>MongoDB</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

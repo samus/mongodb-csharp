@@ -4,8 +4,8 @@ using System.Reflection;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("MongoDB-CSharp")]
+[assembly: AssemblyCopyright("MongoDB-CSharp")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

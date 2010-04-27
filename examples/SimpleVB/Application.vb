@@ -2,7 +2,7 @@ imports System
 imports System.Configuration
 Imports Microsoft.VisualBasic
 
-imports MongoDB.Driver
+Imports MongoDB
 
 Namespace Simple
 

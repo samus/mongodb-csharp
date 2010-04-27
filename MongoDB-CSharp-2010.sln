@@ -1,0 +1,116 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{4345382B-FAA2-46E2-99CF-C90ACA2DD574}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{AEFFB75E-9365-4BC6-87E9-148CEECA0C0C}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SimpleVB", "examples\SimpleVB\SimpleVB.vbproj", "{1BAAE3D8-7720-4AA5-9335-E59824E7B667}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple", "examples\Simple\Simple.csproj", "{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB", "source\MongoDB\MongoDB.csproj", "{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.GridFS", "source\MongoDB.GridFS\MongoDB.GridFS.csproj", "{B42DBBF9-0A1F-4749-9787-013BF8D8F435}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.GridFS.Tests", "source\MongoDB.GridFS.Tests\MongoDB.GridFS.Tests.csproj", "{0C293FE9-F670-4FEF-A60F-20F8C978B1CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Tests", "source\MongoDB.Tests\MongoDB.Tests.csproj", "{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "tools\Benchmark\Benchmark.csproj", "{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BAAE3D8-7720-4AA5-9335-E59824E7B667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BAAE3D8-7720-4AA5-9335-E59824E7B667}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BAAE3D8-7720-4AA5-9335-E59824E7B667}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BAAE3D8-7720-4AA5-9335-E59824E7B667}.Release|Any CPU.Build.0 = Release|Any CPU
+		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B42DBBF9-0A1F-4749-9787-013BF8D8F435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B42DBBF9-0A1F-4749-9787-013BF8D8F435}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B42DBBF9-0A1F-4749-9787-013BF8D8F435}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B42DBBF9-0A1F-4749-9787-013BF8D8F435}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C293FE9-F670-4FEF-A60F-20F8C978B1CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C293FE9-F670-4FEF-A60F-20F8C978B1CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C293FE9-F670-4FEF-A60F-20F8C978B1CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C293FE9-F670-4FEF-A60F-20F8C978B1CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1BAAE3D8-7720-4AA5-9335-E59824E7B667} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
+		{131BDB5F-5C6F-4AC7-B03E-394B1B75E120} = {4345382B-FAA2-46E2-99CF-C90ACA2DD574}
+		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B} = {AEFFB75E-9365-4BC6-87E9-148CEECA0C0C}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = MongoDBDriver\MongoDB.Driver.csproj
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		$0.TextStylePolicy = $2
+		$2.FileWidth = 120
+		$2.TabWidth = 4
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/plain
+		$2.scope = text/plain
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.NoTabsAfterNonTabs = True
+		$3.inheritsSet = VisualStudio
+		$3.inheritsScope = text/plain
+		$3.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $4
+		$4.IndentSwitchBody = True
+		$4.MethodBraceStyle = EndOfLineWithoutSpace
+		$4.BeforeMethodCallParentheses = False
+		$4.BeforeMethodDeclarationParentheses = False
+		$4.BeforeConstructorDeclarationParentheses = False
+		$4.BeforeDelegateDeclarationParentheses = False
+		$4.NewParentheses = False
+		$4.MethodBraceStyle = EndOfLine
+		$4.ConstructorBraceStyle = EndOfLine
+		$4.DestructorBraceStyle = EndOfLine
+		$4.BeforeMethodCallParentheses = False
+		$4.BeforeMethodDeclarationParentheses = False
+		$4.BeforeConstructorDeclarationParentheses = False
+		$4.NewParentheses = False
+		$4.IfParentheses = False
+		$4.WhileParentheses = False
+		$4.ForParentheses = False
+		$4.ForeachParentheses = False
+		$4.CatchParentheses = False
+		$4.SwitchParentheses = False
+		$4.LockParentheses = False
+		$4.UsingParentheses = False
+		$4.inheritsSet = Mono
+		$4.inheritsScope = text/x-csharp
+		$4.scope = text/x-csharp
+		$0.TextStylePolicy = $5
+		$5.FileWidth = 120
+		$5.EolMarker = Windows
+		$5.inheritsSet = VisualStudio
+		$5.inheritsScope = text/plain
+		$5.scope = text/x-vb
+	EndGlobalSection
+EndGlobal
