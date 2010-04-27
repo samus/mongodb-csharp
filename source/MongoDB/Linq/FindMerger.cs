@@ -4,10 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-using MongoDB.Driver.Linq.Expressions;
+using MongoDB.Linq.Expressions;
 using System.Collections.ObjectModel;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     internal class FindMerger : MongoExpressionVisitor
     {

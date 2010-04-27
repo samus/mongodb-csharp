@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MongoDB.Driver.Linq.Expressions;
+using MongoDB.Linq.Expressions;
 using System.Linq.Expressions;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     internal class UnusedFieldRemover : MongoExpressionVisitor
     {
@@ -26,7 +26,7 @@ namespace MongoDB.Driver.Linq
         protected override Expression VisitSubquery(SubqueryExpression subquery)
         {
             if (subquery.NodeType == (ExpressionType)MongoExpressionType.Scalar && subquery.Find != null)
-                MarkColumnAsUsed(subquery.Find.Alias, subquery.Find.Fields[0].Name);
+                MarkFieldAsUsed(subquery.Find.Alias, subquery.Find.Fields[0].Name);
             
             return base.VisitSubquery(subquery);
         }
@@ -49,7 +49,7 @@ namespace MongoDB.Driver.Linq
         {
             HashSet<string> fields;
             if (!_allFieldsUsed.TryGetValue(alias, out fields))
-                _allFieldsUsed.Add(fields = new HashSet<string>());
+                _allFieldsUsed.Add(alias, fields = new HashSet<string>());
             fields.Add(name);
         }
     }
