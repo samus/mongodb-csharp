@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using MongoDB.Bson;
+using MongoDB.Configuration;
 using MongoDB.Protocol;
 using MongoDB.Results;
 using MongoDB.Serialization;
@@ -278,8 +279,10 @@ namespace MongoDB.Connections
             if(string.IsNullOrEmpty(builder.Username))
                 return;
 
+            var serializationFactory = MongoConfiguration.Default.SerializationFactory;
+
             var document = new Document().Add("getnonce", 1.0);
-            var nonceResult = SendCommandCore<Document>(SerializationFactory.Default, databaseName, typeof(Document), document);
+            var nonceResult = SendCommandCore<Document>(serializationFactory, databaseName, typeof(Document), document);
             var nonce = (string)nonceResult["nonce"];
 
             if(nonce == null)
@@ -294,7 +297,7 @@ namespace MongoDB.Connections
             };
             try
             {
-                SendCommandCore<Document>(SerializationFactory.Default, databaseName, typeof(Document), auth);
+                SendCommandCore<Document>(serializationFactory, databaseName, typeof(Document), auth);
             }
             catch(MongoCommandException exception)
             {

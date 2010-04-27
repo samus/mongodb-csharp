@@ -19,12 +19,18 @@ namespace MongoDB.Configuration
         /// Builds the configuration.
         /// </summary>
         /// <returns></returns>
-        public IMongoConfiguration BuildConfiguration()
+        public MongoConfiguration BuildConfiguration()
         {
             if (_mappingStoreBuilder == null)
-                return new MongoConfiguration() { ConnectionString = _connectionString, SerializationFactory = SerializationFactory.Default };
+                return new MongoConfiguration
+                {
+                    ConnectionString = _connectionString,
+                    SerializationFactory = MongoConfiguration.Default.SerializationFactory
+                };
 
-            return new MongoConfiguration() { ConnectionString = _connectionString, SerializationFactory = new SerializationFactory(_mappingStoreBuilder.BuildMappingStore()) };
+            return new MongoConfiguration { 
+                ConnectionString = _connectionString, 
+                SerializationFactory = new SerializationFactory(_mappingStoreBuilder.BuildMappingStore()) };
         }
 
         /// <summary>

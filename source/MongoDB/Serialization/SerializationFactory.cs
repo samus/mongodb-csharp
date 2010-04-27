@@ -9,11 +9,6 @@ namespace MongoDB.Serialization
     /// </summary>
     public class SerializationFactory : ISerializationFactory
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public static readonly SerializationFactory Default = new SerializationFactory();
-
         private readonly IMappingStore _mappingStore;
 
         /// <summary>

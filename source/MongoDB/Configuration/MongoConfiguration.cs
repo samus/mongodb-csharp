@@ -1,12 +1,26 @@
-﻿using MongoDB.Serialization;
+﻿using MongoDB.Configuration.Mapping;
+using MongoDB.Serialization;
 
 namespace MongoDB.Configuration
 {
     /// <summary>
     /// 
     /// </summary>
-    public class MongoConfiguration : IMongoConfiguration
+    public class MongoConfiguration
     {
+        /// <summary>
+        /// MongoDB-CSharp default configuration.
+        /// </summary>
+        public static readonly MongoConfiguration Default = new MongoConfiguration();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoConfiguration"/> class.
+        /// </summary>
+        public MongoConfiguration(){
+            ConnectionString = string.Empty;
+            SerializationFactory = new SerializationFactory(new AutoMappingStore());
+        }
+
         /// <summary>
         /// Gets or sets the connection string.
         /// </summary>
@@ -18,5 +32,15 @@ namespace MongoDB.Configuration
         /// </summary>
         /// <value>The serialization factory.</value>
         public ISerializationFactory SerializationFactory { get; set; }
+
+        /// <summary>
+        /// Validates this instance.
+        /// </summary>
+        public void Validate(){
+            if(ConnectionString == null)
+                throw new MongoException("ConnectionString can not be null");
+            if(SerializationFactory == null)
+                throw new MongoException("SerializationFactory can not be null");
+        }
     }
 }

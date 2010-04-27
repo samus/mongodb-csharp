@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MongoDB.Configuration;
 using MongoDB.Connections;
 using MongoDB.Results;
 using MongoDB.Serialization;
@@ -22,7 +23,7 @@ namespace MongoDB
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         public MongoDatabase(string connectionString)
-            : this(SerializationFactory.Default,connectionString)
+            : this(MongoConfiguration.Default.SerializationFactory,connectionString)
         {
         }
 
