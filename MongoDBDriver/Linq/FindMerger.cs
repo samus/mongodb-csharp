@@ -52,17 +52,8 @@ namespace MongoDB.Driver.Linq
                 var skip = f.Skip != null ? f.Skip : fromSelect.Skip;
                 var limit = f.Limit != null ? f.Limit : fromSelect.Limit;
                 bool distinct = f.Distinct | fromSelect.Distinct;
-                
 
-                if (where != f.Where
-                    || groupBy != f.GroupBy
-                    || orderBy != f.OrderBy
-                    || distinct != f.Distinct
-                    || skip != f.Skip
-                    || limit != f.Limit)
-                {
-                    f = new FindExpression(f.Type, fields, f.From, where, orderBy, groupBy, distinct, skip, limit);
-                }
+                f = new FindExpression(f.Type, f.Alias, fields, f.From, where, orderBy, groupBy, distinct, skip, limit);
             }
 
             return f;

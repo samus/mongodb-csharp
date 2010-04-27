@@ -11,8 +11,9 @@ namespace MongoDB.Driver.Linq
 {
     internal class QueryBinder : MongoExpressionVisitor
     {
+        private int _aliasCount;
         private Expression _currentGroupElement;
-        private Dictionary<Expression, Expression> _groupByMap;
+        private Dictionary<Expression, GroupByInfo> _groupByMap;
         private Dictionary<ParameterExpression, Expression> _map;
         private FieldProjector _projector;
         private IQueryProvider _provider;
@@ -31,7 +32,7 @@ namespace MongoDB.Driver.Linq
         {
             _inField = false;
             _map = new Dictionary<ParameterExpression, Expression>();
-            _groupByMap = new Dictionary<Expression, Expression>();
+            _groupByMap = new Dictionary<Expression, GroupByInfo>();
             return Visit(expression);
         }
 
@@ -104,7 +105,7 @@ namespace MongoDB.Driver.Linq
                         case "Where":
                             return BindWhere(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
                         case "Select":
-                            return BindSelect(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
+                            return BindFind(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
                         case "OrderBy":
                             return BindOrderBy(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), OrderType.Ascending);
                         case "OrderByDescending":
@@ -205,10 +206,11 @@ namespace MongoDB.Driver.Linq
             else if(!hasPredicateArgument)
                 argExpression = projection.Projector;
 
+            var alias = GetNextAlias();
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             Expression aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression, distinct);
             var selectType = typeof(IEnumerable<>).MakeGenericType(returnType);
-            var find = new FindExpression(selectType, new[] { new FieldExpression("", aggregateExpression) }, projection.Source, null);
+            var find = new FindExpression(selectType, alias, new[] { new FieldExpression("", aggregateExpression) }, projection.Source, null);
 
             if (isRoot)
             {
@@ -221,23 +223,23 @@ namespace MongoDB.Driver.Linq
 
             var subquery = new ScalarExpression(returnType, find);
 
-            Expression groupBy;
-            if(!argumentWasPredicate && _groupByMap.TryGetValue(projection, out groupBy))
+            GroupByInfo info;
+            if(!argumentWasPredicate && _groupByMap.TryGetValue(projection, out info))
             {
-                if(argument != null)
+                if (argument != null)
                 {
-                    _map[argument.Parameters[0]] = groupBy;
-                    aggregateExpression = Visit(argument.Body);
+                    _map[argument.Parameters[0]] = info.Element;
+                    argExpression = Visit(argument.Body);
                 }
-                else if(!hasPredicateArgument)
-                    argExpression = groupBy;
+                else if (!hasPredicateArgument)
+                    argExpression = info.Element;
 
                 aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression, distinct);
 
                 if(projection == _currentGroupElement)
                     return aggregateExpression;
 
-                return new AggregateSubqueryExpression(aggregateExpression, subquery);
+                return new AggregateSubqueryExpression(info.Alias, aggregateExpression, subquery);
             }
 
             return subquery;
@@ -247,9 +249,10 @@ namespace MongoDB.Driver.Linq
         {
             var projection = VisitSequence(source);
             var find = projection.Source;
+            var alias = GetNextAlias();
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new FindExpression(find.Type, fieldProjection.Fields, projection.Source, null, null, null, true, null, null),
+                new FindExpression(find.Type, alias, fieldProjection.Fields, projection.Source, null, null, null, true, null, null),
                 fieldProjection.Projector);
         }
 
@@ -269,9 +272,10 @@ namespace MongoDB.Driver.Linq
 
             if (limit != null || where != null)
             {
+                var alias = GetNextAlias();
                 var fieldProjection = _projector.ProjectFields(projection.Projector);
                 projection = new ProjectionExpression(
-                    new FindExpression(source.Type, fieldProjection.Fields, projection.Source, where, null, null, false, null, limit),
+                    new FindExpression(source.Type, alias, fieldProjection.Fields, projection.Source, where, null, null, false, null, limit),
                     fieldProjection.Projector);
             }
             if (isRoot)
@@ -316,13 +320,17 @@ namespace MongoDB.Driver.Linq
                 subqueryElementExpression = Visit(elementSelector.Body);
             }
 
+            var elementAlias = GetNextAlias();
             var elementProjection = _projector.ProjectFields(subqueryElementExpression);
             var elementSubquery =
                 new ProjectionExpression(
-                    new FindExpression(TypeSystem.GetSequenceType(subqueryElementExpression.Type), elementProjection.Fields, subqueryBasis.Source, subqueryCorrelation),
+                    new FindExpression(TypeSystem.GetSequenceType(subqueryElementExpression.Type), elementAlias, elementProjection.Fields, subqueryBasis.Source, subqueryCorrelation),
                     elementProjection.Projector);
 
-            _groupByMap[elementSubquery] = elementExpression;
+            var alias = GetNextAlias();
+
+            var info = new GroupByInfo(alias, elementExpression);
+            _groupByMap[elementSubquery] = info;
 
             Expression resultExpression;
             if (resultSelector != null)
@@ -345,10 +353,10 @@ namespace MongoDB.Driver.Linq
             var fieldProjection = _projector.ProjectFields(resultExpression);
 
             var projectedElementSubquery = ((NewExpression)fieldProjection.Projector).Arguments[1];
-            _groupByMap[projectedElementSubquery] = elementExpression;
+            _groupByMap[projectedElementSubquery] = info;
 
             return new ProjectionExpression(
-                new FindExpression(TypeSystem.GetSequenceType(resultExpression.Type), fieldProjection.Fields, projection.Source, null, null, keyGroupExpressions, false, null, null),
+                new FindExpression(TypeSystem.GetSequenceType(resultExpression.Type), alias, fieldProjection.Fields, projection.Source, null, null, keyGroupExpressions, false, null, null),
                 fieldProjection.Projector);
         }
 
@@ -372,20 +380,22 @@ namespace MongoDB.Driver.Linq
                 }
             }
 
+            var alias = GetNextAlias();
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new FindExpression(resultType, fieldProjection.Fields, projection.Source, null, orderings.AsReadOnly(), null, false, null, null),
+                new FindExpression(resultType, alias, fieldProjection.Fields, projection.Source, null, orderings.AsReadOnly(), null, false, null, null),
                 fieldProjection.Projector);
         }
 
-        private Expression BindSelect(Type resultType, Expression source, LambdaExpression selector)
+        private Expression BindFind(Type resultType, Expression source, LambdaExpression selector)
         {
             var projection = VisitSequence(source);
             _map[selector.Parameters[0]] = projection.Projector;
             var expression = Visit(selector.Body);
+            var alias = GetNextAlias();
             var fieldProjection = _projector.ProjectFields(expression);
             return new ProjectionExpression(
-                new FindExpression(resultType, fieldProjection.Fields, projection.Source, null),
+                new FindExpression(resultType, alias, fieldProjection.Fields, projection.Source, null),
                 fieldProjection.Projector);
         }
 
@@ -394,9 +404,10 @@ namespace MongoDB.Driver.Linq
             var projection = VisitSequence(source);
             skip = Visit(skip);
             var find = projection.Source;
+            var alias = GetNextAlias();
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new FindExpression(find.Type, fieldProjection.Fields, projection.Source, null, null, null, false, skip, null),
+                new FindExpression(find.Type, alias, fieldProjection.Fields, projection.Source, null, null, null, false, skip, null),
                 fieldProjection.Projector);
         }
 
@@ -405,9 +416,10 @@ namespace MongoDB.Driver.Linq
             var projection = VisitSequence(source);
             take = Visit(take);
             var find = projection.Source;
+            var alias = GetNextAlias();
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new FindExpression(find.Type, fieldProjection.Fields, projection.Source, null, null, null, false, null, take),
+                new FindExpression(find.Type, alias, fieldProjection.Fields, projection.Source, null, null, null, false, null, take),
                 fieldProjection.Projector);
         }
 
@@ -425,20 +437,23 @@ namespace MongoDB.Driver.Linq
             var projection = VisitSequence(source);
             _map[predicate.Parameters[0]] = projection.Projector;
             var where = Visit(predicate.Body);
+            var alias = GetNextAlias();
             var fieldProjection = _projector.ProjectFields(projection.Projector);
             return new ProjectionExpression(
-                new FindExpression(resultType, fieldProjection.Fields, projection.Source, where),
+                new FindExpression(resultType, alias, fieldProjection.Fields, projection.Source, where),
                 fieldProjection.Projector);
         }
 
         private ProjectionExpression GetCollectionProjection(object value)
         {
+            var collectionAlias = GetNextAlias();
+            var findAlias = GetNextAlias();
             var collection = (IMongoQueryable)value;
             var bindings = new List<MemberBinding>();
             var fields = new List<FieldExpression>();
             var resultType = typeof(IEnumerable<>).MakeGenericType(collection.ElementType);
             return new ProjectionExpression(
-                new FindExpression(resultType, fields, new CollectionExpression(resultType, collection.Database, collection.CollectionName, collection.ElementType), null),
+                new FindExpression(resultType, findAlias, fields, new CollectionExpression(resultType, collectionAlias, collection.Database, collection.CollectionName, collection.ElementType), null),
                 Expression.Parameter(collection.ElementType, "document"));
         }
 
@@ -507,6 +522,11 @@ namespace MongoDB.Driver.Linq
             throw new NotSupportedException(string.Format("Aggregate of type '{0}' is not supported.", methodName));
         }
 
+        internal string GetNextAlias()
+        {
+            return "_$" + (_aliasCount++);
+        }
+
         private static bool HasPredicateArgument(AggregateType aggregateType)
         {
             return aggregateType == AggregateType.Count;
@@ -536,6 +556,17 @@ namespace MongoDB.Driver.Linq
             return e;
         }
 
+        private class GroupByInfo
+        {
+            public string Alias { get; private set; }
+            public Expression Element { get; private set; }
 
+            public GroupByInfo(string alias, Expression element)
+            {
+                Alias = alias;
+                Element = element;
+            }
+
+        }
     }
 }

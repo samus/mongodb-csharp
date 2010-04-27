@@ -132,6 +132,7 @@ namespace MongoDB.Driver.Linq
                 expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
                 expression = new FieldBinder().Bind(expression);
                 expression = new QueryBinder(this, expression).Bind(expression);
+                expression = new AggregateRewriter().Rewrite(expression);
                 expression = new FindMerger().Merge(expression);
                 projection = (ProjectionExpression)expression;
             }

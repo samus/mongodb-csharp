@@ -48,7 +48,7 @@ namespace MongoDB.Driver.Linq.Expressions
             Expression e = Visit(aggregate.AggregateAsSubquery);
             ScalarExpression subquery = (ScalarExpression)e;
             if (subquery != aggregate.AggregateAsSubquery)
-                return new AggregateSubqueryExpression(aggregate.AggregateInGroupSelect, subquery);
+                return new AggregateSubqueryExpression(aggregate.Alias, aggregate.AggregateInGroupSelect, subquery);
             return aggregate;
         }
 
@@ -75,7 +75,7 @@ namespace MongoDB.Driver.Linq.Expressions
             var skip = Visit(f.Skip);
             var limit = Visit(f.Limit);
             if (from != f.From || where != f.Where || orderBy != f.OrderBy || groupBy != f.GroupBy || skip != f.Skip || limit != f.Limit)
-                return new FindExpression(f.Type, f.Fields, from, where, orderBy, groupBy, f.Distinct, skip, limit);
+                return new FindExpression(f.Type, f.Alias, f.Fields, from, where, orderBy, groupBy, f.Distinct, skip, limit);
             return f;
         }
 

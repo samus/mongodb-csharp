@@ -9,6 +9,7 @@ namespace MongoDB.Driver.Linq.Expressions
 {
     internal class FindExpression : Expression
     {
+        private readonly string _alias;
         private readonly bool _distinct;
         private readonly ReadOnlyCollection<FieldExpression> _fields;
         private readonly Expression _from;
@@ -17,6 +18,11 @@ namespace MongoDB.Driver.Linq.Expressions
         private readonly ReadOnlyCollection<OrderExpression> _orderBy;
         private readonly Expression _skip;
         private readonly Expression _where;
+
+        public string Alias
+        {
+            get { return _alias; }
+        }
 
         public bool Distinct
         {
@@ -58,11 +64,11 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _where; }
         }
 
-        public FindExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where)
-            : this(type, fields, from, where, null, null, false, null, null)
+        public FindExpression(Type type, string alias, IEnumerable<FieldExpression> fields, Expression from, Expression where)
+            : this(type, alias, fields, from, where, null, null, false, null, null)
         { }
 
-        public FindExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, IEnumerable<Expression> groupBy, bool distinct, Expression skip, Expression limit)
+        public FindExpression(Type type, string alias, IEnumerable<FieldExpression> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, IEnumerable<Expression> groupBy, bool distinct, Expression skip, Expression limit)
             : base((ExpressionType)MongoExpressionType.Select, type)
         {
             _fields = fields as ReadOnlyCollection<FieldExpression>;
@@ -77,6 +83,7 @@ namespace MongoDB.Driver.Linq.Expressions
             if (_groupBy == null && groupBy != null)
                 _groupBy = new List<Expression>(groupBy).AsReadOnly();
 
+            _alias = alias;
             _distinct = distinct;
             _from = from;
             _limit = limit;

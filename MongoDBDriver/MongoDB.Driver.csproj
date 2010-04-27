@@ -120,6 +120,7 @@
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="IMongoFindExecutor.cs" />
+    <Compile Include="Linq\AggregateRewriter.cs" />
     <Compile Include="Linq\Expressions\AggregateExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateSubqueryExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateType.cs" />
