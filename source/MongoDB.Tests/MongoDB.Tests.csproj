@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>MongoDB.Driver.Tests</AssemblyName>
+    <AssemblyName>MongoDB.Tests</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -35,13 +35,13 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <RootNamespace>MongoDB.Driver</RootNamespace>
+    <RootNamespace>MongoDB</RootNamespace>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\scorder\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\StrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -73,6 +73,10 @@
     <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\redist\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
@@ -83,10 +87,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\redist\nunit.framework.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UnitTests\Bson\BsonTestBase.cs" />
@@ -134,12 +134,9 @@
     <Compile Include="IntegrationTests\TestMongo.cs" />
     <Compile Include="UnitTests\IO\TestMsgMessage.cs" />
     <Compile Include="IntegrationTests\TestB.cs" />
-    <None Include="..\StrongName.snk">
-      <Link>StrongName.snk</Link>
-    </None>
-    <None Include="test-data\tests.charreads.txt" />
-    <None Include="test-data\tests.reads.txt" />
-    <None Include="test-data\tests.smallreads.txt" />
+    <None Include="Test-Data\tests.charreads.txt" />
+    <None Include="Test-Data\tests.reads.txt" />
+    <None Include="Test-Data\tests.smallreads.txt" />
     <Compile Include="UnitTests\TestOid.cs" />
     <Compile Include="UnitTests\TestOidGenerator.cs" />
     <Compile Include="UnitTests\Bson\TestBsonWriter.cs" />
@@ -187,18 +184,21 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
+    <ProjectReference Include="..\MongoDB\MongoDB.csproj">
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
-      <Name>MongoDB.Driver</Name>
+      <Name>MongoDB</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <EmbeddedResource Include="test-data\tests.binary.txt">
+    <EmbeddedResource Include="Test-Data\tests.binary.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\StrongName.snk">
+      <Link>StrongName.snk</Link>
+    </None>
     <None Include="App.config">
       <DeployService-Deploy>true</DeployService-Deploy>
       <DeployService-RelativeDeployPath>MongoDB.Driver.Tests.dll.config</DeployService-RelativeDeployPath>

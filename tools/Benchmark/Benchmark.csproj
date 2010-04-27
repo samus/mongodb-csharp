@@ -5,13 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B42DBBF9-0A1F-4749-9787-013BF8D8F435}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AssemblyName>MongoDB.GridFS</AssemblyName>
+    <ProjectGuid>{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Benchmark</RootNamespace>
+    <AssemblyName>Benchmark</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <RootNamespace>MongoDB.GridFS</RootNamespace>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -41,46 +39,30 @@
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <DocumentationFile>bin\Debug\MongoDB.GridFS.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Release</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <DocumentationFile>bin\Release\MongoDB.GridFS.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <GenerateDocumentation>true</GenerateDocumentation>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AssemblyInfoGlobal.cs">
-      <Link>AssemblyInfoGlobal.cs</Link>
-    </Compile>
+    <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="GridFile.cs" />
-    <Compile Include="GridFileInfo.cs" />
-    <Compile Include="GridFileStream.cs" />
-    <Compile Include="GridException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
+    <ProjectReference Include="..\..\source\MongoDB\MongoDB.csproj">
       <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
-      <Name>MongoDB.Driver</Name>
+      <Name>MongoDB</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\StrongName.snk">
-      <Link>StrongName.snk</Link>
-    </None>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>

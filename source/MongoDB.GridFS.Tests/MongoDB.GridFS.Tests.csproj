@@ -11,7 +11,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <RootNamespace>MongoDB.GridFS.Tests</RootNamespace>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\StrongName.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\StrongName.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -54,40 +54,24 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+    <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\redist\nunit.framework.dll</HintPath>
+      <HintPath>..\..\redist\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="GridFileInfoTest.cs" />
     <Compile Include="GridFileStreamTest.cs" />
     <Compile Include="GridFileTest.cs" />
     <Compile Include="GridTestBase.cs" />
-    <None Include="..\MongoDB.Net-Tests\App.config">
-      <Link>App.config</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\StrongName.snk">
+    <None Include="..\..\StrongName.snk">
       <Link>StrongName.snk</Link>
     </None>
+    <None Include="..\MongoDB.Tests\App.config">
+      <Link>App.config</Link>
+    </None>
     <None Include="MongoDB.GridFS.Tests.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MongoDB.Net-Tests\MongoDB.Driver.Tests.csproj">
-      <Project>{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}</Project>
-      <Name>MongoDB.Driver.Tests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MongoDBDriver\MongoDB.Driver.csproj">
-      <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
-      <Name>MongoDB.Driver</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MongoDB.GridFS\MongoDB.GridFS.csproj">
-      <Project>{B42DBBF9-0A1F-4749-9787-013BF8D8F435}</Project>
-      <Name>MongoDB.GridFS</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -105,6 +89,20 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MongoDB.GridFS\MongoDB.GridFS.csproj">
+      <Project>{B42DBBF9-0A1F-4749-9787-013BF8D8F435}</Project>
+      <Name>MongoDB.GridFS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MongoDB.Tests\MongoDB.Tests.csproj">
+      <Project>{C8BC95AB-25C6-4133-BC9F-8B6BB782CA02}</Project>
+      <Name>MongoDB.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MongoDB\MongoDB.csproj">
+      <Project>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</Project>
+      <Name>MongoDB</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
