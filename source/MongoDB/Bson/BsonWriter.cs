@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MongoDB.Driver.Bson
+namespace MongoDB.Bson
 {
     /// <summary>
     /// Class that knows how to format a native object into bson bits.

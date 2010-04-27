@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using MongoDB.Driver.Configuration.Mapping.Model;
+using MongoDB.Configuration.Mapping.Model;
 
-namespace MongoDB.Driver.Serialization.Builders
+namespace MongoDB.Serialization.Builders
 {
     internal class PolymorphicClassMapBuilder : IObjectBuilder
     {

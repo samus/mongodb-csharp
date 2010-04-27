@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using MongoDB.Driver.Linq;
+using MongoDB.Linq;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IntegrationTests.Linq
+namespace MongoDB.IntegrationTests.Linq
 {
     [TestFixture]
     public class LinqExtensionsTests : MongoTestBase

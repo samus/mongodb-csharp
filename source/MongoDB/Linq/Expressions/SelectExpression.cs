@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Collections.ObjectModel;
 
-namespace MongoDB.Driver.Linq.Expressions
+namespace MongoDB.Linq.Expressions
 {
     internal class SelectExpression : Expression
     {

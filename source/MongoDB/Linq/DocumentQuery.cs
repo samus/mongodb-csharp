@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Linq {
+namespace MongoDB.Linq {
 
     /// <summary>
     /// This class is a construct for writing strongly typed query expressions for Document fields.

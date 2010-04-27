@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace MongoDB.Driver.Configuration.Mapping.Auto
+namespace MongoDB.Configuration.Mapping.Auto
 {
     /// <summary>
     /// 

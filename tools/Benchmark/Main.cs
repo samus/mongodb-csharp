@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Threading;
 
-using MongoDB.Driver;
-using MongoDB.Driver.Bson;
+using MongoDB;
+using MongoDB.Bson;
 
 namespace MongoDB.Driver.Benchmark
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace MongoDB.Driver.Connections
+namespace MongoDB.Connections
 {
     /// <summary>
     /// 

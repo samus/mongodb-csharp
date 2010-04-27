@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Collections;
 
-namespace MongoDB.Driver.Configuration.Mapping.Model
+namespace MongoDB.Configuration.Mapping.Model
 {
     /// <summary>
     /// 

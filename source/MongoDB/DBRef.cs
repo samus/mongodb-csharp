@@ -1,6 +1,6 @@
 using System;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     ///   Native type that maps to a database reference.  Use Database.FollowReference(DBRef) to retrieve the document
@@ -172,7 +172,7 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        /// Performs an explicit conversion from <see cref="MongoDB.Driver.DBRef"/> to <see cref="MongoDB.Driver.Document"/>.
+        /// Performs an explicit conversion from <see cref="MongoDB.DBRef"/> to <see cref="MongoDB.Document"/>.
         /// </summary>
         /// <param name="dbRef">The db ref.</param>
         /// <returns>The result of the conversion.</returns>

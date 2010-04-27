@@ -1,8 +1,8 @@
 ﻿using System;
 
-using MongoDB.Driver.Configuration.Mapping.Model;
+using MongoDB.Configuration.Mapping.Model;
 
-namespace MongoDB.Driver.Configuration.Mapping
+namespace MongoDB.Configuration.Mapping
 {
     /// <summary>
     /// 

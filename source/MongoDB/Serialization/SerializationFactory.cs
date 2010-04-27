@@ -1,8 +1,8 @@
 ﻿using System;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Bson;
+using MongoDB.Configuration.Mapping;
 
-namespace MongoDB.Driver.Serialization
+namespace MongoDB.Serialization
 {
     /// <summary>
     /// 

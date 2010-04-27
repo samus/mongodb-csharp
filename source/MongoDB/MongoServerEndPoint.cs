@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Net;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Represents a mongodb server with host and port.

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using MongoDB.Driver.Connections;
-using MongoDB.Driver.Serialization;
+using MongoDB.Connections;
+using MongoDB.Serialization;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// 

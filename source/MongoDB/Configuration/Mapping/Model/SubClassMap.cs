@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MongoDB.Driver.Configuration.Mapping.Model
+namespace MongoDB.Configuration.Mapping.Model
 {
     /// <summary>
     /// 

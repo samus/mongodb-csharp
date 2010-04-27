@@ -1,7 +1,7 @@
 ﻿using System;
-using MongoDB.Driver.Connections;
+using MongoDB.Connections;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// 

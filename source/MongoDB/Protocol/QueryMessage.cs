@@ -1,7 +1,7 @@
 using System;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Protocol
+namespace MongoDB.Protocol
 {
     /// <summary>
     /// The OP_QUERY message is used to query the database for documents in a collection.

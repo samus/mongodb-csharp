@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MongoDB.Driver.Util
+namespace MongoDB.Util
 {
     /// <summary>
     /// 

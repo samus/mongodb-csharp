@@ -6,10 +6,10 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using MongoDB.Driver.Linq.Expressions;
-using MongoDB.Driver.Util;
+using MongoDB.Linq.Expressions;
+using MongoDB.Util;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     internal class QueryFormatter : MongoExpressionVisitor
     {

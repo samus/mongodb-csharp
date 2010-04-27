@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace MongoDB.Driver.Util
+namespace MongoDB.Util
 {
     /// <summary>
     /// This was ripped out of SubSonic I believe.

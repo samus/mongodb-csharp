@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests
+namespace MongoDB.UnitTests
 {
     [TestFixture]
     public class TestDocument

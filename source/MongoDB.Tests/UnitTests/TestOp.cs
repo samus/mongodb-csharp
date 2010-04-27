@@ -1,7 +1,7 @@
-﻿using MongoDB.Driver.Bson;
+﻿using MongoDB.Bson;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests
+namespace MongoDB.UnitTests
 {
     [TestFixture]
     public class TestOp

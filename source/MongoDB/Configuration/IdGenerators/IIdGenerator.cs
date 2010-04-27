@@ -1,6 +1,6 @@
-﻿using MongoDB.Driver.Configuration.Mapping.Model;
+﻿using MongoDB.Configuration.Mapping.Model;
 
-namespace MongoDB.Driver.Configuration.IdGenerators
+namespace MongoDB.Configuration.IdGenerators
 {
     /// <summary>
     /// 

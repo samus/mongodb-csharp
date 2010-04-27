@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     ///   A fluent interface for executing a Map/Reduce call against a collection.

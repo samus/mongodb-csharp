@@ -1,6 +1,6 @@
-using MongoDB.Driver.Util;
+using MongoDB.Util;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// 

@@ -1,7 +1,7 @@
 ﻿using System;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Staticly typed way of using MongoDB query operators.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace MongoDB.Driver.Configuration.CollectionAdapters
+namespace MongoDB.Configuration.CollectionAdapters
 {
     /// <summary>
     /// 

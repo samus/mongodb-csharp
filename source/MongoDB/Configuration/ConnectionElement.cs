@@ -1,7 +1,7 @@
 using System;
 using System.Configuration;
 
-namespace MongoDB.Driver.Configuration
+namespace MongoDB.Configuration
 {
 
     /// <summary>

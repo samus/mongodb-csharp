@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IntegrationTests
+namespace MongoDB.IntegrationTests
 {
     
     [TestFixture()]

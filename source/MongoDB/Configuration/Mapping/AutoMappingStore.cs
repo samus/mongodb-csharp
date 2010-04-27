@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using MongoDB.Driver.Configuration.Mapping.Auto;
-using MongoDB.Driver.Configuration.Mapping.Model;
+using MongoDB.Configuration.Mapping.Auto;
+using MongoDB.Configuration.Mapping.Model;
 
-namespace MongoDB.Driver.Configuration.Mapping
+namespace MongoDB.Configuration.Mapping
 {
     /// <summary>
     /// 

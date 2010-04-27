@@ -1,4 +1,4 @@
-namespace MongoDB.Driver 
+namespace MongoDB 
 {
     /// <summary>
     /// Raised when a map reduce call fails. 

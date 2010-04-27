@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     ///   Encapsulates and provides access to the serverside javascript stored in db.system.js.
@@ -23,7 +23,7 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        ///   Gets or sets the <see cref = "MongoDB.Driver.Document" /> with the specified name.
+        ///   Gets or sets the <see cref = "MongoDB.Document" /> with the specified name.
         /// </summary>
         /// <value></value>
         public Document this[String name]

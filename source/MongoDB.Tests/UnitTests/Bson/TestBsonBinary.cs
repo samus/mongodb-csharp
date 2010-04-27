@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests.Bson
+namespace MongoDB.UnitTests.Bson
 {
     [TestFixture]
     public class TestBsonBinary

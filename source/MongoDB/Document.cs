@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using MongoDB.Driver.Util;
+using MongoDB.Util;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Description of Document.

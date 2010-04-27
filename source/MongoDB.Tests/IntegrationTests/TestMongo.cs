@@ -1,7 +1,7 @@
 using System.Configuration;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IntegrationTests
+namespace MongoDB.IntegrationTests
 {
     [TestFixture]
     public class TestMongo

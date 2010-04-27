@@ -1,6 +1,6 @@
 using System;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     ///   Type to hold an interned string that maps to the bson symbol type.
@@ -182,7 +182,7 @@ namespace MongoDB.Driver
         }*/
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="MongoDB.Driver.MongoSymbol"/> to <see cref="System.String"/>.
+        /// Performs an implicit conversion from <see cref="MongoDB.MongoSymbol"/> to <see cref="System.String"/>.
         /// </summary>
         /// <param name="s">The s.</param>
         /// <returns>The result of the conversion.</returns>
@@ -191,7 +191,7 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="MongoDB.Driver.MongoSymbol"/>.
+        /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="MongoDB.MongoSymbol"/>.
         /// </summary>
         /// <param name="s">The s.</param>
         /// <returns>The result of the conversion.</returns>

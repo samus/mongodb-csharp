@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MongoDB.Driver.Serialization
+namespace MongoDB.Serialization
 {
     /// <summary>
     /// 

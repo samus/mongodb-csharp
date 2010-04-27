@@ -4,7 +4,7 @@ using System.IO;
 
 using NUnit.Framework;
 
-using MongoDB.Driver;
+using MongoDB;
 
 namespace MongoDB.GridFS
 {

@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.UnitTests.Bson
+namespace MongoDB.UnitTests.Bson
 {
     public abstract class BsonTestBase
     {

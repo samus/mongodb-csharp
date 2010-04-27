@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.Serialization;
+using MongoDB.Bson;
+using MongoDB.Serialization;
 
-namespace MongoDB.Driver.Protocol
+namespace MongoDB.Protocol
 {
     /// <summary>
     /// The OP_REPLY message is sent by the database in response to an CONTRIB:OP_QUERY  or CONTRIB:OP_GET_MORE  message.

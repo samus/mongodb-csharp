@@ -1,6 +1,6 @@
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Protocol
+namespace MongoDB.Protocol
 {
     /// <summary>
     /// The OP_UPDATE message is used to update a document in a collection.

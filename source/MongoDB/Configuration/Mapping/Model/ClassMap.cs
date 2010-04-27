@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Configuration.Mapping.Model
+namespace MongoDB.Configuration.Mapping.Model
 {
     /// <summary>
     /// </summary>

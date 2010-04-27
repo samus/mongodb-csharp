@@ -1,7 +1,7 @@
 using System;
 using System.Configuration;
 
-namespace MongoDB.Driver.Configuration
+namespace MongoDB.Configuration
 {
     /// <summary>
     /// 
@@ -43,7 +43,7 @@ namespace MongoDB.Driver.Configuration
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MongoDB.Driver.Configuration.ConnectionElement"/> at the specified index.
+        /// Gets or sets the <see cref="MongoDB.Configuration.ConnectionElement"/> at the specified index.
         /// </summary>
         /// <value></value>
         public ConnectionElement this[int index] {
@@ -57,7 +57,7 @@ namespace MongoDB.Driver.Configuration
         }
 
         /// <summary>
-        /// Gets the <see cref="MongoDB.Driver.Configuration.ConnectionElement"/> with the specified name.
+        /// Gets the <see cref="MongoDB.Configuration.ConnectionElement"/> with the specified name.
         /// </summary>
         /// <value></value>
         public new ConnectionElement this[string Name] {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using MongoDB.Driver.Configuration.Mapping.Model;
-using MongoDB.Driver.Configuration.Mapping;
+using MongoDB.Configuration.Mapping.Model;
+using MongoDB.Configuration.Mapping;
 using System.Text;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Serialization.Descriptors
+namespace MongoDB.Serialization.Descriptors
 {
     /// <summary>
     /// 

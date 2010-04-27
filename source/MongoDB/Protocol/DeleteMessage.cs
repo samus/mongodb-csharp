@@ -1,6 +1,6 @@
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Protocol
+namespace MongoDB.Protocol
 {
     /// <summary>
     /// The OP_DELETE message is used to remove one or more messages from a collection.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace MongoDB.Driver.Linq.Expressions
+namespace MongoDB.Linq.Expressions
 {
     internal class CollectionExpression : Expression
     {

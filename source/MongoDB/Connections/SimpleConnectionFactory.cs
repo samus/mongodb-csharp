@@ -1,6 +1,6 @@
 using System;
 
-namespace MongoDB.Driver.Connections
+namespace MongoDB.Connections
 {
     /// <summary>
     /// Simple connection factory which only creates and closes connections.

@@ -1,6 +1,6 @@
 using System;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     ///   Provides a Fluent interface to build and execute Map/Reduce calls.

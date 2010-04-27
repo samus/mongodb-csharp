@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Serialization.Descriptors
+namespace MongoDB.Serialization.Descriptors
 {
     internal interface IPropertyDescriptor
     {

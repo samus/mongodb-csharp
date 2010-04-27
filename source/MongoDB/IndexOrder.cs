@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Driver
+﻿namespace MongoDB
 {
     /// <summary>
     /// 

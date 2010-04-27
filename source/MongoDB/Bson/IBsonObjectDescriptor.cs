@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MongoDB.Driver.Bson
+namespace MongoDB.Bson
 {
     /// <summary>
     /// 

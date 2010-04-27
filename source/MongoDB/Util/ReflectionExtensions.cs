@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace MongoDB.Driver.Util
+namespace MongoDB.Util
 {
     /// <summary>
     /// 

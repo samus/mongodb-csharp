@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.Protocol;
+using MongoDB.Bson;
+using MongoDB.Protocol;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests.IO
+namespace MongoDB.UnitTests.IO
 {
     [TestFixture]
     public class TestQueryMessage

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using MongoDB.Driver.Configuration.Mapping.Model;
-using MongoDB.Driver.Util;
+using MongoDB.Configuration.Mapping.Model;
+using MongoDB.Util;
 
-namespace MongoDB.Driver.Configuration.Mapping.Auto
+namespace MongoDB.Configuration.Mapping.Auto
 {
     /// <summary>
     /// </summary>

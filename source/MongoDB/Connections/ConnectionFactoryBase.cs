@@ -1,7 +1,7 @@
 using System;
 using System.Net.Sockets;
 
-namespace MongoDB.Driver.Connections
+namespace MongoDB.Connections
 {
     /// <summary>
     /// 

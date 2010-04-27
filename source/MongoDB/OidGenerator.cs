@@ -3,9 +3,9 @@ using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// 

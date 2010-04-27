@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Raised when an update action causes a unique constraint violation in an index.

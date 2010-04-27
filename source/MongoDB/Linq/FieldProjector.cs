@@ -6,9 +6,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-using MongoDB.Driver.Linq.Expressions;
+using MongoDB.Linq.Expressions;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     internal class FieldProjector : MongoExpressionVisitor
     {

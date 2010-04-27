@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using MongoDB.Driver.Linq.Expressions;
+using MongoDB.Linq.Expressions;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     internal static class PartialEvaluator
     {

@@ -1,4 +1,4 @@
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Class representing the MinKey Bson type.  It will always compare lower than any other type.

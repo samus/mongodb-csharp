@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace MongoDB.Driver.Linq.Expressions
+namespace MongoDB.Linq.Expressions
 {
     internal class AggregateExpression : Expression
     {

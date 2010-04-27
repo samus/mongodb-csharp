@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     internal class ProjectionReader<T, TResult> : IEnumerable<TResult>
     {

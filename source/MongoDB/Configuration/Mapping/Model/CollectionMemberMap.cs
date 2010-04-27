@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 
-using MongoDB.Driver.Configuration.CollectionAdapters;
+using MongoDB.Configuration.CollectionAdapters;
 
-namespace MongoDB.Driver.Configuration.Mapping.Model
+namespace MongoDB.Configuration.Mapping.Model
 {
     /// <summary>
     /// 

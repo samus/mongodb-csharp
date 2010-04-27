@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Raised when a command returns a failure message. 

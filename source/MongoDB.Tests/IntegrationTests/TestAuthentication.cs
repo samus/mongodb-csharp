@@ -2,10 +2,10 @@
  *  User: Sedward
  */
 using System;
-using MongoDB.Driver.Connections;
+using MongoDB.Connections;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IntegrationTests
+namespace MongoDB.IntegrationTests
 {
     [TestFixture(Description = "Requires start server with --auth")]
 	public class TestAuthentication

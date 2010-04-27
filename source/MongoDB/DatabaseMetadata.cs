@@ -1,8 +1,8 @@
-using MongoDB.Driver.Connections;
-using MongoDB.Driver.Serialization;
-using MongoDB.Driver.Util;
+using MongoDB.Connections;
+using MongoDB.Serialization;
+using MongoDB.Util;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     ///   Administration of metadata for a database.

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Configuration;
 
-using MongoDB.Driver.Configuration.Builders;
-using MongoDB.Driver.Configuration.Mapping;
-using MongoDB.Driver.Serialization;
+using MongoDB.Configuration.Builders;
+using MongoDB.Configuration.Mapping;
+using MongoDB.Serialization;
 
-namespace MongoDB.Driver.Configuration
+namespace MongoDB.Configuration
 {
     /// <summary>
     /// 

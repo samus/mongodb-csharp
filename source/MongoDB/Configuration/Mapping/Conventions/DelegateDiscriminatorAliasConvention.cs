@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Configuration.Mapping.Conventions
+namespace MongoDB.Configuration.Mapping.Conventions
 {
     /// <summary>
     /// 

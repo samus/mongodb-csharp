@@ -15,7 +15,7 @@
             random io.  Writing to the stream sequentially works fine and will produce a consistent md5.
             </remarks>
         </member>
-        <member name="M:MongoDB.GridFS.GridFileStream.#ctor(MongoDB.GridFS.GridFileInfo,MongoDB.Driver.IMongoCollection,MongoDB.Driver.IMongoCollection,System.IO.FileAccess)">
+        <member name="M:MongoDB.GridFS.GridFileStream.#ctor(MongoDB.GridFS.GridFileInfo,MongoDB.IMongoCollection,MongoDB.IMongoCollection,System.IO.FileAccess)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFileStream"/> class.
             </summary>
@@ -171,7 +171,7 @@
             
             </summary>
         </member>
-        <member name="M:MongoDB.GridFS.GridFileInfo.#ctor(MongoDB.Driver.IMongoDatabase,System.String,System.String)">
+        <member name="M:MongoDB.GridFS.GridFileInfo.#ctor(MongoDB.IMongoDatabase,System.String,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFileInfo"/> class.
             </summary>
@@ -179,7 +179,7 @@
             <param name="bucket">The bucket.</param>
             <param name="filename">The filename.</param>
         </member>
-        <member name="M:MongoDB.GridFS.GridFileInfo.#ctor(MongoDB.Driver.MongoDatabase,System.String)">
+        <member name="M:MongoDB.GridFS.GridFileInfo.#ctor(MongoDB.MongoDatabase,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFileInfo"/> class.
             </summary>
@@ -360,13 +360,13 @@
             
             </summary>
         </member>
-        <member name="M:MongoDB.GridFS.GridFile.#ctor(MongoDB.Driver.IMongoDatabase)">
+        <member name="M:MongoDB.GridFS.GridFile.#ctor(MongoDB.IMongoDatabase)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFile"/> class.
             </summary>
             <param name="db">The db.</param>
         </member>
-        <member name="M:MongoDB.GridFS.GridFile.#ctor(MongoDB.Driver.IMongoDatabase,System.String)">
+        <member name="M:MongoDB.GridFS.GridFile.#ctor(MongoDB.IMongoDatabase,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFile"/> class.
             </summary>
@@ -379,7 +379,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MongoDB.GridFS.GridFile.ListFiles(MongoDB.Driver.Document)">
+        <member name="M:MongoDB.GridFS.GridFile.ListFiles(MongoDB.Document)">
             <summary>
             Lists the files.
             </summary>
@@ -392,7 +392,7 @@
             </summary>
             <exception cref="T:System.IO.FileNotFoundException">Source file not found.</exception>
             <exception cref="T:System.IO.IOException">Destination file already exists.</exception>
-            <exception cref="T:MongoDB.Driver.MongoCommandException">A database error occurred executing the copy function.</exception>
+            <exception cref="T:MongoDB.MongoCommandException">A database error occurred executing the copy function.</exception>
         </member>
         <member name="M:MongoDB.GridFS.GridFile.Create(System.String)">
             <summary>
@@ -451,7 +451,7 @@
             Permanently removes a file from the database. 
             </summary>        
         </member>
-        <member name="M:MongoDB.GridFS.GridFile.Delete(MongoDB.Driver.Document)">
+        <member name="M:MongoDB.GridFS.GridFile.Delete(MongoDB.Document)">
             <summary>
             Permanently removes all files from the database that match the query. 
             </summary>

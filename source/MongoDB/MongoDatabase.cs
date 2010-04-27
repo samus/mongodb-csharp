@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using MongoDB.Driver.Connections;
-using MongoDB.Driver.Results;
-using MongoDB.Driver.Serialization;
+using MongoDB.Connections;
+using MongoDB.Results;
+using MongoDB.Serialization;
 
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// 
@@ -81,7 +81,7 @@ namespace MongoDB.Driver
         }
 
         /// <summary>
-        /// Gets the <see cref="MongoDB.Driver.IMongoCollection"/> with the specified name.
+        /// Gets the <see cref="MongoDB.IMongoCollection"/> with the specified name.
         /// </summary>
         /// <value></value>
         public IMongoCollection this[String name]{

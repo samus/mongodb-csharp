@@ -1,7 +1,7 @@
 ﻿using System;
-using MongoDB.Driver.Configuration.Mapping.Auto;
+using MongoDB.Configuration.Mapping.Auto;
 
-namespace MongoDB.Driver.Configuration.Builders
+namespace MongoDB.Configuration.Builders
 {
     /// <summary>
     /// 

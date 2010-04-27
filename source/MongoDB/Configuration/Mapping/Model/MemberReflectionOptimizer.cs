@@ -4,9 +4,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-using MongoDB.Driver.Util;
+using MongoDB.Util;
 
-namespace MongoDB.Driver.Configuration.Mapping.Model
+namespace MongoDB.Configuration.Mapping.Model
 {
     /// <summary>
     /// 

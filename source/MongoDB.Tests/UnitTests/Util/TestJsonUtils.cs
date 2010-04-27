@@ -1,10 +1,10 @@
 using System;
 using System.Globalization;
 using System.Threading;
-using MongoDB.Driver.Util;
+using MongoDB.Util;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests.Util
+namespace MongoDB.UnitTests.Util
 {
     [TestFixture]
     public class TestJsonUtils

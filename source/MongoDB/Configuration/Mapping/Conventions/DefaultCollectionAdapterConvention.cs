@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using MongoDB.Driver.Configuration.CollectionAdapters;
+using MongoDB.Configuration.CollectionAdapters;
 
-namespace MongoDB.Driver.Configuration.Mapping.Conventions
+namespace MongoDB.Configuration.Mapping.Conventions
 {
     /// <summary>
     /// 

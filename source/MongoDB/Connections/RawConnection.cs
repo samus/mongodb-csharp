@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 
-namespace MongoDB.Driver.Connections
+namespace MongoDB.Connections
 {
     /// <summary>
     /// Represents a raw connection on the wire which is managed by the 

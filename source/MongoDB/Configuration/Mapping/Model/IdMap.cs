@@ -1,8 +1,8 @@
 ﻿using System;
 
-using MongoDB.Driver.Configuration.IdGenerators;
+using MongoDB.Configuration.IdGenerators;
 
-namespace MongoDB.Driver.Configuration.Mapping.Model
+namespace MongoDB.Configuration.Mapping.Model
 {
     /// <summary>
     /// 

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MongoDB.Driver.Attributes;
+using MongoDB.Attributes;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IntegrationTests
+namespace MongoDB.IntegrationTests
 {
     [TestFixture]
     public class TestCollection_1 : MongoTestBase

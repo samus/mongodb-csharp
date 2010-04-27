@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace MongoDB.Driver.Configuration.Mapping.Conventions
+namespace MongoDB.Configuration.Mapping.Conventions
 {
     /// <summary>
     /// 

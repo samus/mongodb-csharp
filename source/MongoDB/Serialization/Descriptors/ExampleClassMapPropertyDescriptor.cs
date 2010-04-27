@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using MongoDB.Driver.Configuration.Mapping.Model;
-using MongoDB.Driver.Configuration.Mapping;
-using MongoDB.Driver.Bson;
+using MongoDB.Configuration.Mapping.Model;
+using MongoDB.Configuration.Mapping;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Serialization.Descriptors
+namespace MongoDB.Serialization.Descriptors
 {
     internal class ExampleClassMapPropertyDescriptor : ClassMapPropertyDescriptorBase
     {

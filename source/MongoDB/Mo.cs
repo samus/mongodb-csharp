@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Staticly typed way of using MongoDB update modifiers.

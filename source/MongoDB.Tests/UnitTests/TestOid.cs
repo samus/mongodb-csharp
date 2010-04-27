@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests
+namespace MongoDB.UnitTests
 {
     [TestFixture]
     public class TestOid

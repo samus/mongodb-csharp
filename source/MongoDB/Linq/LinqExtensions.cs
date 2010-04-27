@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     /// <summary>
     /// 

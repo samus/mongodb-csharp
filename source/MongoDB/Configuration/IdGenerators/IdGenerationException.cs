@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Configuration.IdGenerators
+namespace MongoDB.Configuration.IdGenerators
 {
     /// <summary>
     /// 

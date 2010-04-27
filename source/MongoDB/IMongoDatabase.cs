@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// 
@@ -27,7 +27,7 @@ namespace MongoDB.Driver
         DatabaseJavascript Javascript { get; }
 
         /// <summary>
-        /// Gets the <see cref="MongoDB.Driver.IMongoCollection"/> with the specified name.
+        /// Gets the <see cref="MongoDB.IMongoCollection"/> with the specified name.
         /// </summary>
         /// <value></value>
         IMongoCollection this[String name] { get; }

@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MongoDB.Driver.Connections;
-using MongoDB.Driver.Protocol;
-using MongoDB.Driver.Results;
-using MongoDB.Driver.Serialization;
-using MongoDB.Driver.Util;
+using MongoDB.Connections;
+using MongoDB.Protocol;
+using MongoDB.Results;
+using MongoDB.Serialization;
+using MongoDB.Util;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// 

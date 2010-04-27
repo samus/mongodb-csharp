@@ -1,6 +1,6 @@
-using MongoDB.Driver.Attributes;
+using MongoDB.Attributes;
 
-namespace MongoDB.Driver.Results
+namespace MongoDB.Results
 {
     internal class FindAndModifyResult<T> : CommandResultBase
     {

@@ -1,9 +1,9 @@
 using System;
-using MongoDB.Driver.Configuration;
-using MongoDB.Driver.Connections;
-using MongoDB.Driver.Serialization;
+using MongoDB.Configuration;
+using MongoDB.Connections;
+using MongoDB.Serialization;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Description of Mongo.
@@ -89,7 +89,7 @@ namespace MongoDB.Driver
         /// Connects to server.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="MongoDB.Driver.MongoConnectionException">Thrown when connection fails.</exception>
+        /// <exception cref="MongoDB.MongoConnectionException">Thrown when connection fails.</exception>
         public void Connect()
         {
             _connection.Open();

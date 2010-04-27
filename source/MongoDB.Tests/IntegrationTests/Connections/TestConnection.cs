@@ -1,11 +1,11 @@
 using System;
 using System.IO;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.Connections;
-using MongoDB.Driver.Protocol;
+using MongoDB.Bson;
+using MongoDB.Connections;
+using MongoDB.Protocol;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IntegrationTests.Connections
+namespace MongoDB.IntegrationTests.Connections
 {
     [TestFixture()]
     public class TestConnection

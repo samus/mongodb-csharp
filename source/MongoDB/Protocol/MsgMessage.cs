@@ -1,6 +1,6 @@
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Protocol
+namespace MongoDB.Protocol
 {
     /// <summary>
     /// Deprecated. OP_MSG sends a diagnostic message to the database.  

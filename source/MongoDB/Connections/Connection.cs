@@ -1,12 +1,12 @@
 using System;
 using System.IO;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.Protocol;
-using MongoDB.Driver.Results;
-using MongoDB.Driver.Serialization;
-using MongoDB.Driver.Util;
+using MongoDB.Bson;
+using MongoDB.Protocol;
+using MongoDB.Results;
+using MongoDB.Serialization;
+using MongoDB.Util;
 
-namespace MongoDB.Driver.Connections
+namespace MongoDB.Connections
 {
     /// <summary>
     /// Connection is a managment unit which uses a RawConnection from connection pool

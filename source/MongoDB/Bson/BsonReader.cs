@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace MongoDB.Driver.Bson
+namespace MongoDB.Bson
 {
     /// <summary>
     ///   Reads binary streams containing BSON data and converts them to native types.

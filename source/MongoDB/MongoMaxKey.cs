@@ -1,4 +1,4 @@
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// Class representing the MaxKey Bson type.  It will always compare higher than any other type.

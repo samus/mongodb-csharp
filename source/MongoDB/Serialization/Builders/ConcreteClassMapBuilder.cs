@@ -1,9 +1,9 @@
 ﻿using System;
 
-using MongoDB.Driver.Configuration.Mapping.Model;
+using MongoDB.Configuration.Mapping.Model;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver.Serialization.Builders
+namespace MongoDB.Serialization.Builders
 {
     internal class ConcreteClassMapBuilder : IObjectBuilder
     {

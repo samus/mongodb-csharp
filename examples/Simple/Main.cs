@@ -1,7 +1,7 @@
 using System;
 using System.Configuration;
 
-using MongoDB.Driver;
+using MongoDB;
 
 namespace Simple
 {

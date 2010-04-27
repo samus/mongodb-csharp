@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Protocol
+namespace MongoDB.Protocol
 {
     /// <summary>
     ///   Description of Message.

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MongoDB.Driver.Serialization.Builders
+namespace MongoDB.Serialization.Builders
 {
     internal class ArrayBuilder : IObjectBuilder
     {

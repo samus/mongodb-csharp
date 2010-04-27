@@ -1,8 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     ///   Oid is an immutable object that represents a Mongo ObjectId.

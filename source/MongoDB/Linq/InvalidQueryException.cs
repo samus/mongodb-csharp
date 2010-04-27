@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     /// <summary>
     /// 

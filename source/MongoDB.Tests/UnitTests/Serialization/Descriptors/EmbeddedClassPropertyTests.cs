@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using MongoDB.Driver.Attributes;
+﻿using MongoDB.Attributes;
+using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests.Serialization.Descriptors
+namespace MongoDB.UnitTests.Serialization.Descriptors
 {
     [TestFixture]
     public class EmbeddedClassPropertyTests : SerializationTestBase

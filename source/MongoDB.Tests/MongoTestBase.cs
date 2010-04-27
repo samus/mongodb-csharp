@@ -2,7 +2,7 @@ using System;
 using System.Configuration;
 using NUnit.Framework;
 
-namespace MongoDB.Driver
+namespace MongoDB
 {
     public abstract class MongoTestBase
     {

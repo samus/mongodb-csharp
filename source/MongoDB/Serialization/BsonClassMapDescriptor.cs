@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using MongoDB.Driver.Bson;
-using MongoDB.Driver.Configuration.Mapping;
-using MongoDB.Driver.Serialization.Descriptors;
+using MongoDB.Bson;
+using MongoDB.Configuration.Mapping;
+using MongoDB.Serialization.Descriptors;
 
-namespace MongoDB.Driver.Serialization
+namespace MongoDB.Serialization
 {
     internal class BsonClassMapDescriptor : IBsonObjectDescriptor
     {

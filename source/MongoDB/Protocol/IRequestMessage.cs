@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MongoDB.Driver.Protocol
+namespace MongoDB.Protocol
 {
     /// <summary>
     /// A Message that is to be written to the database.

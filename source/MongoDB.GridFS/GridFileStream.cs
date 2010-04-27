@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-using MongoDB.Driver;
+using MongoDB;
 
 namespace MongoDB.GridFS
 {

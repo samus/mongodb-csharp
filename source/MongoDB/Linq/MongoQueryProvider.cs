@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-using MongoDB.Driver.Connections;
-using MongoDB.Driver.Linq.Expressions;
-using MongoDB.Driver.Serialization;
+using MongoDB.Connections;
+using MongoDB.Linq.Expressions;
+using MongoDB.Serialization;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     /// <summary>
     /// 

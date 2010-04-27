@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MongoDB.Driver.Serialization.Builders
+namespace MongoDB.Serialization.Builders
 {
     internal class DocumentBuilder : IObjectBuilder
     {

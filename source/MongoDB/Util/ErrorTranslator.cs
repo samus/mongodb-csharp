@@ -1,6 +1,6 @@
 using System;
 
-namespace MongoDB.Driver.Util
+namespace MongoDB.Util
 {
     /// <summary>
     ///   Translates an error returned from Mongo into the proper exception.

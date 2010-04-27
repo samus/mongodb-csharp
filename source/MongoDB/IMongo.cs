@@ -1,4 +1,4 @@
-namespace MongoDB.Driver
+namespace MongoDB
 {
     /// <summary>
     /// 
@@ -19,7 +19,7 @@ namespace MongoDB.Driver
         IMongoDatabase GetDatabase(string name);
 
         /// <summary>
-        /// Gets the <see cref="MongoDB.Driver.IMongoDatabase"></see> with the specified name.
+        /// Gets the <see cref="MongoDB.IMongoDatabase"></see> with the specified name.
         /// </summary>
         /// <value></value>
         IMongoDatabase this[string name] {

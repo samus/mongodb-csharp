@@ -1,4 +1,4 @@
-﻿namespace MongoDB.Driver.Protocol
+﻿namespace MongoDB.Protocol
 {
     /// <summary>
     /// 

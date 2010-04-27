@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 
-namespace MongoDB.Driver.Serialization.Descriptors
+namespace MongoDB.Serialization.Descriptors
 {
     internal class ArrayDescriptor : IPropertyDescriptor
     {

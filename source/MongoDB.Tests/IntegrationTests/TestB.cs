@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IntegrationTests
+namespace MongoDB.IntegrationTests
 {
     [TestFixture]
     public class TestB

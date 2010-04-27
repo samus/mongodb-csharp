@@ -1,7 +1,7 @@
-using MongoDB.Driver.Connections;
+using MongoDB.Connections;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.IntegrationTests.Connections
+namespace MongoDB.IntegrationTests.Connections
 {
     [TestFixture]
     public class TestSimpleConnectionFactory

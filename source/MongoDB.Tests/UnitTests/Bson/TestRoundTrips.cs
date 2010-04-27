@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using MongoDB.Driver.Bson;
+using MongoDB.Bson;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests.Bson
+namespace MongoDB.UnitTests.Bson
 {
     [TestFixture]
     public class TestRoundTrips

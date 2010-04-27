@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using MongoDB.Driver.Linq.Expressions;
-using MongoDB.Driver.Util;
+using MongoDB.Linq.Expressions;
+using MongoDB.Util;
 
-namespace MongoDB.Driver.Linq
+namespace MongoDB.Linq
 {
     internal class FieldBinder : ExpressionVisitor
     {

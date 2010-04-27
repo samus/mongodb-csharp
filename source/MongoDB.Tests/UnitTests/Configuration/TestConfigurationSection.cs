@@ -1,8 +1,8 @@
 using System.Configuration;
-using MongoDB.Driver.Configuration;
+using MongoDB.Configuration;
 using NUnit.Framework;
 
-namespace MongoDB.Driver.UnitTests.Configuration
+namespace MongoDB.UnitTests.Configuration
 {
     [TestFixture]
     public class TestConfigurationSection

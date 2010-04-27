@@ -1,7 +1,7 @@
 ﻿using System;
-using MongoDB.Driver.Configuration.IdGenerators;
+using MongoDB.Configuration.IdGenerators;
 
-namespace MongoDB.Driver.Configuration.Mapping.Conventions
+namespace MongoDB.Configuration.Mapping.Conventions
 {
     /// <summary>
     /// 
