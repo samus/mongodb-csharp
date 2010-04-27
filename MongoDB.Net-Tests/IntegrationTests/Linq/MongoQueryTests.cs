@@ -96,8 +96,8 @@ namespace MongoDB.Driver.IntegrationTests.Linq
         [Test]
         public void Projection()
         {
-            var people = Enumerable.ToList((from p in collection.Linq()
-                                                                                  select new { Name = p.FirstName + p.LastName }));
+            var people = Enumerable.ToList(from p in collection.Linq()
+                                           select new { Name = p.FirstName + p.LastName });
 
             Assert.AreEqual(3, people.Count);
         }
@@ -105,9 +105,9 @@ namespace MongoDB.Driver.IntegrationTests.Linq
         [Test]
         public void ProjectionWithConstraints()
         {
-            var people = Enumerable.ToList((from p in collection.Linq()
-                                                                                  where p.Age > 21 && p.Age < 42
-                                                                                  select new { Name = p.FirstName + p.LastName }));
+            var people = Enumerable.ToList(from p in collection.Linq()
+                                            where p.Age > 21 && p.Age < 42
+                                            select new { Name = p.FirstName + p.LastName });
 
             Assert.AreEqual(1, people.Count);
         }

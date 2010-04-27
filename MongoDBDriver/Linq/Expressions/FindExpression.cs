@@ -11,7 +11,7 @@ namespace MongoDB.Driver.Linq.Expressions
     {
         private readonly string _alias;
         private readonly bool _distinct;
-        private readonly ReadOnlyCollection<FieldExpression> _fields;
+        private readonly ReadOnlyCollection<FieldDeclaration> _fields;
         private readonly Expression _from;
         private readonly ReadOnlyCollection<Expression> _groupBy;
         private readonly Expression _limit;
@@ -29,7 +29,7 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _distinct; }
         }
 
-        public ReadOnlyCollection<FieldExpression> Fields
+        public ReadOnlyCollection<FieldDeclaration> Fields
         {
             get { return _fields; }
         }
@@ -64,16 +64,16 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _where; }
         }
 
-        public FindExpression(Type type, string alias, IEnumerable<FieldExpression> fields, Expression from, Expression where)
+        public FindExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where)
             : this(type, alias, fields, from, where, null, null, false, null, null)
         { }
 
-        public FindExpression(Type type, string alias, IEnumerable<FieldExpression> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, IEnumerable<Expression> groupBy, bool distinct, Expression skip, Expression limit)
+        public FindExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, IEnumerable<Expression> groupBy, bool distinct, Expression skip, Expression limit)
             : base((ExpressionType)MongoExpressionType.Select, type)
         {
-            _fields = fields as ReadOnlyCollection<FieldExpression>;
+            _fields = fields as ReadOnlyCollection<FieldDeclaration>;
             if (_fields == null)
-                _fields = new List<FieldExpression>(fields).AsReadOnly();
+                _fields = new List<FieldDeclaration>(fields).AsReadOnly();
 
             _orderBy = orderBy as ReadOnlyCollection<OrderExpression>;
             if (_orderBy == null && orderBy != null)

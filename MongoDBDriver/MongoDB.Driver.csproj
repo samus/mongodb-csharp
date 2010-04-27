@@ -125,6 +125,7 @@
     <Compile Include="Linq\Expressions\AggregateSubqueryExpression.cs" />
     <Compile Include="Linq\Expressions\AggregateType.cs" />
     <Compile Include="Linq\Expressions\CollectionExpression.cs" />
+    <Compile Include="Linq\Expressions\FieldDeclaration.cs" />
     <Compile Include="Linq\Expressions\FieldExpression.cs" />
     <Compile Include="Linq\Expressions\MongoExpressionType.cs" />
     <Compile Include="Linq\Expressions\Nominator.cs" />

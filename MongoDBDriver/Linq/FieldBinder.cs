@@ -30,7 +30,7 @@ namespace MongoDB.Driver.Linq
 
             var fieldName = _finder.Find(exp);
             if (fieldName != null)
-                return new FieldExpression(fieldName, exp);
+                return new FieldExpression(exp, string.Empty, fieldName);
 
             return base.Visit(exp);
         }

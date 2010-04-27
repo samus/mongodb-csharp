@@ -28,53 +28,142 @@ namespace MongoDB.Driver.Linq
 
             while (CanMergeWithFrom(f, wasTopLevel))
             {
-                var fromSelect = (FindExpression)f.From;
+                var fromFind = (FindExpression)f.From;
 
-                f = (FindExpression)new FindRemover().Remove(f, new[] { fromSelect });
-
-                var oldFields = f.Fields.Count > 0 ? f.Fields : fromSelect.Fields;
-
-                var fields = new List<FieldExpression>();
-                foreach(var field in oldFields)
-                    fields.AddRange(new FieldExpander().Expand(field));
-                    
+                f = (FindExpression)new FindRemover().Remove(f, new[] { fromFind });
+                   
                 var where = f.Where;
-                if(fromSelect.Where != null)
+                if(fromFind.Where != null)
                 {
                     if (where != null)
-                        where = Expression.And(fromSelect.Where, where);
+                        where = Expression.And(fromFind.Where, where);
                     else
-                        where = fromSelect.Where;
+                        where = fromFind.Where;
                 }
 
-                var groupBy = f.GroupBy != null && f.GroupBy.Count > 0 ? f.GroupBy : fromSelect.GroupBy;
-                var orderBy = f.OrderBy != null && f.OrderBy.Count > 0 ? f.OrderBy : fromSelect.OrderBy;
-                var skip = f.Skip != null ? f.Skip : fromSelect.Skip;
-                var limit = f.Limit != null ? f.Limit : fromSelect.Limit;
-                bool distinct = f.Distinct | fromSelect.Distinct;
+                var groupBy = f.GroupBy != null && f.GroupBy.Count > 0 ? f.GroupBy : fromFind.GroupBy;
+                var orderBy = f.OrderBy != null && f.OrderBy.Count > 0 ? f.OrderBy : fromFind.OrderBy;
+                var skip = f.Skip != null ? f.Skip : fromFind.Skip;
+                var limit = f.Limit != null ? f.Limit : fromFind.Limit;
+                bool distinct = f.Distinct | fromFind.Distinct;
+                var fields = f.Fields.Count > 0 ? f.Fields : fromFind.Fields;
 
-                f = new FindExpression(f.Type, f.Alias, fields, f.From, where, orderBy, groupBy, distinct, skip, limit);
+                if (where != f.Where
+                    || orderBy != f.OrderBy
+                    || groupBy != f.GroupBy
+                    || distinct != f.Distinct
+                    || skip != f.Skip
+                    || limit != f.Limit
+                    || fields != f.Fields)
+                {
+                    f = new FindExpression(f.Type, f.Alias, fields, f.From, where, orderBy, groupBy, distinct, skip, limit);
+                }
             }
 
             return f;
         }
         
-        private static bool CanMergeWithFrom(FindExpression select, bool isTopLevel)
+        private static bool CanMergeWithFrom(FindExpression find, bool isTopLevel)
         {
-            var fromSelect = select.From as FindExpression;
-            if (fromSelect == null)
+            var fromFind = find.From as FindExpression;
+            if (fromFind == null)
                 return false;
 
-            if (select.Limit != null && fromSelect.Limit != null)
+            var fromIsSimpleProjection = IsSimpleProjection(fromFind);
+            var fromIsNameMapProjection = IsNameMapProjection(fromFind);
+            if (!fromIsSimpleProjection && !fromIsNameMapProjection)
                 return false;
 
-            if (select.Skip != null && fromSelect.Skip != null)
+            var findIsNameMapProjection = IsNameMapProjection(find);
+            var findHasOrderBy = find.OrderBy != null && find.OrderBy.Count > 0;
+            var findHasGroupBy = find.GroupBy != null && find.GroupBy.Count > 0;
+            var findHasAggregates = new AggregateChecker().HasAggregates(find);
+            var fromHasOrderBy = fromFind.OrderBy != null && fromFind.OrderBy.Count > 0;
+            var fromHasGroupBy = fromFind.GroupBy != null && fromFind.OrderBy.Count > 0;
+
+            if (findHasOrderBy && fromHasOrderBy)
                 return false;
 
-            if (select.GroupBy != null && select.GroupBy.Count > 0 && fromSelect.GroupBy != null && fromSelect.GroupBy.Count > 0)
+            if (findHasGroupBy && fromHasGroupBy)
+                return false;
+
+            if(fromHasOrderBy && (findHasGroupBy || findHasAggregates || find.Distinct))
+                return false;
+
+            if(fromHasGroupBy && find.Where != null)
+                return false;
+
+            if(fromFind.Limit != null && (find.Limit != null || find.Skip != null || find.Distinct || findHasAggregates || findHasGroupBy))
+                return false;
+
+            if(fromFind.Skip != null && (find.Skip != null || find.Distinct || findHasAggregates || findHasGroupBy))
+                return false;
+
+            if (fromFind.Distinct && (find.Limit != null || find.Skip != null || !findIsNameMapProjection || findHasGroupBy || findHasAggregates || (findHasOrderBy && !isTopLevel)))
                 return false;
 
             return true;
+        }
+
+        private static bool IsNameMapProjection(FindExpression find)
+        {
+            var fromFind = find.From as FindExpression;
+            if (find.Fields.Count == 0)
+                return true;
+
+            if (fromFind == null || find.Fields.Count != fromFind.Fields.Count)
+                return false;
+
+            for (int i = 0, n = find.Fields.Count; i < n; i++)
+            {
+                if (find.Fields[i].Name != fromFind.Fields[i].Name)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsSimpleProjection(FindExpression find)
+        {
+            foreach (var field in find.Fields)
+                if (string.IsNullOrEmpty(field.Name))
+                    return false;
+
+            return true;
+        }
+
+        private class AggregateChecker : MongoExpressionVisitor
+        {
+            private bool _hasAggregate;
+
+            public AggregateChecker()
+            { }
+
+            public bool HasAggregates(Expression expression)
+            {
+                _hasAggregate = false;
+                Visit(expression);
+                return _hasAggregate;
+            }
+
+            protected override Expression VisitAggregate(AggregateExpression aggregate)
+            {
+                _hasAggregate = true;
+                return aggregate;
+            }
+
+            protected override Expression VisitFind(FindExpression find)
+            {
+                Visit(find.Where);
+                VisitOrderBy(find.OrderBy);
+                VisitFieldDeclarationList(find.Fields);
+                return find;
+            }
+
+            protected override Expression VisitSubquery(SubqueryExpression subquery)
+            {
+                return subquery;
+            }
         }
 
         private class FindRemover : MongoExpressionVisitor
@@ -93,39 +182,6 @@ namespace MongoDB.Driver.Linq
                     return Visit(s.From);
 
                 return base.VisitFind(s);
-            }
-        }
-
-        private class FieldExpander : MongoExpressionVisitor
-        {
-            private FieldExpression _root;
-            private List<FieldExpression> _map;
-
-            public ReadOnlyCollection<FieldExpression> Expand(FieldExpression field)
-            {
-                _map = new List<FieldExpression>();
-                _root = field;
-                VisitField(field);
-                if (_map.Count == 0)
-                    _map.Add(field);
-
-                return _map.AsReadOnly();
-            }
-
-            protected override Expression VisitAggregate(AggregateExpression a)
-            {
-                return a;
-            }
-
-            protected override Expression VisitField(FieldExpression f)
-            {
-                if (_root != f)
-                {
-                    var fields = new FieldExpander().Expand(f);
-                    _map.AddRange(fields);
-                }
-
-                return base.VisitField(f);
             }
         }
     }

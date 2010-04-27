@@ -8,8 +8,14 @@ namespace MongoDB.Driver.Linq.Expressions
 {
     internal class FieldExpression : Expression
     {
+        private readonly string _alias;
         private readonly Expression _expression;
         private readonly string _name;
+
+        public string Alias
+        {
+            get { return _alias; }
+        }
 
         public Expression Expression
         {
@@ -21,14 +27,10 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _name; }
         }
 
-        public FieldExpression(string name, Expression expression)
+        public FieldExpression(Expression expression, string alias, string name)
             : base((ExpressionType)MongoExpressionType.Field, expression.Type)
         {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (expression == null)
-                throw new ArgumentNullException("expression");
-
+            _alias = alias;
             _expression = expression;
             _name = name;
         }

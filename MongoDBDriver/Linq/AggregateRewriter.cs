@@ -19,7 +19,7 @@ namespace MongoDB.Driver.Linq
 
         public Expression Rewrite(Expression expression)
         {
-            _lookup = new AggregateGatherer().Gather(expression).ToLookup(x => x.Alias);
+            _lookup = new AggregateGatherer().Gather(expression).ToLookup(x => x.GroupByAlias);
             return Visit(expression);
         }
 
@@ -32,21 +32,22 @@ namespace MongoDB.Driver.Linq
             return Visit(aggregate.AggregateAsSubquery);
         }
 
-        protected override Expression VisitFind(FindExpression f)
+        protected override Expression VisitFind(FindExpression find)
         {
-            f = (FindExpression)base.VisitFind(f);
-            if (_lookup.Contains(f.Alias))
+            find = (FindExpression)base.VisitFind(find);
+            if (_lookup.Contains(find.Alias))
             {
-                var fields = new List<FieldExpression>(f.Fields);
-                foreach (var ae in _lookup[f.Alias])
+                var fields = new List<FieldDeclaration>(find.Fields);
+                foreach (var ae in _lookup[find.Alias])
                 {
-                    var field = new FieldExpression("", ae.AggregateInGroupSelect);
-                    _map.Add(ae, field);
+                    var name = "_$agg" + fields.Count;
+                    var field = new FieldDeclaration(name, ae.AggregateInGroupSelect);
+                    _map.Add(ae, new FieldExpression(ae, ae.GroupByAlias, name));
                     fields.Add(field);
                 }
-                return new FindExpression(f.Type, f.Alias, fields, f.From, f.Where, f.OrderBy, f.GroupBy, f.Distinct, f.Skip, f.Limit);
+                return new FindExpression(find.Type, find.Alias, fields, find.From, find.Where, find.OrderBy, find.GroupBy, find.Distinct, find.Skip, find.Limit);
             }
-            return f;
+            return find;
         }
 
         private class AggregateGatherer : MongoExpressionVisitor

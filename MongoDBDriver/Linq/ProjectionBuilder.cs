@@ -5,23 +5,26 @@ using System.Linq.Expressions;
 using System.Text;
 
 using MongoDB.Driver.Linq.Expressions;
+using System.Collections.ObjectModel;
 
 namespace MongoDB.Driver.Linq
 {
     internal class ProjectionBuilder : MongoExpressionVisitor
     {
         private ParameterExpression _document;
+        private Dictionary<Expression, Expression> _map;
 
         public LambdaExpression Build(Type documentType, Expression expression)
         {
             _document = Expression.Parameter(documentType, "document");
+            _map = new Dictionary<Expression, Expression>();
             var body = Visit(expression);
             return Expression.Lambda(body, _document);
         }
 
-        protected override Expression VisitField(FieldExpression f)
+        protected override Expression VisitField(FieldExpression field)
         {
-            return Visit(f.Expression);
+            return Visit(field.Expression);
         }
 
         protected override Expression VisitParameter(ParameterExpression p)

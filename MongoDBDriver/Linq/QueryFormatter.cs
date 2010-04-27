@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -14,6 +15,7 @@ namespace MongoDB.Driver.Linq
     internal class QueryFormatter : MongoExpressionVisitor
     {
         private bool _isComplex;
+        private bool _isMapReduce;
         private MongoQueryObject _queryObject;
         private StringBuilder _where;
 
@@ -31,8 +33,7 @@ namespace MongoDB.Driver.Linq
 
         protected override Expression VisitAggregate(AggregateExpression a)
         {
-            if (a.AggregateType == AggregateType.Count)
-                _queryObject.IsCount = true;
+            _queryObject.IsMapReduce = true;
 
             return base.VisitAggregate(a);
         }
@@ -156,12 +157,26 @@ namespace MongoDB.Driver.Linq
             if (f.Where != null)
                 Visit(f.Where);
 
-            foreach (var field in f.Fields)
+            var fieldGatherer = new FieldGatherer();
+            if ((f.GroupBy == null || f.GroupBy.Count > 0) && f.Fields.Count == 1 && f.Fields[0].Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)
             {
-                if (field.Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)
-                    Visit(field.Expression);
-                else
-                    _queryObject.Fields[field.Name] = 1;
+                var aggregateExpression = (AggregateExpression)f.Fields[0].Expression;
+                if (aggregateExpression.AggregateType == AggregateType.Count)
+                    _queryObject.IsCount = true;
+            }
+            else
+            {
+                foreach (var field in f.Fields)
+                {
+                    if (field.Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)
+                        Visit(field.Expression);
+                    else
+                    {
+                        var expandedFields = fieldGatherer.Gather(field.Expression);
+                        foreach(var expandedField in expandedFields)
+                            _queryObject.Fields[expandedField.Name] = 1;
+                    }
+                }
             }
 
             if (f.OrderBy != null)
@@ -400,6 +415,37 @@ namespace MongoDB.Driver.Linq
                 return string.Format(@"""{0}""", c.Value.ToString());
             
             return c.Value.ToString();
+        }
+
+        private class FieldGatherer : MongoExpressionVisitor
+        {
+            private List<FieldExpression> _fields;
+            private Expression _root;
+
+            public ReadOnlyCollection<FieldExpression> Gather(Expression exp)
+            {
+                _fields = new List<FieldExpression>();
+                _root = exp;
+                Visit(exp);
+                return _fields.AsReadOnly();
+            }
+
+            protected override Expression VisitFind(FindExpression find)
+            {
+                VisitFieldDeclarationList(find.Fields);
+                return find;
+            }
+
+            protected override Expression VisitField(FieldExpression field)
+            {
+                var fields = new FieldGatherer().Gather(field.Expression);
+                if(fields.Count == 0)
+                    _fields.Add(field);
+                else
+                    _fields.AddRange(fields);
+
+                return base.VisitField(field);
+            }
         }
     }
 }

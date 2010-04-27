@@ -89,7 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Linq\MapReduceTests.cs" />
+    <Compile Include="IntegrationTests\Linq\MapReduceTests.cs" />
     <Compile Include="UnitTests\Bson\BsonTestBase.cs" />
     <Compile Include="UnitTests\Bson\TestBsonBinary.cs" />
     <Compile Include="UnitTests\Bson\TestRoundTrips.cs" />

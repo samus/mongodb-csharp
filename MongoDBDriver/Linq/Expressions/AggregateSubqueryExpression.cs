@@ -10,7 +10,7 @@ namespace MongoDB.Driver.Linq.Expressions
     {
         private Expression _aggregateInGroupSelect;
         private ScalarExpression _aggregateAsSubquery;
-        private string _alias;
+        private string _groupByAlias;
 
         public Expression AggregateInGroupSelect
         {
@@ -22,15 +22,15 @@ namespace MongoDB.Driver.Linq.Expressions
             get { return _aggregateAsSubquery; }
         }
 
-        public string Alias
+        public string GroupByAlias
         {
-            get { return _alias; }
+            get { return _groupByAlias; }
         }
 
-        public AggregateSubqueryExpression(string alias, Expression aggregateInGroupSelect, ScalarExpression aggregateAsSubquery)
+        public AggregateSubqueryExpression(string groupByAlias, Expression aggregateInGroupSelect, ScalarExpression aggregateAsSubquery)
             : base((ExpressionType)MongoExpressionType.AggregateSubquery, aggregateAsSubquery.Type)
         {
-            _alias = alias;
+            _groupByAlias = groupByAlias;
             _aggregateInGroupSelect = aggregateInGroupSelect;
             _aggregateAsSubquery = aggregateAsSubquery;
         }

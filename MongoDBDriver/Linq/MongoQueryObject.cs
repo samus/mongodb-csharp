@@ -49,6 +49,14 @@ namespace MongoDB.Driver.Linq
         public bool IsCount { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is map reduce.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is map reduce; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMapReduce { get; set; }
+
+        /// <summary>
         /// Gets or sets the number to skip.
         /// </summary>
         /// <value>The number to skip.</value>
