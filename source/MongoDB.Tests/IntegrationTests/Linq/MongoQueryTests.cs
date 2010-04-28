@@ -27,7 +27,7 @@ namespace MongoDB.IntegrationTests.Linq
                         new Address { City = "Tokyo" }, 
                         new Address { City = "Seattle" } 
                     },
-                    EmployerIds = new [] { 1, 2}
+                    EmployerIds = new[] { 1, 2 }
                 }, true);
 
             collection.Insert(
@@ -57,7 +57,7 @@ namespace MongoDB.IntegrationTests.Linq
                         new Address { City = "Chicago" },
                         new Address { City = "London" }
                     },
-                    EmployerIds = new [] { 3 }
+                    EmployerIds = new[] { 3 }
                 }, true);
         }
 

@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using MongoDB.Linq.Expressions;
 using System.Linq.Expressions;
+using System.Collections.ObjectModel;
 
 namespace MongoDB.Linq
 {
-    internal class QueryFormatter : MongoExpressionVisitor
+    internal class MongoQueryObjectBuilder : MongoExpressionVisitor
     {
         private MongoQueryObject _queryObject;
         private QueryAttributes _queryAttributes;
 
-        internal MongoQueryObject Format(Expression expression)
+        internal MongoQueryObject Build(ProjectionExpression expression)
         {
             _queryObject = new MongoQueryObject();
             _queryAttributes = new QueryAttributesGatherer().Gather(expression);
@@ -36,8 +37,8 @@ namespace MongoDB.Linq
             if (_queryAttributes.IsMapReduce)
             {
                 _queryObject.IsMapReduce = true;
-                var mapFunction = new MapReduceMapFunctionBuilder().Build(find.Fields, find.GroupBy);
-                var reduceFunction = new MapReduceReduceFunctionBuilder().Build(find.Fields);
+                _queryObject.MapFunction = new MapReduceMapFunctionBuilder().Build(find.Fields, find.GroupBy);
+                _queryObject.ReduceFunction = new MapReduceReduceFunctionBuilder().Build(find.Fields);
             }
             else if(!_queryAttributes.IsCount)
             {
@@ -68,6 +69,16 @@ namespace MongoDB.Linq
                 _queryObject.NumberToSkip = EvaluateConstant<int>(find.Skip);
 
             return find;
+        }
+
+        protected override Expression VisitProjection(ProjectionExpression projection)
+        {
+            Visit(projection.Source);
+
+            _queryObject.Projector = new ProjectionBuilder().Build(_queryObject, projection.Projector);
+            _queryObject.Aggregator = projection.Aggregator;
+
+            return projection;
         }
 
         protected override Expression VisitSource(Expression source)
@@ -181,6 +192,12 @@ namespace MongoDB.Linq
 
                 Visit(find.Where);
                 return find;
+            }
+
+            protected override Expression VisitProjection(ProjectionExpression projection)
+            {
+                VisitSource(projection.Source);
+                return projection;
             }
         }
     }

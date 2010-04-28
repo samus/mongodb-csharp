@@ -116,6 +116,8 @@ namespace MongoDB.Linq
         internal object ExecuteQueryObject(MongoQueryObject queryObject){
             if (queryObject.IsCount)
                 return ExecuteCount(queryObject);
+            else if (queryObject.IsMapReduce)
+                return ExecuteMapReduce(queryObject);
             return ExecuteFind(queryObject);
         }
 
@@ -137,10 +139,7 @@ namespace MongoDB.Linq
                 projection = (ProjectionExpression)expression;
             }
 
-            var queryObject = new QueryFormatter().Format(projection.Source);
-            queryObject.Projector = new ProjectionBuilder().Build(queryObject.DocumentType, projection.Projector);
-            queryObject.Aggregator = projection.Aggregator;
-            return queryObject;
+            return new MongoQueryObjectBuilder().Build(projection);
         }
 
         /// <summary>
@@ -207,7 +206,25 @@ namespace MongoDB.Linq
             cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
 
             var executor = GetExecutor(queryObject.DocumentType, queryObject.Projector, queryObject.Aggregator, true);
-            return executor.Compile().DynamicInvoke(cursor);
+            return executor.Compile().DynamicInvoke(cursor.GetType().GetProperty("Documents").GetValue(cursor, null));
+        }
+
+        /// <summary>
+        /// Executes the map reduce.
+        /// </summary>
+        /// <param name="queryObject">The query object.</param>
+        /// <returns></returns>
+        private object ExecuteMapReduce(MongoQueryObject queryObject)
+        {
+            var miGetCollection = typeof(IMongoDatabase).GetMethods().Where(m => m.Name == "GetCollection" && m.GetGenericArguments().Length == 1 && m.GetParameters().Length == 1).Single().MakeGenericMethod(queryObject.DocumentType);
+            var collection = miGetCollection.Invoke(queryObject.Database, new[] { queryObject.CollectionName });
+
+            var mapReduce = (MapReduce)collection.GetType().GetMethod("MapReduce").Invoke(collection, null);
+            mapReduce.Map = new Code(queryObject.MapFunction);
+            mapReduce.Reduce = new Code(queryObject.ReduceFunction);
+
+            var executor = GetExecutor(typeof(Document), queryObject.Projector, queryObject.Aggregator, true);
+            return executor.Compile().DynamicInvoke(mapReduce.Documents);
         }
 
         /// <summary>
@@ -220,14 +237,14 @@ namespace MongoDB.Linq
         /// <returns></returns>
         private static LambdaExpression GetExecutor(Type documentType, LambdaExpression projector, LambdaExpression aggregator, bool boxReturn)
         {
-            var cursor = Expression.Parameter(typeof(ICursor<>).MakeGenericType(documentType), "cursor");
-            Expression body = Expression.New(typeof(ProjectionReader<,>).MakeGenericType(documentType, projector.Body.Type).GetConstructors()[0], cursor, projector);
+            var documents = Expression.Parameter(typeof(IEnumerable<>).MakeGenericType(documentType), "documents");
+            Expression body = Expression.New(typeof(ProjectionReader<,>).MakeGenericType(documentType, projector.Body.Type).GetConstructors()[0], documents, projector);
             if (aggregator != null)
                 body = Expression.Invoke(aggregator, body);
             if (boxReturn && body.Type != typeof(object))
                 body = Expression.Convert(body, typeof(object));
 
-            return Expression.Lambda(body, cursor);
+            return Expression.Lambda(body, documents);
         }
 
         /// <summary>

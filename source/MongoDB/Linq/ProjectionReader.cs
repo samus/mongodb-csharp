@@ -11,9 +11,9 @@ namespace MongoDB.Linq
     {
         private Enumerator _enumerator;
 
-        public ProjectionReader(ICursor<T> cursor, Func<T, TResult> projector)
+        public ProjectionReader(IEnumerable<T> documents, Func<T, TResult> projector)
         {
-            _enumerator = new Enumerator(cursor.Documents.GetEnumerator(), projector);
+            _enumerator = new Enumerator(documents.GetEnumerator(), projector);
         }
 
         public IEnumerator<TResult> GetEnumerator()
