@@ -23,13 +23,13 @@ namespace MongoDB.IntegrationTests.Linq
 
         protected class Person
         {
-            [MongoAlias("fn")]
+            //[MongoAlias("fn")]
             public string FirstName { get; set; }
 
             [MongoAlias("ln")]
             public string LastName { get; set; }
 
-            [MongoAlias("age")]
+            //[MongoAlias("age")]
             public int Age { get; set; }
 
             [MongoAlias("add")]

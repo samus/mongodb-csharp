@@ -66,7 +66,7 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
-        public void Complex()
+        public void NoGrouping()
         {
             var ageRange = Enumerable.ToList(from p in collection.Linq()
                                              group p by 1 into g
@@ -79,6 +79,20 @@ namespace MongoDB.IntegrationTests.Linq
             Assert.AreEqual(1, ageRange.Count);
             Assert.AreEqual(21, ageRange.Single().Min);
             Assert.AreEqual(42, ageRange.Single().Max);
+        }
+
+        [Test]
+        public void SimpleGrouping()
+        {
+            var ageRange = Enumerable.ToList(from p in collection.Linq()
+                                             group p by p.FirstName into g
+                                             select new
+                                             {
+                                                 Min = g.Min(x => x.Age),
+                                                 Max = g.Max(x => x.Age)
+                                             });
+
+            Assert.AreEqual(3, ageRange.Count);
         }
     }
 }

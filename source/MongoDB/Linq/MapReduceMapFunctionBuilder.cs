@@ -42,7 +42,10 @@ namespace MongoDB.Linq
         protected override Expression VisitField(FieldExpression field)
         {
             var fieldJs = _formatter.FormatJavascript(field);
-            _map[_currentAggregateName] = fieldJs;
+            if (string.IsNullOrEmpty(_currentAggregateName))
+                _map[field.Name] = fieldJs;
+            else
+                _map[_currentAggregateName] = fieldJs;
             return field;
         }
 
