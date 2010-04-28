@@ -73,19 +73,23 @@ namespace MongoDB.IntegrationTests.Linq
                                              select new
                                              {
                                                  Min = g.Min(x => x.Age),
-                                                 Max = g.Max(x => x.Age)
+                                                 Max = g.Max(x => x.Age),
+                                                 Count = g.Count(),
+                                                 Sum = g.Sum(x => x.Age)
                                              });
 
             Assert.AreEqual(1, ageRange.Count);
             Assert.AreEqual(21, ageRange.Single().Min);
             Assert.AreEqual(42, ageRange.Single().Max);
+            Assert.AreEqual(3, ageRange.Single().Count);
+            Assert.AreEqual(98, ageRange.Single().Sum);
         }
 
         [Test]
         public void SimpleGrouping()
         {
             var ageRange = Enumerable.ToList(from p in collection.Linq()
-                                             group p by p.FirstName into g
+                                             group p by p.Age into g
                                              select new
                                              {
                                                  Min = g.Min(x => x.Age),

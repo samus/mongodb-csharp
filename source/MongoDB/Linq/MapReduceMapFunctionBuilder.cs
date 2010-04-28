@@ -11,7 +11,8 @@ namespace MongoDB.Linq
     internal class MapReduceMapFunctionBuilder : MongoExpressionVisitor
     {
         private JavascriptFormatter _formatter;
-        private Dictionary<string, string> _map;
+        private Dictionary<string, string> _groupByMap;
+        private Dictionary<string, string> _initMap;
         private string _currentAggregateName;
 
         public MapReduceMapFunctionBuilder()
@@ -23,29 +24,42 @@ namespace MongoDB.Linq
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("function() { emit(");
+            _groupByMap = new Dictionary<string, string>();
+            _initMap = new Dictionary<string, string>();
 
-            _map = new Dictionary<string, string>();
             VisitExpressionList(groupBys);
-            FormatString(sb, true);
+            FormatString(sb, _groupByMap, true);
 
             sb.Append(", ");
 
-            _map = new Dictionary<string, string>();
             VisitFieldDeclarationList(fields);
-            FormatString(sb, false);
+            FormatString(sb, _initMap, false);
 
             sb.Append("); }");
 
             return sb.ToString();
         }
 
+        protected override Expression VisitAggregate(AggregateExpression aggregate)
+        {
+            switch (aggregate.AggregateType)
+            {
+                case AggregateType.Count:
+                    _initMap[_currentAggregateName] = "1";
+                    break;
+                case AggregateType.Max:
+                case AggregateType.Min:
+                case AggregateType.Sum:
+                    _initMap[_currentAggregateName] = _formatter.FormatJavascript(aggregate.Argument);
+                    break;
+            }
+
+            return aggregate;
+        }
+
         protected override Expression VisitField(FieldExpression field)
         {
-            var fieldJs = _formatter.FormatJavascript(field);
-            if (string.IsNullOrEmpty(_currentAggregateName))
-                _map[field.Name] = fieldJs;
-            else
-                _map[_currentAggregateName] = fieldJs;
+            _groupByMap[field.Name] = _formatter.FormatJavascript(field);
             return field;
         }
 
@@ -60,19 +74,19 @@ namespace MongoDB.Linq
             return fields;
         }
 
-        private void FormatString(StringBuilder sb, bool isGroup)
+        private void FormatString(StringBuilder sb, Dictionary<string, string> map, bool isGroup)
         {
-            if (_map.Count == 0)
+            if (map.Count == 0)
                 sb.Append("1");
-            else if (_map.Count == 1 && isGroup)
+            else if (map.Count == 1 && isGroup)
             {
-                sb.Append(_map.Single().Value);
+                sb.Append(map.Single().Value);
             }
             else
             {
                 sb.Append("{");
                 var isFirst = true;
-                foreach (var field in _map)
+                foreach (var field in map)
                 {
                     if (isFirst)
                         isFirst = false;

@@ -10,10 +10,10 @@ namespace MongoDB.Linq
 {
     internal class MapReduceReduceFunctionBuilder : MongoExpressionVisitor
     {
-        private enum Mode { Declare, Loop, Return };
         private JavascriptFormatter _formatter;
-        private Mode _mode;
-        private StringBuilder _builder;
+        private StringBuilder _declare;
+        private StringBuilder _loop;
+        private StringBuilder _return;
         private string _currentAggregateName;
 
         public MapReduceReduceFunctionBuilder()
@@ -23,23 +23,19 @@ namespace MongoDB.Linq
 
         public string Build(ReadOnlyCollection<FieldDeclaration> fields)
         {
-            _builder = new StringBuilder();
-            _builder.Append("function(key, values) {");
+            _declare = new StringBuilder();
+            _loop = new StringBuilder();
+            _return = new StringBuilder();
+            _declare.Append("function(key, values) {");
+            _loop.Append("values.forEach(function(doc) {");
+            _return.Append("return { ");
 
-            _mode = Mode.Declare;
             VisitFieldDeclarationList(fields);
-            
-            _builder.Append("values.forEach(function(doc) {");
-            _mode = Mode.Loop;
-            VisitFieldDeclarationList(fields);
-            _builder.Append("});");
 
-            _builder.Append("return { ");
-            _mode = Mode.Return;
-            VisitFieldDeclarationList(fields);
-            _builder.Append("};}");
+            _loop.Append("});");
+            _return.Append("};}");
 
-            return _builder.ToString();
+            return _declare.ToString() + _loop.ToString() + _return.ToString();
         }
 
         protected override Expression VisitAggregate(AggregateExpression aggregate)
@@ -49,7 +45,7 @@ namespace MongoDB.Linq
                 case AggregateType.Average:
                     throw new NotImplementedException();
                 case AggregateType.Count:
-                    SumAggregate(aggregate);
+                    CountAggregate(aggregate);
                     break;
                 case AggregateType.Max:
                     MaxAggregate(aggregate);
@@ -69,17 +65,12 @@ namespace MongoDB.Linq
         {
             for (int i = 0, n = fields.Count; i < n; i++)
             {
-                if (_mode != Mode.Return)
-                {
-                    _currentAggregateName = fields[i].Name;
-                    Visit(fields[i].Expression);
-                }
-                else
-                {
-                    if (i > 0)
-                        _builder.Append(", ");
-                    _builder.AppendFormat("\"{0}\": {0}", fields[i].Name);
-                }
+                _currentAggregateName = fields[i].Name;
+                Visit(fields[i].Expression);
+
+                if (i > 0)
+                    _return.Append(", ");
+                _return.AppendFormat("\"{0}\": {0}", fields[i].Name);
             }
 
             return fields;
@@ -87,54 +78,26 @@ namespace MongoDB.Linq
 
         private void CountAggregate(AggregateExpression aggregate)
         {
-            switch (_mode)
-            {
-                case Mode.Declare:
-                    _builder.AppendFormat("var {0} = 0;", _currentAggregateName);
-                    break;
-                case Mode.Loop:
-                    _builder.AppendFormat("{0}++;", _currentAggregateName);
-                    break;
-            }
+            _declare.AppendFormat("var {0} = 0;", _currentAggregateName);
+            _loop.AppendFormat("{0} += doc.{0};", _currentAggregateName);
         }
 
         private void MaxAggregate(AggregateExpression aggregate)
         {
-            switch (_mode)
-            {
-                case Mode.Declare:
-                    _builder.AppendFormat("var {0} = Number.MIN_VALUE;", _currentAggregateName);
-                    break;
-                case Mode.Loop:
-                    _builder.AppendFormat("if(doc.{0} > {0}) {0} = doc.{0};", _currentAggregateName);
-                    break;
-            }
+            _declare.AppendFormat("var {0} = Number.MIN_VALUE;", _currentAggregateName);
+            _loop.AppendFormat("if(doc.{0} > {0}) {0} = doc.{0};", _currentAggregateName);
         }
 
         private void MinAggregate(AggregateExpression aggregate)
         {
-            switch (_mode)
-            {
-                case Mode.Declare:
-                    _builder.AppendFormat("var {0} = Number.MAX_VALUE;", _currentAggregateName);
-                    break;
-                case Mode.Loop:
-                    _builder.AppendFormat("if(doc.{0} < {0}) {0} = doc.{0};", _currentAggregateName);
-                    break;
-            }
+            _declare.AppendFormat("var {0} = Number.MAX_VALUE;", _currentAggregateName);
+            _loop.AppendFormat("if(doc.{0} < {0}) {0} = doc.{0};", _currentAggregateName);
         }
 
         private void SumAggregate(AggregateExpression aggregate)
         {
-            switch (_mode)
-            {
-                case Mode.Declare:
-                    _builder.AppendFormat("var sum{0} = 0;", _currentAggregateName);
-                    break;
-                case Mode.Loop:
-                    _builder.AppendFormat("sum{0} += doc.{0};", _currentAggregateName);
-                    break;
-            }
+            _declare.AppendFormat("var {0} = 0;", _currentAggregateName);
+            _loop.AppendFormat("{0} += doc.{0};", _currentAggregateName);
         }
 
     }
