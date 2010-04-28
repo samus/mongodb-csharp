@@ -104,7 +104,8 @@ namespace MongoDB.Linq
 
         protected override Expression VisitField(FieldExpression f)
         {
-            _js.AppendFormat("this.{0}", f.Name);
+            //TODO: may need to handle a field that composes other fields.
+             _js.AppendFormat("this.{0}", f.Name);
             return f;
         }
 

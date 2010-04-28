@@ -33,7 +33,13 @@ namespace MongoDB.Linq
                     _queryObject.SetQueryDocument(new DocumentFormatter().FormatDocument(find.Where));
             }
 
-            if (!_queryAttributes.IsMapReduce && !_queryAttributes.IsCount)
+            if (_queryAttributes.IsMapReduce)
+            {
+                _queryObject.IsMapReduce = true;
+                var mapFunction = new MapReduceMapFunctionBuilder().Build(find.Fields, find.GroupBy);
+                var reduceFunction = new MapReduceReduceFunctionBuilder().Build(find.Fields);
+            }
+            else if(!_queryAttributes.IsCount)
             {
                 var fieldGatherer = new FieldGatherer();
                 foreach (var field in find.Fields)
