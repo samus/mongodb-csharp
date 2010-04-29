@@ -18,7 +18,7 @@ namespace MongoDB.IntegrationTests.Linq
 
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.IsNull(queryObject.Query);
+            Assert.AreEqual(0, queryObject.Query.Count);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace MongoDB.IntegrationTests.Linq
             Assert.AreEqual(2, queryObject.Fields.Count());
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.IsNull(queryObject.Query);
+            Assert.AreEqual(0, queryObject.Query.Count);
         }
 
         [Test]
