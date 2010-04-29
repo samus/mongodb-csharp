@@ -110,6 +110,7 @@ namespace MongoDB.Linq
         public MongoQueryObject()
         {
             Fields = new Document();
+            _query = new Document();
         }
 
         /// <summary>

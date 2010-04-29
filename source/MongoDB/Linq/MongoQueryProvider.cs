@@ -204,13 +204,11 @@ namespace MongoDB.Linq
             if (queryObject.Sort != null)
             {
                 spec = new Document();
-                if (queryObject.Query != null)
-                    spec["query"] = queryObject.Query;
-
-                spec["orderby"] = queryObject.Sort;
+                spec.Add("query", queryObject.Query);
+                spec.Add("orderby", queryObject.Sort);
             }
             else
-                spec = queryObject.Query ?? new Document();
+                spec = queryObject.Query;
 
             cursorType.GetMethod("Spec", new[] { typeof(Document) }).Invoke(cursor, new object[] { spec });
             cursorType.GetMethod("Fields", new[] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Fields });
