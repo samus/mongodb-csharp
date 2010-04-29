@@ -80,10 +80,10 @@ namespace MongoDB.IntegrationTests.Linq
                                              });
 
             Assert.AreEqual(1, ageRange.Count);
-            Assert.AreEqual(21, ageRange.Single().Min);
+            Assert.AreEqual(35, ageRange.Single().Min);
             Assert.AreEqual(42, ageRange.Single().Max);
-            Assert.AreEqual(3, ageRange.Single().Count);
-            Assert.AreEqual(98, ageRange.Single().Sum);
+            Assert.AreEqual(2, ageRange.Single().Count);
+            Assert.AreEqual(77, ageRange.Single().Sum);
         }
 
         [Test]

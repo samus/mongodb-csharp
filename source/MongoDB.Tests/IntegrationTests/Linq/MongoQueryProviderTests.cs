@@ -18,7 +18,7 @@ namespace MongoDB.IntegrationTests.Linq
 
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Query.Count);
+            Assert.IsNull(queryObject.Query);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace MongoDB.IntegrationTests.Linq
             Assert.AreEqual(2, queryObject.Fields.Count());
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(0, queryObject.Query.Count);
+            Assert.IsNull(queryObject.Query);
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace MongoDB.IntegrationTests.Linq
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("Age", 1).Add("LastName", -1), queryObject.Query["orderby"]);
+            Assert.AreEqual(new Document("Age", 1).Add("LastName", -1), queryObject.Sort);
         }
 
         [Test]

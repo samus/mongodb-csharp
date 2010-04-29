@@ -58,7 +58,7 @@ namespace MongoDB.Linq
                     var field = Visit(order.Expression) as FieldExpression;
                     if (field == null)
                         throw new InvalidQueryException("Complex order by clauses are not supported.");
-                    _queryObject.AddOrderBy(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
+                    _queryObject.AddSort(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
                 }
             }
 
