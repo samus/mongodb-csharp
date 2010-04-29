@@ -90,7 +90,7 @@ namespace MongoDB.IntegrationTests.Linq
         public void SimpleGrouping()
         {
             var ageRange = Enumerable.ToList(from p in collection.Linq()
-                                             group p by p.Age % 10 into g
+                                             group p by new { FirstName = p.FirstName, LastName = p.LastName } into g
                                              select new
                                              {
                                                  Min = g.Min(x => x.Age),
