@@ -66,6 +66,22 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void Off_of_select()
+        {
+            var minAge = collection.Linq().Select(x => x.Age).Min();
+
+            Assert.AreEqual(21, minAge);
+        }
+
+        [Test]
+        public void Off_of_root()
+        {
+            var minAge = collection.Linq().Min(x => x.Age);
+
+            Assert.AreEqual(21, minAge);
+        }
+
+        [Test]
         public void NoGrouping()
         {
             var ageRange = Enumerable.ToList(from p in collection.Linq()

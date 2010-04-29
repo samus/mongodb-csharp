@@ -92,7 +92,8 @@ namespace MongoDB.Linq
         /// <returns></returns>
         public TResult Execute<TResult>(Expression expression)
         {
-            return (TResult)Execute(expression);
+            object result = Execute(expression);
+            return (TResult)result;
         }
 
         /// <summary>

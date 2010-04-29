@@ -11,6 +11,7 @@ namespace MongoDB.Linq
 {
     internal class QueryBinder : MongoExpressionVisitor
     {
+        private int _aggregateCount;
         private int _aliasCount;
         private Expression _currentGroupElement;
         private Dictionary<Expression, GroupByInfo> _groupByMap;
@@ -210,15 +211,17 @@ namespace MongoDB.Linq
             var fieldProjection = _projector.ProjectFields(projection.Projector, alias, projection.Source.Alias);
             Expression aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression, distinct);
             var selectType = typeof(IEnumerable<>).MakeGenericType(returnType);
-            var select = new SelectExpression(selectType, alias, new[] { new FieldDeclaration("", aggregateExpression) }, projection.Source, null);
+            string fieldName = "_$agg" + (_aggregateCount++);
+            var select = new SelectExpression(selectType, alias, new[] { new FieldDeclaration(fieldName, aggregateExpression) }, projection.Source, null);
 
             if (isRoot)
             {
                 var parameter = Expression.Parameter(selectType, "p");
-                var projector = Expression.Lambda(Expression.Call(typeof(Enumerable), "Single", new[] { returnType }, parameter), parameter);
+                var lambda = Expression.Lambda(Expression.Call(typeof(Enumerable), "Single", new[] { returnType }, parameter), parameter);
                 return new ProjectionExpression(
                     select,
-                    projector); //TODO: maybe incorrect
+                    new FieldExpression(aggregateExpression, alias, fieldName),
+                    lambda);
             }
 
             var subquery = new ScalarExpression(returnType, select);

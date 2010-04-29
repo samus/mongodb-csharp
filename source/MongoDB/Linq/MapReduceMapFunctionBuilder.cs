@@ -24,8 +24,10 @@ namespace MongoDB.Linq
             StringBuilder sb = new StringBuilder();
             sb.Append("function() { emit(");
 
-            var grouping = _formatter.FormatJavascript(groupBy);
-            sb.Append(grouping);
+            if (groupBy == null)
+                sb.Append("1");
+            else
+                sb.Append(_formatter.FormatJavascript(groupBy));
 
             sb.Append(", ");
 
