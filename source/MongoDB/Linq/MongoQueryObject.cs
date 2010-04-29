@@ -10,6 +10,7 @@ namespace MongoDB.Linq
     {
         private bool _hasOrder;
         private Document _query;
+        private Document _sort;
 
         /// <summary>
         /// Gets or sets the aggregator.
@@ -94,46 +95,60 @@ namespace MongoDB.Linq
             get { return _query; }
         }
 
+        /// <summary>
+        /// Gets the sort.
+        /// </summary>
+        /// <value>The sort.</value>
+        public Document Sort
+        {
+            get { return _sort; }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoQueryObject"/> class.
+        /// </summary>
         public MongoQueryObject()
         {
             Fields = new Document();
             _query = new Document();
-
-            _hasOrder = false;
-
         }
 
-        public void AddOrderBy(string name, int value)
+        /// <summary>
+        /// Adds the sort.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public void AddSort(string name, int value)
         {
-            if (!_hasOrder)
-            {
-                _query = new Document("query", _query);
-                _query.Add("orderby", new Document());
-                _hasOrder = true;
-            }
-
-            ((Document)_query["orderby"]).Add(name, value);
+            if(_sort == null)
+                _sort = new Document();
+            _sort.Add(name, value);
         }
 
+        /// <summary>
+        /// Sets the query document.
+        /// </summary>
+        /// <param name="document">The document.</param>
         public void SetQueryDocument(Document document)
         {
-            if (_hasOrder)
-                _query["query"] = document;
-            else
-                _query = document;
+            _query = document;
         }
 
+        /// <summary>
+        /// Sets the where clause.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
         public void SetWhereClause(string whereClause)
         {
-            if (_hasOrder)
-            {
-                _query.Add("$where", new Code(whereClause));
-                _query.Remove("query");
-            }
-            else
-                _query = new Document("$where", new Code(whereClause));
+            _query = Op.Where(whereClause);
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
             throw new NotImplementedException();

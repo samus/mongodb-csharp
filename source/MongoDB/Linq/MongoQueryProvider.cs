@@ -135,7 +135,9 @@ namespace MongoDB.Linq
                 expression = new FieldBinder().Bind(expression);
                 expression = new QueryBinder(this, expression).Bind(expression);
                 expression = new AggregateRewriter().Rewrite(expression);
-                expression = new FindMerger().Merge(expression);
+                expression = new RedundantSubqueryRemover().Remove(expression);
+                expression = new OrderByRewriter().Rewrite(expression);
+                expression = new RedundantSubqueryRemover().Remove(expression);
                 projection = (ProjectionExpression)expression;
             }
 
@@ -181,14 +183,14 @@ namespace MongoDB.Linq
             var miGetCollection = typeof(IMongoDatabase).GetMethods().Where(m => m.Name == "GetCollection" && m.GetGenericArguments().Length == 1 && m.GetParameters().Length == 1).Single().MakeGenericMethod(queryObject.DocumentType);
             var collection = miGetCollection.Invoke(queryObject.Database, new[] { queryObject.CollectionName });
 
-            if (queryObject.Query.Count == 0)
+            if (queryObject.Query == null)
                 return Convert.ToInt32(collection.GetType().GetMethod("Count", Type.EmptyTypes).Invoke(collection, null));
 
             return Convert.ToInt32(collection.GetType().GetMethod("Count", new[] { typeof(object) }).Invoke(collection, new[] { queryObject.Query }));
         }
 
         /// <summary>
-        /// Executes the find.
+        /// Executes the select.
         /// </summary>
         /// <param name="queryObject">The query object.</param>
         /// <returns></returns>
@@ -200,7 +202,17 @@ namespace MongoDB.Linq
             var cursor = collection.GetType().GetMethod("FindAll")
                             .Invoke(collection, null);
             var cursorType = cursor.GetType();
-            cursorType.GetMethod("Spec", new[] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Query });
+            Document spec;
+            if (queryObject.Sort != null)
+            {
+                spec = new Document();
+                spec.Add("query", queryObject.Query);
+                spec.Add("orderby", queryObject.Sort);
+            }
+            else
+                spec = queryObject.Query;
+
+            cursorType.GetMethod("Spec", new[] { typeof(Document) }).Invoke(cursor, new object[] { spec });
             cursorType.GetMethod("Fields", new[] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Fields });
             cursorType.GetMethod("Limit").Invoke(cursor, new object[] { queryObject.NumberToLimit });
             cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
@@ -222,6 +234,14 @@ namespace MongoDB.Linq
             var mapReduce = (MapReduce)collection.GetType().GetMethod("MapReduce").Invoke(collection, null);
             mapReduce.Map = new Code(queryObject.MapFunction);
             mapReduce.Reduce = new Code(queryObject.ReduceFunction);
+            mapReduce.Query = queryObject.Query;
+
+            if(queryObject.Sort != null)
+                mapReduce.Sort = queryObject.Sort;
+
+            mapReduce.Limit = queryObject.NumberToLimit;
+            if (queryObject.NumberToSkip != 0)
+                throw new InvalidQueryException("MapReduce queries do no support Skips.");
 
             var executor = GetExecutor(typeof(Document), queryObject.Projector, queryObject.Aggregator, true);
             return executor.Compile().DynamicInvoke(mapReduce.Documents);

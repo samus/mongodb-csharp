@@ -22,28 +22,31 @@ namespace MongoDB.Linq
             return _queryObject;
         }
 
-        protected override Expression VisitFind(FindExpression find)
+        protected override Expression VisitSelect(SelectExpression select)
         {
-            if (find.From != null)
-                VisitSource(find.From);
-            if (find.Where != null)
+            if (select.From.NodeType != (ExpressionType)MongoExpressionType.Collection)
+                throw new InvalidQueryException("Query is too complicated.");
+
+            if (select.From != null)
+                VisitSource(select.From);
+            if (select.Where != null)
             {
                 if (_queryAttributes.IsFreeForm)
-                    _queryObject.SetWhereClause(new JavascriptFormatter().FormatJavascript(find.Where));
+                    _queryObject.SetWhereClause(new JavascriptFormatter().FormatJavascript(select.Where));
                 else
-                    _queryObject.SetQueryDocument(new DocumentFormatter().FormatDocument(find.Where));
+                    _queryObject.SetQueryDocument(new DocumentFormatter().FormatDocument(select.Where));
             }
 
             if (_queryAttributes.IsMapReduce)
             {
                 _queryObject.IsMapReduce = true;
-                _queryObject.MapFunction = new MapReduceMapFunctionBuilder().Build(find.Fields, find.GroupBy);
-                _queryObject.ReduceFunction = new MapReduceReduceFunctionBuilder().Build(find.Fields);
+                _queryObject.MapFunction = new MapReduceMapFunctionBuilder().Build(select.Fields, select.GroupBy);
+                _queryObject.ReduceFunction = new MapReduceReduceFunctionBuilder().Build(select.Fields);
             }
             else if(!_queryAttributes.IsCount)
             {
                 var fieldGatherer = new FieldGatherer();
-                foreach (var field in find.Fields)
+                foreach (var field in select.Fields)
                 {
                     var expandedFields = fieldGatherer.Gather(field.Expression);
                     foreach (var expandedField in expandedFields)
@@ -51,24 +54,24 @@ namespace MongoDB.Linq
                 }
             }
 
-            if (find.OrderBy != null)
+            if (select.OrderBy != null)
             {
-                foreach (var order in find.OrderBy)
+                foreach (var order in select.OrderBy)
                 {
                     var field = Visit(order.Expression) as FieldExpression;
                     if (field == null)
                         throw new InvalidQueryException("Complex order by clauses are not supported.");
-                    _queryObject.AddOrderBy(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
+                    _queryObject.AddSort(field.Name, order.OrderType == OrderType.Ascending ? 1 : -1);
                 }
             }
 
-            if (find.Limit != null)
-                _queryObject.NumberToLimit = EvaluateConstant<int>(find.Limit);
+            if (select.Take != null)
+                _queryObject.NumberToLimit = EvaluateConstant<int>(select.Take);
 
-            if (find.Skip != null)
-                _queryObject.NumberToSkip = EvaluateConstant<int>(find.Skip);
+            if (select.Skip != null)
+                _queryObject.NumberToSkip = EvaluateConstant<int>(select.Skip);
 
-            return find;
+            return select;
         }
 
         protected override Expression VisitProjection(ProjectionExpression projection)
@@ -91,7 +94,7 @@ namespace MongoDB.Linq
                     _queryObject.Database = collection.Database;
                     _queryObject.DocumentType = collection.DocumentType;
                     break;
-                case MongoExpressionType.Find:
+                case MongoExpressionType.Select:
                     Visit(source);
                     break;
                 default:
@@ -168,20 +171,20 @@ namespace MongoDB.Linq
                 return b;
             }
 
-            protected override Expression VisitFind(FindExpression find)
+            protected override Expression VisitSelect(SelectExpression select)
             {
-                if (find.From.NodeType != (ExpressionType)MongoExpressionType.Collection)
+                if (select.From.NodeType != (ExpressionType)MongoExpressionType.Collection)
                     throw new InvalidQueryException("The query is too complex to be processed by MongoDB. Try building a map-reduce query by hand or simplifying the query and using Linq-to-Objects.");
 
-                bool hasAggregates = new AggregateChecker().HasAggregates(find);
+                bool hasAggregates = new AggregateChecker().HasAggregates(select);
 
-                if (find.GroupBy != null && find.GroupBy.Count > 0)
+                if (select.GroupBy != null)
                     _isMapReduce = true;
                 else if (hasAggregates)
                 {
-                    if (find.Fields.Count == 1 && find.Fields[0].Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)
+                    if (select.Fields.Count == 1 && select.Fields[0].Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)
                     {
-                        var aggregateExpression = (AggregateExpression)find.Fields[0].Expression;
+                        var aggregateExpression = (AggregateExpression)select.Fields[0].Expression;
                         if (aggregateExpression.AggregateType == AggregateType.Count)
                             _isCount = true;
                     }
@@ -190,8 +193,8 @@ namespace MongoDB.Linq
                         _isMapReduce = true;
                 }
 
-                Visit(find.Where);
-                return find;
+                Visit(select.Where);
+                return select;
             }
 
             protected override Expression VisitProjection(ProjectionExpression projection)

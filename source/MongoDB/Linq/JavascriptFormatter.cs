@@ -201,6 +201,13 @@ namespace MongoDB.Linq
             throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
         }
 
+        protected override NewExpression VisitNew(NewExpression nex)
+        {
+            _js.Append(new JavascriptObjectFormatter().FormatObject(nex));
+
+            return nex;
+        }
+
         protected override Expression VisitUnary(UnaryExpression u)
         {
             switch (u.NodeType)
@@ -233,6 +240,36 @@ namespace MongoDB.Linq
                 return string.Format(@"""{0}""", c.Value.ToString());
 
             return c.Value.ToString();
+        }
+
+        private class JavascriptObjectFormatter : MongoExpressionVisitor
+        {
+            private StringBuilder _js;
+            private JavascriptFormatter _formatter;
+
+            public JavascriptObjectFormatter()
+            {
+                _formatter = new JavascriptFormatter();
+            }
+
+            public string FormatObject(NewExpression nex)
+            {
+                _js = new StringBuilder("{");
+                Visit(nex);
+                return _js.Append("}").ToString();
+            }
+
+            protected override NewExpression VisitNew(NewExpression nex)
+            {
+                var parameters = nex.Constructor.GetParameters();
+                for(int i = 0; i < nex.Arguments.Count; i++)
+                {
+                    if (i > 0)
+                        _js.Append(", ");
+                    _js.AppendFormat("{0}: {1}", parameters[i].Name, _formatter.FormatJavascript(nex.Arguments[i]));
+                }
+                return nex;
+            }
         }
     }
 }

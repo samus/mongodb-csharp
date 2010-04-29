@@ -14,6 +14,7 @@ namespace MongoDB.Linq
         private StringBuilder _declare;
         private StringBuilder _loop;
         private StringBuilder _return;
+        private List<KeyValuePair<string, string>> _returnValues;
         private string _currentAggregateName;
 
         public MapReduceReduceFunctionBuilder()
@@ -26,11 +27,19 @@ namespace MongoDB.Linq
             _declare = new StringBuilder();
             _loop = new StringBuilder();
             _return = new StringBuilder();
+            _returnValues = new List<KeyValuePair<string, string>>();
             _declare.Append("function(key, values) {");
             _loop.Append("values.forEach(function(doc) {");
             _return.Append("return { ");
 
             VisitFieldDeclarationList(fields);
+
+            for (int i = 0; i < _returnValues.Count; i++)
+            {
+                if (i > 0)
+                    _return.Append(", ");
+                _return.AppendFormat("\"{0}\": {1}", _returnValues[i].Key, _returnValues[i].Value);
+            }
 
             _loop.Append("});");
             _return.Append("};}");
@@ -67,10 +76,6 @@ namespace MongoDB.Linq
             {
                 _currentAggregateName = fields[i].Name;
                 Visit(fields[i].Expression);
-
-                if (i > 0)
-                    _return.Append(", ");
-                _return.AppendFormat("\"{0}\": {0}", fields[i].Name);
             }
 
             return fields;
@@ -80,24 +85,28 @@ namespace MongoDB.Linq
         {
             _declare.AppendFormat("var {0} = 0;", _currentAggregateName);
             _loop.AppendFormat("{0} += doc.{0};", _currentAggregateName);
+            _returnValues.Add(new KeyValuePair<string, string>(_currentAggregateName, _currentAggregateName));
         }
 
         private void MaxAggregate(AggregateExpression aggregate)
         {
             _declare.AppendFormat("var {0} = Number.MIN_VALUE;", _currentAggregateName);
             _loop.AppendFormat("if(doc.{0} > {0}) {0} = doc.{0};", _currentAggregateName);
+            _returnValues.Add(new KeyValuePair<string, string>(_currentAggregateName, _currentAggregateName));
         }
 
         private void MinAggregate(AggregateExpression aggregate)
         {
             _declare.AppendFormat("var {0} = Number.MAX_VALUE;", _currentAggregateName);
             _loop.AppendFormat("if(doc.{0} < {0}) {0} = doc.{0};", _currentAggregateName);
+            _returnValues.Add(new KeyValuePair<string, string>(_currentAggregateName, _currentAggregateName));
         }
 
         private void SumAggregate(AggregateExpression aggregate)
         {
             _declare.AppendFormat("var {0} = 0;", _currentAggregateName);
             _loop.AppendFormat("{0} += doc.{0};", _currentAggregateName);
+            _returnValues.Add(new KeyValuePair<string, string>(_currentAggregateName, _currentAggregateName));
         }
 
     }

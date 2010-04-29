@@ -138,6 +138,13 @@ namespace MongoDB.Linq
                 return m;
             }
 
+            //protected override Expression VisitParameter(ParameterExpression p)
+            //{
+            //    if (p.Type.IsGenericType && p.Type.GetGenericTypeDefinition() == typeof(IGrouping<,>))
+            //        _isBlocked = true;
+            //    return base.VisitParameter(p);
+            //}
+
             private static bool IsCollection(Type type)
             {
                 //HACK: this is going to generally subvert custom objects that implement ICollection or ICollection<T>, 

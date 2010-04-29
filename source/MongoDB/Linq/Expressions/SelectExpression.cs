@@ -7,23 +7,29 @@ using System.Collections.ObjectModel;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class FindExpression : Expression
+    internal class SelectExpression : Expression
     {
+        private readonly string _alias;
         private readonly bool _distinct;
-        private readonly ReadOnlyCollection<FieldExpression> _fields;
+        private readonly ReadOnlyCollection<FieldDeclaration> _fields;
         private readonly Expression _from;
-        private readonly ReadOnlyCollection<Expression> _groupBy;
-        private readonly Expression _limit;
+        private readonly Expression _groupBy;
+        private readonly Expression _take;
         private readonly ReadOnlyCollection<OrderExpression> _orderBy;
         private readonly Expression _skip;
         private readonly Expression _where;
+
+        public string Alias
+        {
+            get { return _alias; }
+        }
 
         public bool Distinct
         {
             get { return _distinct; }
         }
 
-        public ReadOnlyCollection<FieldExpression> Fields
+        public ReadOnlyCollection<FieldDeclaration> Fields
         {
             get { return _fields; }
         }
@@ -33,14 +39,14 @@ namespace MongoDB.Linq.Expressions
             get { return _from; }
         }
 
-        public ReadOnlyCollection<Expression> GroupBy
+        public Expression GroupBy
         {
             get { return _groupBy; }
         }
 
-        public Expression Limit
+        public Expression Take
         {
-            get { return _limit; }
+            get { return _take; }
         }
 
         public ReadOnlyCollection<OrderExpression> OrderBy
@@ -58,28 +64,26 @@ namespace MongoDB.Linq.Expressions
             get { return _where; }
         }
 
-        public FindExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where)
-            : this(type, fields, from, where, null, null, false, null, null)
+        public SelectExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where)
+            : this(type, alias, fields, from, where, null, null, false, null, null)
         { }
 
-        public FindExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, IEnumerable<Expression> groupBy, bool distinct, Expression skip, Expression limit)
+        public SelectExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool distinct, Expression skip, Expression take)
             : base((ExpressionType)MongoExpressionType.Select, type)
         {
-            _fields = fields as ReadOnlyCollection<FieldExpression>;
+            _fields = fields as ReadOnlyCollection<FieldDeclaration>;
             if (_fields == null)
-                _fields = new List<FieldExpression>(fields).AsReadOnly();
+                _fields = new List<FieldDeclaration>(fields).AsReadOnly();
 
             _orderBy = orderBy as ReadOnlyCollection<OrderExpression>;
             if (_orderBy == null && orderBy != null)
                 _orderBy = new List<OrderExpression>(orderBy).AsReadOnly();
 
-            _groupBy = groupBy as ReadOnlyCollection<Expression>;
-            if (_groupBy == null && groupBy != null)
-                _groupBy = new List<Expression>(groupBy).AsReadOnly();
-
+            _alias = alias;
             _distinct = distinct;
             _from = from;
-            _limit = limit;
+            _groupBy = groupBy;
+            _take = take;
             _where = where;
             _skip = skip;
         }
