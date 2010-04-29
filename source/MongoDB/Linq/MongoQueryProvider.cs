@@ -135,7 +135,7 @@ namespace MongoDB.Linq
                 expression = new FieldBinder().Bind(expression);
                 expression = new QueryBinder(this, expression).Bind(expression);
                 expression = new AggregateRewriter().Rewrite(expression);
-                expression = new FindMerger().Merge(expression);
+                expression = new RedundantSubqueryRemover().Merge(expression);
                 projection = (ProjectionExpression)expression;
             }
 

@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace MongoDB.Linq
 {
-    internal class FindMerger : MongoExpressionVisitor
+    internal class RedundantSubqueryRemover : MongoExpressionVisitor
     {
         private bool _isTopLevel;
 
