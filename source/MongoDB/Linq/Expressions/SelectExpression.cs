@@ -14,7 +14,7 @@ namespace MongoDB.Linq.Expressions
         private readonly ReadOnlyCollection<FieldDeclaration> _fields;
         private readonly Expression _from;
         private readonly Expression _groupBy;
-        private readonly Expression _limit;
+        private readonly Expression _take;
         private readonly ReadOnlyCollection<OrderExpression> _orderBy;
         private readonly Expression _skip;
         private readonly Expression _where;
@@ -44,9 +44,9 @@ namespace MongoDB.Linq.Expressions
             get { return _groupBy; }
         }
 
-        public Expression Limit
+        public Expression Take
         {
-            get { return _limit; }
+            get { return _take; }
         }
 
         public ReadOnlyCollection<OrderExpression> OrderBy
@@ -68,7 +68,7 @@ namespace MongoDB.Linq.Expressions
             : this(type, alias, fields, from, where, null, null, false, null, null)
         { }
 
-        public SelectExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool distinct, Expression skip, Expression limit)
+        public SelectExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool distinct, Expression skip, Expression take)
             : base((ExpressionType)MongoExpressionType.Select, type)
         {
             _fields = fields as ReadOnlyCollection<FieldDeclaration>;
@@ -83,7 +83,7 @@ namespace MongoDB.Linq.Expressions
             _distinct = distinct;
             _from = from;
             _groupBy = groupBy;
-            _limit = limit;
+            _take = take;
             _where = where;
             _skip = skip;
         }

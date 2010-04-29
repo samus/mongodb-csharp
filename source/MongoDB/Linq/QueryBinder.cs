@@ -266,16 +266,16 @@ namespace MongoDB.Linq
                 where = Visit(predicate.Body);
             }
 
-            Expression limit = kind.StartsWith("First") ? Expression.Constant(1) : null;
-            if (limit == null & kind.StartsWith("Single"))
-                limit = Expression.Constant(2);
+            Expression take = kind.StartsWith("First") ? Expression.Constant(1) : null;
+            if (take == null & kind.StartsWith("Single"))
+                take = Expression.Constant(2);
 
-            if (limit != null || where != null)
+            if (take != null || where != null)
             {
                 var alias = GetNextAlias();
                 var fieldProjection = _projector.ProjectFields(projection.Projector, alias, projection.Source.Alias);
                 projection = new ProjectionExpression(
-                    new SelectExpression(source.Type, alias, fieldProjection.Fields, projection.Source, where, null, null, false, null, limit),
+                    new SelectExpression(source.Type, alias, fieldProjection.Fields, projection.Source, where, null, null, false, null, take),
                     fieldProjection.Projector);
             }
             if (isRoot)

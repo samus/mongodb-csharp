@@ -13,7 +13,7 @@ namespace MongoDB.Linq
     {
         private bool _isTopLevel;
 
-        public Expression Merge(Expression expression)
+        public Expression Remove(Expression expression)
         {
             _isTopLevel = true;
             return Visit(expression);
@@ -30,7 +30,7 @@ namespace MongoDB.Linq
             {
                 var fromSelect = (SelectExpression)select.From;
 
-                select = (SelectExpression)new SelectRemover().Remove(select, new[] { fromSelect });
+                select = (SelectExpression)new SubqueryRemover().Remove(select, new[] { fromSelect });
                    
                 var where = select.Where;
                 if(fromSelect.Where != null)
@@ -44,7 +44,7 @@ namespace MongoDB.Linq
                 var groupBy = select.GroupBy != null ? select.GroupBy : fromSelect.GroupBy;
                 var orderBy = select.OrderBy != null && select.OrderBy.Count > 0 ? select.OrderBy : fromSelect.OrderBy;
                 var skip = select.Skip != null ? select.Skip : fromSelect.Skip;
-                var limit = select.Limit != null ? select.Limit : fromSelect.Limit;
+                var take = select.Take != null ? select.Take : fromSelect.Take;
                 bool distinct = select.Distinct | fromSelect.Distinct;
                 var fields = select.Fields.Count > 0 ? select.Fields : fromSelect.Fields;
 
@@ -53,10 +53,10 @@ namespace MongoDB.Linq
                     || groupBy != select.GroupBy
                     || distinct != select.Distinct
                     || skip != select.Skip
-                    || limit != select.Limit
+                    || take != select.Take
                     || fields != select.Fields)
                 {
-                    select = new SelectExpression(select.Type, select.Alias, fields, select.From, where, orderBy, groupBy, distinct, skip, limit);
+                    select = new SelectExpression(select.Type, select.Alias, fields, select.From, where, orderBy, groupBy, distinct, skip, take);
                 }
             }
 
@@ -93,13 +93,13 @@ namespace MongoDB.Linq
             if(fromHasGroupBy && select.Where != null)
                 return false;
 
-            if(fromSelect.Limit != null && (select.Limit != null || select.Skip != null || select.Distinct || selectHasAggregates || selectHasGroupBy))
+            if(fromSelect.Take != null && (select.Take != null || select.Skip != null || select.Distinct || selectHasAggregates || selectHasGroupBy))
                 return false;
 
             if(fromSelect.Skip != null && (select.Skip != null || select.Distinct || selectHasAggregates || selectHasGroupBy))
                 return false;
 
-            if (fromSelect.Distinct && (select.Limit != null || select.Skip != null || !selectIsNameMapProjection || selectHasGroupBy || selectHasAggregates || (selectHasOrderBy && !isTopLevel)))
+            if (fromSelect.Distinct && (select.Take != null || select.Skip != null || !selectIsNameMapProjection || selectHasGroupBy || selectHasAggregates || (selectHasOrderBy && !isTopLevel)))
                 return false;
 
             return true;
@@ -130,25 +130,6 @@ namespace MongoDB.Linq
                     return false;
 
             return true;
-        }
-
-        private class SelectRemover : MongoExpressionVisitor
-        {
-            private HashSet<SelectExpression> _selectsToRemove;
-
-            public Expression Remove(SelectExpression outerSelect, IEnumerable<SelectExpression> selectsToRemove)
-            {
-                _selectsToRemove = new HashSet<SelectExpression>(selectsToRemove);
-                return Visit(outerSelect);
-            }
-
-            protected override Expression VisitSelect(SelectExpression s)
-            {
-                if (_selectsToRemove.Contains(s))
-                    return Visit(s.From);
-
-                return base.VisitSelect(s);
-            }
         }
     }
 }

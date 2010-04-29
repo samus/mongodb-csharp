@@ -121,6 +121,8 @@
     <Compile Include="IMongoFindExecutor.cs" />
     <Compile Include="Linq\AggregateChecker.cs" />
     <Compile Include="Linq\AggregateRewriter.cs" />
+    <Compile Include="Linq\Expressions\AliasesProduced.cs" />
+    <Compile Include="Linq\Expressions\SubqueryRemover.cs" />
     <Compile Include="Linq\MapReduceReduceFunctionBuilder.cs" />
     <Compile Include="Linq\Expressions\FieldGatherer.cs" />
     <Compile Include="Linq\Expressions\AggregateExpression.cs" />
@@ -149,6 +151,7 @@
     <Compile Include="Linq\DocumentQuery.cs" />
     <Compile Include="Linq\MapReduceMapFunctionBuilder.cs" />
     <Compile Include="Linq\MongoQuery.cs" />
+    <Compile Include="Linq\OrderByRewriter.cs" />
     <Compile Include="Linq\ProjectionBuilder.cs" />
     <Compile Include="Linq\MongoQueryable.cs" />
     <Compile Include="Linq\QueryBinder.cs" />

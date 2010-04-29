@@ -65,8 +65,8 @@ namespace MongoDB.Linq
                 }
             }
 
-            if (select.Limit != null)
-                _queryObject.NumberToLimit = EvaluateConstant<int>(select.Limit);
+            if (select.Take != null)
+                _queryObject.NumberToLimit = EvaluateConstant<int>(select.Take);
 
             if (select.Skip != null)
                 _queryObject.NumberToSkip = EvaluateConstant<int>(select.Skip);
