@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IntegrationTests\SecondServer\TestPooledConnectionFactory.cs" />
     <Compile Include="UnitTests\Bson\BsonTestBase.cs" />
     <Compile Include="UnitTests\Bson\TestBsonBinary.cs" />
     <Compile Include="UnitTests\Bson\TestRoundTrips.cs" />
@@ -119,7 +120,7 @@
     <Compile Include="UnitTests\Serialization\Descriptors\OperatorTests.cs" />
     <Compile Include="UnitTests\Serialization\Descriptors\PolymorphicObjectTests.cs" />
     <Compile Include="UnitTests\Serialization\SerializationTestBase.cs" />
-    <Compile Include="IntegrationTests\TestAuthentication.cs" />
+    <Compile Include="IntegrationTests\SecondServer\TestAuthentication.cs" />
     <Compile Include="UnitTests\Bson\TestBsonReader.cs" />
     <Compile Include="UnitTests\IO\TestQueryMessage.cs" />
     <Compile Include="IntegrationTests\TestCollection.cs" />

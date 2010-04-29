@@ -89,28 +89,6 @@ namespace MongoDB.IntegrationTests.Connections
         }
 
         [Test]
-        public void TestServerCirculationWorks()
-        {
-            var builder = new MongoConnectionStringBuilder();
-            builder.AddServer("localhost");
-            builder.AddServer("localhost", 27018);
-            builder.AddServer("localhost", 27019);
-            using(var pool = new PooledConnectionFactory(builder.ToString()))
-            {
-                var connection1 = pool.Open();
-                var connection2 = pool.Open();
-                var connection3 = pool.Open();
-                var connection4 = pool.Open();
-                var connection5 = pool.Open();
-                Assert.AreEqual(27017, connection1.EndPoint.Port);
-                Assert.AreEqual(27018, connection2.EndPoint.Port);
-                Assert.AreEqual(27019, connection3.EndPoint.Port);
-                Assert.AreEqual(27017, connection4.EndPoint.Port);
-                Assert.AreEqual(27018, connection5.EndPoint.Port);
-            }
-        }
-
-        [Test]
         public void TestBorrowOneConnection()
         {
             var builder = new MongoConnectionStringBuilder();
