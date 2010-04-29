@@ -24,17 +24,19 @@ namespace MongoDB.Linq
 
         protected override Expression VisitSelect(SelectExpression select)
         {
-            if (select.From.NodeType != (ExpressionType)MongoExpressionType.Collection)
-                throw new InvalidQueryException("Query is too complicated.");
-
             if (select.From != null)
                 VisitSource(select.From);
             if (select.Where != null)
             {
-                if (_queryAttributes.IsFreeForm)
-                    _queryObject.SetWhereClause(new JavascriptFormatter().FormatJavascript(select.Where));
-                else
+                try
+                {
+                    //try this first, and if it fails, resort to javascript generation, which is slower on the server side.
                     _queryObject.SetQueryDocument(new DocumentFormatter().FormatDocument(select.Where));
+                }
+                catch
+                {
+                    _queryObject.SetWhereClause(new JavascriptFormatter().FormatJavascript(select.Where));
+                }
             }
 
             if (_queryAttributes.IsMapReduce)
@@ -114,13 +116,11 @@ namespace MongoDB.Linq
         private class QueryAttributes
         {
             public bool IsCount { get; private set; }
-            public bool IsFreeForm { get; private set; }
             public bool IsMapReduce { get; private set; }
 
-            public QueryAttributes(bool isCount, bool isFreeForm, bool isMapReduce)
+            public QueryAttributes(bool isCount, bool isMapReduce)
             {
                 IsCount = isCount;
-                IsFreeForm = isFreeForm;
                 IsMapReduce = isMapReduce;
             }
         }
@@ -128,47 +128,14 @@ namespace MongoDB.Linq
         private class QueryAttributesGatherer : MongoExpressionVisitor
         {
             public bool _isCount { get; private set; }
-            public bool _isFreeForm { get; private set; }
             public bool _isMapReduce { get; private set; }
 
             public QueryAttributes Gather(Expression expression)
             {
                 _isCount = false;
-                _isFreeForm = false;
                 _isMapReduce = false;
                 Visit(expression);
-                return new QueryAttributes(_isCount, _isFreeForm, _isMapReduce);
-            }
-
-            protected override Expression VisitBinary(BinaryExpression b)
-            {
-                Visit(b.Left);
-
-                switch (b.NodeType)
-                {
-                    case ExpressionType.Equal:
-                    case ExpressionType.GreaterThan:
-                    case ExpressionType.GreaterThanOrEqual:
-                    case ExpressionType.LessThan:
-                    case ExpressionType.LessThanOrEqual:
-                    case ExpressionType.Modulo:
-                    case ExpressionType.NotEqual:
-                    case ExpressionType.And:
-                    case ExpressionType.AndAlso:
-                    case ExpressionType.ArrayIndex:
-                        break;
-                    default:
-                        _isFreeForm = true;
-                        break;
-                }
-
-                //TODO: figure out how to test this...
-                //if (b.Right.NodeType != ExpressionType.Constant)
-                //    _isComplex = true;
-
-                Visit(b.Right);
-
-                return b;
+                return new QueryAttributes(_isCount, _isMapReduce);
             }
 
             protected override Expression VisitSelect(SelectExpression select)
