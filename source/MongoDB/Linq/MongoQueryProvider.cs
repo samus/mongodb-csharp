@@ -188,7 +188,7 @@ namespace MongoDB.Linq
         }
 
         /// <summary>
-        /// Executes the find.
+        /// Executes the select.
         /// </summary>
         /// <param name="queryObject">The query object.</param>
         /// <returns></returns>

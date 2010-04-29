@@ -21,8 +21,8 @@ namespace MongoDB.Linq.Expressions
                     return VisitField((FieldExpression)exp);
                 case MongoExpressionType.Projection:
                     return VisitProjection((ProjectionExpression)exp);
-                case MongoExpressionType.Find:
-                    return VisitFind((FindExpression)exp);
+                case MongoExpressionType.Select:
+                    return VisitSelect((SelectExpression)exp);
                 case MongoExpressionType.Aggregate:
                     return VisitAggregate((AggregateExpression)exp);
                 case MongoExpressionType.AggregateSubquery:
@@ -66,23 +66,23 @@ namespace MongoDB.Linq.Expressions
             return field;
         }
 
-        protected virtual Expression VisitFind(FindExpression find)
+        protected virtual Expression VisitSelect(SelectExpression select)
         {
-            var from = VisitSource(find.From);
-            var where = Visit(find.Where);
-            var groupBy = Visit(find.GroupBy);
-            var orderBy = VisitOrderBy(find.OrderBy);
-            var skip = Visit(find.Skip);
-            var limit = Visit(find.Limit);
-            var fields = VisitFieldDeclarationList(find.Fields);
-            if (from != find.From || where != find.Where || orderBy != find.OrderBy || groupBy != find.GroupBy || skip != find.Skip || limit != find.Limit || fields != find.Fields)
-                return new FindExpression(find.Type, find.Alias, fields, from, where, orderBy, groupBy, find.Distinct, skip, limit);
-            return find;
+            var from = VisitSource(select.From);
+            var where = Visit(select.Where);
+            var groupBy = Visit(select.GroupBy);
+            var orderBy = VisitOrderBy(select.OrderBy);
+            var skip = Visit(select.Skip);
+            var limit = Visit(select.Limit);
+            var fields = VisitFieldDeclarationList(select.Fields);
+            if (from != select.From || where != select.Where || orderBy != select.OrderBy || groupBy != select.GroupBy || skip != select.Skip || limit != select.Limit || fields != select.Fields)
+                return new SelectExpression(select.Type, select.Alias, fields, from, where, orderBy, groupBy, select.Distinct, skip, limit);
+            return select;
         }
 
         protected virtual Expression VisitProjection(ProjectionExpression projection)
         {
-            var source = (FindExpression)Visit(projection.Source);
+            var source = (SelectExpression)Visit(projection.Source);
             var projector = Visit(projection.Projector);
             if (source != projection.Source || projector != projection.Projector)
                 return new ProjectionExpression(source, projector, projection.Aggregator);
@@ -111,9 +111,9 @@ namespace MongoDB.Linq.Expressions
 
         protected virtual Expression VisitScalar(ScalarExpression scalar)
         {
-            FindExpression find = (FindExpression)Visit(scalar.Find);
-            if (find != scalar.Find)
-                return new ScalarExpression(scalar.Type, find);
+            SelectExpression select = (SelectExpression)Visit(scalar.Select);
+            if (select != scalar.Select)
+                return new ScalarExpression(scalar.Type, select);
             return scalar;
         }
 

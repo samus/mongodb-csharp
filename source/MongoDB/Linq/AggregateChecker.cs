@@ -28,12 +28,12 @@ namespace MongoDB.Linq
             return aggregate;
         }
 
-        protected override Expression VisitFind(FindExpression find)
+        protected override Expression VisitSelect(SelectExpression select)
         {
-            Visit(find.Where);
-            VisitOrderBy(find.OrderBy);
-            VisitFieldDeclarationList(find.Fields);
-            return find;
+            Visit(select.Where);
+            VisitOrderBy(select.OrderBy);
+            VisitFieldDeclarationList(select.Fields);
+            return select;
         }
 
         protected override Expression VisitSubquery(SubqueryExpression subquery)

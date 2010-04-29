@@ -20,10 +20,10 @@ namespace MongoDB.Linq.Expressions
             return _fields.AsReadOnly();
         }
 
-        protected override Expression VisitFind(FindExpression find)
+        protected override Expression VisitSelect(SelectExpression select)
         {
-            VisitFieldDeclarationList(find.Fields);
-            return find;
+            VisitFieldDeclarationList(select.Fields);
+            return select;
         }
 
         protected override Expression VisitField(FieldExpression field)

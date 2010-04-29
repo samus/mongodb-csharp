@@ -32,22 +32,22 @@ namespace MongoDB.Linq
             return Visit(aggregate.AggregateAsSubquery);
         }
 
-        protected override Expression VisitFind(FindExpression find)
+        protected override Expression VisitSelect(SelectExpression select)
         {
-            find = (FindExpression)base.VisitFind(find);
-            if (_lookup.Contains(find.Alias))
+            select = (SelectExpression)base.VisitSelect(select);
+            if (_lookup.Contains(select.Alias))
             {
-                var fields = new List<FieldDeclaration>(find.Fields);
-                foreach (var ae in _lookup[find.Alias])
+                var fields = new List<FieldDeclaration>(select.Fields);
+                foreach (var ae in _lookup[select.Alias])
                 {
                     var name = "_$agg" + fields.Count;
                     var field = new FieldDeclaration(name, ae.AggregateInGroupSelect);
                     _map.Add(ae, new FieldExpression(ae, ae.GroupByAlias, name));
                     fields.Add(field);
                 }
-                return new FindExpression(find.Type, find.Alias, fields, find.From, find.Where, find.OrderBy, find.GroupBy, find.Distinct, find.Skip, find.Limit);
+                return new SelectExpression(select.Type, select.Alias, fields, select.From, select.Where, select.OrderBy, select.GroupBy, select.Distinct, select.Skip, select.Limit);
             }
-            return find;
+            return select;
         }
 
         private class AggregateGatherer : MongoExpressionVisitor

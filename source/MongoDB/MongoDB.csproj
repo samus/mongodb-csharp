@@ -135,7 +135,7 @@
     <Compile Include="Linq\Expressions\OrderType.cs" />
     <Compile Include="Linq\Expressions\ProjectionExpression.cs" />
     <Compile Include="Linq\Expressions\ScalarExpression.cs" />
-    <Compile Include="Linq\Expressions\FindExpression.cs" />
+    <Compile Include="Linq\Expressions\SelectExpression.cs" />
     <Compile Include="Linq\Expressions\ExpressionVisitor.cs" />
     <Compile Include="Linq\Expressions\SubqueryExpression.cs" />
     <Compile Include="Linq\FieldBinder.cs" />

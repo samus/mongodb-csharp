@@ -93,6 +93,7 @@ namespace MongoDB.IntegrationTests.Linq
                                              group p by new { FirstName = p.FirstName, LastName = p.LastName } into g
                                              select new
                                              {
+                                                 Name = g.Key,
                                                  Min = g.Min(x => x.Age),
                                                  Max = g.Max(x => x.Age)
                                              });
