@@ -500,7 +500,16 @@ namespace MongoDB.Linq
 
         private static bool CanBeField(Expression expression)
         {
-            return expression.NodeType == (ExpressionType)MongoExpressionType.Field;
+            switch (expression.NodeType)
+            {
+                case (ExpressionType)MongoExpressionType.Field:
+                case (ExpressionType)MongoExpressionType.Scalar:
+                case (ExpressionType)MongoExpressionType.AggregateSubquery:
+                case (ExpressionType)MongoExpressionType.Aggregate:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private static AggregateType GetAggregateType(string methodName)
