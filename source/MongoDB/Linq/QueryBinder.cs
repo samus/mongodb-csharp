@@ -256,6 +256,18 @@ namespace MongoDB.Linq
                 fieldProjection.Projector);
         }
 
+        private Expression BindFind(Type resultType, Expression source, LambdaExpression selector)
+        {
+            var projection = VisitSequence(source);
+            _map[selector.Parameters[0]] = projection.Projector;
+            var expression = Visit(selector.Body);
+            var alias = GetNextAlias();
+            var fieldProjection = _projector.ProjectFields(expression, alias, projection.Source.Alias);
+            return new ProjectionExpression(
+                new FindExpression(resultType, alias, fieldProjection.Fields, projection.Source, null),
+                fieldProjection.Projector);
+        }
+
         private Expression BindFirstOrSingle(Expression source, LambdaExpression predicate, string kind, bool isRoot)
         {
             var projection = VisitSequence(source);
@@ -351,7 +363,7 @@ namespace MongoDB.Linq
             _groupByMap[projectedElementSubquery] = info;
 
             return new ProjectionExpression(
-                new FindExpression(TypeSystem.GetSequenceType(resultExpression.Type), alias, fieldProjection.Fields, projection.Source, null, null, keyExpression, false, null, null),
+                new FindExpression(TypeSystem.GetSequenceType(resultExpression.Type), alias, new FieldDeclaration[0], projection.Source, null, null, keyExpression, false, null, null),
                 fieldProjection.Projector);
         }
 
@@ -379,18 +391,6 @@ namespace MongoDB.Linq
             var fieldProjection = _projector.ProjectFields(projection.Projector, alias, projection.Source.Alias);
             return new ProjectionExpression(
                 new FindExpression(resultType, alias, fieldProjection.Fields, projection.Source, null, orderings.AsReadOnly(), null, false, null, null),
-                fieldProjection.Projector);
-        }
-
-        private Expression BindFind(Type resultType, Expression source, LambdaExpression selector)
-        {
-            var projection = VisitSequence(source);
-            _map[selector.Parameters[0]] = projection.Projector;
-            var expression = Visit(selector.Body);
-            var alias = GetNextAlias();
-            var fieldProjection = _projector.ProjectFields(expression, alias, projection.Source.Alias);
-            return new ProjectionExpression(
-                new FindExpression(resultType, alias, fieldProjection.Fields, projection.Source, null),
                 fieldProjection.Projector);
         }
 
