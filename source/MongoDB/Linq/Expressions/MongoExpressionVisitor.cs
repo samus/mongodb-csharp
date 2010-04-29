@@ -70,7 +70,7 @@ namespace MongoDB.Linq.Expressions
         {
             var from = VisitSource(find.From);
             var where = Visit(find.Where);
-            var groupBy = VisitExpressionList(find.GroupBy);
+            var groupBy = Visit(find.GroupBy);
             var orderBy = VisitOrderBy(find.OrderBy);
             var skip = Visit(find.Skip);
             var limit = Visit(find.Limit);

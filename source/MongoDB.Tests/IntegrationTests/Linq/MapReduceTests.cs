@@ -69,6 +69,7 @@ namespace MongoDB.IntegrationTests.Linq
         public void NoGrouping()
         {
             var ageRange = Enumerable.ToList(from p in collection.Linq()
+                                             where p.Age > 21
                                              group p by 1 into g
                                              select new
                                              {
@@ -89,7 +90,7 @@ namespace MongoDB.IntegrationTests.Linq
         public void SimpleGrouping()
         {
             var ageRange = Enumerable.ToList(from p in collection.Linq()
-                                             group p by p.Age into g
+                                             group p by p.Age % 10 into g
                                              select new
                                              {
                                                  Min = g.Min(x => x.Age),

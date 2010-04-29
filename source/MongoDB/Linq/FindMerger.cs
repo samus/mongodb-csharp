@@ -41,7 +41,7 @@ namespace MongoDB.Linq
                         where = fromFind.Where;
                 }
 
-                var groupBy = f.GroupBy != null && f.GroupBy.Count > 0 ? f.GroupBy : fromFind.GroupBy;
+                var groupBy = f.GroupBy != null ? f.GroupBy : fromFind.GroupBy;
                 var orderBy = f.OrderBy != null && f.OrderBy.Count > 0 ? f.OrderBy : fromFind.OrderBy;
                 var skip = f.Skip != null ? f.Skip : fromFind.Skip;
                 var limit = f.Limit != null ? f.Limit : fromFind.Limit;
@@ -76,10 +76,10 @@ namespace MongoDB.Linq
 
             var findIsNameMapProjection = IsNameMapProjection(find);
             var findHasOrderBy = find.OrderBy != null && find.OrderBy.Count > 0;
-            var findHasGroupBy = find.GroupBy != null && find.GroupBy.Count > 0;
+            var findHasGroupBy = find.GroupBy != null;
             var findHasAggregates = new AggregateChecker().HasAggregates(find);
             var fromHasOrderBy = fromFind.OrderBy != null && fromFind.OrderBy.Count > 0;
-            var fromHasGroupBy = fromFind.GroupBy != null && fromFind.GroupBy.Count > 0;
+            var fromHasGroupBy = fromFind.GroupBy != null;
 
             if (findHasOrderBy && fromHasOrderBy)
                 return false;

@@ -175,7 +175,7 @@ namespace MongoDB.Linq
 
                 bool hasAggregates = new AggregateChecker().HasAggregates(find);
 
-                if (find.GroupBy != null && find.GroupBy.Count > 0)
+                if (find.GroupBy != null)
                     _isMapReduce = true;
                 else if (hasAggregates)
                 {

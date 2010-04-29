@@ -13,7 +13,7 @@ namespace MongoDB.Linq.Expressions
         private readonly bool _distinct;
         private readonly ReadOnlyCollection<FieldDeclaration> _fields;
         private readonly Expression _from;
-        private readonly ReadOnlyCollection<Expression> _groupBy;
+        private readonly Expression _groupBy;
         private readonly Expression _limit;
         private readonly ReadOnlyCollection<OrderExpression> _orderBy;
         private readonly Expression _skip;
@@ -39,7 +39,7 @@ namespace MongoDB.Linq.Expressions
             get { return _from; }
         }
 
-        public ReadOnlyCollection<Expression> GroupBy
+        public Expression GroupBy
         {
             get { return _groupBy; }
         }
@@ -68,7 +68,7 @@ namespace MongoDB.Linq.Expressions
             : this(type, alias, fields, from, where, null, null, false, null, null)
         { }
 
-        public FindExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, IEnumerable<Expression> groupBy, bool distinct, Expression skip, Expression limit)
+        public FindExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool distinct, Expression skip, Expression limit)
             : base((ExpressionType)MongoExpressionType.Find, type)
         {
             _fields = fields as ReadOnlyCollection<FieldDeclaration>;
@@ -79,13 +79,10 @@ namespace MongoDB.Linq.Expressions
             if (_orderBy == null && orderBy != null)
                 _orderBy = new List<OrderExpression>(orderBy).AsReadOnly();
 
-            _groupBy = groupBy as ReadOnlyCollection<Expression>;
-            if (_groupBy == null && groupBy != null)
-                _groupBy = new List<Expression>(groupBy).AsReadOnly();
-
             _alias = alias;
             _distinct = distinct;
             _from = from;
+            _groupBy = groupBy;
             _limit = limit;
             _where = where;
             _skip = skip;

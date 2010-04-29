@@ -11,7 +11,6 @@ namespace MongoDB.Linq
     internal class MapReduceMapFunctionBuilder : MongoExpressionVisitor
     {
         private JavascriptFormatter _formatter;
-        private Dictionary<string, string> _groupByMap;
         private Dictionary<string, string> _initMap;
         private string _currentAggregateName;
 
@@ -20,20 +19,19 @@ namespace MongoDB.Linq
             _formatter = new JavascriptFormatter();
         }
 
-        public string Build(ReadOnlyCollection<FieldDeclaration> fields, ReadOnlyCollection<Expression> groupBys)
+        public string Build(ReadOnlyCollection<FieldDeclaration> fields, Expression groupBy)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("function() { emit(");
-            _groupByMap = new Dictionary<string, string>();
-            _initMap = new Dictionary<string, string>();
 
-            VisitExpressionList(groupBys);
-            FormatString(sb, _groupByMap, true);
+            var grouping = _formatter.FormatJavascript(groupBy);
+            sb.Append(grouping);
 
             sb.Append(", ");
 
+            _initMap = new Dictionary<string, string>();
             VisitFieldDeclarationList(fields);
-            FormatString(sb, _initMap, false);
+            FormatInit(sb);
 
             sb.Append("); }");
 
@@ -57,12 +55,6 @@ namespace MongoDB.Linq
             return aggregate;
         }
 
-        protected override Expression VisitField(FieldExpression field)
-        {
-            _groupByMap[field.Name] = _formatter.FormatJavascript(field);
-            return field;
-        }
-
         protected override ReadOnlyCollection<FieldDeclaration> VisitFieldDeclarationList(ReadOnlyCollection<FieldDeclaration> fields)
         {
             for (int i = 0, n = fields.Count; i < n; i++)
@@ -74,29 +66,20 @@ namespace MongoDB.Linq
             return fields;
         }
 
-        private void FormatString(StringBuilder sb, Dictionary<string, string> map, bool isGroup)
+        private void FormatInit(StringBuilder sb)
         {
-            if (map.Count == 0)
-                sb.Append("1");
-            else if (map.Count == 1 && isGroup)
+            sb.Append("{");
+            var isFirst = true;
+            foreach (var field in _initMap)
             {
-                sb.Append(map.Single().Value);
-            }
-            else
-            {
-                sb.Append("{");
-                var isFirst = true;
-                foreach (var field in map)
-                {
-                    if (isFirst)
-                        isFirst = false;
-                    else
-                        sb.Append(", ");
+                if (isFirst)
+                    isFirst = false;
+                else
+                    sb.Append(", ");
 
-                    sb.AppendFormat("\"{0}\": {1}", field.Key, field.Value);
-                }
-                sb.Append("}");
+                sb.AppendFormat("\"{0}\": {1}", field.Key, field.Value);
             }
+            sb.Append("}");
         }
 
     }

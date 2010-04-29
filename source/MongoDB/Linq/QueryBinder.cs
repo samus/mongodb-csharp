@@ -302,16 +302,11 @@ namespace MongoDB.Linq
                 elementExpression = Visit(elementSelector.Body);
             }
 
-            var keyProjection = _projector.ProjectFields(keyExpression, projection.Source.Alias, projection.Source.Alias);
-            var keyGroupExpressions = keyProjection.Fields.Select(f => f.Expression);
-
             var subqueryBasis = VisitSequence(source);
             _map[keySelector.Parameters[0]] = subqueryBasis.Projector;
-            var subqueryKey = Visit(keySelector.Body);
+            var subqueryKeyExpression = Visit(keySelector.Body);
 
-            var subqueryKeyProjection = _projector.ProjectFields(subqueryKey, subqueryBasis.Source.Alias, subqueryBasis.Source.Alias);
-            var subqueryGroupExpressions = subqueryKeyProjection.Fields.Select(f => f.Expression);
-            var subqueryCorrelation = BuildPredicateEqual(subqueryGroupExpressions, keyGroupExpressions);
+            var subqueryCorrelation = Expression.Equal(keyExpression, subqueryKeyExpression);
 
             var subqueryElementExpression = subqueryBasis.Projector;
             if (elementSelector != null)
@@ -338,7 +333,7 @@ namespace MongoDB.Linq
                 var saveGroupElement = _currentGroupElement;
                 _currentGroupElement = elementSubquery;
 
-                _map[resultSelector.Parameters[0]] = keyProjection.Projector;
+                _map[resultSelector.Parameters[0]] = keyExpression;
                 _map[resultSelector.Parameters[1]] = elementSubquery;
                 resultExpression = Visit(resultSelector.Body);
                 _currentGroupElement = saveGroupElement;
@@ -356,7 +351,7 @@ namespace MongoDB.Linq
             _groupByMap[projectedElementSubquery] = info;
 
             return new ProjectionExpression(
-                new FindExpression(TypeSystem.GetSequenceType(resultExpression.Type), alias, fieldProjection.Fields, projection.Source, null, null, keyGroupExpressions, false, null, null),
+                new FindExpression(TypeSystem.GetSequenceType(resultExpression.Type), alias, fieldProjection.Fields, projection.Source, null, null, keyExpression, false, null, null),
                 fieldProjection.Projector);
         }
 
