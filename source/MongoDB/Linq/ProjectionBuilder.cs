@@ -13,14 +13,18 @@ namespace MongoDB.Linq
     {
         private MongoQueryObject _queryObject;
         private ParameterExpression _document;
+        private GroupingKeyDeterminer _determiner;
+
+        public ProjectionBuilder()
+        {
+            _determiner = new GroupingKeyDeterminer();
+        }
 
         public LambdaExpression Build(MongoQueryObject queryObject, Expression projector)
         {
             _queryObject = queryObject;
             if (_queryObject.IsMapReduce)
-            {
                 _document = Expression.Parameter(typeof(Document), "document");
-            }
             else
                 _document = Expression.Parameter(queryObject.DocumentType, "document");
 
@@ -32,19 +36,36 @@ namespace MongoDB.Linq
         {
             if (_queryObject.IsMapReduce)
             {
-                var value = Expression.Call(
-                    _document,
-                    "Get",
-                    new [] { typeof(Document) },
-                    Expression.Constant("value"));
+                var parts = field.Name.Split('.');
 
-                return Expression.Convert(
-                    Expression.Call(
-                        value,
+                bool isGroupingField = _determiner.IsGroupingKey(field);
+                Expression current;
+                if(parts.Contains("Key") && isGroupingField)
+                    current = _document;
+                else
+                {
+                    current = Expression.Call(
+                        _document,
                         "Get",
-                        new [] { field.Type },
-                        Expression.Constant(field.Name)),
-                    field.Type);
+                        new [] { typeof(Document) },
+                        Expression.Constant("value"));
+                }
+
+                for (int i = 0, n = parts.Length; i < n; i++)
+                {
+                    var type = i == n - 1 ? field.Type : typeof(Document);
+
+                    if (parts[i] == "Key" && isGroupingField)
+                        parts[i] = "_id";
+
+                    current = Expression.Call(
+                        current,
+                        "Get",
+                        new[] { type },
+                        Expression.Constant(parts[i]));
+                }
+
+                return current;
             }
             else
                 return Visit(field.Expression);
@@ -58,37 +79,32 @@ namespace MongoDB.Linq
             return p;
         }
 
-        //private class AggregateNameMapGatherer : MongoExpressionVisitor
-        //{
-        //    private Dictionary<string, string> _map;
+        private class GroupingKeyDeterminer : MongoExpressionVisitor
+        {
+            private bool _isGroupingKey;
 
-        //    public Dictionary<string, string> Gather(Expression expression)
-        //    {
-        //        _map = new Dictionary<string, string>();
-        //        Visit(expression);
-        //        return _map;
-        //    }
+            public bool IsGroupingKey(Expression exp)
+            {
+                _isGroupingKey = false;
+                Visit(exp);
+                return _isGroupingKey;
+            }
 
-        //    protected override Expression VisitAggregate(AggregateExpression aggregate)
-        //    {
-        //        return base.VisitAggregate(aggregate);
-        //    }
+            protected override Expression Visit(Expression exp)
+            {
+                if (exp == null)
+                    return exp;
 
-        //    protected override NewExpression VisitNew(NewExpression nex)
-        //    {
+                if (_isGroupingKey)
+                    return exp;
 
-        //        return base.VisitNew(nex);
-        //    }
-
-        //    protected override ReadOnlyCollection<FieldDeclaration> VisitFieldDeclarationList(ReadOnlyCollection<FieldDeclaration> fields)
-        //    {
-        //        for (int i = 0, n = fields.Count; i < n; i++)
-        //        {
-        //            Visit(fields[i].Expression);
-        //        }
-
-        //        return fields;
-        //    }
-        //}
+                if (exp.Type.IsGenericType && exp.Type.GetGenericTypeDefinition() == typeof(Grouping<,>))
+                {
+                    _isGroupingKey = true;
+                    return exp;
+                }
+                return base.Visit(exp);
+            }
+        }
     }
 }

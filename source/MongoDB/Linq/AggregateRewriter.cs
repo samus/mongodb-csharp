@@ -42,7 +42,9 @@ namespace MongoDB.Linq
                 {
                     var name = "_$agg" + fields.Count;
                     var field = new FieldDeclaration(name, ae.AggregateInGroupSelect);
-                    _map.Add(ae, new FieldExpression(ae, ae.GroupByAlias, name));
+                    if (_map.ContainsKey(ae))
+                        continue;
+                    _map.Add(ae, new FieldExpression(ae.AggregateInGroupSelect, ae.GroupByAlias, name));
                     fields.Add(field);
                 }
                 return new SelectExpression(select.Type, select.Alias, fields, select.From, select.Where, select.OrderBy, select.GroupBy, select.Distinct, select.Skip, select.Limit);
