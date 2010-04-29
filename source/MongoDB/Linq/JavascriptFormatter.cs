@@ -144,6 +144,9 @@ namespace MongoDB.Linq
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
+            if (m == null)
+                return m;
+
             FieldExpression field;
             if (m.Method.DeclaringType == typeof(Queryable) || m.Method.DeclaringType == typeof(Enumerable))
             {
@@ -166,15 +169,35 @@ namespace MongoDB.Linq
                     throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
                 Visit(field);
 
-                var value = EvaluateConstant<string>(m.Arguments[0]);
-                if (m.Method.Name == "StartsWith")
-                    _js.AppendFormat("/^{0}/", value);
-                else if (m.Method.Name == "EndsWith")
-                    _js.AppendFormat("/{0}$/", value);
-                else if (m.Method.Name == "Contains")
-                    _js.AppendFormat("/{0}/", value);
-                else
-                    throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
+                switch (m.Method.Name)
+                {
+                    case "StartsWith":
+                        _js.AppendFormat("/^{0}/", EvaluateConstant<string>(m.Arguments[0]));
+                        break;
+                    case "EndsWith":
+                        _js.AppendFormat("/{0}$/", EvaluateConstant<string>(m.Arguments[0]));
+                        break;
+                    case "Contains":
+                        _js.AppendFormat("/{0}/", EvaluateConstant<string>(m.Arguments[0]));
+                        break;
+                    case "SubString":
+                        if (m.Arguments.Count == 1)
+                            _js.AppendFormat(".substr({0})", EvaluateConstant<int>(m.Arguments[0]));
+                        else if (m.Arguments.Count == 2)
+                            _js.AppendFormat(".substr({0})", EvaluateConstant<int>(m.Arguments[0]), EvaluateConstant<int>(m.Arguments[1]));
+                        break;
+                    case "ToLower":
+                        _js.Append(".toLowerCase()");
+                        break;
+                    case "ToUpper":
+                        _js.Append(".toUpperCase()");
+                        break;
+                    case "get_Chars":
+                        _js.AppendFormat("[{0}]", EvaluateConstant<int>(m.Arguments[0]));
+                        break;
+                    default:
+                        throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
+                }
 
                 return m;
             }

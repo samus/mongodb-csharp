@@ -84,7 +84,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void NoGrouping()
         {
-            var ageRange = Enumerable.ToList(from p in collection.Linq()
+            var grouping = Enumerable.ToList(from p in collection.Linq()
                                              where p.Age > 21
                                              group p by 1 into g
                                              select new
@@ -95,17 +95,17 @@ namespace MongoDB.IntegrationTests.Linq
                                                  Sum = g.Sum(x => x.Age)
                                              });
 
-            Assert.AreEqual(1, ageRange.Count);
-            Assert.AreEqual(35, ageRange.Single().Min);
-            Assert.AreEqual(42, ageRange.Single().Max);
-            Assert.AreEqual(2, ageRange.Single().Count);
-            Assert.AreEqual(77, ageRange.Single().Sum);
+            Assert.AreEqual(1, grouping.Count);
+            Assert.AreEqual(35, grouping.Single().Min);
+            Assert.AreEqual(42, grouping.Single().Max);
+            Assert.AreEqual(2, grouping.Single().Count);
+            Assert.AreEqual(77, grouping.Single().Sum);
         }
 
         [Test]
         public void Expression_Grouping()
         {
-            var ageRange = Enumerable.ToList(from p in collection.Linq()
+            var grouping = Enumerable.ToList(from p in collection.Linq()
                                              group p by p.Age % 2 into g
                                              select new
                                              {
@@ -116,21 +116,42 @@ namespace MongoDB.IntegrationTests.Linq
                                                  Sum = g.Sum(x => x.Age)
                                              });
 
-            Assert.AreEqual(2, ageRange.Count);
-            Assert.AreEqual(1, ageRange[0].Count);
-            Assert.AreEqual(42, ageRange[0].Max);
-            Assert.AreEqual(42, ageRange[0].Min);
-            Assert.AreEqual(42, ageRange[0].Sum);
-            Assert.AreEqual(2, ageRange[1].Count);
-            Assert.AreEqual(35, ageRange[1].Max);
-            Assert.AreEqual(21, ageRange[1].Min);
-            Assert.AreEqual(56, ageRange[1].Sum);
+            Assert.AreEqual(2, grouping.Count);
+            Assert.AreEqual(1, grouping[0].Count);
+            Assert.AreEqual(42, grouping[0].Max);
+            Assert.AreEqual(42, grouping[0].Min);
+            Assert.AreEqual(42, grouping[0].Sum);
+            Assert.AreEqual(2, grouping[1].Count);
+            Assert.AreEqual(35, grouping[1].Max);
+            Assert.AreEqual(21, grouping[1].Min);
+            Assert.AreEqual(56, grouping[1].Sum);
+        }
+
+        [Test]
+        public void Expression_Grouping2()
+        {
+            var grouping = Enumerable.ToList(from p in collection.Linq()
+                                             group p by p.FirstName[0] into g
+                                             select new
+                                             {
+                                                 FirstLetter = g.Key,
+                                                 Min = g.Min(x => x.Age),
+                                                 Max = g.Max(x => x.Age)
+                                             });
+
+            Assert.AreEqual(2, grouping.Count);
+            Assert.AreEqual('B', grouping[0].FirstLetter);
+            Assert.AreEqual(42, grouping[0].Max);
+            Assert.AreEqual(42, grouping[0].Min);
+            Assert.AreEqual('J', grouping[1].FirstLetter);
+            Assert.AreEqual(35, grouping[1].Max);
+            Assert.AreEqual(21, grouping[1].Min);
         }
 
         [Test]
         public void Complex()
         {
-            var ageRange = Enumerable.ToList(from p in collection.Linq()
+            var grouping = Enumerable.ToList(from p in collection.Linq()
                                              where p.Age > 21
                                              group p by new { FirstName = p.FirstName, LastName = p.LastName } into g
                                              select new
@@ -140,13 +161,13 @@ namespace MongoDB.IntegrationTests.Linq
                                                  Max = g.Max(x => x.Age) + 100
                                              });
 
-            Assert.AreEqual(2, ageRange.Count);
-            Assert.AreEqual("Bob McBob", ageRange[0].Name);
-            Assert.AreEqual(142, ageRange[0].Max);
-            Assert.AreEqual(142, ageRange[0].Min);
-            Assert.AreEqual("Jane McJane", ageRange[1].Name);
-            Assert.AreEqual(135, ageRange[1].Max);
-            Assert.AreEqual(135, ageRange[1].Min);
+            Assert.AreEqual(2, grouping.Count);
+            Assert.AreEqual("Bob McBob", grouping[0].Name);
+            Assert.AreEqual(142, grouping[0].Max);
+            Assert.AreEqual(142, grouping[0].Min);
+            Assert.AreEqual("Jane McJane", grouping[1].Name);
+            Assert.AreEqual(135, grouping[1].Max);
+            Assert.AreEqual(135, grouping[1].Min);
         }
     }
 }
