@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class AggregateExpression : Expression
+    internal class AggregateExpression : MongoExpression
     {
         private readonly AggregateType _aggregateType;
         private readonly Expression _argument;
@@ -28,7 +28,7 @@ namespace MongoDB.Linq.Expressions
         }
 
         public AggregateExpression(Type type, AggregateType aggregateType, Expression argument, bool distinct)
-            : base((ExpressionType)MongoExpressionType.Aggregate, type)
+            : base(MongoExpressionType.Aggregate, type)
         {
             _aggregateType = aggregateType;
             _argument = argument;

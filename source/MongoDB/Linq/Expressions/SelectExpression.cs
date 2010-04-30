@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class SelectExpression : Expression
+    internal class SelectExpression : MongoExpression
     {
         private readonly string _alias;
         private readonly bool _distinct;
@@ -69,7 +69,7 @@ namespace MongoDB.Linq.Expressions
         { }
 
         public SelectExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool distinct, Expression skip, Expression take)
-            : base((ExpressionType)MongoExpressionType.Select, type)
+            : base(MongoExpressionType.Select, type)
         {
             _fields = fields as ReadOnlyCollection<FieldDeclaration>;
             if (_fields == null)

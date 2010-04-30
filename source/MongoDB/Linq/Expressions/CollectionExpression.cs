@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class CollectionExpression : Expression
+    internal class CollectionExpression : MongoExpression
     {
         private readonly string _alias;
         private readonly string _collectionName;
@@ -34,7 +34,7 @@ namespace MongoDB.Linq.Expressions
         }
 
         public CollectionExpression(Type type, string alias, IMongoDatabase database, string collectionName, Type documentType)
-            : base((ExpressionType)MongoExpressionType.Collection, type)
+            : base(MongoExpressionType.Collection, type)
         {
             _alias = alias;
             _collectionName = collectionName;

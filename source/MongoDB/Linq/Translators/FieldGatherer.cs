@@ -5,7 +5,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace MongoDB.Linq.Expressions
+using MongoDB.Linq.Expressions;
+
+namespace MongoDB.Linq.Translators
 {
     internal class FieldGatherer : MongoExpressionVisitor
     {

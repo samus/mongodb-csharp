@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class AggregateSubqueryExpression : Expression
+    internal class AggregateSubqueryExpression : MongoExpression
     {
         private Expression _aggregateInGroupSelect;
         private ScalarExpression _aggregateAsSubquery;
@@ -28,7 +28,7 @@ namespace MongoDB.Linq.Expressions
         }
 
         public AggregateSubqueryExpression(string groupByAlias, Expression aggregateInGroupSelect, ScalarExpression aggregateAsSubquery)
-            : base((ExpressionType)MongoExpressionType.AggregateSubquery, aggregateAsSubquery.Type)
+            : base(MongoExpressionType.AggregateSubquery, aggregateAsSubquery.Type)
         {
             _groupByAlias = groupByAlias;
             _aggregateInGroupSelect = aggregateInGroupSelect;

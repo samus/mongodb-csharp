@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal abstract class SubqueryExpression : Expression
+    internal abstract class SubqueryExpression : MongoExpression
     {
         private SelectExpression _select;
 
@@ -16,7 +16,7 @@ namespace MongoDB.Linq.Expressions
         }
 
         protected SubqueryExpression(MongoExpressionType nodeType, Type type, SelectExpression select)
-            : base((ExpressionType)nodeType, type)
+            : base(nodeType, type)
         {
             _select = select;
         }

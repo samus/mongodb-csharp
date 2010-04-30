@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class ProjectionExpression : Expression
+    internal class ProjectionExpression : MongoExpression
     {
         private readonly SelectExpression _source;
         private readonly Expression _projector;
@@ -32,7 +32,7 @@ namespace MongoDB.Linq.Expressions
         { }
 
         public ProjectionExpression(SelectExpression source, Expression projector, LambdaExpression aggregator)
-            : base((ExpressionType)MongoExpressionType.Projection, source.Type)
+            : base(MongoExpressionType.Projection, source.Type)
         {
             _source = source;
             _projector = projector;

@@ -14,6 +14,6 @@ namespace MongoDB.Linq.Expressions
         Order,
         Aggregate,
         AggregateSubquery,
-        Scalar
+        Scalar,
     }
 }
