@@ -125,46 +125,46 @@ namespace MongoDB.Bson
         /// <param name="typeNumber">The type number.</param>
         /// <returns></returns>
         public Object ReadElementType(int typeNumber){
-            switch((BsonDataType)typeNumber){
-                case BsonDataType.Null:
-                case BsonDataType.Undefined:
+            switch((BsonType)typeNumber){
+                case BsonType.Null:
+                case BsonType.Undefined:
                     return null;
-                case BsonDataType.MinKey:
+                case BsonType.MinKey:
                     return MongoMinKey.Value;
-                case BsonDataType.MaxKey:
+                case BsonType.MaxKey:
                     return MongoMaxKey.Value;
-                case BsonDataType.Boolean:
+                case BsonType.Boolean:
                     Position++;
                     return _reader.ReadBoolean();
-                case BsonDataType.Integer:
+                case BsonType.Integer:
                     Position += 4;
                     return _reader.ReadInt32();
-                case BsonDataType.Long:
+                case BsonType.Long:
                     Position += 8;
                     return _reader.ReadInt64();
-                case BsonDataType.Date:
+                case BsonType.Date:
                     return ReadDateTime();
-                case BsonDataType.Oid:
+                case BsonType.Oid:
                     Position += 12;
                     return new Oid(_reader.ReadBytes(12));
-                case BsonDataType.Number:
+                case BsonType.Number:
                     Position += 8;
                     return _reader.ReadDouble();
-                case BsonDataType.String:
+                case BsonType.String:
                     return ReadLengthString();
-                case BsonDataType.Symbol:
+                case BsonType.Symbol:
                     return new MongoSymbol(ReadLengthString());
-                case BsonDataType.Obj:
+                case BsonType.Obj:
                     return ReadObject();
-                case BsonDataType.Array:
+                case BsonType.Array:
                     return ReadArray();
-                case BsonDataType.Regex:
+                case BsonType.Regex:
                     return ReadRegex();
-                case BsonDataType.Code:
+                case BsonType.Code:
                     return ReadCode();
-                case BsonDataType.CodeWScope:
+                case BsonType.CodeWScope:
                     return ReadScope();
-                case BsonDataType.Binary:
+                case BsonType.Binary:
                     return ReadBinary();
                 default:
                     throw new ArgumentOutOfRangeException(String.Format("Type Number: {0} not recognized", typeNumber));

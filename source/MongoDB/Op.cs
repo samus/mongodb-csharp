@@ -147,7 +147,7 @@ namespace MongoDB
         /// </summary>
         /// <param name="bsonType">Type of the bson.</param>
         /// <returns></returns>
-        public static Op Type(BsonDataType bsonType)
+        public static Op Type(BsonType bsonType)
         {
             return (Op)new Op().Add("$type", (int)bsonType);
         }

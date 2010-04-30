@@ -49,62 +49,62 @@ namespace MongoDB.Bson
         /// <summary>
         /// Writes the value.
         /// </summary>
-        /// <param name="dataType">Type of the data.</param>
+        /// <param name="type">Type of the data.</param>
         /// <param name="obj">The obj.</param>
-        public void WriteValue(BsonDataType dataType, Object obj){
-            switch(dataType){
-                case BsonDataType.MinKey:
-                case BsonDataType.MaxKey:
-                case BsonDataType.Null:
+        public void WriteValue(BsonType type, Object obj){
+            switch(type){
+                case BsonType.MinKey:
+                case BsonType.MaxKey:
+                case BsonType.Null:
                     return;
-                case BsonDataType.Boolean:
+                case BsonType.Boolean:
                     _writer.Write((bool)obj);
                     return;
-                case BsonDataType.Integer:
+                case BsonType.Integer:
                     _writer.Write((int)obj);
                     return;
-                case BsonDataType.Long:
+                case BsonType.Long:
                     _writer.Write((long)obj);
                     return;
-                case BsonDataType.Date:
+                case BsonType.Date:
                     Write((DateTime)obj);
                     return;
-                case BsonDataType.Oid:
+                case BsonType.Oid:
                     Write((Oid)obj);
                     return;
-                case BsonDataType.Number:
+                case BsonType.Number:
                     _writer.Write(Convert.ToDouble(obj));
                     return;
-                case BsonDataType.String:{
+                case BsonType.String:{
                     Write((String)obj);
                     return;
                 }
-                case BsonDataType.Obj:
+                case BsonType.Obj:
                     if(obj is DBRef)
                         Write((DBRef)obj);
                     else
                         WriteObject(obj);
                     return;
-                case BsonDataType.Array:
+                case BsonType.Array:
                     WriteArray((IEnumerable)obj);
                     return;
-                case BsonDataType.Regex:{
+                case BsonType.Regex:{
                     Write((MongoRegex)obj);
                     return;
                 }
-                case BsonDataType.Code:{
+                case BsonType.Code:{
                     Write((Code)obj);
                     return;
                 }
-                case BsonDataType.Symbol:{
-                    this.WriteValue(BsonDataType.String, ((MongoSymbol)obj).Value);
+                case BsonType.Symbol:{
+                    this.WriteValue(BsonType.String, ((MongoSymbol)obj).Value);
                     return;
                 }
-                case BsonDataType.CodeWScope:{
+                case BsonType.CodeWScope:{
                     Write((CodeWScope)obj);
                     return;
                 }
-                case BsonDataType.Binary:{
+                case BsonType.Binary:{
                     if(obj is Guid)
                         Write((Guid)obj);
                     else
@@ -157,8 +157,8 @@ namespace MongoDB.Bson
         /// <param name="codeScope">The code scope.</param>
         private void Write(CodeWScope codeScope){
             _writer.Write(CalculateSize(codeScope));
-            WriteValue(BsonDataType.String, codeScope.Value);
-            WriteValue(BsonDataType.Obj, codeScope.Scope);
+            WriteValue(BsonType.String, codeScope.Value);
+            WriteValue(BsonType.Obj, codeScope.Scope);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace MongoDB.Bson
         /// </summary>
         /// <param name="code">The code.</param>
         private void Write(Code code){
-            WriteValue(BsonDataType.String, code.Value);
+            WriteValue(BsonType.String, code.Value);
         }
 
         /// <summary>
@@ -283,44 +283,44 @@ namespace MongoDB.Bson
                 return 0;
 
             switch(TranslateToBsonType(obj)){
-                case BsonDataType.MinKey:
-                case BsonDataType.MaxKey:
-                case BsonDataType.Null:
+                case BsonType.MinKey:
+                case BsonType.MaxKey:
+                case BsonType.Null:
                     return 0;
-                case BsonDataType.Boolean:
+                case BsonType.Boolean:
                     return 1;
-                case BsonDataType.Integer:
+                case BsonType.Integer:
                     return 4;
-                case BsonDataType.Long:
-                case BsonDataType.Date:
+                case BsonType.Long:
+                case BsonType.Date:
                     return 8;
-                case BsonDataType.Oid:
+                case BsonType.Oid:
                     return 12;
-                case BsonDataType.Number:
+                case BsonType.Number:
                     return sizeof(Double);
-                case BsonDataType.String:
+                case BsonType.String:
                     return CalculateSize((string)obj);
-                case BsonDataType.Obj:{
+                case BsonType.Obj:{
                     if(obj.GetType() == typeof(DBRef))
                         return CalculateSize((DBRef)obj);
                     return CalculateSizeObject(obj);
                 }
-                case BsonDataType.Array:
+                case BsonType.Array:
                     return CalculateSize((IEnumerable)obj);
-                case BsonDataType.Regex:{
+                case BsonType.Regex:{
                     return CalculateSize((MongoRegex)obj);
                 }
-                case BsonDataType.Code:
+                case BsonType.Code:
                     return CalculateSize((Code)obj);
-                case BsonDataType.CodeWScope:{
+                case BsonType.CodeWScope:{
                     return CalculateSize((CodeWScope)obj);
                 }
-                case BsonDataType.Binary:{
+                case BsonType.Binary:{
                     if(obj is Guid)
                         return CalculateSize((Guid)obj);
                     return CalculateSize((Binary)obj);
                 }
-                case BsonDataType.Symbol:{
+                case BsonType.Symbol:{
                     MongoSymbol s = (MongoSymbol)obj;
                     return CalculateSize(s.Value,true);
                 }
@@ -483,10 +483,10 @@ namespace MongoDB.Bson
         /// </summary>
         /// <param name="obj">The obj.</param>
         /// <returns></returns>
-        protected BsonDataType TranslateToBsonType(object obj){
+        protected BsonType TranslateToBsonType(object obj){
             //TODO:Convert to use a dictionary
             if(obj == null)
-                return BsonDataType.Null;
+                return BsonType.Null;
 
             var type = obj.GetType();
 
@@ -494,45 +494,45 @@ namespace MongoDB.Bson
                 type = Enum.GetUnderlyingType(type);
 
             if(type == typeof(Double))
-                return BsonDataType.Number;
+                return BsonType.Number;
             if(type == typeof(Single))
-                return BsonDataType.Number;
+                return BsonType.Number;
             if(type == typeof(String))
-                return BsonDataType.String;
+                return BsonType.String;
             if(type == typeof(int))
-                return BsonDataType.Integer;
+                return BsonType.Integer;
             if(type == typeof(long))
-                return BsonDataType.Long;
+                return BsonType.Long;
             if(type == typeof(bool))
-                return BsonDataType.Boolean;
+                return BsonType.Boolean;
             if(type == typeof(Oid))
-                return BsonDataType.Oid;
+                return BsonType.Oid;
             if(type == typeof(DateTime))
-                return BsonDataType.Date;
+                return BsonType.Date;
             if(type == typeof(MongoRegex))
-                return BsonDataType.Regex;
+                return BsonType.Regex;
             if(type == typeof(DBRef))
-                return BsonDataType.Obj;
+                return BsonType.Obj;
             if(type == typeof(Code))
-                return BsonDataType.Code;
+                return BsonType.Code;
             if(type == typeof(CodeWScope))
-                return BsonDataType.CodeWScope;
+                return BsonType.CodeWScope;
             if(type == typeof(DBNull))
-                return BsonDataType.Null;
+                return BsonType.Null;
             if(type == typeof(Binary))
-                return BsonDataType.Binary;
+                return BsonType.Binary;
             if(type == typeof(Guid))
-                return BsonDataType.Binary;
+                return BsonType.Binary;
             if(type == typeof(MongoMinKey))
-                return BsonDataType.MinKey;
+                return BsonType.MinKey;
             if(type == typeof(MongoMaxKey))
-                return BsonDataType.MaxKey;
+                return BsonType.MaxKey;
             if(type == typeof(MongoSymbol))
-                return BsonDataType.Symbol;
+                return BsonType.Symbol;
             if(_descriptor.IsArray(obj))
-                return BsonDataType.Array;
+                return BsonType.Array;
             if(_descriptor.IsObject(obj))
-                return BsonDataType.Obj;
+                return BsonType.Obj;
 
             throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized", type.FullName));
         }

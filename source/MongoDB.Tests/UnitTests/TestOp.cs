@@ -134,9 +134,9 @@ namespace MongoDB.UnitTests
         [Test]
         public void Type()
         {
-            var op = Op.Type(BsonDataType.Boolean);
+            var op = Op.Type(BsonType.Boolean);
 
-            Assert.AreEqual((int)BsonDataType.Boolean, op["$type"]);
+            Assert.AreEqual((int)BsonType.Boolean, op["$type"]);
         }
 
         [Test]
