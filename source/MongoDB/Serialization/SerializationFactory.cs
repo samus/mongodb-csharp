@@ -1,6 +1,6 @@
 ﻿using System;
 using MongoDB.Bson;
-using MongoDB.Configuration.Mapping;
+using MongoDB.Configuration;
 
 namespace MongoDB.Serialization
 {
@@ -9,24 +9,24 @@ namespace MongoDB.Serialization
     /// </summary>
     public class SerializationFactory : ISerializationFactory
     {
-        private readonly IMappingStore _mappingStore;
+        private readonly MongoConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
         /// </summary>
         public SerializationFactory()
-            : this(new AutoMappingStore())
+            : this(MongoConfiguration.Default)
         { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
         /// </summary>
-        /// <param name="mappingStore">The mapping store.</param>
-        public SerializationFactory(IMappingStore mappingStore){
-            if(mappingStore == null)
-                throw new ArgumentNullException("mappingStore");
-
-            _mappingStore = mappingStore;
+        /// <param name="configuration">The mongo configuration.</param>
+        public SerializationFactory(MongoConfiguration configuration)
+        {
+            _configuration = configuration;
+            if(configuration == null)
+                throw new ArgumentNullException("configuration");
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace MongoDB.Serialization
         /// <returns></returns>
         public IBsonObjectBuilder GetBsonBuilder(Type rootType)
         {
-            return new BsonClassMapBuilder(_mappingStore, rootType);
+            return new BsonClassMapBuilder(_configuration.MappingStore, rootType);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace MongoDB.Serialization
         /// <returns></returns>
         public IBsonObjectDescriptor GetBsonDescriptor(Type rootType)
         {
-            return new BsonClassMapDescriptor(_mappingStore, rootType);
+            return new BsonClassMapDescriptor(_configuration.MappingStore, rootType);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace MongoDB.Serialization
             if (typeof(Document).IsAssignableFrom(rootType))
                 throw new InvalidOperationException("Documents cannot have a default collection name.");
 
-            return _mappingStore.GetClassMap(rootType).CollectionName;
+            return _configuration.MappingStore.GetClassMap(rootType).CollectionName;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace MongoDB.Serialization
             if (typeof(Document).IsAssignableFrom(type))
                 return new DocumentObjectDescriptorAdapter();
 
-            return new ClassMapObjectDescriptorAdapter(_mappingStore.GetClassMap(type));
+            return new ClassMapObjectDescriptorAdapter(_configuration.MappingStore.GetClassMap(type));
         }
     }
 }

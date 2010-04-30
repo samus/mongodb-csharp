@@ -19,7 +19,7 @@ namespace MongoDB.Configuration
         public MongoConfiguration(){
             ConnectionString = string.Empty;
             MappingStore = new AutoMappingStore();
-            SerializationFactory = new SerializationFactory(MappingStore);
+            SerializationFactory = new SerializationFactory(this);
         }
 
         /// <summary>

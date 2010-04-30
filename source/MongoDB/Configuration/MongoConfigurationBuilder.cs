@@ -3,7 +3,6 @@ using System.Configuration;
 
 using MongoDB.Configuration.Builders;
 using MongoDB.Configuration.Mapping;
-using MongoDB.Serialization;
 
 namespace MongoDB.Configuration
 {
@@ -22,15 +21,14 @@ namespace MongoDB.Configuration
         public MongoConfiguration BuildConfiguration()
         {
             if (_mappingStoreBuilder == null)
-                return new MongoConfiguration
-                {
-                    ConnectionString = _connectionString,
-                    SerializationFactory = MongoConfiguration.Default.SerializationFactory
+                return new MongoConfiguration {
+                    ConnectionString = _connectionString
                 };
 
             return new MongoConfiguration { 
                 ConnectionString = _connectionString, 
-                SerializationFactory = new SerializationFactory(_mappingStoreBuilder.BuildMappingStore()) };
+                MappingStore = _mappingStoreBuilder.BuildMappingStore()
+            };
         }
 
         /// <summary>
