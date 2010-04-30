@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Configuration;
 using MongoDB.Protocol;
@@ -66,7 +67,7 @@ namespace MongoDB.Connections
         /// <param name="message">The MSG.</param>
         /// <returns></returns>
         public ReplyMessage<Document> SendTwoWayMessage(IRequestMessage message){
-            return SendTwoWayMessage<Document>(message,new BsonDocumentBuilder());
+            return SendTwoWayMessage<Document>(message,new BsonReaderSettings());
         }
 
         /// <summary>
@@ -74,15 +75,15 @@ namespace MongoDB.Connections
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="message">The message.</param>
-        /// <param name="objectBuilder">The object builder.</param>
+        /// <param name="readerSettings">The reader settings.</param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage message, IBsonObjectBuilder objectBuilder) where T:class {
+        public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage message, BsonReaderSettings readerSettings) where T:class {
             if (State != ConnectionState.Opened) {
                 throw new MongoConnectionException ("Operation cannot be performed on a closed connection.", this);
             }
             try {
-                var reply = new ReplyMessage<T>(objectBuilder);
+                var reply = new ReplyMessage<T>(readerSettings);
                 lock (_connection) {
                     message.Write (_connection.GetStream ());
                     reply.Read (_connection.GetStream ());
@@ -246,15 +247,13 @@ namespace MongoDB.Connections
 
             try
             {
-                var reply = SendTwoWayMessage<T>(query, builder);
+                var settings = new BsonReaderSettings(builder);
+                var reply = SendTwoWayMessage<T>(query, settings);
 
                 if(reply.CursorId > 0)
                     SendMessage(new KillCursorsMessage(reply.CursorId));
 
-                foreach(var document in reply.Documents)
-                    return document;
-
-                return null;
+                return reply.Documents.FirstOrDefault();
             }
             catch(IOException exception)
             {

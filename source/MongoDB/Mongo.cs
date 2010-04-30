@@ -62,7 +62,7 @@ namespace MongoDB
         /// <param name = "name">The name.</param>
         /// <returns></returns>
         public IMongoDatabase GetDatabase(String name){
-            return new MongoDatabase(_configuration.SerializationFactory, _connection, name);
+            return new MongoDatabase(_configuration, _connection, name);
         }
 
         /// <summary>

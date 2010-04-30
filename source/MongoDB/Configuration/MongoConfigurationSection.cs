@@ -19,5 +19,24 @@ namespace MongoDB.Configuration
         public ConnectionCollection Connections{
             get{return (ConnectionCollection)this["connections"];}
         }
+
+        /// <summary>
+        /// Gets the section with name Mongo.
+        /// </summary>
+        /// <returns></returns>
+        public static MongoConfigurationSection GetSection()
+        {
+            return GetSection("Mongo");
+        }
+
+        /// <summary>
+        /// Gets the section.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public static MongoConfigurationSection GetSection(string name)
+        {
+            return ConfigurationManager.GetSection(name) as MongoConfigurationSection;
+        }
     }
 }

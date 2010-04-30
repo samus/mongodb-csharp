@@ -118,7 +118,6 @@
     <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="IMongoDatabase.cs" />
-    <Compile Include="IMongoFindExecutor.cs" />
     <Compile Include="Linq\AggregateChecker.cs" />
     <Compile Include="Linq\AggregateRewriter.cs" />
     <Compile Include="Linq\MapReduceFinalizerFunctionBuilder.cs" />
