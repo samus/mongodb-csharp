@@ -18,7 +18,8 @@ namespace MongoDB.Configuration
         /// </summary>
         public MongoConfiguration(){
             ConnectionString = string.Empty;
-            SerializationFactory = new SerializationFactory(new AutoMappingStore());
+            MappingStore = new AutoMappingStore();
+            SerializationFactory = new SerializationFactory(MappingStore);
         }
 
         /// <summary>
@@ -34,11 +35,19 @@ namespace MongoDB.Configuration
         public ISerializationFactory SerializationFactory { get; set; }
 
         /// <summary>
+        /// Gets or sets the mapping store.
+        /// </summary>
+        /// <value>The mapping store.</value>
+        public IMappingStore MappingStore { get; set; }
+
+        /// <summary>
         /// Validates this instance.
         /// </summary>
         public void Validate(){
             if(ConnectionString == null)
                 throw new MongoException("ConnectionString can not be null");
+            if(MappingStore == null)
+                throw new MongoException("MappingStore can not be null");
             if(SerializationFactory == null)
                 throw new MongoException("SerializationFactory can not be null");
         }
