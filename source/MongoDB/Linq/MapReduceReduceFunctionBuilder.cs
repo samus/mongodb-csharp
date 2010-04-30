@@ -52,7 +52,8 @@ namespace MongoDB.Linq
             switch (aggregate.AggregateType)
             {
                 case AggregateType.Average:
-                    throw new NotImplementedException();
+                    AverageAggregate(aggregate);
+                    break;
                 case AggregateType.Count:
                     CountAggregate(aggregate);
                     break;
@@ -79,6 +80,16 @@ namespace MongoDB.Linq
             }
 
             return fields;
+        }
+
+        private void AverageAggregate(AggregateExpression aggregate)
+        {
+            var old = _currentAggregateName;
+            _currentAggregateName = old + "Cnt";
+            CountAggregate(aggregate);
+            _currentAggregateName = old + "Sum";
+            SumAggregate(aggregate);
+            _currentAggregateName = old;
         }
 
         private void CountAggregate(AggregateExpression aggregate)

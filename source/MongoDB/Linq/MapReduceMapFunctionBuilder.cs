@@ -44,6 +44,10 @@ namespace MongoDB.Linq
         {
             switch (aggregate.AggregateType)
             {
+                case AggregateType.Average:
+                    _initMap[_currentAggregateName + "Sum"] = _formatter.FormatJavascript(aggregate.Argument);
+                    _initMap[_currentAggregateName + "Cnt"] = "1";
+                    break;
                 case AggregateType.Count:
                     _initMap[_currentAggregateName] = "1";
                     break;

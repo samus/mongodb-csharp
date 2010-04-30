@@ -121,6 +121,7 @@
     <Compile Include="IMongoFindExecutor.cs" />
     <Compile Include="Linq\AggregateChecker.cs" />
     <Compile Include="Linq\AggregateRewriter.cs" />
+    <Compile Include="Linq\MapReduceFinalizerFunctionBuilder.cs" />
     <Compile Include="Linq\Expressions\AliasesProduced.cs" />
     <Compile Include="Linq\Expressions\SubqueryRemover.cs" />
     <Compile Include="Linq\MapReduceReduceFunctionBuilder.cs" />

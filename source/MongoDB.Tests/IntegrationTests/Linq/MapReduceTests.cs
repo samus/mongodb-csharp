@@ -89,6 +89,7 @@ namespace MongoDB.IntegrationTests.Linq
                                              group p by 1 into g
                                              select new
                                              {
+                                                 Average = g.Average(x => x.Age),
                                                  Min = g.Min(x => x.Age),
                                                  Max = g.Max(x => x.Age),
                                                  Count = g.Count(),
@@ -96,6 +97,7 @@ namespace MongoDB.IntegrationTests.Linq
                                              });
 
             Assert.AreEqual(1, grouping.Count);
+            Assert.AreEqual(38.5, grouping.Single().Average);
             Assert.AreEqual(35, grouping.Single().Min);
             Assert.AreEqual(42, grouping.Single().Max);
             Assert.AreEqual(2, grouping.Single().Count);

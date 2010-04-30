@@ -235,6 +235,7 @@ namespace MongoDB.Linq
             var mapReduce = (MapReduce)collection.GetType().GetMethod("MapReduce").Invoke(collection, null);
             mapReduce.Map = new Code(queryObject.MapFunction);
             mapReduce.Reduce = new Code(queryObject.ReduceFunction);
+            mapReduce.Finalize = new Code(queryObject.FinalizerFunction);
             mapReduce.Query = queryObject.Query;
 
             if(queryObject.Sort != null)

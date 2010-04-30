@@ -44,6 +44,7 @@ namespace MongoDB.Linq
                 _queryObject.IsMapReduce = true;
                 _queryObject.MapFunction = new MapReduceMapFunctionBuilder().Build(select.Fields, select.GroupBy);
                 _queryObject.ReduceFunction = new MapReduceReduceFunctionBuilder().Build(select.Fields);
+                _queryObject.FinalizerFunction = new MapReduceFinalizerFunctionBuilder().Build(select.Fields);
             }
             else if(!_queryAttributes.IsCount)
             {
