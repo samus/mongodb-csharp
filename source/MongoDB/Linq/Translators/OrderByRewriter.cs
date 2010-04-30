@@ -60,7 +60,7 @@ namespace MongoDB.Linq.Translators
                         _gatheredOrderings = null;
                 }
                 if (orderings != select.OrderBy || fields != select.Fields)
-                    select = new SelectExpression(select.Type, select.Alias, fields, select.From, select.Where, orderings, select.GroupBy, select.Distinct, select.Skip, select.Take);
+                    select = new SelectExpression(select.Alias, fields, select.From, select.Where, orderings, select.GroupBy, select.Distinct, select.Skip, select.Take);
 
                 return select;
             }
@@ -107,7 +107,7 @@ namespace MongoDB.Linq.Translators
             }
         }
 
-        private BindResult RebindOrderings(IEnumerable<OrderExpression> orderings, string alias, HashSet<string> existingAliases, IEnumerable<FieldDeclaration> existingFields)
+        private BindResult RebindOrderings(IEnumerable<OrderExpression> orderings, Alias alias, HashSet<Alias> existingAliases, IEnumerable<FieldDeclaration> existingFields)
         {
             List<FieldDeclaration> newFields = null;
             var newOrderings = new List<OrderExpression>();

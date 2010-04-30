@@ -15,10 +15,12 @@ namespace MongoDB.Linq.Translators
             typeof(ICollection), typeof(ICollection<>)
         };
 
+        private Alias _alias;
         private FieldFinder _finder;
 
         public Expression Bind(Expression expression)
         {
+            _alias = new Alias();
             _finder = new FieldFinder();
             return Visit(expression);
         }
@@ -30,7 +32,7 @@ namespace MongoDB.Linq.Translators
 
             var fieldName = _finder.Find(exp);
             if (fieldName != null)
-                return new FieldExpression(exp, string.Empty, fieldName);
+                return new FieldExpression(exp, _alias, fieldName);
 
             return base.Visit(exp);
         }

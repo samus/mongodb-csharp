@@ -56,7 +56,7 @@ namespace MongoDB.Linq.Translators
                     || take != select.Take
                     || fields != select.Fields)
                 {
-                    select = new SelectExpression(select.Type, select.Alias, fields, select.From, where, orderBy, groupBy, distinct, skip, take);
+                    select = new SelectExpression(select.Alias, fields, select.From, where, orderBy, groupBy, distinct, skip, take);
                 }
             }
 

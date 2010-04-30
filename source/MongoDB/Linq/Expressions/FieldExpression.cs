@@ -8,11 +8,11 @@ namespace MongoDB.Linq.Expressions
 {
     internal class FieldExpression : MongoExpression
     {
-        private readonly string _alias;
+        private readonly Alias _alias;
         private readonly Expression _expression;
         private readonly string _name;
 
-        public string Alias
+        public Alias Alias
         {
             get { return _alias; }
         }
@@ -27,7 +27,7 @@ namespace MongoDB.Linq.Expressions
             get { return _name; }
         }
 
-        public FieldExpression(Expression expression, string alias, string name)
+        public FieldExpression(Expression expression, Alias alias, string name)
             : base(MongoExpressionType.Field, expression.Type)
         {
             _alias = alias;

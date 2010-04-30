@@ -5,6 +5,6 @@ using System.Text;
 
 namespace MongoDB.Linq.Expressions
 {
-    public class Alias
+    internal sealed class Alias
     { }
 }

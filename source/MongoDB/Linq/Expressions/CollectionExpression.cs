@@ -6,17 +6,11 @@ using System.Text;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class CollectionExpression : MongoExpression
+    internal class CollectionExpression : AliasedExpression
     {
-        private readonly string _alias;
         private readonly string _collectionName;
         private readonly IMongoDatabase _database;
         private readonly Type _documentType;
-
-        public string Alias
-        {
-            get { return _alias; }
-        }
 
         public string CollectionName
         {
@@ -33,10 +27,9 @@ namespace MongoDB.Linq.Expressions
             get { return _documentType; }
         }
 
-        public CollectionExpression(Type type, string alias, IMongoDatabase database, string collectionName, Type documentType)
-            : base(MongoExpressionType.Collection, type)
+        public CollectionExpression(Alias alias, IMongoDatabase database, string collectionName, Type documentType)
+            : base(MongoExpressionType.Collection, typeof(void), alias)
         {
-            _alias = alias;
             _collectionName = collectionName;
             _database = database;
             _documentType = documentType;

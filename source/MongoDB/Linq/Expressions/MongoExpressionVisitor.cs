@@ -76,7 +76,7 @@ namespace MongoDB.Linq.Expressions
             var take = Visit(select.Take);
             var fields = VisitFieldDeclarationList(select.Fields);
             if (from != select.From || where != select.Where || orderBy != select.OrderBy || groupBy != select.GroupBy || skip != select.Skip || take != select.Take || fields != select.Fields)
-                return new SelectExpression(select.Type, select.Alias, fields, from, where, orderBy, groupBy, select.Distinct, skip, take);
+                return new SelectExpression(select.Alias, fields, from, where, orderBy, groupBy, select.Distinct, skip, take);
             return select;
         }
 

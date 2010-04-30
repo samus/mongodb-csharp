@@ -13,11 +13,11 @@ namespace MongoDB.Linq.Translators
     internal class FieldProjector : MongoExpressionVisitor
     {
         private HashSet<Expression> _candidates;
-        private string[] _existingAliases;
+        private Alias[] _existingAliases;
         private HashSet<string> _fieldNames;
         private List<FieldDeclaration> _fields;
         private Dictionary<FieldExpression, FieldExpression> _map;
-        private string _newAlias;
+        private Alias _newAlias;
         private Nominator _nominator;
         private int columnIndex;
 
@@ -26,7 +26,7 @@ namespace MongoDB.Linq.Translators
             _nominator = new Nominator(canBeField);
         }
 
-        public FieldProjection ProjectFields(Expression expression, string newAlias, params string[] existingAliases)
+        public FieldProjection ProjectFields(Expression expression, Alias newAlias, params Alias[] existingAliases)
         {
             _newAlias = newAlias;
             _existingAliases = existingAliases;
@@ -48,7 +48,7 @@ namespace MongoDB.Linq.Translators
                     if (_map.TryGetValue(field, out mapped))
                         return mapped;
 
-                    string alias = _existingAliases.Contains(field.Alias) ? field.Alias : _newAlias;
+                    Alias alias = _existingAliases.Contains(field.Alias) ? field.Alias : _newAlias;
                     var ordinal = _fields.Count;
                     var fieldName = GetUniqueFieldName(field.Name);
                     _fields.Add(new FieldDeclaration(fieldName, field));

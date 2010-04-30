@@ -119,6 +119,7 @@
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="Linq\Expressions\Alias.cs" />
+    <Compile Include="Linq\Expressions\AliasedExpression.cs" />
     <Compile Include="Linq\Expressions\MongoExpression.cs" />
     <Compile Include="Linq\Translators\AggregateChecker.cs" />
     <Compile Include="Linq\Translators\AggregateRewriter.cs" />

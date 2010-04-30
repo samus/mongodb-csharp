@@ -7,9 +7,8 @@ using System.Collections.ObjectModel;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class SelectExpression : MongoExpression
+    internal class SelectExpression : AliasedExpression
     {
-        private readonly string _alias;
         private readonly bool _distinct;
         private readonly ReadOnlyCollection<FieldDeclaration> _fields;
         private readonly Expression _from;
@@ -18,11 +17,6 @@ namespace MongoDB.Linq.Expressions
         private readonly ReadOnlyCollection<OrderExpression> _orderBy;
         private readonly Expression _skip;
         private readonly Expression _where;
-
-        public string Alias
-        {
-            get { return _alias; }
-        }
 
         public bool Distinct
         {
@@ -64,12 +58,16 @@ namespace MongoDB.Linq.Expressions
             get { return _where; }
         }
 
-        public SelectExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where)
-            : this(type, alias, fields, from, where, null, null, false, null, null)
+        public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where)
+            : this(alias, fields, from, where, null, null)
         { }
 
-        public SelectExpression(Type type, string alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool distinct, Expression skip, Expression take)
-            : base(MongoExpressionType.Select, type)
+        public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy)
+            : this(alias, fields, from, where, orderBy, groupBy, false, null, null)
+        { }
+
+        public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool distinct, Expression skip, Expression take)
+            : base(MongoExpressionType.Select, typeof(void), alias)
         {
             _fields = fields as ReadOnlyCollection<FieldDeclaration>;
             if (_fields == null)
@@ -79,7 +77,6 @@ namespace MongoDB.Linq.Expressions
             if (_orderBy == null && orderBy != null)
                 _orderBy = new List<OrderExpression>(orderBy).AsReadOnly();
 
-            _alias = alias;
             _distinct = distinct;
             _from = from;
             _groupBy = groupBy;

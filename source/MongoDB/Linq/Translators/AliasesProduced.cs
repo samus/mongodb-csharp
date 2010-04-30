@@ -13,11 +13,11 @@ namespace MongoDB.Linq.Translators
     /// </summary>
     internal class AliasesProduced : MongoExpressionVisitor
     {
-        private HashSet<string> _aliases;
+        private HashSet<Alias> _aliases;
 
-        public HashSet<string> Gather(Expression source)
+        public HashSet<Alias> Gather(Expression source)
         {
-            _aliases = new HashSet<string>();
+            _aliases = new HashSet<Alias>();
             Visit(source);
             return _aliases;
         }

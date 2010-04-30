@@ -10,7 +10,7 @@ namespace MongoDB.Linq.Expressions
     {
         private Expression _aggregateInGroupSelect;
         private ScalarExpression _aggregateAsSubquery;
-        private string _groupByAlias;
+        private Alias _groupByAlias;
 
         public Expression AggregateInGroupSelect
         {
@@ -22,12 +22,12 @@ namespace MongoDB.Linq.Expressions
             get { return _aggregateAsSubquery; }
         }
 
-        public string GroupByAlias
+        public Alias GroupByAlias
         {
             get { return _groupByAlias; }
         }
 
-        public AggregateSubqueryExpression(string groupByAlias, Expression aggregateInGroupSelect, ScalarExpression aggregateAsSubquery)
+        public AggregateSubqueryExpression(Alias groupByAlias, Expression aggregateInGroupSelect, ScalarExpression aggregateAsSubquery)
             : base(MongoExpressionType.AggregateSubquery, aggregateAsSubquery.Type)
         {
             _groupByAlias = groupByAlias;

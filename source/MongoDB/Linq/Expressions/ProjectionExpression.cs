@@ -32,7 +32,7 @@ namespace MongoDB.Linq.Expressions
         { }
 
         public ProjectionExpression(SelectExpression source, Expression projector, LambdaExpression aggregator)
-            : base(MongoExpressionType.Projection, source.Type)
+            : base(MongoExpressionType.Projection, aggregator != null ? aggregator.Body.Type : typeof(IEnumerable<>).MakeGenericType(projector.Type))
         {
             _source = source;
             _projector = projector;
