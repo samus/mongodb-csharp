@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using MongoDB.Configuration;
 using MongoDB.Connections;
 using MongoDB.Results;
-using MongoDB.Serialization;
-
 
 namespace MongoDB
 {
     /// <summary>
-    /// 
     /// </summary>
     public class MongoDatabase : IMongoDatabase
     {
-        private readonly ISerializationFactory _serializationFactory;
+        private readonly MongoConfiguration _configuration;
         private readonly Connection _connection;
         private DatabaseJavascript _javascript;
         private DatabaseMetadata _metadata;
@@ -23,77 +20,80 @@ namespace MongoDB
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         public MongoDatabase(string connectionString)
-            : this(MongoConfiguration.Default.SerializationFactory,connectionString)
+            : this(new MongoConfiguration(){ConnectionString = connectionString})
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
         /// </summary>
-        /// <param name="serializationFactory">The serialization factory.</param>
-        /// <param name="connectionString">The connection string.</param>
-        public MongoDatabase(ISerializationFactory serializationFactory, string connectionString)
-            : this(serializationFactory,
-                   ConnectionFactory.GetConnection(connectionString),
-                   new MongoConnectionStringBuilder(connectionString).Database)
+        /// <param name="configuration">The configuration.</param>
+        public MongoDatabase(MongoConfiguration configuration)
+            : this(configuration,
+                ConnectionFactory.GetConnection(configuration.ConnectionString),
+                new MongoConnectionStringBuilder(configuration.ConnectionString).Database)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
         /// </summary>
-        /// <param name="serializationFactory">The serialization factory.</param>
+        /// <param name="configuration">The configuration.</param>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
-        public MongoDatabase(ISerializationFactory serializationFactory, Connection connection, string name)
+        public MongoDatabase(MongoConfiguration configuration, Connection connection, string name)
         {
-            if(serializationFactory == null)
-                throw new ArgumentNullException("serializationFactory");
+            if(configuration == null)
+                throw new ArgumentNullException("configuration");
             if(connection == null)
                 throw new ArgumentNullException("connection");
             if(name == null)
                 throw new ArgumentNullException("name");
 
             Name = name;
+            _configuration = configuration;
             _connection = connection;
-            _serializationFactory = serializationFactory;
         }
 
         /// <summary>
-        /// Gets or sets the name.
+        ///   Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets the meta data.
+        ///   Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        public DatabaseMetadata Metadata{
-            get { return _metadata ?? (_metadata = new DatabaseMetadata(_serializationFactory, Name, _connection)); }
+        public DatabaseMetadata Metadata
+        {
+            get { return _metadata ?? (_metadata = new DatabaseMetadata(_configuration, Name, _connection)); }
         }
 
         /// <summary>
-        /// Gets the javascript.
+        ///   Gets the javascript.
         /// </summary>
         /// <value>The javascript.</value>
-        public DatabaseJavascript Javascript{
+        public DatabaseJavascript Javascript
+        {
             get { return _javascript ?? (_javascript = new DatabaseJavascript(this)); }
         }
 
         /// <summary>
-        /// Gets the <see cref="MongoDB.IMongoCollection"/> with the specified name.
+        ///   Gets the <see cref = "MongoDB.IMongoCollection" /> with the specified name.
         /// </summary>
         /// <value></value>
-        public IMongoCollection this[String name]{
+        public IMongoCollection this[String name]
+        {
             get { return GetCollection(name); }
         }
 
         /// <summary>
-        /// Gets the collection names.
+        ///   Gets the collection names.
         /// </summary>
         /// <returns></returns>
-        public List<String> GetCollectionNames(){
+        public List<String> GetCollectionNames()
+        {
             var namespaces = this["system.namespaces"];
             var cursor = namespaces.Find(new Document());
             var names = new List<string>();
@@ -103,40 +103,44 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Gets the collection.
+        ///   Gets the collection.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name = "name">The name.</param>
         /// <returns></returns>
-        public IMongoCollection GetCollection(String name){
-            return new MongoCollection(_serializationFactory, _connection, Name, name);
+        public IMongoCollection GetCollection(String name)
+        {
+            return new MongoCollection(_configuration, _connection, Name, name);
         }
 
         /// <summary>
-        /// Gets the collection.
+        ///   Gets the collection.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="name">The name.</param>
+        /// <typeparam name = "T"></typeparam>
+        /// <param name = "name">The name.</param>
         /// <returns></returns>
-        public IMongoCollection<T> GetCollection<T>(String name) where T : class{
-            return new MongoCollection<T>(_serializationFactory, _connection, Name, name);
+        public IMongoCollection<T> GetCollection<T>(String name) where T : class
+        {
+            return new MongoCollection<T>(_configuration, _connection, Name, name);
         }
 
         /// <summary>
-        /// Gets the collection.
+        ///   Gets the collection.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name = "T"></typeparam>
         /// <returns></returns>
-        public IMongoCollection<T> GetCollection<T>() where T : class{
-            string collectionName = _serializationFactory.GetCollectionName(typeof(T));
+        public IMongoCollection<T> GetCollection<T>() where T : class
+        {
+            var collectionName = _configuration.SerializationFactory.GetCollectionName(typeof(T));
             return GetCollection<T>(collectionName);
         }
 
         /// <summary>
-        /// Gets the document that a reference is pointing to.
+        ///   Gets the document that a reference is pointing to.
         /// </summary>
-        /// <param name="reference">The reference.</param>
+        /// <param name = "reference">The reference.</param>
         /// <returns></returns>
-        public Document FollowReference(DBRef reference){
+        public Document FollowReference(DBRef reference)
+        {
             if(reference == null)
                 throw new ArgumentNullException("reference", "cannot be null");
             var query = new Document().Add("_id", reference.Id);
@@ -144,12 +148,12 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Follows the reference.
+        ///   Follows the reference.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="reference">The reference.</param>
+        /// <typeparam name = "T"></typeparam>
+        /// <param name = "reference">The reference.</param>
         /// <returns></returns>
-        public T FollowReference<T>(DBRef reference) where T:class
+        public T FollowReference<T>(DBRef reference) where T : class
         {
             if(reference == null)
                 throw new ArgumentNullException("reference", "cannot be null");
@@ -158,141 +162,153 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Most operations do not have a return code in order to save the client from having to wait for results.
-        /// GetLastError can be called to retrieve the return code if clients want one.
+        ///   Most operations do not have a return code in order to save the client from having to wait for results.
+        ///   GetLastError can be called to retrieve the return code if clients want one.
         /// </summary>
         /// <returns></returns>
-        public Document GetLastError(){
+        public Document GetLastError()
+        {
             return SendCommand("getlasterror");
         }
 
         /// <summary>
-        /// Retrieves the last error and forces the database to fsync all files before returning.
+        ///   Retrieves the last error and forces the database to fsync all files before returning.
         /// </summary>
-        /// <param name="fsync">if set to <c>true</c> [fsync].</param>
+        /// <param name = "fsync">if set to <c>true</c> [fsync].</param>
         /// <returns></returns>
         /// <remarks>
-        /// Server version 1.3+
+        ///   Server version 1.3+
         /// </remarks>
-        public Document GetLastError(bool fsync){
-            return SendCommand(new Document { { "getlasterror", 1.0 }, { "fsync", fsync } });
+        public Document GetLastError(bool fsync)
+        {
+            return SendCommand(new Document {{"getlasterror", 1.0}, {"fsync", fsync}});
         }
 
         /// <summary>
-        /// Call after sending a bulk operation to the database.
+        ///   Call after sending a bulk operation to the database.
         /// </summary>
         /// <returns></returns>
-        public Document GetPreviousError(){
+        public Document GetPreviousError()
+        {
             return SendCommand("getpreverror");
         }
 
         /// <summary>
-        /// Gets the sister database on the same Mongo connection with the given name.
+        ///   Gets the sister database on the same Mongo connection with the given name.
         /// </summary>
-        /// <param name="sisterDatabaseName">Name of the sister database.</param>
+        /// <param name = "sisterDatabaseName">Name of the sister database.</param>
         /// <returns></returns>
-        public MongoDatabase GetSisterDatabase(string sisterDatabaseName){
-            return new MongoDatabase(_serializationFactory, _connection, sisterDatabaseName);
+        public MongoDatabase GetSisterDatabase(string sisterDatabaseName)
+        {
+            return new MongoDatabase(_configuration, _connection, sisterDatabaseName);
         }
 
         /// <summary>
         ///   Resets last error.  This is good to call before a bulk operation.
         /// </summary>
-        public void ResetError(){
+        public void ResetError()
+        {
             SendCommand("reseterror");
         }
 
         /// <summary>
-        /// Evals the specified javascript.
+        ///   Evals the specified javascript.
         /// </summary>
-        /// <param name="javascript">The javascript.</param>
+        /// <param name = "javascript">The javascript.</param>
         /// <returns></returns>
-        public Document Eval(string javascript){
+        public Document Eval(string javascript)
+        {
             return Eval(javascript, new Document());
         }
 
         /// <summary>
-        /// Evals the specified javascript.
+        ///   Evals the specified javascript.
         /// </summary>
-        /// <param name="javascript">The javascript.</param>
-        /// <param name="scope">The scope.</param>
+        /// <param name = "javascript">The javascript.</param>
+        /// <param name = "scope">The scope.</param>
         /// <returns></returns>
-        public Document Eval(string javascript, Document scope){
+        public Document Eval(string javascript, Document scope)
+        {
             return Eval(new CodeWScope(javascript, scope));
         }
 
         /// <summary>
-        /// Evals the specified code scope.
+        ///   Evals the specified code scope.
         /// </summary>
-        /// <param name="codeScope">The code scope.</param>
+        /// <param name = "codeScope">The code scope.</param>
         /// <returns></returns>
-        public Document Eval(CodeWScope codeScope){
+        public Document Eval(CodeWScope codeScope)
+        {
             var cmd = new Document().Add("$eval", codeScope);
             return SendCommand(cmd);
         }
 
         /// <summary>
-        /// Sends the command.
+        ///   Sends the command.
         /// </summary>
-        /// <param name="commandName">The command name.</param>
+        /// <param name = "commandName">The command name.</param>
         /// <returns></returns>
-        public Document SendCommand(string commandName){
+        public Document SendCommand(string commandName)
+        {
             return SendCommand(new Document().Add(commandName, 1.0));
         }
 
         /// <summary>
-        /// Sends the command.
+        ///   Sends the command.
         /// </summary>
-        /// <param name="command">The CMD.</param>
+        /// <param name = "command">The CMD.</param>
         /// <returns></returns>
-        public Document SendCommand(Document command){
+        public Document SendCommand(Document command)
+        {
             return SendCommand(typeof(Document), command);
         }
 
         /// <summary>
-        /// Sends the command.
+        ///   Sends the command.
         /// </summary>
-        /// <param name="rootType">Type of serialization root.</param>
-        /// <param name="command">The CMD.</param>
+        /// <param name = "rootType">Type of serialization root.</param>
+        /// <param name = "command">The CMD.</param>
         /// <returns></returns>
         public Document SendCommand(Type rootType, Document command)
         {
-            return _connection.SendCommand(_serializationFactory, Name, rootType, command);
+            return _connection.SendCommand(_configuration.SerializationFactory, Name, rootType, command);
         }
 
         /// <summary>
-        /// Sends the command.
+        ///   Sends the command.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="commandName">Name of the command.</param>
+        /// <typeparam name = "T"></typeparam>
+        /// <param name = "commandName">Name of the command.</param>
         /// <returns></returns>
-        public T SendCommand<T>(string commandName) 
-            where T : CommandResultBase{
+        public T SendCommand<T>(string commandName)
+            where T : CommandResultBase
+        {
             return SendCommand<T>(new Document().Add(commandName, 1.0));
         }
 
         /// <summary>
-        /// Sends the command.
+        ///   Sends the command.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="command">The command.</param>
+        /// <typeparam name = "T"></typeparam>
+        /// <param name = "command">The command.</param>
         /// <returns></returns>
-        public T SendCommand<T>(object command) 
-            where T : CommandResultBase{
-            return _connection.SendCommand<T>(_serializationFactory, Name, typeof(T), command);
+        public T SendCommand<T>(object command)
+            where T : CommandResultBase
+        {
+            return _connection.SendCommand<T>(_configuration.SerializationFactory, Name, typeof(T), command);
         }
 
         /// <summary>
-        /// Sends the command.
+        ///   Sends the command.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="rootType">Type of serialization root.</param>
-        /// <param name="command">The command.</param>
+        /// <typeparam name = "T"></typeparam>
+        /// <param name = "rootType">Type of serialization root.</param>
+        /// <param name = "command">The command.</param>
         /// <returns></returns>
         public T SendCommand<T>(Type rootType, object command)
             where T : CommandResultBase
         {
-            return _connection.SendCommand<T>(_serializationFactory, Name, rootType, command);
+            return _connection.SendCommand<T>(_configuration.SerializationFactory, Name, rootType, command);
         }
     }
 }

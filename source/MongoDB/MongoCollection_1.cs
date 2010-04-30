@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using MongoDB.Configuration;
 using MongoDB.Connections;
 using MongoDB.Protocol;
 using MongoDB.Results;
@@ -14,25 +16,25 @@ namespace MongoDB
     /// </summary>
     public class MongoCollection<T> : IMongoCollection<T> where T : class
     {
+        private readonly MongoConfiguration _configuration;
         private readonly Connection _connection;
         private MongoDatabase _database;
         private CollectionMetadata _metaData;
-        private readonly ISerializationFactory _serializationFactory;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
         /// </summary>
-        /// <param name="serializationFactory">The serialization factory.</param>
+        /// <param name="configuration">The configuration.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        public MongoCollection(ISerializationFactory serializationFactory, Connection connection, string databaseName, string name)
+        public MongoCollection(MongoConfiguration configuration, Connection connection, string databaseName, string name)
         {
             //Todo: This should be internal
             Name = name;
             DatabaseName = databaseName;
+            _configuration = configuration;
             _connection = connection;
-            _serializationFactory = serializationFactory;
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace MongoDB
         /// </summary>
         /// <value>The database.</value>
         public IMongoDatabase Database {
-            get { return _database ?? (_database = new MongoDatabase(_serializationFactory, _connection, DatabaseName)); }
+            get { return _database ?? (_database = new MongoDatabase(_configuration, _connection, DatabaseName)); }
         }
 
         /// <summary>
@@ -68,7 +70,7 @@ namespace MongoDB
         /// </summary>
         /// <value>The meta data.</value>
         public CollectionMetadata MetaData {
-            get { return _metaData ?? (_metaData = new CollectionMetadata(_serializationFactory, DatabaseName, Name, _connection)); }
+            get { return _metaData ?? (_metaData = new CollectionMetadata(_configuration, DatabaseName, Name, _connection)); }
         }
 
         /// <summary>
@@ -149,7 +151,7 @@ namespace MongoDB
         public ICursor<T> Find(object spec, int limit, int skip, object fields){
             if (spec == null)
                 spec = new Document();
-            return new Cursor<T>(_serializationFactory, _connection, FullName, spec, limit, skip, fields);
+            return new Cursor<T>(_configuration.SerializationFactory, _connection, FullName, spec, limit, skip, fields);
         }
 
         /// <summary>
@@ -205,7 +207,7 @@ namespace MongoDB
                 {                    {"findandmodify", Name},                    {"query", spec},                    {"update", EnsureUpdateDocument(document)},                    {"sort", sort},                    {"new", returnNew}
                 };
 
-                var response = _connection.SendCommand<FindAndModifyResult<T>>(_serializationFactory,
+                var response = _connection.SendCommand<FindAndModifyResult<T>>(_configuration.SerializationFactory,
                     DatabaseName,
                     typeof(T),
                     command);
@@ -302,14 +304,14 @@ namespace MongoDB
             }
 
             var rootType = typeof(T);
-            var bsonDescriptor = _serializationFactory.GetBsonDescriptor(rootType);
+            var bsonDescriptor = _configuration.SerializationFactory.GetBsonDescriptor(rootType);
 
             var insertMessage = new InsertMessage(bsonDescriptor)
             {
                 FullCollectionName = FullName
             };
 
-            var descriptor = _serializationFactory.GetObjectDescriptor(rootType);
+            var descriptor = _configuration.SerializationFactory.GetObjectDescriptor(rootType);
             var insertDocument = new List<object>();
             
             foreach (var document in documents) {
@@ -351,7 +353,7 @@ namespace MongoDB
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
         public void Delete(object selector){
-            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T));
+            var descriptor = _configuration.SerializationFactory.GetBsonDescriptor(typeof(T));
             
             var deleteMessage = new DeleteMessage(descriptor) { FullCollectionName = FullName, Selector = selector };
             
@@ -425,7 +427,7 @@ namespace MongoDB
         /// <param name="selector">The query spec to find the document to update.</param>
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(object document, object selector, UpdateFlags flags){
-            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T));
+            var descriptor = _configuration.SerializationFactory.GetBsonDescriptor(typeof(T));
             
             var updateMessage = new UpdateMessage(descriptor){
                 FullCollectionName = FullName, 
@@ -476,7 +478,7 @@ namespace MongoDB
             //Try to generate a selector using _id for an existing document.
             //otherwise just set the upsert flag to 1 to insert and send onward.
 
-            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
+            var descriptor = _configuration.SerializationFactory.GetObjectDescriptor(typeof(T));
 
             var value = descriptor.GetPropertyValue(document, "_id");
 
@@ -541,16 +543,10 @@ namespace MongoDB
         /// <returns></returns>
         private object EnsureUpdateDocument(object document)
         {
-            var foundOp = false;
+            var descriptor = _configuration.SerializationFactory.GetObjectDescriptor(typeof(T));
 
-            var descriptor = _serializationFactory.GetObjectDescriptor(typeof(T));
-
-            foreach(var name in descriptor.GetMongoPropertyNames(document))
-                if(name.IndexOf('$') == 0)
-                {
-                    foundOp = true;
-                    break;
-                }
+            var foundOp = descriptor.GetMongoPropertyNames(document)
+                .Any(name => name.IndexOf('$') == 0);
 
             if(foundOp == false)
             {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MongoDB.Configuration;
 using MongoDB.Connections;
 using MongoDB.Serialization;
 
@@ -54,13 +55,13 @@ namespace MongoDB
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
         /// </summary>
-        /// <param name="serializationFactory">The serialization factory.</param>
+        /// <param name="configuration">The configuration.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        public MongoCollection(ISerializationFactory serializationFactory, Connection connection, string databaseName, string name)
+        public MongoCollection(MongoConfiguration configuration, Connection connection, string databaseName, string name)
         {
-            _collection = new MongoCollection<Document>(serializationFactory, connection, databaseName, name);
+            _collection = new MongoCollection<Document>(configuration, connection, databaseName, name);
         }
 
         /// <summary>

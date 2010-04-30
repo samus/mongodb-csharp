@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MongoDB.Configuration;
 using MongoDB.Connections;
-using MongoDB.Serialization;
 
 namespace MongoDB
 {
@@ -19,21 +19,21 @@ namespace MongoDB
         private Document _options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CollectionMetadata"/> class.
+        ///   Initializes a new instance of the <see cref = "CollectionMetadata" /> class.
         /// </summary>
-        /// <param name="serializationFactory">The serialization factory.</param>
-        /// <param name="databaseName">Name of the database.</param>
-        /// <param name="name">The name.</param>
-        /// <param name="connection">The connection.</param>
-        public CollectionMetadata(ISerializationFactory serializationFactory, string databaseName, string name, Connection connection)
+        /// <param name = "configuration">The configuration.</param>
+        /// <param name = "databaseName">Name of the database.</param>
+        /// <param name = "name">The name.</param>
+        /// <param name = "connection">The connection.</param>
+        public CollectionMetadata(MongoConfiguration configuration, string databaseName, string name, Connection connection)
         {
             _fullName = databaseName + "." + name;
-            this._name = name;
-            _database = new MongoDatabase(serializationFactory, connection, databaseName);
+            _name = name;
+            _database = new MongoDatabase(configuration, connection, databaseName);
         }
 
         /// <summary>
-        /// Gets the options.
+        ///   Gets the options.
         /// </summary>
         /// <value>The options.</value>
         public Document Options
@@ -54,7 +54,7 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Gets the indexes.
+        ///   Gets the indexes.
         /// </summary>
         /// <value>The indexes.</value>
         public Dictionary<string, Document> Indexes
@@ -75,11 +75,11 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Creates the index.
+        ///   Creates the index.
         /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="fieldsAndDirections">The fields and directions.</param>
-        /// <param name="unique">if set to <c>true</c> [unique].</param>
+        /// <param name = "name">The name.</param>
+        /// <param name = "fieldsAndDirections">The fields and directions.</param>
+        /// <param name = "unique">if set to <c>true</c> [unique].</param>
         public void CreateIndex(string name, Document fieldsAndDirections, bool unique)
         {
             var index = new Document();
@@ -92,10 +92,10 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Creates the index.
+        ///   Creates the index.
         /// </summary>
-        /// <param name="fieldsAndDirections">The fields and directions.</param>
-        /// <param name="unique">if set to <c>true</c> [unique].</param>
+        /// <param name = "fieldsAndDirections">The fields and directions.</param>
+        /// <param name = "unique">if set to <c>true</c> [unique].</param>
         public void CreateIndex(Document fieldsAndDirections, bool unique)
         {
             var name = generateIndexName(fieldsAndDirections, unique);
@@ -103,21 +103,21 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Drops the index.
+        ///   Drops the index.
         /// </summary>
-        /// <param name="name">The name.</param>
+        /// <param name = "name">The name.</param>
         public void DropIndex(string name)
         {
             var cmd = new Document();
-            cmd.Add("deleteIndexes", this._name).Add("index", name);
+            cmd.Add("deleteIndexes", _name).Add("index", name);
             _database.SendCommand(cmd);
             Refresh();
         }
 
         /// <summary>
-        /// Renames the specified new name.
+        ///   Renames the specified new name.
         /// </summary>
-        /// <param name="newName">The new name.</param>
+        /// <param name = "newName">The new name.</param>
         public void Rename(string newName)
         {
             if(string.IsNullOrEmpty(newName))
@@ -130,7 +130,7 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Refreshes this instance.
+        ///   Refreshes this instance.
         /// </summary>
         public void Refresh()
         {
@@ -140,10 +140,10 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Generates the name of the index.
+        ///   Generates the name of the index.
         /// </summary>
-        /// <param name="fieldsAndDirections">The fields and directions.</param>
-        /// <param name="unique">if set to <c>true</c> [unique].</param>
+        /// <param name = "fieldsAndDirections">The fields and directions.</param>
+        /// <param name = "unique">if set to <c>true</c> [unique].</param>
         /// <returns></returns>
         protected string generateIndexName(Document fieldsAndDirections, bool unique)
         {

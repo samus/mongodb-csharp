@@ -30,7 +30,7 @@ namespace MongoDB
         /// Gets the <see cref="MongoDB.IMongoCollection"/> with the specified name.
         /// </summary>
         /// <value></value>
-        IMongoCollection this[String name] { get; }
+        IMongoCollection this[string name] { get; }
 
         /// <summary>
         /// Gets the collection names.
@@ -43,7 +43,7 @@ namespace MongoDB
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        IMongoCollection GetCollection(String name);
+        IMongoCollection GetCollection(string name);
 
         /// <summary>
         /// Gets the collection.
@@ -51,7 +51,7 @@ namespace MongoDB
         /// <typeparam name="T"></typeparam>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        IMongoCollection<T> GetCollection<T>(String name) where T : class;
+        IMongoCollection<T> GetCollection<T>(string name) where T : class;
 
         /// <summary>
         /// Gets the collection.
