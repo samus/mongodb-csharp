@@ -22,16 +22,16 @@ namespace MongoDB.Protocol
     /// </remarks>
     public class ReplyMessage<T> : MessageBase where T : class
     {
-        private readonly IBsonObjectBuilder _objectBuilder;
+        private readonly BsonReaderSettings _readerSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReplyMessage&lt;T&gt;"/> class.
         /// </summary>
-        /// <param name="objectBuilder">The object builder.</param>
-        public ReplyMessage(IBsonObjectBuilder objectBuilder){
-            if(objectBuilder == null)
-                throw new ArgumentNullException("objectBuilder");
-            _objectBuilder = objectBuilder;
+        /// <param name="readerSettings">The reader settings.</param>
+        public ReplyMessage(BsonReaderSettings readerSettings){
+            if(readerSettings == null)
+                throw new ArgumentNullException("readerSettings");
+            _readerSettings = readerSettings;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace MongoDB.Protocol
             StartingFrom = reader.ReadInt32();
             NumberReturned = reader.ReadInt32();
 
-            var breader = new BsonReader(stream,_objectBuilder);
+            var breader = new BsonReader(stream, _readerSettings);
             var documents = new List<T>();
             
             for(var num = 0; num < NumberReturned; num++)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MongoDB.Bson;
 using MongoDB.Connections;
 using MongoDB.Protocol;
 using MongoDB.Serialization;
@@ -273,7 +274,8 @@ namespace MongoDB
             var builder = _serializationFactory.GetBsonBuilder(typeof(T));
             
             try {
-                _reply = _connection.SendTwoWayMessage<T>(query, builder);
+                var settings = new BsonReaderSettings(builder);
+                _reply = _connection.SendTwoWayMessage<T>(query, settings);
                 Id = _reply.CursorId;
                 if (_limit < 0)
                     _limit = _limit * -1;
@@ -292,7 +294,8 @@ namespace MongoDB
             var builder = _serializationFactory.GetBsonBuilder(typeof(T));
             
             try {
-                _reply = _connection.SendTwoWayMessage<T>(getMoreMessage, builder);
+                var settings = new BsonReaderSettings(builder);
+                _reply = _connection.SendTwoWayMessage<T>(getMoreMessage, settings);
                 Id = _reply.CursorId;
             } catch (IOException exception) {
                 Id = 0;
