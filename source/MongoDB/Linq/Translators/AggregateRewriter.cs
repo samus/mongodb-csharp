@@ -5,7 +5,7 @@ using System.Text;
 using MongoDB.Linq.Expressions;
 using System.Linq.Expressions;
 
-namespace MongoDB.Linq
+namespace MongoDB.Linq.Translators
 {
     internal class AggregateRewriter : MongoExpressionVisitor
     {

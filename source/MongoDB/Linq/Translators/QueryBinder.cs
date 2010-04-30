@@ -7,7 +7,7 @@ using System.Text;
 
 using MongoDB.Linq.Expressions;
 
-namespace MongoDB.Linq
+namespace MongoDB.Linq.Translators
 {
     internal class QueryBinder : MongoExpressionVisitor
     {
@@ -322,7 +322,7 @@ namespace MongoDB.Linq
             var elementProjection = _projector.ProjectFields(subqueryElementExpression, elementAlias, subqueryBasis.Source.Alias);
             var elementSubquery =
                 new ProjectionExpression(
-                    new SelectExpression(TypeSystem.GetSequenceType(subqueryElementExpression.Type), elementAlias, elementProjection.Fields, subqueryBasis.Source, subqueryCorrelation),
+                    new SelectExpression(TypeHelper.GetSequenceType(subqueryElementExpression.Type), elementAlias, elementProjection.Fields, subqueryBasis.Source, subqueryCorrelation),
                     elementProjection.Projector);
 
             var alias = GetNextAlias();
@@ -354,7 +354,7 @@ namespace MongoDB.Linq
             _groupByMap[projectedElementSubquery] = info;
 
             return new ProjectionExpression(
-                new SelectExpression(TypeSystem.GetSequenceType(resultExpression.Type), alias, new FieldDeclaration[0], projection.Source, null, null, keyExpression, false, null, null),
+                new SelectExpression(TypeHelper.GetSequenceType(resultExpression.Type), alias, new FieldDeclaration[0], projection.Source, null, null, keyExpression, false, null, null),
                 fieldProjection.Projector);
         }
 

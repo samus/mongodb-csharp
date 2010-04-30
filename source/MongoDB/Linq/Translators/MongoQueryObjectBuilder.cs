@@ -6,7 +6,7 @@ using MongoDB.Linq.Expressions;
 using System.Linq.Expressions;
 using System.Collections.ObjectModel;
 
-namespace MongoDB.Linq
+namespace MongoDB.Linq.Translators
 {
     internal class MongoQueryObjectBuilder : MongoExpressionVisitor
     {

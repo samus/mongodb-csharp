@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 using MongoDB.Linq.Expressions;
 
-namespace MongoDB.Linq
+namespace MongoDB.Linq.Translators
 {
     internal static class PartialEvaluator
     {

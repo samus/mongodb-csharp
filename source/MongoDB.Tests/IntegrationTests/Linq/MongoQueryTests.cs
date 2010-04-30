@@ -192,8 +192,8 @@ namespace MongoDB.IntegrationTests.Linq
         public void DocumentQuery()
         {
             var people = Enumerable.ToList<string>((from p in documentCollection.Linq()
-                                                                  where p.Key("age") > 21
-                                                                  select (string)p["fn"]));
+                                                                  where p.Key("Age") > 21
+                                                                  select (string)p["FirstName"]));
 
             Assert.AreEqual(2, people.Count);
         }

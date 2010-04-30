@@ -6,7 +6,7 @@ using System.Text;
 
 using MongoDB.Linq.Expressions;
 
-namespace MongoDB.Linq
+namespace MongoDB.Linq.Translators
 {
     internal class AggregateChecker : MongoExpressionVisitor
     {

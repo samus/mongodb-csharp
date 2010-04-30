@@ -7,6 +7,7 @@ using System.Text;
 
 using MongoDB.Connections;
 using MongoDB.Linq.Expressions;
+using MongoDB.Linq.Translators;
 using MongoDB.Serialization;
 
 namespace MongoDB.Linq
@@ -73,7 +74,7 @@ namespace MongoDB.Linq
         /// </returns>
         public IQueryable CreateQuery(Expression expression)
         {
-            Type elementType = TypeSystem.GetElementType(expression.Type);
+            Type elementType = TypeHelper.GetElementType(expression.Type);
             try
             {
                 return (IQueryable)Activator.CreateInstance(typeof(MongoQuery<>).MakeGenericType(elementType), new object[] { this, expression });

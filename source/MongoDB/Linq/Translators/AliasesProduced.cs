@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-
 using System.Text;
 
-namespace MongoDB.Linq.Expressions
+using MongoDB.Linq.Expressions;
+
+namespace MongoDB.Linq.Translators
 {
     /// <summary>
     ///  returns the set of all aliases produced by a query source

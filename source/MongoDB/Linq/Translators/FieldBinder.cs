@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using MongoDB.Linq.Expressions;
 using MongoDB.Util;
 
-namespace MongoDB.Linq
+namespace MongoDB.Linq.Translators
 {
     internal class FieldBinder : ExpressionVisitor
     {

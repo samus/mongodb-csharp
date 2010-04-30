@@ -7,7 +7,7 @@ using System.Text;
 using MongoDB.Linq.Expressions;
 using System.Collections.ObjectModel;
 
-namespace MongoDB.Linq
+namespace MongoDB.Linq.Translators
 {
     internal class OrderByRewriter : MongoExpressionVisitor
     {
