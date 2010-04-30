@@ -32,7 +32,7 @@ namespace MongoDB.Linq.Translators
                 var hasOrderBy = select.OrderBy != null && select.OrderBy.Count > 0;
                 var hasGroupBy = select.GroupBy != null;
                 var canHaveOrderings = saveIsOuterMostSelect || select.Take != null || select.Skip != null;
-                var canReceivedOrderings = canHaveOrderings && !hasGroupBy && !select.Distinct;
+                var canReceivedOrderings = canHaveOrderings && !hasGroupBy && !select.IsDistinct;
 
                 if (hasOrderBy)
                     PrependOrderings(select.OrderBy);
@@ -43,13 +43,13 @@ namespace MongoDB.Linq.Translators
                 else if (canHaveOrderings)
                     orderings = select.OrderBy;
 
-                var canPassOnOrderings = !saveIsOuterMostSelect && !hasGroupBy && !select.Distinct;
+                var canPassOnOrderings = !saveIsOuterMostSelect && !hasGroupBy && !select.IsDistinct;
                 ReadOnlyCollection<FieldDeclaration> fields = select.Fields;
                 if (_gatheredOrderings != null)
                 {
                     if (canPassOnOrderings)
                     {
-                        var producedAliases = new AliasesProduced().Gather(select.From);
+                        var producedAliases = new DeclaredAliasGatherer().Gather(select.From);
 
                         BindResult project = RebindOrderings(_gatheredOrderings, select.Alias, producedAliases, select.Fields);
                         _gatheredOrderings = null;
@@ -60,7 +60,7 @@ namespace MongoDB.Linq.Translators
                         _gatheredOrderings = null;
                 }
                 if (orderings != select.OrderBy || fields != select.Fields)
-                    select = new SelectExpression(select.Alias, fields, select.From, select.Where, orderings, select.GroupBy, select.Distinct, select.Skip, select.Take);
+                    select = new SelectExpression(select.Alias, fields, select.From, select.Where, orderings, select.GroupBy, select.IsDistinct, select.Skip, select.Take);
 
                 return select;
             }

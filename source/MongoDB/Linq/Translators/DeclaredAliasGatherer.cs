@@ -8,10 +8,7 @@ using MongoDB.Linq.Expressions;
 
 namespace MongoDB.Linq.Translators
 {
-    /// <summary>
-    ///  returns the set of all aliases produced by a query source
-    /// </summary>
-    internal class AliasesProduced : MongoExpressionVisitor
+    internal class DeclaredAliasGatherer : MongoExpressionVisitor
     {
         private HashSet<Alias> _aliases;
 

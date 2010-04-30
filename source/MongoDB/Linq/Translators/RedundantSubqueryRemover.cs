@@ -45,13 +45,13 @@ namespace MongoDB.Linq.Translators
                 var orderBy = select.OrderBy != null && select.OrderBy.Count > 0 ? select.OrderBy : fromSelect.OrderBy;
                 var skip = select.Skip != null ? select.Skip : fromSelect.Skip;
                 var take = select.Take != null ? select.Take : fromSelect.Take;
-                bool distinct = select.Distinct | fromSelect.Distinct;
+                bool distinct = select.IsDistinct | fromSelect.IsDistinct;
                 var fields = select.Fields.Count > 0 ? select.Fields : fromSelect.Fields;
 
                 if (where != select.Where
                     || orderBy != select.OrderBy
                     || groupBy != select.GroupBy
-                    || distinct != select.Distinct
+                    || distinct != select.IsDistinct
                     || skip != select.Skip
                     || take != select.Take
                     || fields != select.Fields)
@@ -87,19 +87,19 @@ namespace MongoDB.Linq.Translators
             if (selectHasGroupBy && fromHasGroupBy)
                 return false;
 
-            if(fromHasOrderBy && (selectHasGroupBy || selectHasAggregates || select.Distinct))
+            if(fromHasOrderBy && (selectHasGroupBy || selectHasAggregates || select.IsDistinct))
                 return false;
 
             if(fromHasGroupBy && select.Where != null)
                 return false;
 
-            if(fromSelect.Take != null && (select.Take != null || select.Skip != null || select.Distinct || selectHasAggregates || selectHasGroupBy))
+            if(fromSelect.Take != null && (select.Take != null || select.Skip != null || select.IsDistinct || selectHasAggregates || selectHasGroupBy))
                 return false;
 
-            if(fromSelect.Skip != null && (select.Skip != null || select.Distinct || selectHasAggregates || selectHasGroupBy))
+            if(fromSelect.Skip != null && (select.Skip != null || select.IsDistinct || selectHasAggregates || selectHasGroupBy))
                 return false;
 
-            if (fromSelect.Distinct && (select.Take != null || select.Skip != null || !selectIsNameMapProjection || selectHasGroupBy || selectHasAggregates || (selectHasOrderBy && !isTopLevel)))
+            if (fromSelect.IsDistinct && (select.Take != null || select.Skip != null || !selectIsNameMapProjection || selectHasGroupBy || selectHasAggregates || (selectHasOrderBy && !isTopLevel)))
                 return false;
 
             return true;

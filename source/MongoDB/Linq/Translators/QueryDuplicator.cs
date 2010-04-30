@@ -30,7 +30,7 @@ namespace MongoDB.Linq.Translators
             var newAlias = new Alias();
             _map[select.Alias] = newAlias;
             select = (SelectExpression)base.VisitSelect(select);
-            return new SelectExpression(newAlias, select.Fields, select.From, select.Where, select.OrderBy, select.GroupBy, select.Distinct, select.Skip, select.Take);
+            return new SelectExpression(newAlias, select.Fields, select.From, select.Where, select.OrderBy, select.GroupBy, select.IsDistinct, select.Skip, select.Take);
         }
 
         protected override Expression VisitField(FieldExpression field)

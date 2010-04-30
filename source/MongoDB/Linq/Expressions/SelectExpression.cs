@@ -9,7 +9,7 @@ namespace MongoDB.Linq.Expressions
 {
     internal class SelectExpression : AliasedExpression
     {
-        private readonly bool _distinct;
+        private readonly bool _isDistinct;
         private readonly ReadOnlyCollection<FieldDeclaration> _fields;
         private readonly Expression _from;
         private readonly Expression _groupBy;
@@ -18,9 +18,9 @@ namespace MongoDB.Linq.Expressions
         private readonly Expression _skip;
         private readonly Expression _where;
 
-        public bool Distinct
+        public bool IsDistinct
         {
-            get { return _distinct; }
+            get { return _isDistinct; }
         }
 
         public ReadOnlyCollection<FieldDeclaration> Fields
@@ -66,7 +66,7 @@ namespace MongoDB.Linq.Expressions
             : this(alias, fields, from, where, orderBy, groupBy, false, null, null)
         { }
 
-        public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool distinct, Expression skip, Expression take)
+        public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool isDistinct, Expression skip, Expression take)
             : base(MongoExpressionType.Select, typeof(void), alias)
         {
             _fields = fields as ReadOnlyCollection<FieldDeclaration>;
@@ -77,7 +77,7 @@ namespace MongoDB.Linq.Expressions
             if (_orderBy == null && orderBy != null)
                 _orderBy = new List<OrderExpression>(orderBy).AsReadOnly();
 
-            _distinct = distinct;
+            _isDistinct = isDistinct;
             _from = from;
             _groupBy = groupBy;
             _take = take;

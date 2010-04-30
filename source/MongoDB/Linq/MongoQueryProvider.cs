@@ -134,12 +134,24 @@ namespace MongoDB.Linq
             if(projection == null)
             {
                 expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
+
                 expression = new FieldBinder().Bind(expression);
                 expression = new QueryBinder(this, expression).Bind(expression);
                 expression = new AggregateRewriter().Rewrite(expression);
+                expression = new RedundantFieldRemover().Remove(expression);
                 expression = new RedundantSubqueryRemover().Remove(expression);
+                expression = new RedundantJoinRemover().Remove(expression);
+
+                expression = new ClientJoinProjectionRewriter().Rewrite(expression);
+                expression = new RedundantFieldRemover().Remove(expression);
+                expression = new RedundantSubqueryRemover().Remove(expression);
+                expression = new RedundantJoinRemover().Remove(expression);
+
                 expression = new OrderByRewriter().Rewrite(expression);
+                expression = new RedundantFieldRemover().Remove(expression);
                 expression = new RedundantSubqueryRemover().Remove(expression);
+                expression = new RedundantJoinRemover().Remove(expression);
+
                 projection = (ProjectionExpression)expression;
             }
 

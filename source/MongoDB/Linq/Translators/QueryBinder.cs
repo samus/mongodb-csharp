@@ -150,11 +150,13 @@ namespace MongoDB.Linq.Translators
                         case "GroupBy":
                             if (m.Arguments.Count == 2)
                                 return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), null, null);
-                            else if(m.Arguments.Count == 3)
+                            else if (m.Arguments.Count == 3)
                                 return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), (LambdaExpression)StripQuotes(m.Arguments[2]), null);
                             else if (m.Arguments.Count == 4)
                                 return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), (LambdaExpression)StripQuotes(m.Arguments[2]), (LambdaExpression)StripQuotes(m.Arguments[3]));
                             break;
+                        case "Join":
+                            return BindJoin(m.Type, m.Arguments[0], m.Arguments[1], (LambdaExpression)StripQuotes(m.Arguments[2]), (LambdaExpression)StripQuotes(m.Arguments[3]), (LambdaExpression)StripQuotes(m.Arguments[4]));
                     }
                     throw new NotSupportedException(string.Format("The method '{0}' is not supported", m.Method.Name));
                 }
@@ -181,7 +183,7 @@ namespace MongoDB.Linq.Translators
             var methodCallExpression = source as MethodCallExpression;
             if (methodCallExpression != null && !hasPredicateArgument && argument == null)
             {
-                if(methodCallExpression.Method.Name == "Distinct" && methodCallExpression.Arguments.Count == 1 
+                if (methodCallExpression.Method.Name == "Distinct" && methodCallExpression.Arguments.Count == 1
                     && (methodCallExpression.Method.DeclaringType == typeof(Queryable) || methodCallExpression.Method.DeclaringType == typeof(Enumerable)))
                 {
                     source = methodCallExpression.Arguments[0];
@@ -203,7 +205,7 @@ namespace MongoDB.Linq.Translators
                 _map[argument.Parameters[0]] = projection.Projector;
                 argExpression = Visit(argument.Body);
             }
-            else if(!hasPredicateArgument)
+            else if (!hasPredicateArgument)
                 argExpression = projection.Projector;
 
             var alias = new Alias();
@@ -226,7 +228,7 @@ namespace MongoDB.Linq.Translators
             var subquery = new ScalarExpression(returnType, select);
 
             GroupByInfo info;
-            if(!argumentWasPredicate && _groupByMap.TryGetValue(projection, out info))
+            if (!argumentWasPredicate && _groupByMap.TryGetValue(projection, out info))
             {
                 if (argument != null)
                 {
@@ -238,7 +240,7 @@ namespace MongoDB.Linq.Translators
 
                 aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression, distinct);
 
-                if(projection == _currentGroupElement)
+                if (projection == _currentGroupElement)
                     return aggregateExpression;
 
                 return new AggregateSubqueryExpression(info.Alias, aggregateExpression, subquery);
@@ -293,7 +295,7 @@ namespace MongoDB.Linq.Translators
         protected virtual Expression BindGroupBy(Expression source, LambdaExpression keySelector, LambdaExpression elementSelector, LambdaExpression resultSelector)
         {
             var projection = VisitSequence(source);
-            
+
             _map[keySelector.Parameters[0]] = projection.Projector;
             var keyExpression = Visit(keySelector.Body);
 
@@ -355,6 +357,25 @@ namespace MongoDB.Linq.Translators
             return new ProjectionExpression(
                 new SelectExpression(alias, new FieldDeclaration[0], projection.Source, null, null, keyExpression, false, null, null),
                 fieldProjection.Projector);
+        }
+
+        private Expression BindJoin(Type resultType, Expression outerSource, Expression innerSource, LambdaExpression outerKey, LambdaExpression innerKey, LambdaExpression resultSelector)
+        {
+            var outerProjection = VisitSequence(outerSource);
+            var innerProjection = VisitSequence(innerSource);
+            map[outerKey.Parameters[0]] = outerProjection.Projector;
+            var outerKeyExpression = Visit(outerKey.Body);
+            map[innerKey.Parameters[0]] = innerProjection.Projector;
+            var innerKeyExpression = Visit(innerKey.Body);
+            map[resultSelector.Parameters[0]] = outerProjection.Projector;
+            map[resultSelector.Parameters[1]] = innerProjection.Projector;
+            var resultExpression = Visit(resultSelector.Body);
+            var join = new JoinExpression(JoinType.InnerJoin, outerProjection.Source, innerProjection.Source, Expression.Equal(outerKeyExpression, innerKeyExpression));
+            var alias = new Alias();
+            var fieldProjections = _projector.ProjectFields(resultExpression, alias, outerProjection.Source.Alias, innerProjection.Source.Alias);
+            return new ProjectionExpression(
+                new SelectExpression(alias, fieldProjections.Fields, join, null),
+                fieldProjections.Projector);
         }
 
         private Expression BindOrderBy(Type resultType, Expression source, LambdaExpression orderSelector, OrderType orderType)
@@ -495,7 +516,7 @@ namespace MongoDB.Linq.Translators
             return ConvertToSequence(Visit(source));
         }
 
-        private static bool CanBeField(Expression expression)
+        internal static bool CanBeField(Expression expression)
         {
             switch (expression.NodeType)
             {

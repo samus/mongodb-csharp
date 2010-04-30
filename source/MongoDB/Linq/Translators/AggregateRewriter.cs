@@ -47,7 +47,7 @@ namespace MongoDB.Linq.Translators
                     _map.Add(ae, new FieldExpression(ae.AggregateInGroupSelect, ae.GroupByAlias, name));
                     fields.Add(field);
                 }
-                return new SelectExpression(select.Alias, fields, select.From, select.Where, select.OrderBy, select.GroupBy, select.Distinct, select.Skip, select.Take);
+                return new SelectExpression(select.Alias, fields, select.From, select.Where, select.OrderBy, select.GroupBy, select.IsDistinct, select.Skip, select.Take);
             }
             return select;
         }
