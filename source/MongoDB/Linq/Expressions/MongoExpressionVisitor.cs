@@ -35,6 +35,8 @@ namespace MongoDB.Linq.Expressions
                     return VisitClientJoin((ClientJoinExpression)exp);
                 case MongoExpressionType.OuterJoined:
                     return VisitOuterJoined((OuterJoinedExpression)exp);
+                case MongoExpressionType.NamedValue:
+                    return VisitNamedValue((NamedValueExpression)exp);
                 default:
                     return base.Visit(exp);
             }
@@ -92,18 +94,9 @@ namespace MongoDB.Linq.Expressions
             return join;
         }
 
-        protected virtual Expression VisitSelect(SelectExpression select)
+        protected virtual Expression VisitNamedValue(NamedValueExpression namedValue)
         {
-            var from = VisitSource(select.From);
-            var where = Visit(select.Where);
-            var groupBy = Visit(select.GroupBy);
-            var orderBy = VisitOrderBy(select.OrderBy);
-            var skip = Visit(select.Skip);
-            var take = Visit(select.Take);
-            var fields = VisitFieldDeclarationList(select.Fields);
-            if (from != select.From || where != select.Where || orderBy != select.OrderBy || groupBy != select.GroupBy || skip != select.Skip || take != select.Take || fields != select.Fields)
-                return new SelectExpression(select.Alias, fields, from, where, orderBy, groupBy, select.IsDistinct, skip, take);
-            return select;
+            return namedValue;
         }
 
         protected virtual Expression VisitProjection(ProjectionExpression projection)
@@ -150,6 +143,20 @@ namespace MongoDB.Linq.Expressions
             if (select != scalar.Select)
                 return new ScalarExpression(scalar.Type, select);
             return scalar;
+        }
+
+        protected virtual Expression VisitSelect(SelectExpression select)
+        {
+            var from = VisitSource(select.From);
+            var where = Visit(select.Where);
+            var groupBy = Visit(select.GroupBy);
+            var orderBy = VisitOrderBy(select.OrderBy);
+            var skip = Visit(select.Skip);
+            var take = Visit(select.Take);
+            var fields = VisitFieldDeclarationList(select.Fields);
+            if (from != select.From || where != select.Where || orderBy != select.OrderBy || groupBy != select.GroupBy || skip != select.Skip || take != select.Take || fields != select.Fields)
+                return new SelectExpression(select.Alias, fields, from, where, orderBy, groupBy, select.IsDistinct, skip, take);
+            return select;
         }
 
         protected virtual Expression VisitSource(Expression source)

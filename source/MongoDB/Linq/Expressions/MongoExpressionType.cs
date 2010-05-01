@@ -17,6 +17,7 @@ namespace MongoDB.Linq.Expressions
         Aggregate,
         AggregateSubquery,
         Scalar,
-        OuterJoined
+        OuterJoined,
+        NamedValue
     }
 }

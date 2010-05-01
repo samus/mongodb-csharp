@@ -363,12 +363,12 @@ namespace MongoDB.Linq.Translators
         {
             var outerProjection = VisitSequence(outerSource);
             var innerProjection = VisitSequence(innerSource);
-            map[outerKey.Parameters[0]] = outerProjection.Projector;
+            _map[outerKey.Parameters[0]] = outerProjection.Projector;
             var outerKeyExpression = Visit(outerKey.Body);
-            map[innerKey.Parameters[0]] = innerProjection.Projector;
+            _map[innerKey.Parameters[0]] = innerProjection.Projector;
             var innerKeyExpression = Visit(innerKey.Body);
-            map[resultSelector.Parameters[0]] = outerProjection.Projector;
-            map[resultSelector.Parameters[1]] = innerProjection.Projector;
+            _map[resultSelector.Parameters[0]] = outerProjection.Projector;
+            _map[resultSelector.Parameters[1]] = innerProjection.Projector;
             var resultExpression = Visit(resultSelector.Body);
             var join = new JoinExpression(JoinType.InnerJoin, outerProjection.Source, innerProjection.Source, Expression.Equal(outerKeyExpression, innerKeyExpression));
             var alias = new Alias();

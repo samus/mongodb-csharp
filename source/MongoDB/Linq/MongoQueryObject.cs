@@ -13,12 +13,6 @@ namespace MongoDB.Linq
         private Document _sort;
 
         /// <summary>
-        /// Gets or sets the aggregator.
-        /// </summary>
-        /// <value>The aggregator.</value>
-        public LambdaExpression Aggregator { get; set; }
-
-        /// <summary>
         /// Gets or sets the name of the collection.
         /// </summary>
         /// <value>The name of the collection.</value>

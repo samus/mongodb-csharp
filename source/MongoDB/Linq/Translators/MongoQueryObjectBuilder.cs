@@ -80,10 +80,6 @@ namespace MongoDB.Linq.Translators
         protected override Expression VisitProjection(ProjectionExpression projection)
         {
             Visit(projection.Source);
-
-            _queryObject.Projector = new ProjectionBuilder().Build(_queryObject, projection.Projector);
-            _queryObject.Aggregator = projection.Aggregator;
-
             return projection;
         }
 
