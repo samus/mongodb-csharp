@@ -363,19 +363,36 @@ namespace MongoDB.Linq.Translators
         {
             var outerProjection = VisitSequence(outerSource);
             var innerProjection = VisitSequence(innerSource);
-            _map[outerKey.Parameters[0]] = outerProjection.Projector;
-            var outerKeyExpression = Visit(outerKey.Body);
-            _map[innerKey.Parameters[0]] = innerProjection.Projector;
-            var innerKeyExpression = Visit(innerKey.Body);
-            _map[resultSelector.Parameters[0]] = outerProjection.Projector;
-            _map[resultSelector.Parameters[1]] = innerProjection.Projector;
+
+            var join = Expression.Call( //change this to a client-side join...
+                typeof(Enumerable),
+                "Join",
+                new [] { outerProjection.Projector.Type, innerProjection.Projector.Type, outerKey.Body.Type, resultSelector.Body.Type },
+                outerProjection,
+                innerProjection,
+                outerKey,
+                innerKey,
+                resultSelector);
+
             var resultExpression = Visit(resultSelector.Body);
-            var join = new JoinExpression(JoinType.InnerJoin, outerProjection.Source, innerProjection.Source, Expression.Equal(outerKeyExpression, innerKeyExpression));
             var alias = new Alias();
-            var fieldProjections = _projector.ProjectFields(resultExpression, alias, outerProjection.Source.Alias, innerProjection.Source.Alias);
+            var fieldProjection = _projector.ProjectFields(resultExpression, outerProjection.Source.Alias, innerProjection.Source.Alias);
             return new ProjectionExpression(
-                new SelectExpression(alias, fieldProjections.Fields, join, null),
-                fieldProjections.Projector);
+                new SelectExpression(alias, fieldProjection.Fields, join, null),
+                fieldProjection.Projector);
+            //_map[outerKey.Parameters[0]] = outerProjection.Projector;
+            //var outerKeyExpression = Visit(outerKey.Body);
+            //_map[innerKey.Parameters[0]] = innerProjection.Projector;
+            //var innerKeyExpression = Visit(innerKey.Body);
+            //_map[resultSelector.Parameters[0]] = outerProjection.Projector;
+            //_map[resultSelector.Parameters[1]] = innerProjection.Projector;
+            //var resultExpression = Visit(resultSelector.Body);
+            //var join = new JoinExpression(JoinType.InnerJoin, outerProjection.Source, innerProjection.Source, Expression.Equal(outerKeyExpression, innerKeyExpression));
+            //var alias = new Alias();
+            //var fieldProjections = _projector.ProjectFields(resultExpression, alias, outerProjection.Source.Alias, innerProjection.Source.Alias);
+            //return new ProjectionExpression(
+            //    new SelectExpression(alias, fieldProjections.Fields, join, null),
+            //    fieldProjections.Projector);
         }
 
         private Expression BindOrderBy(Type resultType, Expression source, LambdaExpression orderSelector, OrderType orderType)

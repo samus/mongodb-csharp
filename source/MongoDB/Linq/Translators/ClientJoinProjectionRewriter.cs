@@ -81,7 +81,7 @@ namespace MongoDB.Linq.Translators
         private bool CanJoinOnClient(SelectExpression select)
         {
             return !select.IsDistinct
-                && select.GroupBy != null
+                && select.GroupBy == null
                 && !new AggregateChecker().HasAggregates(select);
         }
 

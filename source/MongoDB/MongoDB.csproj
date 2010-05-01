@@ -130,7 +130,6 @@
     <Compile Include="Linq\Expressions\MongoExpression.cs" />
     <Compile Include="Linq\Expressions\NamedValueExpression.cs" />
     <Compile Include="Linq\Expressions\OuterJoinedExpression.cs" />
-    <Compile Include="Linq\Translators\Parameterizer.cs" />
     <Compile Include="Linq\Translators\ExpressionReplacer.cs" />
     <Compile Include="Linq\Translators\NamedValueGatherer.cs" />
     <Compile Include="Util\ScopedDictionary.cs" />
@@ -180,7 +179,6 @@
     <Compile Include="Linq\MongoQueryObject.cs" />
     <Compile Include="Linq\Translators\DocumentFormatter.cs" />
     <Compile Include="Linq\Translators\PartialEvaluator.cs" />
-    <Compile Include="Linq\ProjectionReader.cs" />
     <Compile Include="Linq\Translators\RedundantSubqueryRemover.cs" />
     <Compile Include="Linq\Translators\MongoQueryObjectBuilder.cs" />
     <Compile Include="Linq\TypeHelper.cs" />

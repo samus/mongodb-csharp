@@ -18,7 +18,6 @@ namespace MongoDB.Linq
         private int _numCursors;
         private Expression _provider;
         private MemberInfo _receivingMember;
-        private Scope _scope;
         private List<ParameterExpression> _variables;
 
 
@@ -80,6 +79,11 @@ namespace MongoDB.Linq
             return access;
         }
 
+        protected override Expression VisitField(FieldExpression field)
+        {
+            return Visit(field.Expression);
+        }
+
         protected override Expression VisitProjection(ProjectionExpression projection)
         {
             if (_isTop)
@@ -119,7 +123,6 @@ namespace MongoDB.Linq
         private Expression BuildInner(Expression expression)
         {
             var builder = new ExecutionBuilder();
-            builder._scope = _scope;
             builder._receivingMember = _receivingMember;
             builder._numCursors = _numCursors;
             builder._lookup = _lookup;
@@ -128,32 +131,16 @@ namespace MongoDB.Linq
 
         private Expression ExecuteProjection(ProjectionExpression projection)
         {
-            projection = (ProjectionExpression)new Parameterizer().Parameterize(projection);
-
-            if(_scope != null)
-                projection = (ProjectionExpression)new OuterParameterizer().Parameterize(projection, _scope.Alias);
-
-            var saveScope = _scope;
-            var document = Expression.Parameter(projection.Projector.Type, "d" + (_numCursors++));
-            _scope = new Scope(_scope, document, projection.Source.Alias, projection.Source.Fields);
-            var projector = Expression.Lambda(Visit(projection.Projector), document);
-            _scope = saveScope;
-
+            var projection = base.VisitProjection(projection);
             var queryObject = new MongoQueryObjectBuilder().Build(projection);
-            queryObject.Projector = new ProjectionBuilder().Build(queryObject, projector);
-
-            var namedValues = new NamedValueGatherer().Gather(projection.Source);
-            var names = namedValues.Select(v => v.Name).ToArray();
-            var values = namedValues.Select(v => Expression.Convert(Visit(v.Value), typeof(object))).ToArray();
+            queryObject.Projector = new ProjectionBuilder().Build(projection.Projector, queryObject.DocumentType, "d" + (_numCursors++), queryObject.IsMapReduce);
+            queryObject.Aggregator = projection.Aggregator;
 
             Expression result = Expression.Call(
                 _provider,
                 "ExecuteQueryObject",
-                new[] { queryObject.DocumentType, queryObject.Projector.Type },
+                Type.EmptyTypes,
                 Expression.Constant(queryObject, typeof(MongoQueryObject)));
-
-            if(projection.Aggregator != null)
-                result = new ExpressionReplacer().Replace(projection.Aggregator.Body, projection.Aggregator.Parameters[0], result);
 
             return result;
         }
@@ -190,74 +177,6 @@ namespace MongoDB.Linq
         {
             var last = expressions[expressions.Count - 1];
             return Expression.Convert(Expression.Call(typeof(ExecutionBuilder), "Sequence", null, Expression.NewArrayInit(typeof(object), expressions)), last.Type);
-        }
-
-        private class Scope
-        {
-            private ParameterExpression _document;
-            private Scope _outer;
-            private Dictionary<string, int> _nameMap;
-
-            internal Alias Alias { get; private set; }
-
-            public Scope(Scope outer, ParameterExpression document, Alias alias, IEnumerable<FieldDeclaration> fields)
-            {
-                _outer = outer;
-                _document = document;
-                Alias = alias;
-                _nameMap = fields.Select((f, i) => new { f, i }).ToDictionary(x => x.f.Name, x => x.i);
-            }
-
-            public bool TryGetValue(FieldExpression field, out ParameterExpression document, out int ordinal)
-            {
-                for (Scope s = this; s != null; s = s._outer)
-                {
-                    if (field.Alias == s.Alias && _nameMap.TryGetValue(field.Name, out ordinal))
-                    {
-                        document = _document;
-                        return true;
-                    }
-                }
-                document = null;
-                ordinal = 0;
-                return false;
-            }
-        }
-
-        private class OuterParameterizer : MongoExpressionVisitor
-        {
-            private int _paramIndex;
-            private Alias _outerAlias;
-            private Dictionary<FieldExpression, NamedValueExpression> _map;
-
-            public Expression Parameterize(Expression expression, Alias outerAlias)
-            {
-                _outerAlias = outerAlias;
-                return Visit(expression);
-            }
-
-            protected override Expression VisitProjection(ProjectionExpression projection)
-            {
-                SelectExpression select = (SelectExpression)Visit(projection.Source);
-                if (select != projection.Source)
-                    return new ProjectionExpression(select, projection.Projector, projection.Aggregator);
-                return projection;
-            }
-
-            protected override Expression VisitField(FieldExpression field)
-            {
-                if (field.Alias == _outerAlias)
-                {
-                    NamedValueExpression nv;
-                    if (!_map.TryGetValue(field, out nv))
-                    {
-                        nv = new NamedValueExpression("n" + (_paramIndex++), field);
-                        _map.Add(field, nv);
-                    }
-                    return nv;
-                }
-                return field;
-            }
         }
 
         private class CompoundKey : IEquatable<CompoundKey>

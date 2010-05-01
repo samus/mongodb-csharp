@@ -11,7 +11,7 @@ namespace MongoDB.Linq.Translators
 {
     internal class ProjectionBuilder : MongoExpressionVisitor
     {
-        private MongoQueryObject _queryObject;
+        private bool _isMapReduce;
         private ParameterExpression _document;
         private GroupingKeyDeterminer _determiner;
 
@@ -20,34 +20,33 @@ namespace MongoDB.Linq.Translators
             _determiner = new GroupingKeyDeterminer();
         }
 
-        public LambdaExpression Build(MongoQueryObject queryObject, Expression projector)
+        public LambdaExpression Build(Expression projector, Type documentType, string parameterName, bool isMapReduce)
         {
-            _queryObject = queryObject;
-            if (_queryObject.IsMapReduce)
-                _document = Expression.Parameter(typeof(Document), "document");
+            _isMapReduce = isMapReduce;
+            if (_isMapReduce)
+                _document = Expression.Parameter(typeof(Document), parameterName);
             else
-                _document = Expression.Parameter(queryObject.DocumentType, "document");
+                _document = Expression.Parameter(documentType, parameterName);
 
-            var body = Visit(projector);
-            return Expression.Lambda(body, _document);
+            return Expression.Lambda(Visit(projector), _document);
         }
 
         protected override Expression VisitField(FieldExpression field)
         {
-            if (_queryObject.IsMapReduce)
+            if (_isMapReduce)
             {
                 var parts = field.Name.Split('.');
 
                 bool isGroupingField = _determiner.IsGroupingKey(field);
                 Expression current;
-                if(parts.Contains("Key") && isGroupingField)
+                if (parts.Contains("Key") && isGroupingField)
                     current = _document;
                 else
                 {
                     current = Expression.Call(
                         _document,
                         "Get",
-                        new [] { typeof(Document) },
+                        new[] { typeof(Document) },
                         Expression.Constant("value"));
                 }
 
@@ -73,10 +72,7 @@ namespace MongoDB.Linq.Translators
 
         protected override Expression VisitParameter(ParameterExpression p)
         {
-            if (p.Type == _document.Type)
-                return _document;
-
-            return p;
+            return _document;
         }
 
         private class GroupingKeyDeterminer : MongoExpressionVisitor
