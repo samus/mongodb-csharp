@@ -276,7 +276,7 @@ namespace MongoDB.IntegrationTests
             };
             inserts.Insert(album);
 
-            var result = inserts.FindOne(new Document().Add("songs.title", "Deliveries After Dark"));
+            var result = inserts.FindOne(new Document().Add("Songs.Title", "Deliveries After Dark"));
             Assert.IsNotNull(result);
 
             Assert.AreEqual(album.Songs.Count, result.Songs.Count);

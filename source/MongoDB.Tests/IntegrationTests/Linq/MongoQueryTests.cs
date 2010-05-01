@@ -349,6 +349,6 @@ namespace MongoDB.IntegrationTests.Linq
             var people = Enumerable.ToList<Person>(collection.Linq().Where(x => x.Age + 23 < 50));
 
             Assert.AreEqual(1, people.Count);
-        }
+        } 
     }
 }
