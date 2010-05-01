@@ -81,14 +81,20 @@ namespace MongoDB.Serialization.Descriptors
 
             var parts = name.Split('.');
             memberMap = ClassMap.GetMemberMapFromMemberName(parts[0]);
+            if (memberMap == null)
+                return null;
+
             var currentType = memberMap.MemberReturnType;
             for (int i = 1; i < parts.Length && memberMap != null; i++)
             {
-                if (IsNumeric(parts[i])) //we are an array indexer
+                var collectionMemberMap = memberMap as CollectionMemberMap;
+                if (collectionMemberMap != null)
                 {
                     currentType = ((CollectionMemberMap)memberMap).ElementType;
-                    continue;
+                    if (IsNumeric(parts[i])) //we are an array indexer
+                        continue;
                 }
+                
                 var classMap = _mappingStore.GetClassMap(currentType);
                 memberMap = classMap.GetMemberMapFromAlias(parts[i]);
                 if (memberMap != null)
@@ -136,11 +142,15 @@ namespace MongoDB.Serialization.Descriptors
             {
                 if(memberMap != null)
                 {
-                    if (IsNumeric(parts[i])) //we are an array indexer
+                    var collectionMemberMap = memberMap as CollectionMemberMap;
+                    if (collectionMemberMap != null)
                     {
                         currentType = ((CollectionMemberMap)memberMap).ElementType;
-                        sb.Append(".").Append(parts[i]);
-                        continue;
+                        if (IsNumeric(parts[i])) //we are an array indexer
+                        {
+                            sb.Append(".").Append(parts[i]);
+                            continue;
+                        }
                     }
 
                     var classMap = _mappingStore.GetClassMap(currentType);
