@@ -48,8 +48,6 @@ namespace MongoDB.Linq.Expressions
                     return CompareField((FieldExpression)a, (FieldExpression)b);
                 case MongoExpressionType.Select:
                     return CompareSelect((SelectExpression)a, (SelectExpression)b);
-                case MongoExpressionType.Join:
-                    return CompareJoin((JoinExpression)a, (JoinExpression)b);
                 case MongoExpressionType.Aggregate:
                     return CompareAggregate((AggregateExpression)a, (AggregateExpression)b);
                 case MongoExpressionType.Scalar:
@@ -145,34 +143,6 @@ namespace MongoDB.Linq.Expressions
         protected virtual bool CompareFieldDeclaration(FieldDeclaration a, FieldDeclaration b)
         {
             return a.Name == b.Name && Compare(a.Expression, b.Expression);
-        }
-
-        protected virtual bool CompareJoin(JoinExpression a, JoinExpression b)
-        {
-            if (a.Join != b.Join || !Compare(a.Left, b.Left))
-                return false;
-
-            if (a.Join == JoinType.CrossApply || a.Join == JoinType.OuterApply)
-            {
-                var save = _aliasScope;
-                try
-                {
-                    _aliasScope = new ScopedDictionary<Alias, Alias>(_aliasScope);
-                    MapAliases(a.Left, b.Left);
-
-                    return Compare(a.Right, b.Right)
-                        && Compare(a.Condition, b.Condition);
-                }
-                finally
-                {
-                    _aliasScope = save;
-                }
-            }
-            else
-            {
-                return Compare(a.Right, b.Right)
-                    && Compare(a.Condition, b.Condition);
-            }
         }
 
         protected virtual bool CompareAggregate(AggregateExpression a, AggregateExpression b)

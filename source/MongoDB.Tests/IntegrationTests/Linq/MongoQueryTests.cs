@@ -350,16 +350,5 @@ namespace MongoDB.IntegrationTests.Linq
 
             Assert.AreEqual(1, people.Count);
         }
-
-        [Test]
-        public void Join()
-        {
-            var people = Enumerable.ToList(
-                from p in collection.Linq()
-                join op in collection.Linq() on p.PrimaryAddress equals op.PrimaryAddress
-                select p);
-
-            Assert.AreEqual(0, people.Count);
-        }
     }
 }

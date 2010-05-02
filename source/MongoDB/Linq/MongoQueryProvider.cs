@@ -171,17 +171,10 @@ namespace MongoDB.Linq
             expression = new AggregateRewriter().Rewrite(expression);
             expression = new RedundantFieldRemover().Remove(expression);
             expression = new RedundantSubqueryRemover().Remove(expression);
-            expression = new RedundantJoinRemover().Remove(expression);
-
-            expression = new ClientJoinProjectionRewriter().Rewrite(expression);
-            expression = new RedundantFieldRemover().Remove(expression);
-            expression = new RedundantSubqueryRemover().Remove(expression);
-            expression = new RedundantJoinRemover().Remove(expression);
 
             expression = new OrderByRewriter().Rewrite(expression);
             expression = new RedundantFieldRemover().Remove(expression);
             expression = new RedundantSubqueryRemover().Remove(expression);
-            expression = new RedundantJoinRemover().Remove(expression);
 
             return (ProjectionExpression)expression;
         }

@@ -18,6 +18,7 @@ namespace MongoDB.Linq.Translators
             _queryObject = new MongoQueryObject();
             _queryAttributes = new QueryAttributesGatherer().Gather(expression);
             _queryObject.IsCount = _queryAttributes.IsCount;
+            _queryObject.IsMapReduce = _queryAttributes.IsMapReduce;
             Visit(expression);
             return _queryObject;
         }
@@ -159,12 +160,6 @@ namespace MongoDB.Linq.Translators
 
                 Visit(select.Where);
                 return select;
-            }
-
-            protected override Expression VisitProjection(ProjectionExpression projection)
-            {
-                VisitSource(projection.Source);
-                return projection;
             }
         }
     }

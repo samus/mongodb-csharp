@@ -29,14 +29,6 @@ namespace MongoDB.Linq.Expressions
                     return VisitAggregateSubquery((AggregateSubqueryExpression)exp);
                 case MongoExpressionType.Scalar:
                     return VisitScalar((ScalarExpression)exp);
-                case MongoExpressionType.Join:
-                    return VisitJoin((JoinExpression)exp);
-                case MongoExpressionType.ClientJoin:
-                    return VisitClientJoin((ClientJoinExpression)exp);
-                case MongoExpressionType.OuterJoined:
-                    return VisitOuterJoined((OuterJoinedExpression)exp);
-                case MongoExpressionType.NamedValue:
-                    return VisitNamedValue((NamedValueExpression)exp);
                 default:
                     return base.Visit(exp);
             }
@@ -60,16 +52,6 @@ namespace MongoDB.Linq.Expressions
             return aggregateSubquery;
         }
 
-        protected virtual Expression VisitClientJoin(ClientJoinExpression clientJoin)
-        {
-            var projection = (ProjectionExpression)Visit(clientJoin.Projection);
-            var outerKey = VisitExpressionList(clientJoin.OuterKey);
-            var innerKey = VisitExpressionList(clientJoin.InnerKey);
-            if (projection != clientJoin.Projection && outerKey != clientJoin.OuterKey && innerKey != clientJoin.InnerKey)
-                return new ClientJoinExpression(projection, outerKey, innerKey);
-            return projection;
-        }
-
         protected virtual Expression VisitCollection(CollectionExpression collection)
         {
             return collection;
@@ -82,21 +64,6 @@ namespace MongoDB.Linq.Expressions
                 field = new FieldExpression(e, field.Alias, field.Name);
 
             return field;
-        }
-
-        protected virtual Expression VisitJoin(JoinExpression join)
-        {
-            var left = VisitSource(join.Left);
-            var right = VisitSource(join.Right);
-            var condition = Visit(join.Condition);
-            if (left != join.Left && right != join.Right && condition != join.Condition)
-                return new JoinExpression(join.Join, left, right, condition);
-            return join;
-        }
-
-        protected virtual Expression VisitNamedValue(NamedValueExpression namedValue)
-        {
-            return namedValue;
         }
 
         protected virtual Expression VisitProjection(ProjectionExpression projection)
@@ -126,15 +93,6 @@ namespace MongoDB.Linq.Expressions
                     return alternate.AsReadOnly();
             }
             return orderBys;
-        }
-
-        protected virtual Expression VisitOuterJoined(OuterJoinedExpression outerJoin)
-        {
-            var test = Visit(outerJoin.Test);
-            var expression = Visit(outerJoin.Expression);
-            if (test != outerJoin.Test || expression != outerJoin.Expression)
-                return new OuterJoinedExpression(test, expression);
-            return outerJoin;
         }
 
         protected virtual Expression VisitScalar(ScalarExpression scalar)

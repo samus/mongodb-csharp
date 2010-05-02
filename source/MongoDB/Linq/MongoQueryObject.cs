@@ -157,7 +157,7 @@ namespace MongoDB.Linq
         /// </returns>
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return "queryobject";
         }
     }
 }

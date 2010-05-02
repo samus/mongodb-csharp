@@ -15,17 +15,6 @@ namespace MongoDB.Linq.Expressions
             return select.SetFields(fields);
         }
 
-        public static ProjectionExpression AddOuterJoinTest(this ProjectionExpression projection)
-        {
-            string fieldName = projection.Source.GetAvailableFieldName("Test");
-            SelectExpression newSource = projection.Source.AddField(new FieldDeclaration(fieldName, Expression.Constant(1, typeof(int?))));
-            Expression newProjector =
-                new OuterJoinedExpression(
-                    new FieldExpression(Expression.Constant(1, typeof(int?)), newSource.Alias, fieldName),
-                    projection.Projector);
-            return new ProjectionExpression(newSource, newProjector, projection.Aggregator);
-        }
-
         public static string GetAvailableFieldName(this SelectExpression select, string baseName)
         {
             string name = baseName;
