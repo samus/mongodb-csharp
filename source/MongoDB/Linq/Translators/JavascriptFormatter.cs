@@ -120,6 +120,15 @@ namespace MongoDB.Linq.Translators
                     return m;
                 }
             }
+            else if (m.Member.DeclaringType == typeof(string))
+            {
+                if (m.Member.Name == "Length")
+                {
+                    Visit(m.Expression);
+                    _js.Append(".length");
+                    return m;
+                }
+            }
             else if (typeof(ICollection).IsAssignableFrom(m.Member.DeclaringType))
             {
                 if (m.Member.Name == "Count")
