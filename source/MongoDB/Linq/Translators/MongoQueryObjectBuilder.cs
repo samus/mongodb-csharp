@@ -25,6 +25,8 @@ namespace MongoDB.Linq.Translators
 
         protected override Expression VisitSelect(SelectExpression select)
         {
+            select = PreProcessSelect(select);
+
             if (select.From != null)
                 VisitSource(select.From);
             if (select.Where != null)
@@ -101,6 +103,20 @@ namespace MongoDB.Linq.Translators
                     throw new InvalidOperationException("Select source is not valid type");
             }
             return source;
+        }
+
+        private SelectExpression PreProcessSelect(SelectExpression select)
+        {
+            if (select.Where != null && select.Where.NodeType == ExpressionType.Constant && select.Where.Type == typeof(bool))
+            {
+                var value = EvaluateConstant<bool>(select.Where);
+                if (value)
+                    select = select.SetWhere(null);
+                else
+                    throw new InvalidQueryException("If you don't want to return any values, don't call the method.");
+            }
+
+            return select;
         }
 
         private static T EvaluateConstant<T>(Expression e)

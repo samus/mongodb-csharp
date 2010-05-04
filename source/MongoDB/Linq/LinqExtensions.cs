@@ -10,15 +10,38 @@ namespace MongoDB.Linq
     public static class LinqExtensions
     {
         /// <summary>
-        /// Finds the specified collection.
+        /// Counts the specified collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
-        /// <param name="spec">The spec.</param>
+        /// <param name="selector">The selector.</param>
         /// <returns></returns>
-        public static ICursor<T> Find<T>(this IMongoCollection<T> collection, Expression<Func<T, bool>> spec) where T : class
+        public static int Count<T>(this IMongoCollection<T> collection, Expression<Func<T, bool>> selector) where T : class
         {
-            return collection.Find(GetQuery(collection, spec));
+            return collection.Linq().Count(selector);
+        }
+
+        /// <summary>
+        /// Deletes the documents according to the selector.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">The collection.</param>
+        /// <param name="selector">The selector.</param>
+        public static void Delete<T>(this IMongoCollection<T> collection, Expression<Func<T, bool>> selector) where T : class
+        {
+            collection.Delete(GetQuery(collection, selector));
+        }
+
+        /// <summary>
+        /// Finds the selectorified collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">The collection.</param>
+        /// <param name="selector">The selector.</param>
+        /// <returns></returns>
+        public static ICursor<T> Find<T>(this IMongoCollection<T> collection, Expression<Func<T, bool>> selector) where T : class
+        {
+            return collection.Find(GetQuery(collection, selector));
         }
 
         /// <summary>
@@ -26,15 +49,15 @@ namespace MongoDB.Linq
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
-        /// <param name="spec">The spec.</param>
+        /// <param name="selector">The selector.</param>
         /// <returns></returns>
-        public static T FindOne<T>(this IMongoCollection<T> collection, Expression<Func<T, bool>> spec) where T : class
+        public static T FindOne<T>(this IMongoCollection<T> collection, Expression<Func<T, bool>> selector) where T : class
         {
-            return collection.FindOne(GetQuery(collection, spec));
+            return collection.FindOne(GetQuery(collection, selector));
         }
 
         /// <summary>
-        /// Linqs the specified collection.
+        /// Linqs the selectorified collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
@@ -45,7 +68,7 @@ namespace MongoDB.Linq
         }
 
         /// <summary>
-        /// Linqs the specified collection.
+        /// Linqs the selectorified collection.
         /// </summary>
         /// <param name="collection">The collection.</param>
         /// <returns></returns>
@@ -55,7 +78,7 @@ namespace MongoDB.Linq
         }
 
         /// <summary>
-        /// Updates the specified collection.
+        /// Updates the selectorified collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
@@ -67,7 +90,7 @@ namespace MongoDB.Linq
         }
 
         /// <summary>
-        /// Updates the specified collection.
+        /// Updates the selectorified collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
@@ -80,7 +103,7 @@ namespace MongoDB.Linq
         }
 
         /// <summary>
-        /// Updates the specified collection.
+        /// Updates the selectorified collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
@@ -93,7 +116,7 @@ namespace MongoDB.Linq
         }
 
         /// <summary>
-        /// Updates the specified collection.
+        /// Updates the selectorified collection.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
@@ -136,12 +159,12 @@ namespace MongoDB.Linq
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
-        /// <param name="spec">The spec.</param>
+        /// <param name="selector">The selector.</param>
         /// <returns></returns>
-        private static Document GetQuery<T>(IMongoCollection<T> collection, Expression<Func<T, bool>> spec) where T : class
+        private static Document GetQuery<T>(IMongoCollection<T> collection, Expression<Func<T, bool>> selector) where T : class
         {
             var query = new MongoQuery<T>(new MongoQueryProvider(collection.Database, collection.Name))
-                .Where(spec);
+                .Where(selector);
             var queryObject = ((IMongoQueryable)query).GetQueryObject();
             return queryObject.Query;
         }

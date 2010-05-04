@@ -38,6 +38,11 @@ namespace MongoDB.Linq.Expressions
             return new SelectExpression(select.Alias, fields.OrderBy(f => f.Name), select.From, select.Where, select.OrderBy, select.GroupBy, select.IsDistinct, select.Skip, select.Take);
         }
 
+        public static SelectExpression SetWhere(this SelectExpression select, Expression where)
+        {
+            return new SelectExpression(select.Alias, select.Fields, select.From, where, select.OrderBy, select.GroupBy, select.IsDistinct, select.Skip, select.Take);
+        }
+
         private static bool IsUniqueName(SelectExpression select, string name)
         {
             foreach (var field in select.Fields)
