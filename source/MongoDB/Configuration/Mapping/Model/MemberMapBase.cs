@@ -80,6 +80,10 @@ namespace MongoDB.Configuration.Mapping.Model
                 {
                     throw new MongoException("Can not convert value from " + valueType + " to " + _memberReturnType + " on " + instance.GetType() + "." + _memberName, exception);
                 }
+                catch(ArgumentException exception)
+                {
+                    throw new MongoException("Can not convert value from " + valueType + " to " + _memberReturnType + " on " + instance.GetType() + "." + _memberName, exception);
+                }
 
             _setter(instance, value);
         }
