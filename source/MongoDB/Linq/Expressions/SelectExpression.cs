@@ -7,22 +7,23 @@ using System.Collections.ObjectModel;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class SelectExpression : Expression
+    internal class SelectExpression : AliasedExpression
     {
-        private readonly bool _distinct;
-        private readonly ReadOnlyCollection<FieldExpression> _fields;
+        private readonly bool _isDistinct;
+        private readonly ReadOnlyCollection<FieldDeclaration> _fields;
         private readonly Expression _from;
-        private readonly Expression _limit;
-        private readonly ReadOnlyCollection<OrderExpression> _order;
+        private readonly Expression _groupBy;
+        private readonly Expression _take;
+        private readonly ReadOnlyCollection<OrderExpression> _orderBy;
         private readonly Expression _skip;
         private readonly Expression _where;
 
-        public bool Distinct
+        public bool IsDistinct
         {
-            get { return _distinct; }
+            get { return _isDistinct; }
         }
 
-        public ReadOnlyCollection<FieldExpression> Fields
+        public ReadOnlyCollection<FieldDeclaration> Fields
         {
             get { return _fields; }
         }
@@ -32,14 +33,19 @@ namespace MongoDB.Linq.Expressions
             get { return _from; }
         }
 
-        public Expression Limit
+        public Expression GroupBy
         {
-            get { return _limit; }
+            get { return _groupBy; }
         }
 
-        public ReadOnlyCollection<OrderExpression> Order
+        public Expression Take
         {
-            get { return _order; }
+            get { return _take; }
+        }
+
+        public ReadOnlyCollection<OrderExpression> OrderBy
+        {
+            get { return _orderBy; }
         }
 
         public Expression Skip
@@ -52,24 +58,29 @@ namespace MongoDB.Linq.Expressions
             get { return _where; }
         }
 
-        public SelectExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where)
-            : this(type, fields, from, where, null, false, null, null)
+        public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where)
+            : this(alias, fields, from, where, null, null)
         { }
 
-        public SelectExpression(Type type, IEnumerable<FieldExpression> fields, Expression from, Expression where, IEnumerable<OrderExpression> order, bool distinct, Expression skip, Expression limit)
-            : base((ExpressionType)MongoExpressionType.Select, type)
+        public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy)
+            : this(alias, fields, from, where, orderBy, groupBy, false, null, null)
+        { }
+
+        public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool isDistinct, Expression skip, Expression take)
+            : base(MongoExpressionType.Select, typeof(void), alias)
         {
-            _fields = fields as ReadOnlyCollection<FieldExpression>;
+            _fields = fields as ReadOnlyCollection<FieldDeclaration>;
             if (_fields == null)
-                _fields = new List<FieldExpression>(fields).AsReadOnly();
+                _fields = new List<FieldDeclaration>(fields).AsReadOnly();
 
-            _order = order as ReadOnlyCollection<OrderExpression>;
-            if (_order == null && order != null)
-                _order = new List<OrderExpression>(order).AsReadOnly();
+            _orderBy = orderBy as ReadOnlyCollection<OrderExpression>;
+            if (_orderBy == null && orderBy != null)
+                _orderBy = new List<OrderExpression>(orderBy).AsReadOnly();
 
-            _distinct = distinct;
+            _isDistinct = isDistinct;
             _from = from;
-            _limit = limit;
+            _groupBy = groupBy;
+            _take = take;
             _where = where;
             _skip = skip;
         }

@@ -5,12 +5,6 @@ using System.Text;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal enum AggregateType
-    {
-        Count,
-        Min,
-        Max,
-        Average,
-        Sum
-    }
+    internal sealed class Alias
+    { }
 }

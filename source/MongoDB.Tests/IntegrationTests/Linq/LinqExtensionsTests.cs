@@ -53,6 +53,14 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void Delete()
+        {
+            personCollection.Delete(p => true);
+
+            Assert.AreEqual(0, personCollection.Count());
+        }
+
+        [Test]
         public void Find()
         {
             var people = personCollection.Find(x => x.Age > 21).Documents;

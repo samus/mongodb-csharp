@@ -6,10 +6,16 @@ using System.Text;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class FieldExpression : Expression
+    internal class FieldExpression : MongoExpression
     {
+        private readonly Alias _alias;
         private readonly Expression _expression;
         private readonly string _name;
+
+        public Alias Alias
+        {
+            get { return _alias; }
+        }
 
         public Expression Expression
         {
@@ -21,14 +27,10 @@ namespace MongoDB.Linq.Expressions
             get { return _name; }
         }
 
-        public FieldExpression(string name, Expression expression)
-            : base((ExpressionType)MongoExpressionType.Field, expression.Type)
+        public FieldExpression(Expression expression, Alias alias, string name)
+            : base(MongoExpressionType.Field, expression.Type)
         {
-            if (name == null)
-                throw new ArgumentNullException("name");
-            if (expression == null)
-                throw new ArgumentNullException("expression");
-
+            _alias = alias;
             _expression = expression;
             _name = name;
         }

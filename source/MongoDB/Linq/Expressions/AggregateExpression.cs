@@ -6,10 +6,11 @@ using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class AggregateExpression : Expression
+    internal class AggregateExpression : MongoExpression
     {
         private readonly AggregateType _aggregateType;
         private readonly Expression _argument;
+        private readonly bool _distinct;
 
         public AggregateType AggregateType
         {
@@ -21,11 +22,17 @@ namespace MongoDB.Linq.Expressions
             get { return _argument; }
         }
 
-        public AggregateExpression(Type type, AggregateType aggregateType, Expression argument)
-            : base((ExpressionType)MongoExpressionType.Aggregate, type)
+        public bool Distinct
+        {
+            get { return _distinct; }
+        }
+
+        public AggregateExpression(Type type, AggregateType aggregateType, Expression argument, bool distinct)
+            : base(MongoExpressionType.Aggregate, type)
         {
             _aggregateType = aggregateType;
             _argument = argument;
+            _distinct = distinct;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MongoDB.Linq
     {
         private bool _hasOrder;
         private Document _query;
-        private readonly Stack<Scope> _scopes;
+        private Document _sort;
 
         /// <summary>
         /// Gets or sets the aggregator.
@@ -43,10 +43,36 @@ namespace MongoDB.Linq
         public Document Fields { get; set; }
 
         /// <summary>
+        /// Gets or sets the finalizer function.
+        /// </summary>
+        /// <value>The finalizer function.</value>
+        public string FinalizerFunction { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this is a count query.
         /// </summary>
         /// <value><c>true</c> if this is a count query; otherwise, <c>false</c>.</value>
         public bool IsCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is map reduce.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is map reduce; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMapReduce { get; set; }
+
+        /// <summary>
+        /// Gets or sets the map function.
+        /// </summary>
+        /// <value>The map function.</value>
+        public string MapFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reduce function.
+        /// </summary>
+        /// <value>The reduce function.</value>
+        public string ReduceFunction { get; set; }
 
         /// <summary>
         /// Gets or sets the number to skip.
@@ -76,127 +102,62 @@ namespace MongoDB.Linq
         }
 
         /// <summary>
-        /// Gets the scope depth.
+        /// Gets the sort.
         /// </summary>
-        /// <value>The scope depth.</value>
-        public int ScopeDepth
+        /// <value>The sort.</value>
+        public Document Sort
         {
-            get { return _scopes.Count; }
+            get { return _sort; }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoQueryObject"/> class.
+        /// </summary>
         public MongoQueryObject()
         {
             Fields = new Document();
             _query = new Document();
-
-            _hasOrder = false;
-
-            _scopes = new Stack<Scope>();
         }
 
-        public void AddCondition(object value)
+        /// <summary>
+        /// Adds the sort.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public void AddSort(string name, int value)
         {
-            _scopes.Peek().AddCondition(value);
+            if(_sort == null)
+                _sort = new Document();
+            _sort.Add(name, value);
         }
 
-        public void AddCondition(string name, object value)
+        /// <summary>
+        /// Sets the query document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        public void SetQueryDocument(Document document)
         {
-            PushConditionScope(name);
-            AddCondition(value);
-            PopConditionScope();
+            _query = document;
         }
 
-        public void AddOrderBy(string name, int value)
-        {
-            if (!_hasOrder)
-            {
-                _query = new Document("query", _query);
-                _query.Add("orderby", new Document());
-                _hasOrder = true;
-            }
-
-            ((Document)_query["orderby"]).Add(name, value);
-        }
-
-        public void PushConditionScope(string name)
-        {
-            if (_scopes.Count == 0)
-                _scopes.Push(new Scope(name, Query[name]));
-            else
-                _scopes.Push(_scopes.Peek().CreateChildScope(name));
-        }
-
-        public void PopConditionScope()
-        {
-            var scope = _scopes.Pop();
-            if (scope.Value == null)
-                return;
-
-            var doc = _query;
-            if (_hasOrder)
-                doc = (Document)doc["query"];
-            foreach (var s in _scopes.Reverse()) //as if it were a queue
-            {
-                var sub = doc[s.Key];
-                if (sub == null)
-                    doc[s.Key] = sub = new Document();
-                else if (!(sub is Document))
-                    throw new InvalidQueryException();
-
-                doc = (Document)sub;
-            }
-
-            doc[scope.Key] = scope.Value;
-        }
-
+        /// <summary>
+        /// Sets the where clause.
+        /// </summary>
+        /// <param name="whereClause">The where clause.</param>
         public void SetWhereClause(string whereClause)
         {
-            if (_hasOrder)
-            {
-                _query.Add("$where", new Code(whereClause));
-                _query.Remove("query");
-            }
-            else
-                _query = new Document("$where", new Code(whereClause));
+            _query = Op.Where(whereClause);
         }
 
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
-            throw new NotImplementedException();
-        }
-
-        private class Scope
-        {
-            public string Key { get; private set; }
-
-            public object Value { get; private set; }
-
-            public Scope(string key, object initialValue)
-            {
-                Key = key;
-                Value = initialValue;
-            }
-
-            public void AddCondition(object value)
-            {
-                if (Value is Document)
-                {
-                    if (!(value is Document))
-                        throw new InvalidQueryException();
-
-                    ((Document)Value).Merge((Document)value);
-                }
-                else
-                    Value = value;
-            }
-
-            public Scope CreateChildScope(string name)
-            {
-                if (Value is Document)
-                    return new Scope(name, ((Document)Value)[name]);
-
-                return new Scope(name, null);
-            }
+            return "queryobject";
         }
     }
 }

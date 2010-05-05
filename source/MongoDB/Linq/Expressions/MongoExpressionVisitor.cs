@@ -25,78 +25,131 @@ namespace MongoDB.Linq.Expressions
                     return VisitSelect((SelectExpression)exp);
                 case MongoExpressionType.Aggregate:
                     return VisitAggregate((AggregateExpression)exp);
+                case MongoExpressionType.AggregateSubquery:
+                    return VisitAggregateSubquery((AggregateSubqueryExpression)exp);
+                case MongoExpressionType.Scalar:
+                    return VisitScalar((ScalarExpression)exp);
                 default:
                     return base.Visit(exp);
             }
         }
 
-        protected virtual Expression VisitAggregate(AggregateExpression a)
+        protected virtual Expression VisitAggregate(AggregateExpression aggregate)
         {
-            var exp = Visit(a.Argument);
-            if (exp != a.Argument)
-                return new AggregateExpression(a.Type, a.AggregateType, exp);
+            var exp = Visit(aggregate.Argument);
+            if (exp != aggregate.Argument)
+                return new AggregateExpression(aggregate.Type, aggregate.AggregateType, exp, aggregate.Distinct);
 
-            return a;
+            return aggregate;
         }
 
-        protected virtual Expression VisitCollection(CollectionExpression c)
+        protected virtual Expression VisitAggregateSubquery(AggregateSubqueryExpression aggregateSubquery)
         {
-            return c;
+            Expression e = Visit(aggregateSubquery.AggregateAsSubquery);
+            ScalarExpression subquery = (ScalarExpression)e;
+            if (subquery != aggregateSubquery.AggregateAsSubquery)
+                return new AggregateSubqueryExpression(aggregateSubquery.GroupByAlias, aggregateSubquery.AggregateInGroupSelect, subquery);
+            return aggregateSubquery;
         }
 
-        protected virtual Expression VisitField(FieldExpression f)
+        protected virtual Expression VisitCollection(CollectionExpression collection)
         {
-            var exp = Visit(f.Expression);
-            if (exp != f.Expression)
-                f = new FieldExpression(f.Name, exp);
-
-            return f;
+            return collection;
         }
 
-        protected virtual Expression VisitProjection(ProjectionExpression p)
+        protected virtual Expression VisitField(FieldExpression field)
         {
-            var source = (SelectExpression)Visit(p.Source);
-            var projector = Visit(p.Projector);
-            if (source != p.Source || projector != p.Projector)
-                return new ProjectionExpression(source, projector, p.Aggregator);
-            return p;
+            var e = Visit(field.Expression);
+            if (field.Expression != e)
+                field = new FieldExpression(e, field.Alias, field.Name);
+
+            return field;
         }
 
-        protected ReadOnlyCollection<OrderExpression> VisitOrderBy(ReadOnlyCollection<OrderExpression> expressions)
+        protected virtual Expression VisitProjection(ProjectionExpression projection)
         {
-            if (expressions != null) 
+            var source = (SelectExpression)Visit(projection.Source);
+            var projector = Visit(projection.Projector);
+            if (source != projection.Source || projector != projection.Projector)
+                return new ProjectionExpression(source, projector, projection.Aggregator);
+            return projection;
+        }
+
+        protected ReadOnlyCollection<OrderExpression> VisitOrderBy(ReadOnlyCollection<OrderExpression> orderBys)
+        {
+            if (orderBys != null) 
             {
                 List<OrderExpression> alternate = null;
-                for (int i = 0, n = expressions.Count; i < n; i++) 
+                for (int i = 0, n = orderBys.Count; i < n; i++) 
                 {
-                    OrderExpression expr = expressions[i];
+                    OrderExpression expr = orderBys[i];
                     Expression e = this.Visit(expr.Expression);
                     if (alternate == null && e != expr.Expression) 
-                        alternate = expressions.Take(i).ToList();
+                        alternate = orderBys.Take(i).ToList();
                     if (alternate != null) 
                         alternate.Add(new OrderExpression(expr.OrderType, e));
                 }
                 if (alternate != null) 
                     return alternate.AsReadOnly();
             }
-            return expressions;
+            return orderBys;
         }
 
-        protected virtual Expression VisitSelect(SelectExpression s)
+        protected virtual Expression VisitScalar(ScalarExpression scalar)
         {
-            var from = VisitSource(s.From);
-            var where = Visit(s.Where);
-            var order = VisitOrderBy(s.Order);
-            var skip = Visit(s.Skip);
-            var limit = Visit(s.Limit);
-            if (from != s.From || where != s.Where || order != s.Order || skip != s.Skip || limit != s.Limit)
-                return new SelectExpression(s.Type, s.Fields, from, where, order, s.Distinct, skip, limit);
-            return s;
+            SelectExpression select = (SelectExpression)Visit(scalar.Select);
+            if (select != scalar.Select)
+                return new ScalarExpression(scalar.Type, select);
+            return scalar;
+        }
+
+        protected virtual Expression VisitSelect(SelectExpression select)
+        {
+            var from = VisitSource(select.From);
+            var where = Visit(select.Where);
+            var groupBy = Visit(select.GroupBy);
+            var orderBy = VisitOrderBy(select.OrderBy);
+            var skip = Visit(select.Skip);
+            var take = Visit(select.Take);
+            var fields = VisitFieldDeclarationList(select.Fields);
+            if (from != select.From || where != select.Where || orderBy != select.OrderBy || groupBy != select.GroupBy || skip != select.Skip || take != select.Take || fields != select.Fields)
+                return new SelectExpression(select.Alias, fields, from, where, orderBy, groupBy, select.IsDistinct, skip, take);
+            return select;
         }
 
         protected virtual Expression VisitSource(Expression source)
         {
             return Visit(source);
+        }
+
+        protected virtual Expression VisitSubquery(SubqueryExpression subquery)
+        {
+            switch ((MongoExpressionType)subquery.NodeType)
+            {
+                case MongoExpressionType.Scalar:
+                    return VisitScalar((ScalarExpression)subquery);
+            }
+            return subquery;
+        }
+
+        protected virtual ReadOnlyCollection<FieldDeclaration> VisitFieldDeclarationList(ReadOnlyCollection<FieldDeclaration> fields)
+        {
+            if (fields == null)
+                return fields;
+
+            List<FieldDeclaration> alternate = null;
+            for (int i = 0, n = fields.Count; i < n; i++)
+            {
+                var f = fields[i];
+                var e = Visit(f.Expression);
+                if (f.Expression != e && alternate == null)
+                    alternate = fields.Take(i).ToList();
+                if (alternate != null)
+                    alternate.Add(new FieldDeclaration(f.Name, e));
+            }
+            if (alternate != null)
+                return alternate.AsReadOnly();
+            return fields;
         }
     }
 }

@@ -188,6 +188,9 @@ namespace MongoDB.Linq.Expressions
 
         protected virtual ReadOnlyCollection<Expression> VisitExpressionList(ReadOnlyCollection<Expression> original)
         {
+            if (original == null)
+                return original;
+
             List<Expression> list = null;
             for (int i = 0, n = original.Count; i < n; i++)
             {

@@ -116,7 +116,10 @@ namespace MongoDB
         /// <param name="key">The key.</param>
         /// <returns></returns>
         public T Get<T>(string key){
-            return (T)Get(key);
+            object value = Get(key);
+            if (value == null)
+                return default(T);
+            return (T)Convert.ChangeType(value, typeof(T));
         }
 
         /// <summary>

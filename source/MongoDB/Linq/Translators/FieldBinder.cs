@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using MongoDB.Linq.Expressions;
 using MongoDB.Util;
 
-namespace MongoDB.Linq
+namespace MongoDB.Linq.Translators
 {
     internal class FieldBinder : ExpressionVisitor
     {
@@ -15,10 +15,12 @@ namespace MongoDB.Linq
             typeof(ICollection), typeof(ICollection<>)
         };
 
+        private Alias _alias;
         private FieldFinder _finder;
 
         public Expression Bind(Expression expression)
         {
+            _alias = new Alias();
             _finder = new FieldFinder();
             return Visit(expression);
         }
@@ -30,7 +32,7 @@ namespace MongoDB.Linq
 
             var fieldName = _finder.Find(exp);
             if (fieldName != null)
-                return new FieldExpression(fieldName, exp);
+                return new FieldExpression(exp, _alias, fieldName);
 
             return base.Visit(exp);
         }
@@ -42,6 +44,9 @@ namespace MongoDB.Linq
 
             public string Find(Expression expression)
             {
+                if (expression.NodeType == ExpressionType.Parameter)
+                    return null;
+
                 _fieldParts = new Stack<string>();
                 _isBlocked = false;
                 Visit(expression);
@@ -134,6 +139,13 @@ namespace MongoDB.Linq
                 _isBlocked = true;
                 return m;
             }
+
+            //protected override Expression VisitParameter(ParameterExpression p)
+            //{
+            //    if (p.Type.IsGenericType && p.Type.GetGenericTypeDefinition() == typeof(IGrouping<,>))
+            //        _isBlocked = true;
+            //    return base.VisitParameter(p);
+            //}
 
             private static bool IsCollection(Type type)
             {

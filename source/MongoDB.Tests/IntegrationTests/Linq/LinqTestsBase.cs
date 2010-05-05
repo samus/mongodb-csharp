@@ -20,32 +20,5 @@ namespace MongoDB.IntegrationTests.Linq
             collection = DB.GetCollection<Person>("people");
             documentCollection = DB.GetCollection("people");
         }
-
-        protected class Person
-        {
-            [MongoAlias("fn")]
-            public string FirstName { get; set; }
-
-            [MongoAlias("ln")]
-            public string LastName { get; set; }
-
-            [MongoAlias("age")]
-            public int Age { get; set; }
-
-            [MongoAlias("add")]
-            public Address PrimaryAddress { get; set; }
-
-            [MongoAlias("otherAdds")]
-            public List<Address> Addresses { get; set; }
-
-            [MongoAlias("emps")]
-            public int[] EmployerIds { get; set; }
-        }
-
-        protected class Address
-        {
-            [MongoAlias("city")]
-            public string City { get; set; }
-        }
     }
 }

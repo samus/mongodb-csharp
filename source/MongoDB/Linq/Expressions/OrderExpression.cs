@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class OrderExpression : Expression
+    internal class OrderExpression : MongoExpression
     {
         private readonly Expression _expression;
         private readonly OrderType _orderType;
@@ -22,7 +22,7 @@ namespace MongoDB.Linq.Expressions
         }
 
         public OrderExpression(OrderType orderType, Expression expression)
-            : base((ExpressionType)MongoExpressionType.Order, expression.Type)
+            : base(MongoExpressionType.Order, expression.Type)
         {
             if (expression == null)
                 throw new ArgumentNullException("expression");

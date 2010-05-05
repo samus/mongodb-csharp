@@ -6,15 +6,20 @@ using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
-    internal class ProjectionExpression : Expression
+    internal class ProjectionExpression : MongoExpression
     {
         private readonly SelectExpression _source;
         private readonly Expression _projector;
         private readonly LambdaExpression _aggregator;
 
-        public SelectExpression Source
+        public LambdaExpression Aggregator
         {
-            get { return _source; }
+            get { return _aggregator; }
+        }
+
+        public bool IsSingleton
+        {
+            get { return _aggregator != null && _aggregator.Body.Type == _projector.Type; }
         }
 
         public Expression Projector
@@ -22,17 +27,18 @@ namespace MongoDB.Linq.Expressions
             get { return _projector; }
         }
 
-        public LambdaExpression Aggregator
+        public SelectExpression Source
         {
-            get { return _aggregator; }
+            get { return _source; }
         }
+
 
         public ProjectionExpression(SelectExpression source, Expression projector)
             : this(source, projector, null)
         { }
 
         public ProjectionExpression(SelectExpression source, Expression projector, LambdaExpression aggregator)
-            : base((ExpressionType)MongoExpressionType.Projection, source.Type)
+            : base(MongoExpressionType.Projection, aggregator != null ? aggregator.Body.Type : typeof(IEnumerable<>).MakeGenericType(projector.Type))
         {
             _source = source;
             _projector = projector;

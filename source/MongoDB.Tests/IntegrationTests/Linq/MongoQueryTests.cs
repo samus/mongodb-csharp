@@ -27,7 +27,7 @@ namespace MongoDB.IntegrationTests.Linq
                         new Address { City = "Tokyo" }, 
                         new Address { City = "Seattle" } 
                     },
-                    EmployerIds = new [] { 1, 2}
+                    EmployerIds = new[] { 1, 2 }
                 }, true);
 
             collection.Insert(
@@ -57,7 +57,7 @@ namespace MongoDB.IntegrationTests.Linq
                         new Address { City = "Chicago" },
                         new Address { City = "London" }
                     },
-                    EmployerIds = new [] { 3 }
+                    EmployerIds = new[] { 3 }
                 }, true);
         }
 
@@ -96,8 +96,8 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void Projection()
         {
-            var people = Enumerable.ToList((from p in collection.Linq()
-                                                                                  select new { Name = p.FirstName + p.LastName }));
+            var people = Enumerable.ToList(from p in collection.Linq()
+                                           select new { Name = p.FirstName + p.LastName });
 
             Assert.AreEqual(3, people.Count);
         }
@@ -105,9 +105,9 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void ProjectionWithConstraints()
         {
-            var people = Enumerable.ToList((from p in collection.Linq()
-                                                                                  where p.Age > 21 && p.Age < 42
-                                                                                  select new { Name = p.FirstName + p.LastName }));
+            var people = Enumerable.ToList(from p in collection.Linq()
+                                            where p.Age > 21 && p.Age < 42
+                                            select new { Name = p.FirstName + p.LastName });
 
             Assert.AreEqual(1, people.Count);
         }
@@ -192,8 +192,8 @@ namespace MongoDB.IntegrationTests.Linq
         public void DocumentQuery()
         {
             var people = Enumerable.ToList<string>((from p in documentCollection.Linq()
-                                                                  where p.Key("age") > 21
-                                                                  select (string)p["fn"]));
+                                                                  where p.Key("Age") > 21
+                                                                  select (string)p["FirstName"]));
 
             Assert.AreEqual(2, people.Count);
         }

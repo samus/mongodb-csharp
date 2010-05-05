@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MongoDB.Linq
 {
-    internal static class TypeSystem
+    internal static class TypeHelper
     {
         private static Type FindIEnumerable(Type seqType)
         {
