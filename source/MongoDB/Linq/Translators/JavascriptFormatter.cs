@@ -244,6 +244,15 @@ namespace MongoDB.Linq.Translators
         {
             switch (u.NodeType)
             {
+                case ExpressionType.Negate:
+                case ExpressionType.NegateChecked:
+                    _js.Append("-");
+                    Visit(u.Operand);
+                    break;
+                case ExpressionType.UnaryPlus:
+                    _js.Append("+");
+                    Visit(u.Operand);
+                    break;
                 case ExpressionType.Not:
                     _js.Append("!(");
                     Visit(u.Operand);

@@ -20,12 +20,12 @@ namespace MongoDB.IntegrationTests.Linq
                     FirstName = "Bob",
                     LastName = "McBob",
                     Age = 42,
-                    PrimaryAddress = new Address { City = "London" },
+                    PrimaryAddress = new Address { City = "London", IsInternational = true },
                     Addresses = new List<Address> 
                     {
-                        new Address { City = "London" },
-                        new Address { City = "Tokyo" }, 
-                        new Address { City = "Seattle" } 
+                        new Address { City = "London", IsInternational = true },
+                        new Address { City = "Tokyo", IsInternational = true }, 
+                        new Address { City = "Seattle", IsInternational = false } 
                     },
                     EmployerIds = new[] { 1, 2 }
                 }, true);
@@ -36,10 +36,10 @@ namespace MongoDB.IntegrationTests.Linq
                     FirstName = "Jane",
                     LastName = "McJane",
                     Age = 35,
-                    PrimaryAddress = new Address { City = "Paris" },
+                    PrimaryAddress = new Address { City = "Paris", IsInternational = true },
                     Addresses = new List<Address> 
                     {
-                        new Address { City = "Paris" }
+                        new Address { City = "Paris", IsInternational = true }
                     },
                     EmployerIds = new[] { 1 }
 
@@ -51,11 +51,11 @@ namespace MongoDB.IntegrationTests.Linq
                     FirstName = "Joe",
                     LastName = "McJoe",
                     Age = 21,
-                    PrimaryAddress = new Address { City = "Chicago" },
+                    PrimaryAddress = new Address { City = "Chicago", IsInternational = true },
                     Addresses = new List<Address> 
                     {
-                        new Address { City = "Chicago" },
-                        new Address { City = "London" }
+                        new Address { City = "Chicago", IsInternational = true },
+                        new Address { City = "London", IsInternational = true }
                     },
                     EmployerIds = new[] { 3 }
                 }, true);
@@ -336,6 +336,22 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void Boolean_Test1()
+        {
+            var people = Enumerable.ToList(collection.Linq().Where(x => x.PrimaryAddress.IsInternational));
+
+            Assert.AreEqual(3, people.Count);
+        }
+
+        [Test]
+        public void Boolean_Test2()
+        {
+            var people = Enumerable.ToList(collection.Linq().Where(x => !x.PrimaryAddress.IsInternational));
+
+            Assert.AreEqual(0, people.Count);
+        }
+
+        [Test]
         public void Complex_Disjunction()
         {
             var people = Enumerable.ToList<Person>(collection.Linq().Where(x => x.Age == 21 || x.Age == 35));
@@ -350,5 +366,7 @@ namespace MongoDB.IntegrationTests.Linq
 
             Assert.AreEqual(1, people.Count);
         }
+
+        
     }
 }

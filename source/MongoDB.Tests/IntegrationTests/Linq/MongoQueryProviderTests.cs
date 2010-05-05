@@ -352,5 +352,23 @@ namespace MongoDB.IntegrationTests.Linq
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("Age", Op.GreaterThan(21)), queryObject.Query);
         }
+
+        [Test]
+        public void Boolean_Test1()
+        {
+            var people = collection.Linq().Where(x => x.PrimaryAddress.IsInternational);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(new Document("PrimaryAddress.IsInternational", true), queryObject.Query);
+        }
+
+        [Test]
+        public void Boolean_Test2()
+        {
+            var people = collection.Linq().Where(x => !x.PrimaryAddress.IsInternational);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(new Document("$not", new Document("PrimaryAddress.IsInternational", true)), queryObject.Query);
+        }
     }
 }
