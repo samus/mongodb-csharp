@@ -241,6 +241,10 @@ namespace MongoDB.Linq.Translators
                     Visit(u.Operand);
                     PushConditionScope("$size");
                     break;
+                case ExpressionType.Convert:
+                case ExpressionType.ConvertChecked:
+                    Visit(u.Operand);
+                    break;
                 default:
                     throw new NotSupportedException(string.Format("The unary operator {0} is not supported.", u.NodeType));
             }

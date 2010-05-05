@@ -54,11 +54,11 @@ namespace MongoDB.Protocol
         /// </summary>
         /// <param name="writer">The writer.</param>
         protected override void WriteBody(BsonWriter writer){
-            writer.WriteValue(BsonDataType.Integer, 0);
-            writer.WriteValue(BsonDataType.Integer, CursorIds.Length);
+            writer.WriteValue(BsonType.Integer, 0);
+            writer.WriteValue(BsonType.Integer, CursorIds.Length);
 
             foreach(var id in CursorIds)
-                writer.WriteValue(BsonDataType.Long, id);
+                writer.WriteValue(BsonType.Long, id);
         }
 
         /// <summary>

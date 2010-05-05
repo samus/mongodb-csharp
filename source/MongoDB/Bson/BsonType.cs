@@ -3,7 +3,7 @@ namespace MongoDB.Bson
     /// <summary>
     /// 
     /// </summary>
-    public enum BsonDataType
+    public enum BsonType
     {
         /// <summary>
         /// 

@@ -25,12 +25,9 @@ namespace MongoDB.IntegrationTests
             charreads.Insert(new Document {{"test", "1234" + POUND + "56"}});
         }
 
-        private int CountDocs(ICursor cur)
+        private static int CountDocs(ICursor cur)
         {
-            var cnt = 0;
-            foreach(var doc in cur.Documents)
-                cnt++;
-            return cnt;
+            return cur.Documents.Count();
         }
 
         [Test]

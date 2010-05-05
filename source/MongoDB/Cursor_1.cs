@@ -271,11 +271,10 @@ namespace MongoDB
             if (_fields != null)
                 query.ReturnFieldSelector = _fields;
             
-            var builder = _serializationFactory.GetBsonBuilder(typeof(T));
+            var readerSettings = _serializationFactory.GetBsonReaderSettings(typeof(T));
             
             try {
-                var settings = new BsonReaderSettings(builder);
-                _reply = _connection.SendTwoWayMessage<T>(query, settings);
+                _reply = _connection.SendTwoWayMessage<T>(query, readerSettings);
                 Id = _reply.CursorId;
                 if (_limit < 0)
                     _limit = _limit * -1;
@@ -291,11 +290,10 @@ namespace MongoDB
         private void RetrieveMoreData(){
             var getMoreMessage = new GetMoreMessage(FullCollectionName, Id, _limit);
             
-            var builder = _serializationFactory.GetBsonBuilder(typeof(T));
+            var readerSettings = _serializationFactory.GetBsonReaderSettings(typeof(T));
             
             try {
-                var settings = new BsonReaderSettings(builder);
-                _reply = _connection.SendTwoWayMessage<T>(getMoreMessage, settings);
+                _reply = _connection.SendTwoWayMessage<T>(getMoreMessage, readerSettings);
                 Id = _reply.CursorId;
             } catch (IOException exception) {
                 Id = 0;

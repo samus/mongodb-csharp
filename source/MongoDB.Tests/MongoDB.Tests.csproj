@@ -121,6 +121,7 @@
     <Compile Include="UnitTests\Serialization\Descriptors\GenericListPropertyTests.cs" />
     <Compile Include="UnitTests\Serialization\Descriptors\OperatorTests.cs" />
     <Compile Include="UnitTests\Serialization\Descriptors\PolymorphicObjectTests.cs" />
+    <Compile Include="UnitTests\Serialization\SerializationFactoryTests.cs" />
     <Compile Include="UnitTests\Serialization\SerializationTestBase.cs" />
     <Compile Include="IntegrationTests\SecondServer\TestAuthentication.cs" />
     <Compile Include="UnitTests\Bson\TestBsonReader.cs" />

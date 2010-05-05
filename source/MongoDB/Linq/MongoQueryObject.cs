@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
 
 namespace MongoDB.Linq
 {
     internal class MongoQueryObject
     {
-        private bool _hasOrder;
         private Document _query;
         private Document _sort;
 

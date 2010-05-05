@@ -17,8 +17,8 @@ namespace MongoDB.IntegrationTests.Linq
         {
             base.TestSetup();
 
-            collection.Delete(new { }, true);
-            collection.Insert(
+            Collection.Delete(new { }, true);
+            Collection.Insert(
                 new Person
                 {
                     FirstName = "Bob",
@@ -34,7 +34,7 @@ namespace MongoDB.IntegrationTests.Linq
                     EmployerIds = new[] { 1, 2 }
                 }, true);
 
-            collection.Insert(
+            Collection.Insert(
                 new Person
                 {
                     FirstName = "Jane",
@@ -49,7 +49,7 @@ namespace MongoDB.IntegrationTests.Linq
 
                 }, true);
 
-            collection.Insert(
+            Collection.Insert(
                 new Person
                 {
                     FirstName = "Joe",
@@ -68,7 +68,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void Off_of_select()
         {
-            var minAge = collection.Linq().Select(x => x.Age).Min();
+            var minAge = Collection.Linq().Select(x => x.Age).Min();
 
             Assert.AreEqual(21, minAge);
         }
@@ -76,7 +76,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void Off_of_root()
         {
-            var minAge = collection.Linq().Min(x => x.Age);
+            var minAge = Collection.Linq().Min(x => x.Age);
 
             Assert.AreEqual(21, minAge);
         }
@@ -84,7 +84,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void NoGrouping()
         {
-            var grouping = Enumerable.ToList(from p in collection.Linq()
+            var grouping = Enumerable.ToList(from p in Collection.Linq()
                                              where p.Age > 21
                                              group p by 1 into g
                                              select new
@@ -107,7 +107,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void Expression_Grouping()
         {
-            var grouping = Enumerable.ToList(from p in collection.Linq()
+            var grouping = Enumerable.ToList(from p in Collection.Linq()
                                              group p by p.Age % 2 into g
                                              select new
                                              {
@@ -132,7 +132,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void Expression_Grouping2()
         {
-            var grouping = Enumerable.ToList(from p in collection.Linq()
+            var grouping = Enumerable.ToList(from p in Collection.Linq()
                                              group p by p.FirstName[0] into g
                                              select new
                                              {
@@ -153,7 +153,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void Complex()
         {
-            var grouping = Enumerable.ToList(from p in collection.Linq()
+            var grouping = Enumerable.ToList(from p in Collection.Linq()
                                              where p.Age > 21
                                              group p by new { FirstName = p.FirstName, LastName = p.LastName } into g
                                              select new

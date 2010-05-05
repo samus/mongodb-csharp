@@ -117,10 +117,10 @@ namespace MongoDB.Protocol
         /// </summary>
         /// <param name="writer">The writer.</param>
         protected override void WriteBody(BsonWriter writer){
-            writer.WriteValue(BsonDataType.Integer, (int)Options);
+            writer.WriteValue(BsonType.Integer, (int)Options);
             writer.Write(FullCollectionName, false);
-            writer.WriteValue(BsonDataType.Integer, NumberToSkip);
-            writer.WriteValue(BsonDataType.Integer, NumberToReturn);
+            writer.WriteValue(BsonType.Integer, NumberToSkip);
+            writer.WriteValue(BsonType.Integer, NumberToReturn);
             writer.WriteObject(Query);
             if(ReturnFieldSelector != null)
                 writer.WriteObject(ReturnFieldSelector);

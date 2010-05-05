@@ -104,7 +104,7 @@ namespace MongoDB.Protocol
             WriteHeader(new BinaryWriter(stream), chunk.Size);
 
             var writer = new BsonWriter(stream, _objectDescriptor);
-            writer.WriteValue(BsonDataType.Integer, 0);
+            writer.WriteValue(BsonType.Integer, 0);
             writer.Write(FullCollectionName, false);
 
             foreach(var document in chunk.Documents)

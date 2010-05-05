@@ -9,18 +9,11 @@ namespace MongoDB.Serialization
     public interface ISerializationFactory
     {
         /// <summary>
-        /// Gets the bson builder.
+        /// Gets the bson writer settings.
         /// </summary>
         /// <param name="rootType">Type of the root.</param>
         /// <returns></returns>
-        IBsonObjectBuilder GetBsonBuilder(Type rootType);
-
-        /// <summary>
-        /// Gets the bson descriptor.
-        /// </summary>
-        /// <param name="rootType">Type of the root.</param>
-        /// <returns></returns>
-        IBsonObjectDescriptor GetBsonDescriptor(Type rootType);
+        BsonWriterSettings GetBsonWriterSettings(Type rootType);
 
         /// <summary>
         /// Gets the name of the collection given the rootType.
@@ -35,5 +28,19 @@ namespace MongoDB.Serialization
         /// <param name="type">The type.</param>
         /// <returns></returns>
         IObjectDescriptor GetObjectDescriptor(Type type);
+
+        /// <summary>
+        /// Gets the descriptor.
+        /// </summary>
+        /// <param name="rootType">Type of the root.</param>
+        /// <returns></returns>
+        IBsonObjectDescriptor GetBsonDescriptor(Type rootType);
+
+        /// <summary>
+        /// Gets the bson reader settings.
+        /// </summary>
+        /// <param name="rootType">Type of the root.</param>
+        /// <returns></returns>
+        BsonReaderSettings GetBsonReaderSettings(Type rootType);
     }
 }

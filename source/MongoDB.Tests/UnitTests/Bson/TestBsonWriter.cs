@@ -75,7 +75,7 @@ namespace MongoDB.UnitTests.Bson
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
 
             var str = new[] {"a", "b", "c"};
-            writer.WriteValue(BsonDataType.Array, str);
+            writer.WriteValue(BsonType.Array, str);
 
             var hexdump = BitConverter.ToString(ms.ToArray());
             hexdump = hexdump.Replace("-", "");
@@ -160,7 +160,7 @@ namespace MongoDB.UnitTests.Bson
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             Single val = Single.MaxValue;
             
-            writer.WriteValue(BsonDataType.Number, val);
+            writer.WriteValue(BsonType.Number, val);
             
             string hexdump = BitConverter.ToString(ms.ToArray());
             hexdump = hexdump.Replace("-","");
@@ -177,7 +177,7 @@ namespace MongoDB.UnitTests.Bson
             BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             MongoSymbol val = "symbol";
             Assert.IsTrue(String.IsInterned(val) != null);
-            writer.WriteValue(BsonDataType.Symbol, val);
+            writer.WriteValue(BsonType.Symbol, val);
             string hexdump = BitConverter.ToString(ms.ToArray()).Replace("-","");
             
             Assert.AreEqual(expected, hexdump);
