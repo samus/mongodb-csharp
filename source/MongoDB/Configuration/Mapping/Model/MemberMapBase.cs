@@ -20,6 +20,9 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name = "setter">The setter.</param>
         protected MemberMapBase(string memberName, Type memberReturnType, Func<object, object> getter, Action<object, object> setter)
         {
+            if(memberReturnType == null)
+                throw new ArgumentNullException("memberReturnType");
+
             _getter = getter;
             _memberName = memberName;
             _memberReturnType = memberReturnType;
@@ -68,7 +71,9 @@ namespace MongoDB.Configuration.Mapping.Model
                 {
                     var code = Convert.GetTypeCode(value);
 
-                    if(code != TypeCode.Object)
+                    if(_memberReturnType.IsEnum)
+                        value = Enum.ToObject(_memberReturnType, value);
+                    else if(code != TypeCode.Object)
                         value = Convert.ChangeType(value, _memberReturnType);
                 }
                 catch(FormatException exception)
