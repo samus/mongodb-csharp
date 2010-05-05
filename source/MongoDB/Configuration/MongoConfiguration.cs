@@ -41,6 +41,16 @@ namespace MongoDB.Configuration
         public IMappingStore MappingStore { get; set; }
 
         /// <summary>
+        /// Reads DataTime from server as local time.
+        /// </summary>
+        /// <value><c>true</c> if [read local time]; otherwise, <c>false</c>.</value>
+        /// <remarks>
+        /// MongoDB stores all time values in UTC timezone. If true the
+        /// time is converted from UTC to local timezone after is was read.
+        /// </remarks>
+        public bool ReadLocalTime { get; set; }
+
+        /// <summary>
         /// Validates this instance.
         /// </summary>
         public void Validate(){
