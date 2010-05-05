@@ -20,6 +20,7 @@ namespace MongoDB.Configuration
             ConnectionString = string.Empty;
             MappingStore = new AutoMappingStore();
             SerializationFactory = new SerializationFactory(this);
+            ReadLocalTime = true;
         }
 
         /// <summary>
