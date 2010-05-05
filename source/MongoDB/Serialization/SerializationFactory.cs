@@ -50,6 +50,29 @@ namespace MongoDB.Serialization
         }
 
         /// <summary>
+        /// Gets the bson reader settings.
+        /// </summary>
+        /// <param name="rootType">Type of the root.</param>
+        /// <returns></returns>
+        public BsonReaderSettings GetBsonReaderSettings(Type rootType)
+        {
+            return new BsonReaderSettings(GetBsonBuilder(rootType))
+            {
+                ReadLocalTime = _configuration.ReadLocalTime
+            };
+        }
+
+        /// <summary>
+        /// Gets the bson writer settings.
+        /// </summary>
+        /// <param name="rootType">Type of the root.</param>
+        /// <returns></returns>
+        public BsonWriterSettings GetBsonWriterSettings(Type rootType)
+        {
+            return new BsonWriterSettings(GetBsonDescriptor(rootType));
+        }
+
+        /// <summary>
         /// Gets the name of the collection given the rootType.
         /// </summary>
         /// <param name="rootType">Type of the root.</param>

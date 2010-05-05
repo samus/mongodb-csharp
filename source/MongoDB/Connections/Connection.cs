@@ -243,12 +243,11 @@ namespace MongoDB.Connections
                 Query = command
             };
 
-            var builder = factory.GetBsonBuilder(typeof(T));
+            var readerSettings = factory.GetBsonReaderSettings(typeof(T));
 
             try
             {
-                var settings = new BsonReaderSettings(builder);
-                var reply = SendTwoWayMessage<T>(query, settings);
+                var reply = SendTwoWayMessage<T>(query, readerSettings);
 
                 if(reply.CursorId > 0)
                     SendMessage(new KillCursorsMessage(reply.CursorId));

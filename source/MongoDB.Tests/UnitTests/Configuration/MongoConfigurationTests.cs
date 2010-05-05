@@ -39,6 +39,5 @@ namespace MongoDB.UnitTests.Configuration
                 });
             });
         }
-
     }
 }
