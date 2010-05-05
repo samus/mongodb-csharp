@@ -11,8 +11,6 @@ namespace MongoDB.IntegrationTests
                 return "safeinsert, safeupdate, safedelete, safemupdate";
             }
         }
-        
-        
    
         [Test]
         public void TestBadInsert(){

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using MongoDB.Attributes;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace MongoDB.IntegrationTests.Linq
 {
@@ -11,14 +9,14 @@ namespace MongoDB.IntegrationTests.Linq
             get { return "people"; }
         }
 
-        protected IMongoCollection<Person> collection;
-        protected IMongoCollection documentCollection;
+        protected IMongoCollection<Person> Collection;
+        protected IMongoCollection DocumentCollection;
 
         [SetUp]
         public virtual void TestSetup()
         {
-            collection = DB.GetCollection<Person>("people");
-            documentCollection = DB.GetCollection("people");
+            Collection = DB.GetCollection<Person>("people");
+            DocumentCollection = DB.GetCollection("people");
         }
     }
 }

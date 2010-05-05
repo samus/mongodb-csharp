@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MongoDB.IntegrationTests.Linq
 {
@@ -30,5 +27,13 @@ namespace MongoDB.IntegrationTests.Linq
     {
         //[MongoAlias("city")]
         public string City { get; set; }
+
+        public AddressType AddressType { get; set; }
+    }
+
+    public enum AddressType
+    {
+        Company,
+        Private
     }
 }
