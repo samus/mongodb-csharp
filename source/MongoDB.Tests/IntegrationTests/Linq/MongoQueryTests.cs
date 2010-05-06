@@ -20,16 +20,15 @@ namespace MongoDB.IntegrationTests.Linq
                     FirstName = "Bob",
                     LastName = "McBob",
                     Age = 42,
-                    PrimaryAddress = new Address {City = "London",AddressType = AddressType.Company},
+                    PrimaryAddress = new Address {City = "London", IsInternational = true, AddressType = AddressType.Company},
                     Addresses = new List<Address>
                     {
-                        new Address {City = "London"},
-                        new Address {City = "Tokyo"},
-                        new Address {City = "Seattle"}
+                        new Address { City = "London", IsInternational = true, AddressType = AddressType.Company },
+                        new Address { City = "Tokyo", IsInternational = true, AddressType = AddressType.Private }, 
+                        new Address { City = "Seattle", IsInternational = false, AddressType = AddressType.Private } 
                     },
-                    EmployerIds = new[] {1, 2}
-                },
-                true);
+                    EmployerIds = new[] { 1, 2 }
+                }, true);
 
             Collection.Insert(
                 new Person
@@ -37,10 +36,10 @@ namespace MongoDB.IntegrationTests.Linq
                     FirstName = "Jane",
                     LastName = "McJane",
                     Age = 35,
-                    PrimaryAddress = new Address {City = "Paris", AddressType = AddressType.Private},
-                    Addresses = new List<Address>
+                    PrimaryAddress = new Address { City = "Paris", IsInternational = true, AddressType = AddressType.Private },
+                    Addresses = new List<Address> 
                     {
-                        new Address {City = "Paris"}
+                        new Address { City = "Paris", AddressType = AddressType.Private }
                     },
                     EmployerIds = new[] {1}
                 },
@@ -52,11 +51,11 @@ namespace MongoDB.IntegrationTests.Linq
                     FirstName = "Joe",
                     LastName = "McJoe",
                     Age = 21,
-                    PrimaryAddress = new Address {City = "Chicago", AddressType = AddressType.Private},
-                    Addresses = new List<Address>
+                    PrimaryAddress = new Address { City = "Chicago", IsInternational = true, AddressType = AddressType.Private },
+                    Addresses = new List<Address> 
                     {
-                        new Address {City = "Chicago"},
-                        new Address {City = "London"}
+                        new Address { City = "Chicago", AddressType = AddressType.Private },
+                        new Address { City = "London", AddressType = AddressType.Company }
                     },
                     EmployerIds = new[] {3}
                 },
@@ -64,10 +63,26 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void Boolean_Test1()
+        {
+            var people = Enumerable.ToList(Collection.Linq().Where(x => x.PrimaryAddress.IsInternational));
+
+            Assert.AreEqual(3, people.Count);
+        }
+
+        [Test]
+        public void Boolean_Test2()
+        {
+            var people = Enumerable.ToList(Collection.Linq().Where(x => !x.PrimaryAddress.IsInternational));
+
+            Assert.AreEqual(0, people.Count);
+        }
+
+        [Test]
         public void Chained()
         {
             var people = Collection.Linq()
-                .Select(x => new {Name = x.FirstName + x.LastName, x.Age})
+                .Select(x => new { Name = x.FirstName + x.LastName, x.Age })
                 .Where(x => x.Age > 21)
                 .Select(x => x.Name).ToList();
 
@@ -101,7 +116,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void ConstraintsAgainstLocalReferenceMember()
         {
-            var local = new {Test = new {Age = 21}};
+            var local = new { Test = new { Age = 21 } };
             var people = Collection.Linq().Where(p => p.Age > local.Test.Age).ToList();
 
             Assert.AreEqual(2, people.Count);
@@ -151,6 +166,16 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void Enum()
+        {
+            var people = Collection.Linq()
+                .Where(x => x.PrimaryAddress.AddressType == AddressType.Company)
+                .ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test]
         public void First()
         {
             var person = Collection.Linq().OrderBy(x => x.Age).First();
@@ -161,7 +186,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void LocalEnumerable_Contains()
         {
-            var names = new[] {"Joe", "Bob"};
+            var names = new[] { "Joe", "Bob" };
             var people = Collection.Linq().Where(x => names.Contains(x.FirstName)).ToList();
 
             Assert.AreEqual(2, people.Count);
@@ -170,7 +195,7 @@ namespace MongoDB.IntegrationTests.Linq
         [Test]
         public void LocalList_Contains()
         {
-            var names = new List<string> {"Joe", "Bob"};
+            var names = new List<string> { "Joe", "Bob" };
             var people = Collection.Linq().Where(x => names.Contains(x.FirstName)).ToList();
 
             Assert.AreEqual(2, people.Count);
@@ -266,7 +291,7 @@ namespace MongoDB.IntegrationTests.Linq
         public void Projection()
         {
             var people = (from p in Collection.Linq()
-                          select new {Name = p.FirstName + p.LastName}).ToList();
+                          select new { Name = p.FirstName + p.LastName }).ToList();
 
             Assert.AreEqual(3, people.Count);
         }
@@ -276,7 +301,7 @@ namespace MongoDB.IntegrationTests.Linq
         {
             var people = (from p in Collection.Linq()
                           where p.Age > 21 && p.Age < 42
-                          select new {Name = p.FirstName + p.LastName}).ToList();
+                          select new { Name = p.FirstName + p.LastName }).ToList();
 
             Assert.AreEqual(1, people.Count);
         }
@@ -351,16 +376,6 @@ namespace MongoDB.IntegrationTests.Linq
             var people = Collection.Linq().ToList();
 
             Assert.AreEqual(3, people.Count);
-        }
-
-        [Test]
-        public void Enum()
-        {
-            var people = Collection.Linq()
-                .Where(x => x.PrimaryAddress.AddressType == AddressType.Company)
-                .ToArray();
-
-            Assert.AreEqual(1, people.Length);
         }
     }
 }

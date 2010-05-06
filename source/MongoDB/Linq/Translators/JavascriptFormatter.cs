@@ -244,10 +244,23 @@ namespace MongoDB.Linq.Translators
         {
             switch (u.NodeType)
             {
+                case ExpressionType.Negate:
+                case ExpressionType.NegateChecked:
+                    _js.Append("-");
+                    Visit(u.Operand);
+                    break;
+                case ExpressionType.UnaryPlus:
+                    _js.Append("+");
+                    Visit(u.Operand);
+                    break;
                 case ExpressionType.Not:
                     _js.Append("!(");
                     Visit(u.Operand);
                     _js.Append(")");
+                    break;
+                case ExpressionType.Convert:
+                case ExpressionType.ConvertChecked:
+                    Visit(u.Operand);
                     break;
                 default:
                     throw new NotSupportedException(string.Format("The unary operator {0} is not supported.", u.NodeType));

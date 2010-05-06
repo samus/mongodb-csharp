@@ -16,6 +16,7 @@ namespace MongoDB.Linq.Translators
     {
         private Document _query;
         private Stack<Scope> _scopes;
+        private bool _hasPredicate;
 
         internal Document FormatDocument(Expression expression)
         {
@@ -28,7 +29,7 @@ namespace MongoDB.Linq.Translators
         protected override Expression VisitBinary(BinaryExpression b)
         {
             int scopeDepth = _scopes.Count;
-            Visit(b.Left);
+            VisitPredicate(b.Left, true);
 
             switch (b.NodeType)
             {
@@ -58,7 +59,7 @@ namespace MongoDB.Linq.Translators
                     throw new NotSupportedException(string.Format("The operation {0} is not supported.", b.NodeType));
             }
 
-            Visit(b.Right);
+            VisitPredicate(b.Right, true);
 
             while (_scopes.Count > scopeDepth)
                 PopConditionScope();
@@ -74,7 +75,14 @@ namespace MongoDB.Linq.Translators
 
         protected override Expression VisitField(FieldExpression f)
         {
-            PushConditionScope(f.Name);
+            if (!_hasPredicate)
+            {
+                PushConditionScope(f.Name);
+                AddCondition(true);
+                PopConditionScope();
+            }
+            else
+                PushConditionScope(f.Name);
             return f;
         }
 
@@ -84,7 +92,7 @@ namespace MongoDB.Linq.Translators
             {
                 if (m.Member.Name == "Length")
                 {
-                    Visit(m.Expression);
+                    VisitPredicate(m.Expression, true);
                     PushConditionScope("$size");
                     return m;
                 }
@@ -93,7 +101,7 @@ namespace MongoDB.Linq.Translators
             {
                 if (m.Member.Name == "Count")
                 {
-                    Visit(m.Expression);
+                    VisitPredicate(m.Expression, true);
                     PushConditionScope("$size");
                     return m;
                 }
@@ -102,7 +110,7 @@ namespace MongoDB.Linq.Translators
             {
                 if (m.Member.Name == "Count")
                 {
-                    Visit(m.Expression);
+                    VisitPredicate(m.Expression, true);
                     PushConditionScope("$size");
                     return m;
                 }
@@ -125,9 +133,9 @@ namespace MongoDB.Linq.Translators
                         field = m.Arguments[0] as FieldExpression;
                         if (field == null)
                             throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
-                        Visit(field);
+                        VisitPredicate(field, true);
                         PushConditionScope("$elemMatch");
-                        Visit(m.Arguments[1]);
+                        VisitPredicate(m.Arguments[1], true);
                         PopConditionScope(); //elemMatch
                         PopConditionScope(); //field
                         return m;
@@ -139,7 +147,7 @@ namespace MongoDB.Linq.Translators
                         field = m.Arguments[0] as FieldExpression;
                         if (field != null)
                         {
-                            Visit(field);
+                            VisitPredicate(field, true);
                             AddCondition(EvaluateConstant<object>(m.Arguments[1]));
                             PopConditionScope();
                             return m;
@@ -148,7 +156,7 @@ namespace MongoDB.Linq.Translators
                         field = m.Arguments[1] as FieldExpression;
                         if (field == null)
                             throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
-                        Visit(field);
+                        VisitPredicate(field, true);
                         AddCondition("$in", EvaluateConstant<IEnumerable>(m.Arguments[0]));
                         PopConditionScope();
                         return m;
@@ -170,7 +178,7 @@ namespace MongoDB.Linq.Translators
                         field = m.Arguments[0] as FieldExpression;
                         if (field == null)
                             throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
-                        Visit(field);
+                        VisitPredicate(field, true);
                         AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
                         PopConditionScope();
                         return m;
@@ -181,7 +189,7 @@ namespace MongoDB.Linq.Translators
                 field = m.Object as FieldExpression;
                 if (field == null)
                     throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
-                Visit(field);
+                VisitPredicate(field, true);
 
                 var value = EvaluateConstant<string>(m.Arguments[0]);
                 if (m.Method.Name == "StartsWith")
@@ -204,7 +212,7 @@ namespace MongoDB.Linq.Translators
                     if (field == null)
                         throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
 
-                    Visit(field);
+                    VisitPredicate(field, true);
                     string value = null;
                     if (m.Object == null)
                         value = EvaluateConstant<string>(m.Arguments[1]);
@@ -226,12 +234,16 @@ namespace MongoDB.Linq.Translators
             {
                 case ExpressionType.Not:
                     PushConditionScope("$not");
-                    Visit(u.Operand);
+                    VisitPredicate(u.Operand, false);
                     PopConditionScope();
                     break;
                 case ExpressionType.ArrayLength:
                     Visit(u.Operand);
                     PushConditionScope("$size");
+                    break;
+                case ExpressionType.Convert:
+                case ExpressionType.ConvertChecked:
+                    Visit(u.Operand);
                     break;
                 default:
                     throw new NotSupportedException(string.Format("The unary operator {0} is not supported.", u.NodeType));
@@ -281,12 +293,25 @@ namespace MongoDB.Linq.Translators
             doc[scope.Key] = scope.Value;
         }
 
+        private void VisitPredicate(Expression expression, bool hasPredicate)
+        {
+            var oldHasPredicate = _hasPredicate;
+            _hasPredicate = hasPredicate;
+            Visit(expression);
+            _hasPredicate = oldHasPredicate;
+        }
+
         private static T EvaluateConstant<T>(Expression e)
         {
             if (e.NodeType != ExpressionType.Constant)
                 throw new ArgumentException("Expression must be a constant.");
 
             return (T)((ConstantExpression)e).Value;
+        }
+
+        private static bool IsBoolean(Expression expression)
+        {
+            return expression.Type == typeof(bool) || expression.Type == typeof(bool?);
         }
 
         private class Scope

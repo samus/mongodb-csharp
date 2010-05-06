@@ -28,6 +28,8 @@ namespace MongoDB.IntegrationTests.Linq
         //[MongoAlias("city")]
         public string City { get; set; }
 
+		public bool IsInternational { get; set; }
+
         public AddressType AddressType { get; set; }
     }
 

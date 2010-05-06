@@ -10,6 +10,24 @@ namespace MongoDB.IntegrationTests.Linq
     public class MongoQueryProviderTests : LinqTestsBase
     {
         [Test]
+        public void Boolean_Test1()
+        {
+            var people = Collection.Linq().Where(x => x.PrimaryAddress.IsInternational);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(new Document("PrimaryAddress.IsInternational", true), queryObject.Query);
+        }
+
+        [Test]
+        public void Boolean_Test2()
+        {
+            var people = Collection.Linq().Where(x => !x.PrimaryAddress.IsInternational);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(new Document("$not", new Document("PrimaryAddress.IsInternational", true)), queryObject.Query);
+        }
+
+        [Test]
         public void Chained()
         {
             var people = Collection.Linq()
@@ -85,6 +103,18 @@ namespace MongoDB.IntegrationTests.Linq
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("Age", Op.GreaterThan(21)), queryObject.Query);
+        }
+
+        [Test]
+        public void Enum()
+        {
+            var people = Collection.Linq().Where(x => x.PrimaryAddress.AddressType == AddressType.Company);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("PrimaryAddress.AddressType", AddressType.Company), queryObject.Query);
         }
 
         [Test]
