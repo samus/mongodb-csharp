@@ -263,10 +263,16 @@ namespace MongoDB
         ///   Retrieves the data.
         /// </summary>
         private void RetrieveData(){
-            var descriptor = _serializationFactory.GetBsonDescriptor(typeof(T));
-            
-            var query = new QueryMessage(descriptor) { FullCollectionName = FullCollectionName, Query = BuildSpec(),
-                                NumberToReturn = _limit, NumberToSkip = _skip, Options = _options };
+            var writerSettings = _serializationFactory.GetBsonWriterSettings(typeof(T));
+
+            var query = new QueryMessage(writerSettings)
+            {
+                FullCollectionName = FullCollectionName,
+                Query = BuildSpec(),
+                NumberToReturn = _limit,
+                NumberToSkip = _skip,
+                Options = _options
+            };
             
             if (_fields != null)
                 query.ReturnFieldSelector = _fields;

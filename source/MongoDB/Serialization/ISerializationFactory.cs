@@ -28,14 +28,7 @@ namespace MongoDB.Serialization
         /// <param name="type">The type.</param>
         /// <returns></returns>
         IObjectDescriptor GetObjectDescriptor(Type type);
-
-        /// <summary>
-        /// Gets the descriptor.
-        /// </summary>
-        /// <param name="rootType">Type of the root.</param>
-        /// <returns></returns>
-        IBsonObjectDescriptor GetBsonDescriptor(Type rootType);
-
+     
         /// <summary>
         /// Gets the bson reader settings.
         /// </summary>

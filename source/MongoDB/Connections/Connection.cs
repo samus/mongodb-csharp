@@ -234,9 +234,9 @@ namespace MongoDB.Connections
         private T SendCommandCore<T>(ISerializationFactory factory, string database, Type rootType, object command) 
             where T : class
         {
-            var descriptor = factory.GetBsonDescriptor(rootType);
+            var writerSettings = factory.GetBsonWriterSettings(rootType);
 
-            var query = new QueryMessage(descriptor)
+            var query = new QueryMessage(writerSettings)
             {
                 FullCollectionName = database + ".$cmd",
                 NumberToReturn = -1,

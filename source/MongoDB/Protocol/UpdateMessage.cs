@@ -20,9 +20,9 @@ namespace MongoDB.Protocol
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateMessage"/> class.
         /// </summary>
-        /// <param name="objectDescriptor">The object descriptor.</param>
-        public UpdateMessage(IBsonObjectDescriptor objectDescriptor)
-            : base(objectDescriptor){
+        /// <param name="bsonWriterSettings">The bson writer settings.</param>
+        public UpdateMessage(BsonWriterSettings bsonWriterSettings)
+            : base(bsonWriterSettings){
             Header = new MessageHeader(OpCode.Update);
         }
 

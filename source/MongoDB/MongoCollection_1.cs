@@ -304,9 +304,9 @@ namespace MongoDB
             }
 
             var rootType = typeof(T);
-            var bsonDescriptor = _configuration.SerializationFactory.GetBsonDescriptor(rootType);
+            var writerSettings = _configuration.SerializationFactory.GetBsonWriterSettings(rootType);
 
-            var insertMessage = new InsertMessage(bsonDescriptor)
+            var insertMessage = new InsertMessage(writerSettings)
             {
                 FullCollectionName = FullName
             };
@@ -353,12 +353,14 @@ namespace MongoDB
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
         public void Delete(object selector){
-            var descriptor = _configuration.SerializationFactory.GetBsonDescriptor(typeof(T));
-            
-            var deleteMessage = new DeleteMessage(descriptor) { FullCollectionName = FullName, Selector = selector };
-            
+            var writerSettings = _configuration.SerializationFactory.GetBsonWriterSettings(typeof(T));
+
             try {
-                _connection.SendMessage(deleteMessage);
+                _connection.SendMessage(new DeleteMessage(writerSettings)
+                {
+                    FullCollectionName = FullName,
+                    Selector = selector
+                });
             } catch (IOException exception) {
                 throw new MongoConnectionException("Could not delete document, communication failure", _connection, exception);
             }
@@ -427,17 +429,16 @@ namespace MongoDB
         /// <param name="selector">The query spec to find the document to update.</param>
         /// <param name="flags"><see cref="UpdateFlags"/></param>
         public void Update(object document, object selector, UpdateFlags flags){
-            var descriptor = _configuration.SerializationFactory.GetBsonDescriptor(typeof(T));
-            
-            var updateMessage = new UpdateMessage(descriptor){
-                FullCollectionName = FullName, 
-                Selector = selector, 
-                Document = document, 
-                Flags = (int)flags
-            };
-            
+            var writerSettings = _configuration.SerializationFactory.GetBsonWriterSettings(typeof(T));
+
             try {
-                _connection.SendMessage(updateMessage);
+                _connection.SendMessage(new UpdateMessage(writerSettings)
+                {
+                    FullCollectionName = FullName,
+                    Selector = selector,
+                    Document = document,
+                    Flags = (int)flags
+                });
             } catch (IOException exception) {
                 throw new MongoConnectionException("Could not update document, communication failure", _connection, exception);
             }

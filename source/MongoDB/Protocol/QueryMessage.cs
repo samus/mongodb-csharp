@@ -22,51 +22,51 @@ namespace MongoDB.Protocol
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryMessage"/> class.
         /// </summary>
-        /// <param name="objectDescriptor">The object descriptor.</param>
-        public QueryMessage(IBsonObjectDescriptor objectDescriptor)
-            : base(objectDescriptor){
+        /// <param name="bsonWriterSettings">The bson writer settings.</param>
+        public QueryMessage(BsonWriterSettings bsonWriterSettings)
+            : base(bsonWriterSettings){
             Header = new MessageHeader(OpCode.Query);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryMessage"/> class.
         /// </summary>
-        /// <param name="objectDescriptor">The object descriptor.</param>
+        /// <param name="bsonWriterSettings">The bson writer settings.</param>
         /// <param name="query">The query.</param>
         /// <param name="fullCollectionName">Full name of the collection.</param>
-        public QueryMessage(IBsonObjectDescriptor objectDescriptor, object query, String fullCollectionName)
-            : this(objectDescriptor, query, fullCollectionName, 0, 0){
+        public QueryMessage(BsonWriterSettings bsonWriterSettings, object query, String fullCollectionName)
+            : this(bsonWriterSettings, query, fullCollectionName, 0, 0){
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryMessage"/> class.
         /// </summary>
-        /// <param name="objectDescriptor">The object descriptor.</param>
+        /// <param name="bsonWriterSettings">The bson writer settings.</param>
         /// <param name="query">The query.</param>
         /// <param name="fullCollectionName">Full name of the collection.</param>
         /// <param name="numberToReturn">The number to return.</param>
         /// <param name="numberToSkip">The number to skip.</param>
-        public QueryMessage(IBsonObjectDescriptor objectDescriptor, object query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
-            : this(objectDescriptor, query, fullCollectionName, numberToReturn, numberToSkip, null)
+        public QueryMessage(BsonWriterSettings bsonWriterSettings, object query, String fullCollectionName, Int32 numberToReturn, Int32 numberToSkip)
+            : this(bsonWriterSettings, query, fullCollectionName, numberToReturn, numberToSkip, null)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryMessage"/> class.
         /// </summary>
-        /// <param name="objectDescriptor">The object descriptor.</param>
+        /// <param name="bsonWriterSettings">The bson writer settings.</param>
         /// <param name="query">The query.</param>
         /// <param name="fullCollectionName">Full name of the collection.</param>
         /// <param name="numberToReturn">The number to return.</param>
         /// <param name="numberToSkip">The number to skip.</param>
         /// <param name="returnFieldSelector">The return field selector.</param>
-        public QueryMessage(IBsonObjectDescriptor objectDescriptor,
+        public QueryMessage(BsonWriterSettings bsonWriterSettings,
             object query,
             String fullCollectionName,
             Int32 numberToReturn,
             Int32 numberToSkip,
             object returnFieldSelector)
-            : base(objectDescriptor)
+            : base(bsonWriterSettings)
         {
             Header = new MessageHeader(OpCode.Query);
             Query = query;

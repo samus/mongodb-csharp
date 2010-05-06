@@ -18,16 +18,18 @@ namespace MongoDB.Protocol
     /// </remarks>
     public class InsertMessage : MessageBase, IRequestMessage
     {
-        private readonly IBsonObjectDescriptor _objectDescriptor;
+        private readonly BsonWriterSettings _bsonWriterSettings;
         private readonly List<MessageChunk> _chunks = new List<MessageChunk>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InsertMessage"/> class.
         /// </summary>
-        public InsertMessage(IBsonObjectDescriptor objectDescriptor){
-            if(objectDescriptor == null)
-                throw new ArgumentNullException("objectDescriptor");
-            _objectDescriptor = objectDescriptor;
+        public InsertMessage(BsonWriterSettings bsonWriterSettings)
+        {
+            if(bsonWriterSettings == null)
+                throw new ArgumentNullException("bsonWriterSettings");
+            
+            _bsonWriterSettings = bsonWriterSettings;
             Header = new MessageHeader(OpCode.Insert);
         }
 
@@ -49,7 +51,7 @@ namespace MongoDB.Protocol
         /// <param name="stream">The stream.</param>
         public void Write(Stream stream){
             var bstream = new BufferedStream(stream);
-            var bwriter = new BsonWriter(bstream, _objectDescriptor);
+            var bwriter = new BsonWriter(bstream, _bsonWriterSettings);
 
             ChunkMessage(bwriter);
 
@@ -103,7 +105,7 @@ namespace MongoDB.Protocol
         protected void WriteChunk(Stream stream, MessageChunk chunk){
             WriteHeader(new BinaryWriter(stream), chunk.Size);
 
-            var writer = new BsonWriter(stream, _objectDescriptor);
+            var writer = new BsonWriter(stream, _bsonWriterSettings);
             writer.WriteValue(BsonType.Integer, 0);
             writer.Write(FullCollectionName, false);
 

@@ -33,7 +33,7 @@ namespace MongoDB.Protocol
         /// <param name="cursorId">The cursor id.</param>
         /// <param name="numberToReturn">The number to return.</param>
         public GetMoreMessage(string fullCollectionName, long cursorId, int numberToReturn)
-            : base(new BsonDocumentDescriptor())
+            : base(new BsonWriterSettings())
         {
             Header = new MessageHeader(OpCode.GetMore);
             FullCollectionName = fullCollectionName;

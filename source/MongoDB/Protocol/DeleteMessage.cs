@@ -19,9 +19,9 @@ namespace MongoDB.Protocol
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteMessage"/> class.
         /// </summary>
-        /// <param name="objectDescriptor">The object descriptor.</param>
-        public DeleteMessage(IBsonObjectDescriptor objectDescriptor) 
-            : base(objectDescriptor){
+        /// <param name="bsonWriterSettings">The bson writer settings.</param>
+        public DeleteMessage(BsonWriterSettings bsonWriterSettings) 
+            : base(bsonWriterSettings){
             Header = new MessageHeader(OpCode.Delete);
         }
 

@@ -9,16 +9,17 @@ namespace MongoDB.Protocol
     /// </summary>
     public abstract class RequestMessageBase : MessageBase, IRequestMessage
     {
-        private readonly IBsonObjectDescriptor _objectDescriptor;
+        private readonly BsonWriterSettings _bsonWriterSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestMessageBase"/> class.
         /// </summary>
-        /// <param name="objectDescriptor">The object descriptor.</param>
-        protected RequestMessageBase(IBsonObjectDescriptor objectDescriptor){
-            if(objectDescriptor == null)
-                throw new ArgumentNullException("objectDescriptor");
-            _objectDescriptor = objectDescriptor;
+        /// <param name="bsonWriterSettings">The bson writer settings.</param>
+        protected RequestMessageBase(BsonWriterSettings bsonWriterSettings){
+            if(bsonWriterSettings == null)
+                throw new ArgumentNullException("bsonWriterSettings");
+
+            _bsonWriterSettings = bsonWriterSettings;
         }
 
         /// <summary>
@@ -29,11 +30,12 @@ namespace MongoDB.Protocol
             var header = Header;
             var bstream = new BufferedStream(stream);
             var writer = new BinaryWriter(bstream);
-            var bwriter = new BsonWriter(bstream, _objectDescriptor);
+            var bwriter = new BsonWriter(bstream, _bsonWriterSettings);
 
             Header.MessageLength += CalculateBodySize(bwriter);
             if(Header.MessageLength > MaximumMessageSize)
                 throw new MongoException("Maximum message length exceeded");
+
             writer.Write(header.MessageLength);
             writer.Write(header.RequestId);
             writer.Write(header.ResponseTo);

@@ -18,7 +18,7 @@ namespace MongoDB.Protocol
         /// Initializes a new instance of the <see cref="MsgMessage"/> class.
         /// </summary>
         public MsgMessage()
-            : base(new BsonDocumentDescriptor()){
+            : base(new BsonWriterSettings()){
             Header = new MessageHeader(OpCode.Msg);
         }
 

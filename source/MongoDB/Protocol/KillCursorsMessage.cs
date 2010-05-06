@@ -21,7 +21,7 @@ namespace MongoDB.Protocol
         /// Initializes a new instance of the <see cref="KillCursorsMessage"/> class.
         /// </summary>
         public KillCursorsMessage()
-            :base(new BsonDocumentDescriptor()){
+            :base(new BsonWriterSettings()){
             Header = new MessageHeader(OpCode.KillCursors);
         }
 
