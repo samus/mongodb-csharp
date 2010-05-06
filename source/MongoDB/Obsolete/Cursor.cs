@@ -32,6 +32,7 @@ namespace MongoDB
         /// <param name="spec">The spec.</param>
         /// <returns></returns>
         public ICursor Spec(Document spec){
+            _cursor.Spec(spec);
             return this;
         }
 
@@ -101,6 +102,7 @@ namespace MongoDB
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
         public ICursor Sort(Document fields){
+            _cursor.Sort(fields);
             return this;
         }
 
@@ -110,6 +112,7 @@ namespace MongoDB
         /// <param name="index">The index.</param>
         /// <returns></returns>
         public ICursor Hint(Document index){
+            _cursor.Hint(index);
             return this;
         }
 
