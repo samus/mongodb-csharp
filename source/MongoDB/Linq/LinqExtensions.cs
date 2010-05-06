@@ -27,9 +27,21 @@ namespace MongoDB.Linq
         /// <typeparam name="T"></typeparam>
         /// <param name="collection">The collection.</param>
         /// <param name="selector">The selector.</param>
+        [Obsolete("Use Remove instead")]
         public static void Delete<T>(this IMongoCollection<T> collection, Expression<Func<T, bool>> selector) where T : class
         {
-            collection.Delete(GetQuery(collection, selector));
+            collection.Remove(GetQuery(collection, selector));
+        }
+
+        /// <summary>
+        /// Removes the specified collection.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection">The collection.</param>
+        /// <param name="selector">The selector.</param>
+        public static void Remove<T>(this IMongoCollection<T> collection, Expression<Func<T, bool>> selector) where T : class
+        {
+            collection.Remove(GetQuery(collection, selector));
         }
 
         /// <summary>

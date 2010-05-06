@@ -38,11 +38,11 @@ namespace MongoDB
         CollectionMetadata MetaData { get; }
 
         /// <summary>
-        ///   Finds the one.
+        /// Finds the one.
         /// </summary>
-        /// <param name = "spec">The spec.</param>
+        /// <param name="selector">The selector.</param>
         /// <returns></returns>
-        Document FindOne(Document spec);
+        Document FindOne(Document selector);
 
         /// <summary>
         ///   Finds all.
@@ -58,11 +58,11 @@ namespace MongoDB
         ICursor Find(String @where);
 
         /// <summary>
-        ///   Finds the specified spec.
+        /// Finds the specified selector.
         /// </summary>
-        /// <param name = "spec">The spec.</param>
+        /// <param name="selector">The selector.</param>
         /// <returns></returns>
-        ICursor Find(Document spec);
+        ICursor Find(Document selector);
 
         /// <summary>
         ///   Finds the specified spec.
@@ -88,42 +88,42 @@ namespace MongoDB
         /// by default.
         /// </summary>
         /// <param name="document">The document.</param>
-        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="selector">The selector.</param>
         /// <returns>A <see cref="Document"/></returns>
-        Document FindAndModify(Document document, Document spec);
+        Document FindAndModify(Document document, Document selector);
 
         /// <summary>
         /// Executes a query and atomically applies a modifier operation to the first document returning the original document
         /// by default.
         /// </summary>
         /// <param name="document">The document.</param>
-        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="selector">The selector.</param>
         /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the</param>
         /// <returns>A <see cref="Document"/></returns>
         /// <see cref="IndexOrder"/>
-        Document FindAndModify(Document document, Document spec, Document sort);
+        Document FindAndModify(Document document, Document selector, Document sort);
 
         /// <summary>
         /// Executes a query and atomically applies a modifier operation to the first document returning the original document
         /// by default.
         /// </summary>
         /// <param name="document">The document.</param>
-        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="selector">The selector.</param>
         /// <param name="returnNew">if set to <c>true</c> [return new].</param>
         /// <returns>A <see cref="Document"/></returns>
-        Document FindAndModify(Document document, Document spec, bool returnNew);
+        Document FindAndModify(Document document, Document selector, bool returnNew);
 
         /// <summary>
         /// Executes a query and atomically applies a modifier operation to the first document returning the original document
         /// by default.
         /// </summary>
         /// <param name="document">The document.</param>
-        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="selector">The selector.</param>
         /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
         /// <see cref="IndexOrder"/></param>
         /// <param name="returnNew">if set to <c>true</c> [return new].</param>
         /// <returns>A <see cref="Document"/></returns>
-        Document FindAndModify(Document document, Document spec, Document sort, bool returnNew);
+        Document FindAndModify(Document document, Document selector, Document sort, bool returnNew);
         
         /// <summary>
         ///   Maps the reduce.
@@ -144,11 +144,11 @@ namespace MongoDB
         long Count();
 
         /// <summary>
-        ///   Counts the specified spec.
+        /// Counts the specified spec.
         /// </summary>
-        /// <param name = "spec">The spec.</param>
+        /// <param name="selector">The selector.</param>
         /// <returns></returns>
-        long Count(Document spec);
+        long Count(Document selector);
 
         /// <summary>
         ///   Inserts the specified doc.
@@ -180,14 +180,29 @@ namespace MongoDB
         ///   Deletes the specified selector.
         /// </summary>
         /// <param name = "selector">The selector.</param>
+        [Obsolete("Use Remove instead")]
         void Delete(Document selector);
+
+        /// <summary>
+        /// Removes the specified selector.
+        /// </summary>
+        /// <param name="selector">The selector.</param>
+        void Remove(Document selector);
 
         /// <summary>
         ///   Deletes the specified selector.
         /// </summary>
         /// <param name = "selector">The selector.</param>
         /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
+        [Obsolete("Use Remove instead")]
         void Delete(Document selector, bool safemode);
+
+        /// <summary>
+        /// Removes the specified selector.
+        /// </summary>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        void Remove(Document selector, bool safemode);
 
         /// <summary>
         ///   Updates the specified doc.

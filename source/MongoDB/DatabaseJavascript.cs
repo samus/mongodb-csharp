@@ -54,7 +54,7 @@ namespace MongoDB
         /// </exception>
         public void Clear()
         {
-            _collection.Delete(new Document());
+            _collection.Remove(new Document());
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace MongoDB
         /// <returns></returns>
         public bool Remove(string name)
         {
-            _collection.Delete(new Document().Add("_id", name));
+            _collection.Remove(new Document().Add("_id", name));
             return true;
         }
     }

@@ -6,7 +6,6 @@ using MongoDB.Configuration;
 using MongoDB.Connections;
 using MongoDB.Protocol;
 using MongoDB.Results;
-using MongoDB.Serialization;
 using MongoDB.Util;
 
 namespace MongoDB
@@ -340,8 +339,24 @@ namespace MongoDB
         /// <remarks>
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
-        public void Delete(object selector, bool safemode){
+        [Obsolete("Use Remove instead")]
+        public void Delete(object selector, bool safemode)
+        {
             Delete(selector);
+            CheckError(safemode);
+        }
+
+        /// <summary>
+        /// Remove documents from the collection according to the selector.
+        /// </summary>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        /// <remarks>
+        /// An empty document will match all documents in the collection and effectively truncate it.
+        /// See the safemode description in the class description
+        /// </remarks>
+        public void Remove(object selector, bool safemode){
+            Remove(selector);
             CheckError(safemode);
         }
 
@@ -352,6 +367,7 @@ namespace MongoDB
         /// <remarks>
         /// An empty document will match all documents in the collection and effectively truncate it.
         /// </remarks>
+        [Obsolete("Use Remove instead")]
         public void Delete(object selector){
             var writerSettings = _configuration.SerializationFactory.GetBsonWriterSettings(typeof(T));
 
@@ -362,6 +378,30 @@ namespace MongoDB
                     Selector = selector
                 });
             } catch (IOException exception) {
+                throw new MongoConnectionException("Could not delete document, communication failure", _connection, exception);
+            }
+        }
+
+        /// <summary>
+        /// Remove documents from the collection according to the selector.
+        /// </summary>
+        /// <param name="selector">The selector.</param>
+        /// <remarks>
+        /// An empty document will match all documents in the collection and effectively truncate it.
+        /// </remarks>
+        public void Remove(object selector){
+            var writerSettings = _configuration.SerializationFactory.GetBsonWriterSettings(typeof(T));
+
+            try
+            {
+                _connection.SendMessage(new DeleteMessage(writerSettings)
+                {
+                    FullCollectionName = FullName,
+                    Selector = selector
+                });
+            }
+            catch(IOException exception)
+            {
                 throw new MongoConnectionException("Could not delete document, communication failure", _connection, exception);
             }
         }

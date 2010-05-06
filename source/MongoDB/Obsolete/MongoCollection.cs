@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using MongoDB.Configuration;
 using MongoDB.Connections;
-using MongoDB.Serialization;
 
 namespace MongoDB
 {
@@ -247,8 +247,17 @@ namespace MongoDB
         /// Deletes the specified selector.
         /// </summary>
         /// <param name="selector">The selector.</param>
+        [Obsolete("Use Remove instead")]
         public void Delete(Document selector){
             _collection.Delete(selector);
+        }
+
+        /// <summary>
+        /// Removes the specified selector.
+        /// </summary>
+        /// <param name="selector">The selector.</param>
+        public void Remove(Document selector){
+            _collection.Remove(selector);
         }
 
         /// <summary>
@@ -256,8 +265,18 @@ namespace MongoDB
         /// </summary>
         /// <param name="selector">The selector.</param>
         /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        [Obsolete("Use Remove instead")]
         public void Delete(Document selector, bool safemode){
             _collection.Delete(selector, safemode);
+        }
+
+        /// <summary>
+        /// Removes the specified selector.
+        /// </summary>
+        /// <param name="selector">The selector.</param>
+        /// <param name="safemode">if set to <c>true</c> [safemode].</param>
+        public void Remove(Document selector, bool safemode){
+            _collection.Remove(selector, safemode);
         }
 
         /// <summary>

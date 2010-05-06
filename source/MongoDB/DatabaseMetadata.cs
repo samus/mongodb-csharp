@@ -106,7 +106,7 @@ namespace MongoDB
         public void RemoveUser(string username)
         {
             var users = _database["system.users"];
-            users.Delete(new Document().Add("user", username));
+            users.Remove(new Document().Add("user", username));
         }
 
         /// <summary>

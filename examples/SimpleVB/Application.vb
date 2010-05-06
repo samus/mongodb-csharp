@@ -48,8 +48,8 @@ Namespace Simple
         End Sub
         
         Public Sub Clean()
-            categories.Delete(New Document().Add("name", "Jazz")) 'remove documents with the name Jazz.
-            categories.Delete(new Document()) 'remove everything from the categories collection.
+            categories.Remove(New Document().Add("name", "Jazz")) 'remove documents with the name Jazz.
+            categories.Remove(New Document()) 'remove everything from the categories collection.
         End Sub
         Public Sub Run()
             Dim category As Document = categories.FindOne(New Document().Add("name", "Bluez"))
