@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MongoDB.Bson;
 using MongoDB.Connections;
 using MongoDB.Protocol;
 using MongoDB.Serialization;
+using System.Linq;
 
 namespace MongoDB
 {
@@ -176,16 +176,22 @@ namespace MongoDB
             //Fixme Return a single Document and not T
             TryModify();
             _specOpts["$explain"] = true;
-            
-//            var documents = Documents;
-            
-            return null;
-//            using((IDisposable)documents){
-//                foreach(var document in documents)
-//                    return document;
-//            }
-            
-//            throw new InvalidOperationException("Explain failed.");
+
+            var explainResult = GetQueryRepley<Document>();
+            try
+            {
+                var explain = explainResult.Documents.FirstOrDefault();
+
+                if(explain==null)
+                    throw new InvalidOperationException("Explain failed. No documents where returned.");
+
+                return explain;
+            }
+            finally 
+            {
+                if(explainResult.CursorId > 0)
+                    KillCursor(explainResult.CursorId);
+            }
         }
 
         /// <summary>
@@ -233,12 +239,21 @@ namespace MongoDB
         /// <summary>
         ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose(){
+        public void Dispose()
+        {
             if (Id == 0)
                 //All server side resources disposed of.
                 return;
-            
-            var killCursorsMessage = new KillCursorsMessage(Id);
+
+            KillCursor(Id);
+        }
+
+        /// <summary>
+        /// Kills the cursor.
+        /// </summary>
+        private void KillCursor(long cursorId)
+        {
+            var killCursorsMessage = new KillCursorsMessage(cursorId);
             
             try {
                 _connection.SendMessage(killCursorsMessage);
@@ -260,9 +275,12 @@ namespace MongoDB
         }
 
         /// <summary>
-        ///   Retrieves the data.
+        /// Gets the query repley.
         /// </summary>
-        private void RetrieveData(){
+        /// <typeparam name="TReply">The type of the reply.</typeparam>
+        /// <returns></returns>
+        private ReplyMessage<TReply> GetQueryRepley<TReply>() where TReply : class
+        {
             var writerSettings = _serializationFactory.GetBsonWriterSettings(typeof(T));
 
             var query = new QueryMessage(writerSettings)
@@ -273,21 +291,34 @@ namespace MongoDB
                 NumberToSkip = _skip,
                 Options = _options
             };
-            
-            if (_fields != null)
+
+            if(_fields != null)
                 query.ReturnFieldSelector = _fields;
-            
+
             var readerSettings = _serializationFactory.GetBsonReaderSettings(typeof(T));
-            
-            try {
-                _reply = _connection.SendTwoWayMessage<T>(query, readerSettings);
-                Id = _reply.CursorId;
-                if (_limit < 0)
-                    _limit = _limit * -1;
-                _isModifiable = false;
-            } catch (IOException exception) {
+
+            try
+            {
+                return _connection.SendTwoWayMessage<TReply>(query, readerSettings);
+            }
+            catch(IOException exception)
+            {
                 throw new MongoConnectionException("Could not read data, communication failure", _connection, exception);
             }
+        }
+
+        /// <summary>
+        ///   Retrieves the data.
+        /// </summary>
+        private void RetrieveData(){
+            _reply = GetQueryRepley<T>();
+            
+            Id = _reply.CursorId;
+            
+            if(_limit < 0)
+                _limit = _limit * -1;
+            
+            _isModifiable = false;
         }
 
         /// <summary>
