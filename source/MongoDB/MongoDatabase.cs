@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Configuration;
 using MongoDB.Connections;
 using MongoDB.Results;
@@ -20,7 +21,7 @@ namespace MongoDB
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         public MongoDatabase(string connectionString)
-            : this(new MongoConfiguration(){ConnectionString = connectionString})
+            : this(new MongoConfiguration {ConnectionString = connectionString})
         {
         }
 
@@ -96,10 +97,8 @@ namespace MongoDB
         {
             var namespaces = this["system.namespaces"];
             var cursor = namespaces.Find(new Document());
-            var names = new List<string>();
-            foreach(var document in cursor.Documents)
-                names.Add((String)document["name"]); //Todo: Should filter built-ins
-            return names;
+            //Todo: Should filter built-ins
+            return cursor.Documents.Select(d => (String)d["name"]).ToList();
         }
 
         /// <summary>
@@ -107,7 +106,7 @@ namespace MongoDB
         /// </summary>
         /// <param name = "name">The name.</param>
         /// <returns></returns>
-        public IMongoCollection GetCollection(String name)
+        public IMongoCollection GetCollection(string name)
         {
             return new MongoCollection(_configuration, _connection, Name, name);
         }

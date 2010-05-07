@@ -27,7 +27,7 @@ namespace MongoDB
         /// </summary>
         public Document(IEqualityComparer<string> comparer)
             :this()
-        {
+        {            
             _dictionary = new Dictionary<string, object>(comparer);
         }
         

@@ -8,14 +8,14 @@ namespace MongoDB
     /// </summary>
     public class MapReduce : IDisposable
     {
-        private readonly Document command;
-        private readonly IMongoDatabase database;
-        private bool canModify = true;
-        private bool disposing;
+        private readonly Document _command;
+        private readonly IMongoDatabase _database;
+        private bool _canModify = true;
+        private bool _disposing;
 
         internal MapReduce(IMongoDatabase database, string name){
-            this.database = database;
-            command = new Document().Add("mapreduce", name);
+            _database = database;
+            _command = new Document("mapreduce", name);
             Verbose = true;
         }
 
@@ -24,7 +24,7 @@ namespace MongoDB
         /// </summary>
         /// <value>The name.</value>
         public string Name{
-            get { return (String)command["mapreduce"]; }
+            get { return (String)_command["mapreduce"]; }
         }
 
         /// <summary>
@@ -38,10 +38,10 @@ namespace MongoDB
         ///   as may be appropriate.
         /// </summary>
         public Code Map{
-            get { return (Code)command["map"]; }
+            get { return (Code)_command["map"]; }
             set{
                 TryModify();
-                command["map"] = value;
+                _command["map"] = value;
             }
         }
 
@@ -54,10 +54,10 @@ namespace MongoDB
         ///   must be idempotent. If you need to perform an operation only once, use a finalize function.
         /// </remarks>
         public Code Reduce{
-            get { return (Code)command["reduce"]; }
+            get { return (Code)_command["reduce"]; }
             set{
                 TryModify();
-                command["reduce"] = value;
+                _command["reduce"] = value;
             }
         }
 
@@ -66,10 +66,10 @@ namespace MongoDB
         /// </summary>
         /// <value>The query.</value>
         public Document Query{
-            get { return (Document)command["query"]; }
+            get { return (Document)_command["query"]; }
             set{
                 TryModify();
-                command["query"] = value;
+                _command["query"] = value;
             }
         }
 
@@ -77,10 +77,10 @@ namespace MongoDB
         ///   Sort the query.  Useful for optimization
         /// </summary>
         public Document Sort{
-            get { return (Document)command["sort"]; }
+            get { return (Document)_command["sort"]; }
             set{
                 TryModify();
-                command["sort"] = value;
+                _command["sort"] = value;
             }
         }
 
@@ -88,10 +88,10 @@ namespace MongoDB
         ///   Number of objects to return from collection
         /// </summary>
         public long Limit{
-            get { return (long)command["limit"]; }
+            get { return (long)_command["limit"]; }
             set{
                 TryModify();
-                command["limit"] = value;
+                _command["limit"] = value;
             }
         }
 
@@ -102,10 +102,10 @@ namespace MongoDB
         ///   A temporary collection is still used and then renamed to the target name atomically.
         /// </remarks>
         public string Out{
-            get { return (string)command["out"]; }
+            get { return (string)_command["out"]; }
             set{
                 TryModify();
-                command["out"] = value;
+                _command["out"] = value;
             }
         }
 
@@ -114,10 +114,10 @@ namespace MongoDB
         ///   the collection permanent
         /// </summary>
         public bool KeepTemp{
-            get { return Convert.ToBoolean(command["keeptemp"]); }
+            get { return Convert.ToBoolean(_command["keeptemp"]); }
             set{
                 TryModify();
-                command["keeptemp"] = value;
+                _command["keeptemp"] = value;
             }
         }
 
@@ -125,10 +125,10 @@ namespace MongoDB
         ///   Provides statistics on job execution time.
         /// </summary>
         public bool Verbose{
-            get { return (bool)command["verbose"]; }
+            get { return (bool)_command["verbose"]; }
             set{
                 TryModify();
-                command["verbose"] = value;
+                _command["verbose"] = value;
             }
         }
 
@@ -136,10 +136,10 @@ namespace MongoDB
         ///   Function to apply to all the results when finished.
         /// </summary>
         public Code Finalize{
-            get { return (Code)command["finalize"]; }
+            get { return (Code)_command["finalize"]; }
             set{
                 TryModify();
-                command["finalize"] = value;
+                _command["finalize"] = value;
             }
         }
 
@@ -147,10 +147,10 @@ namespace MongoDB
         ///   Document where fields go into javascript global scope
         /// </summary>
         public Document Scope{
-            get { return (Document)command["scope"]; }
+            get { return (Document)_command["scope"]; }
             set{
                 TryModify();
-                command["scope"] = value;
+                _command["scope"] = value;
             }
         }
 
@@ -165,7 +165,7 @@ namespace MongoDB
                 if(Result.Ok == false)
                     throw new InvalidOperationException("Documents cannot be iterated when an error was returned from execute.");
 
-                var docs = database[Result.CollectionName].FindAll().Documents;
+                var docs = _database[Result.CollectionName].FindAll().Documents;
                 using((IDisposable)docs){
                     foreach(var doc in docs)
                         yield return doc;
@@ -180,22 +180,22 @@ namespace MongoDB
         /// 	<c>true</c> if this instance can modify; otherwise, <c>false</c>.
         /// </value>
         public Boolean CanModify{
-            get { return canModify; }
+            get { return _canModify; }
         }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose(){
-            if(KeepTemp || Out != null || disposing)
+            if(KeepTemp || Out != null || _disposing)
                 return;
-            disposing = true;
+            _disposing = true;
 
             if(Result == null || Result.Ok == false)
                 return; //Nothing to do.
 
             //Drop the temporary collection that was created as part of results.
-            database.Metadata.DropCollection(Result.CollectionName);
+            _database.Metadata.DropCollection(Result.CollectionName);
         }
 
         /// <summary>
@@ -203,11 +203,11 @@ namespace MongoDB
         /// </summary>
         /// <returns></returns>
         public MapReduce Execute(){
-            if(command.Contains("map") == false || command.Contains("reduce") == false)
+            if(_command.Contains("map") == false || _command.Contains("reduce") == false)
                 throw new InvalidOperationException("Cannot execute without a map and reduce function");
-            canModify = false;
+            _canModify = false;
             try{
-                Result = new MapReduceResult(database.SendCommand(command));
+                Result = new MapReduceResult(_database.SendCommand(_command));
             }
             catch(MongoCommandException mce){
                 Result = new MapReduceResult(mce.Error);
@@ -217,7 +217,7 @@ namespace MongoDB
         }
 
         internal void TryModify(){
-            if(canModify == false)
+            if(_canModify == false)
                 throw new InvalidOperationException("Cannot modify a map/reduce that has already executed");
         }
 

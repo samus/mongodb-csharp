@@ -8,6 +8,8 @@ namespace MongoDB.UnitTests.Serialization
 {
     public abstract class SerializationTestBase
     {
+        public const string EmptyDocumentBson = "BQAAAAA=";
+
         protected virtual IMappingStore MappingStore
         {
             get { return new AutoMappingStore(); }

@@ -1,3 +1,4 @@
+using System;
 using MongoDB.Configuration;
 using MongoDB.Serialization;
 using NUnit.Framework;
@@ -5,7 +6,7 @@ using NUnit.Framework;
 namespace MongoDB.UnitTests.Serialization
 {
     [TestFixture]
-    public class SerializationFactoryTests
+    public class SerializationFactoryTests : SerializationTestBase
     {
         [Test]
         public void GetBsonReaderSettingsDefaults()
@@ -22,6 +23,33 @@ namespace MongoDB.UnitTests.Serialization
             var factory = new SerializationFactory(new MongoConfiguration {ReadLocalTime = false});
             var readerSettings = factory.GetBsonReaderSettings(typeof(int));
             Assert.AreEqual(readerSettings.ReadLocalTime, false);
+        }
+
+        public class ProtectedConstructor
+        {
+            protected ProtectedConstructor(){}
+        }
+
+        [Test]
+        public void CanCreateObjectFromProtectedConstructor()
+        {
+            var obj = Deserialize<ProtectedConstructor>(EmptyDocumentBson);
+
+            Assert.IsNotNull(obj);
+        }
+
+        public class PrivateConstructor
+        {
+            private PrivateConstructor() { }
+        }
+
+        [Test]
+        [ExpectedException(typeof(MissingMethodException))]
+        public void CanNotCreateObjectFromPrivateConstructor()
+        {
+            var obj = Deserialize<PrivateConstructor>(EmptyDocumentBson);
+
+            Assert.IsNotNull(obj);
         }
     }
 }
