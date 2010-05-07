@@ -51,5 +51,23 @@ namespace MongoDB.UnitTests.Serialization
 
             Assert.IsNotNull(obj);
         }
+
+        public class SetProtectedPropertys
+        {
+            protected double Property { get; set; }
+
+            public double GetProperty() {return Property; }
+        }
+
+        [Test]
+        public void CanSetProtectedProperty()
+        {
+            var bson = Serialize(new Document("Property", 4));
+
+            var prop = Deserialize<SetProtectedPropertys>(bson);
+
+            Assert.IsNotNull(prop);
+            Assert.AreEqual(4, prop.GetProperty());
+        }
     }
 }
