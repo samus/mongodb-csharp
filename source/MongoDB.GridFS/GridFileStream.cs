@@ -395,7 +395,7 @@ namespace MongoDB.GridFS
         {
             int chunknum = CalcChunkNum (value);
             Document spec = new Document().Add("files_id", this.gridFileInfo.Id).Add("n", new Document().Add("$gt", chunknum));
-            this.chunks.Delete (spec);
+            this.chunks.Remove(spec);
             this.MoveTo (value);
             Array.Copy (blankBuffer, 0, buffer, buffPosition, buffer.Length - buffPosition);
             highestBuffPosition = buffPosition;

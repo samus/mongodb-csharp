@@ -191,15 +191,15 @@ namespace MongoDB.GridFS
         /// Permanently removes a file from the database. 
         /// </summary>
         public void Delete(Object id){
-            files.Delete(new Document().Add("_id", id));
-            chunks.Delete(new Document().Add("files_id", id));
+            files.Remove(new Document().Add("_id", id));
+            chunks.Remove(new Document().Add("files_id", id));
         }
         
         /// <summary>
         /// Permanently removes a file from the database. 
         /// </summary>        
         public void Delete(String filename){
-            files.Delete(new Document().Add("filename", filename));
+            files.Remove(new Document().Add("filename", filename));
         }
         
         /// <summary>

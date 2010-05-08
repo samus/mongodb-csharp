@@ -281,7 +281,7 @@ namespace MongoDB.GridFS
         /// </summary>
         public void Truncate(){
             if(filedata.Contains("_id") == false) return;
-            this.gridFile.Chunks.Delete(new Document().Add("files_id", filedata["_id"]));
+            this.gridFile.Chunks.Remove(new Document().Add("files_id", filedata["_id"]));
             this.Length = 0;
             this.gridFile.Files.Save(filedata);
         }
