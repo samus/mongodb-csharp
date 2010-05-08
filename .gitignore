@@ -16,6 +16,7 @@
 
 bin/
 obj/
+deploy/
 test-results/
 test-results/
 

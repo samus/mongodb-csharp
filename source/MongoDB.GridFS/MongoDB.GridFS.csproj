@@ -45,7 +45,8 @@
     <RegisterForComInterop>false</RegisterForComInterop>
     <DocumentationFile>bin\Debug\MongoDB.GridFS.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>618</NoWarn>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>

@@ -1,0 +1,502 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MongoDB.GridFS</name>
+    </assembly>
+    <members>
+        <member name="T:MongoDB.GridFS.GridFile">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.#ctor(MongoDB.IMongoDatabase)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFile"/> class.
+            </summary>
+            <param name="db">The db.</param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.#ctor(MongoDB.IMongoDatabase,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFile"/> class.
+            </summary>
+            <param name="db">The db.</param>
+            <param name="bucket">The bucket.</param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.ListFiles">
+            <summary>
+            Lists the files.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.ListFiles(MongoDB.Document)">
+            <summary>
+            Lists the files.
+            </summary>
+            <param name="query">The query.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Copy(System.String,System.String)">
+            <summary>
+            Copies one file to another.  The destination file must not exist or an IOException will be thrown.
+            </summary>
+            <exception cref="T:System.IO.FileNotFoundException">Source file not found.</exception>
+            <exception cref="T:System.IO.IOException">Destination file already exists.</exception>
+            <exception cref="T:MongoDB.MongoCommandException">A database error occurred executing the copy function.</exception>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Create(System.String)">
+            <summary>
+            Creates the specified filename.
+            </summary>
+            <param name="filename">The filename.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Create(System.String,System.IO.FileMode)">
+            <summary>
+            Creates the specified filename.
+            </summary>
+            <param name="filename">The filename.</param>
+            <param name="mode">The mode.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Create(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <summary>
+            Creates the specified filename.
+            </summary>
+            <param name="filename">The filename.</param>
+            <param name="mode">The mode.</param>
+            <param name="access">The access.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <summary>
+            Opens the specified filename.
+            </summary>
+            <param name="filename">The filename.</param>
+            <param name="mode">The mode.</param>
+            <param name="access">The access.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.OpenRead(System.String)">
+            <summary>
+            Opens the read.
+            </summary>
+            <param name="filename">The filename.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.OpenWrite(System.String)">
+            <summary>
+            Opens the write.
+            </summary>
+            <param name="filename">The filename.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Delete(System.Object)">
+            <summary>
+            Permanently removes a file from the database. 
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Delete(System.String)">
+            <summary>
+            Permanently removes a file from the database. 
+            </summary>        
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Delete(MongoDB.Document)">
+            <summary>
+            Permanently removes all files from the database that match the query. 
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Exists(System.String)">
+            <summary>
+            Gets a value indicating whether the file exists.
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Exists(System.Object)">
+            <summary>
+            Gets a value indicating whether the file exists.
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Move(System.String,System.String)">
+            <summary>
+            Moves the specified SRC.
+            </summary>
+            <param name="src">The SRC.</param>
+            <param name="dest">The dest.</param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFile.Move(System.Object,System.String)">
+            <summary>
+            Moves the specified id.
+            </summary>
+            <param name="id">The id.</param>
+            <param name="dest">The dest.</param>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFile.Name">
+            <summary>
+            Gets the name.
+            </summary>
+            <value>The name.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFile.Files">
+            <summary>
+            Gets the files.
+            </summary>
+            <value>The files.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFile.Chunks">
+            <summary>
+            Gets the chunks.
+            </summary>
+            <value>The chunks.</value>
+        </member>
+        <member name="T:MongoDB.GridFS.GridFileInfo">
+            <summary>
+            Provides instance methods for the creation, copying, deletion, moving, and opening of files, 
+            and aids in the creation of GridFileStream objects.  The api is very similar to the FileInfo class in
+            System.IO.
+            
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.#ctor(MongoDB.IMongoDatabase,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFileInfo"/> class.
+            </summary>
+            <param name="db">The db.</param>
+            <param name="bucket">The bucket.</param>
+            <param name="filename">The filename.</param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.#ctor(MongoDB.MongoDatabase,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFileInfo"/> class.
+            </summary>
+            <param name="db">The db.</param>
+            <param name="filename">The filename.</param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.Create">
+            <summary>
+            Creates the file named FileName and returns the GridFileStream
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.IO.IOException">If the file already exists</exception>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.Create(System.IO.FileMode)">
+            <summary>
+            Creates the specified mode.
+            </summary>
+            <param name="mode">The mode.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.Create(System.IO.FileMode,System.IO.FileAccess)">
+            <summary>
+            Creates the specified mode.
+            </summary>
+            <param name="mode">The mode.</param>
+            <param name="access">The access.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.OpenRead">
+            <summary>
+            Creates a read-only GridFileStream to an existing file. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.OpenWrite">
+            <summary>
+            Creates a write-only GridFileStream to an existing file.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.Open(System.IO.FileMode,System.IO.FileAccess)">
+            <summary>
+            Opens the specified mode.
+            </summary>
+            <param name="mode">The mode.</param>
+            <param name="access">The access.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.Delete">
+            <summary>
+            Permanently removes a file from the database. 
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.MoveTo(System.String)">
+            <summary>
+            Renames a file. 
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.Truncate">
+            <summary>
+            Deletes all data in a file and sets the length to 0.
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.CalcMD5">
+            <summary>
+            Calcs the M d5.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.UpdateInfo">
+            <summary>
+            Updates the aliases, contentType, metadata and uploadDate in the database.
+            </summary>
+            <remarks> To rename a file use the MoveTo method.
+            </remarks>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.Refresh">
+            <summary>
+            Reloads the file information from the database. 
+            </summary>
+            <remarks>The data in the database will not reflect any changes done through an open stream until it is closed.
+            </remarks>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.ToDocument">
+            <summary>
+            Toes the document.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileInfo.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.Id">
+            <summary>
+            Gets or sets the id.
+            </summary>
+            <value>The id.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.FileName">
+            <summary>
+            Gets or sets the name of the file.
+            </summary>
+            <value>The name of the file.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.ContentType">
+            <summary>
+            Gets or sets the type of the content.
+            </summary>
+            <value>The type of the content.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.Length">
+            <summary>
+            Writing to the length property will not affect the actual data of the file.  Open a GridFileStream
+            and call SetLength instead. 
+            </summary>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.Aliases">
+            <summary>
+            Gets or sets the aliases.
+            </summary>
+            <value>The aliases.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.ChunkSize">
+            <summary>
+            Gets or sets the size of the chunk.
+            </summary>
+            <value>The size of the chunk.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.Metadata">
+            <summary>
+            Gets the metadata.
+            </summary>
+            <value>The metadata.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.UploadDate">
+            <summary>
+            Gets or sets the upload date.
+            </summary>
+            <value>The upload date.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.Md5">
+            <summary>
+            Gets or sets the MD5.
+            </summary>
+            <value>The MD5.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileInfo.Exists">
+            <summary>
+            Gets a value indicating whether the file exists.
+            </summary>
+        </member>
+        <member name="T:MongoDB.GridFS.GridFileStream">
+            <summary>
+            Stream for reading and writing to a file in GridFS.
+            </summary>
+            <remarks>
+            When using the stream for random io it is possible to produce chunks in the begining and middle of the
+            file that are not full size followed by other chunks that are full size.  This only affects the md5 sum
+            that is calculated on the file on close.  Because of this do not rely on the md5 sum of a file when doing
+            random io.  Writing to the stream sequentially works fine and will produce a consistent md5.
+            </remarks>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.#ctor(MongoDB.GridFS.GridFileInfo,MongoDB.IMongoCollection,MongoDB.IMongoCollection,System.IO.FileAccess)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.GridFS.GridFileStream"/> class.
+            </summary>
+            <param name="gridfileinfo">The gridfileinfo.</param>
+            <param name="files">The files.</param>
+            <param name="chunks">The chunks.</param>
+            <param name="access">The access.</param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads data from the stream into the specified array.  It will fill the array in starting at offset and
+            adding count bytes returning the number of bytes read from the stream.
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Copies from the source array into the grid file.
+            </summary>
+            <param name="array">The array.</param>
+            <param name="offset">A <see cref="T:System.Int32"/>  The offset within the source array.</param>
+            <param name="count">A <see cref="T:System.Int32"/>  The number of bytes from within the source array to copy.</param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.Flush">
+            <summary>
+            Flushes any changes to current chunk to the database.  It can be called in client code at any time or it
+            will automatically be called on Close() and when the stream position moves off the bounds of the current
+            chunk.
+            </summary>
+            <exception cref="T:System.IO.IOException">
+            An I/O error occurs.
+            </exception>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Seek to any location in the stream.  Seeking past the end of the file is allowed.  Any writes to that
+            location will cause the file to grow to that size.  Any holes that may be created from the seek will
+            be zero filled on close.
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.SetLength(System.Int64)">
+            <summary>
+            Sets the length of this stream to the given value.
+            </summary>
+            <param name="value">
+            A <see cref="T:System.Int64"/>
+            </param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.Close">
+            <summary>
+            Close the stream and flush any changes to the database.
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.MoveTo(System.Int64)">
+            <summary>
+            Moves the current position to the new position.  If this causes a new chunk to need to be loaded it will take
+            care of flushing the buffer and loading a new chunk.
+            </summary>
+            <param name="position">
+            A <see cref="T:System.Int32"/> designating where to go to.
+            </param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.LoadOrCreateChunk(System.Int32)">
+            <summary>
+            Loads a chunk from the chunks collection if it exists.  Otherwise it creates a blank chunk Document.
+            </summary>
+            <param name="num"></param>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.TruncateAfter(System.Int64)">
+            <summary>
+            Deletes all chunks after the specified position and clears out any extra bytes if the position doesn't fall on
+            a chunk boundry.
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.EnsureNoHoles">
+            <summary>
+            Makes sure that at least a skelton chunk exists for all numbers.  If not the MD5 calculation will fail on a sparse file.
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.GridFileStream.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged resources used by the <see cref="T:System.IO.Stream"/> and optionally releases the managed resources.
+            </summary>
+            <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileStream.GridFileInfo">
+            <summary>
+            Gets or sets the grid file info.
+            </summary>
+            <value>The grid file info.</value>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileStream.CanRead">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the current stream supports reading.
+            </summary>
+            <value></value>
+            <returns>true if the stream supports reading; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileStream.CanWrite">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the current stream supports writing.
+            </summary>
+            <value></value>
+            <returns>true if the stream supports writing; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileStream.CanSeek">
+            <summary>
+            When overridden in a derived class, gets a value indicating whether the current stream supports seeking.
+            </summary>
+            <value></value>
+            <returns>true if the stream supports seeking; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileStream.Length">
+            <summary>
+            When overridden in a derived class, gets the length in bytes of the stream.
+            </summary>
+            <value></value>
+            <returns>
+            A long value representing the length of the stream in bytes.
+            </returns>
+            <exception cref="T:System.NotSupportedException">
+            A class derived from Stream does not support seeking.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            Methods were called after the stream was closed.
+            </exception>
+        </member>
+        <member name="P:MongoDB.GridFS.GridFileStream.Position">
+            <summary>
+            When overridden in a derived class, gets or sets the position within the current stream.
+            </summary>
+            <value></value>
+            <returns>
+            The current position within the stream.
+            </returns>
+            <exception cref="T:System.IO.IOException">
+            An I/O error occurs.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            The stream does not support seeking.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            Methods were called after the stream was closed.
+            </exception>
+        </member>
+        <member name="T:MongoDB.GridFS.MongoGridFSException">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:MongoDB.GridFS.MongoGridFSException.#ctor(System.String,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.GridFS.MongoGridFSException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="filename">The filename.</param>
+            <param name="inner">The inner.</param>
+        </member>
+        <member name="P:MongoDB.GridFS.MongoGridFSException.Filename">
+            <summary>
+            Gets the filename.
+            </summary>
+            <value>The filename.</value>
+        </member>
+    </members>
+</doc>

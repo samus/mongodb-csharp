@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="deploy"  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- $Id: Task.proj 135 2006-03-19 01:02:09Z pwelter34 $ -->
+
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\MSBuild.Community.Tasks</MSBuildCommunityTasksPath>
+    <DeployPath>$(MSBuildProjectDirectory)\deploy</DeployPath>
+    <DeployTmp>$(DeployPath)\tmp</DeployTmp>
+    <SourceProject>$(MSBuildProjectDirectory)\MongoDB-CSharp.sln</SourceProject>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
+
+  <Target Name="releasebuild">
+
+    <ItemGroup>
+      <ProjectToBuild Include="$(MSBuildProjectDirectory)\source\MongoDB\MongoDB.csproj" />
+      <ProjectToBuild Include="$(MSBuildProjectDirectory)\source\MongoDB.GridFS\MongoDB.GridFS.csproj" />
+    </ItemGroup>
+    
+    <MSBuild Projects="@(ProjectToBuild)" Targets="Rebuild" Properties="Configuration=Release" />
+    
+  </Target>
+
+  <Target Name="deploy" DependsOnTargets="releasebuild">
+
+    <MakeDir Directories="$(DeployPath)" Condition="!Exists('$(DeployPath)')" />
+    <MakeDir Directories="$(DeployTmp)" Condition="!Exists('$(DeployTmp)')" />
+
+    <ItemGroup>
+      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB\bin\Debug\*.dll" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB\bin\Debug\*.xml" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB.GridFS\bin\Debug\*.dll" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB.GridFS\bin\Debug\*.xml" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\LICENSE" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\README.rst" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(CollectFiles)" DestinationFolder="$(DeployTmp)" />
+    
+    <ItemGroup>      
+      <DeployFiles Include="$(DeployTmp)\**\*.*" />
+    </ItemGroup>
+
+    <Zip Files="@(DeployFiles)"
+         WorkingDirectory="$(DeployTmp)"
+         ZipFileName="$(DeployPath)\MongoDB-CSharp.zip"
+         ZipLevel="9" />
+
+    <RemoveDir Directories="$(DeployTmp)" />
+  </Target>
+
+</Project>
