@@ -4,6 +4,7 @@
 
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\MSBuild.Community.Tasks</MSBuildCommunityTasksPath>
+    <ExtensionTasksPath>$(MSBuildProjectDirectory)\tools\MSBuild.ExtensionPack</ExtensionTasksPath>
     <DeployPath>$(MSBuildProjectDirectory)\deploy</DeployPath>
     <DeployTmp>$(DeployPath)\tmp</DeployTmp>
     <SourceProject>$(MSBuildProjectDirectory)\MongoDB-CSharp.sln</SourceProject>
@@ -17,21 +18,27 @@
       <ProjectToBuild Include="$(MSBuildProjectDirectory)\source\MongoDB\MongoDB.csproj" />
       <ProjectToBuild Include="$(MSBuildProjectDirectory)\source\MongoDB.GridFS\MongoDB.GridFS.csproj" />
     </ItemGroup>
-    
+
     <MSBuild Projects="@(ProjectToBuild)" Targets="Rebuild" Properties="Configuration=Release" />
-    
+
   </Target>
 
   <Target Name="deploy" DependsOnTargets="releasebuild">
 
+    <PropertyGroup>
+      <DeployFile>$(DeployPath)\MongoDB-CSharp.zip</DeployFile>
+    </PropertyGroup>
+    
+    <Delete Files="$(DeployFile)" />
+    
     <MakeDir Directories="$(DeployPath)" Condition="!Exists('$(DeployPath)')" />
     <MakeDir Directories="$(DeployTmp)" Condition="!Exists('$(DeployTmp)')" />
 
     <ItemGroup>
-      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB\bin\Debug\*.dll" />
-      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB\bin\Debug\*.xml" />
-      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB.GridFS\bin\Debug\*.dll" />
-      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB.GridFS\bin\Debug\*.xml" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB\bin\Release\*.xml" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB\bin\Release\*.dll" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB.GridFS\bin\Release\*.xml" />
+      <CollectFiles Include="$(MSBuildProjectDirectory)\source\MongoDB.GridFS\bin\Release\*.dll" />
       <CollectFiles Include="$(MSBuildProjectDirectory)\LICENSE" />
       <CollectFiles Include="$(MSBuildProjectDirectory)\README.rst" />
     </ItemGroup>
@@ -44,10 +51,11 @@
 
     <Zip Files="@(DeployFiles)"
          WorkingDirectory="$(DeployTmp)"
-         ZipFileName="$(DeployPath)\MongoDB-CSharp.zip"
+         ZipFileName="$(DeployFile)"
          ZipLevel="9" />
 
     <RemoveDir Directories="$(DeployTmp)" />
+    
   </Target>
 
 </Project>
