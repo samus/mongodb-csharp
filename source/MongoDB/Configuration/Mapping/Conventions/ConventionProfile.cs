@@ -188,7 +188,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
             _collectionAdapterConvention = DefaultCollectionAdapterConvention.Instance;
             _defaultValueConvention = DefaultDefaultValueConvention.Instance;
             _discriminatorConvention = new DelegateDiscriminatorConvention(t => t.Name);
-            _discriminatorAliasConvention = new DelegateDiscriminatorAliasConvention(delegate(Type t) { return "_t"; });
+            _discriminatorAliasConvention = new DelegateDiscriminatorAliasConvention(t => "_t");
             _extendedPropertiesConvention = new DelegateExtendedPropertiesConvention(m => m.Name == "ExtendedProperties");
             _idConvention = new DelegateIdConvention(m => m.Name == "Id");
             _idGeneratorConvention = DefaultIdGeneratorConvention.Instance;

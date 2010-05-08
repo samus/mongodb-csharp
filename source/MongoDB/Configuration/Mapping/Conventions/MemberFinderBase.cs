@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 
 namespace MongoDB.Configuration.Mapping.Conventions
@@ -19,8 +16,8 @@ namespace MongoDB.Configuration.Mapping.Conventions
         /// Initializes a new instance of the <see cref="MemberFinderBase"/> class.
         /// </summary>
         /// <param name="predicate">The predicate.</param>
-        public MemberFinderBase(Func<MemberInfo, bool> predicate)
-            : this(predicate, MemberTypes.Property, BindingFlags.Instance | BindingFlags.Public)
+        protected MemberFinderBase(Func<MemberInfo, bool> predicate)
+            : this(predicate, MemberTypes.Property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
         { }
 
         /// <summary>
@@ -29,7 +26,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
         /// <param name="predicate">The predicate.</param>
         /// <param name="memberTypes">The member types.</param>
         /// <param name="bindingFlags">The binding flags.</param>
-        public MemberFinderBase(Func<MemberInfo, bool> predicate, MemberTypes memberTypes, BindingFlags bindingFlags)
+        protected MemberFinderBase(Func<MemberInfo, bool> predicate, MemberTypes memberTypes, BindingFlags bindingFlags)
         {
             _bindingFlags = bindingFlags;
             _memberTypes = memberTypes;
@@ -44,6 +41,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
         protected MemberInfo GetMember(Type type)
         {
             var foundMembers = type.FindMembers(_memberTypes, _bindingFlags, IsMatch, null);
+
             if (foundMembers.Length == 0)
                 return null;
             if (foundMembers.Length == 1)

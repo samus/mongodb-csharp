@@ -43,11 +43,11 @@ namespace MongoDB.Serialization.Descriptors
             foreach (var memberMap in ClassMap.MemberMaps)
                 yield return CreateProperty(memberMap.Alias, GetValue(memberMap.MemberName));
 
-            if (_extendedProperties != null)
-            {
-                foreach (string propertyName in _extendedProperties.Keys)
-                    yield return CreateProperty(propertyName, GetValue(propertyName));
-            }
+            if (_extendedProperties == null)
+                yield break;
+
+            foreach(var propertyName in _extendedProperties.Keys)
+                yield return CreateProperty(propertyName, GetValue(propertyName));
         }
 
         /// <summary>

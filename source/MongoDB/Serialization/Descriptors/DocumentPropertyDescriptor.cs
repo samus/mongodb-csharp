@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 
 namespace MongoDB.Serialization.Descriptors
@@ -25,10 +26,17 @@ namespace MongoDB.Serialization.Descriptors
         /// <returns></returns>
         public IEnumerable<BsonProperty> GetProperties()
         {
-            foreach (var pair in _document)
-                yield return new BsonProperty(pair.Key) { Value = GetValue(pair.Value) };
+            return _document.Select(pair => new BsonProperty(pair.Key)
+            {
+                Value = GetValue(pair.Value)
+            });
         }
 
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
         private BsonPropertyValue GetValue(object value)
         {
             var valueType = value == null ? typeof(Document) : value.GetType();

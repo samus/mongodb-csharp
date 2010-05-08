@@ -66,7 +66,8 @@ namespace MongoDB.Configuration.Mapping
         /// <returns></returns>
         public IClassMap GetClassMap(Type classType)
         {
-            IClassMap classMap = null;
+            IClassMap classMap;
+
             if (_autoMaps.TryGetValue(classType, out classMap))
                 return classMap;
 
@@ -80,6 +81,7 @@ namespace MongoDB.Configuration.Mapping
             classMap = _autoMapper.CreateClassMap(classType, GetClassMap);
 
             _autoMaps.Add(classType, classMap);
+
             return classMap;
         }
     }

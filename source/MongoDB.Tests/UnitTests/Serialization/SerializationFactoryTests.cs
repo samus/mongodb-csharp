@@ -69,5 +69,23 @@ namespace MongoDB.UnitTests.Serialization
             Assert.IsNotNull(prop);
             Assert.AreEqual(4, prop.GetProperty());
         }
+
+        public class SetPrivatePropertys
+        {
+            private double Property { get; set; }
+
+            public double GetProperty() { return Property; }
+        }
+
+        [Test]
+        public void CanNotSetPrivatePropertys()
+        {
+            var bson = Serialize(new Document("Property", 4));
+
+            var prop = Deserialize<SetPrivatePropertys>(bson);
+
+            Assert.IsNotNull(prop);
+            Assert.AreEqual(0, prop.GetProperty());
+        }
     }
 }

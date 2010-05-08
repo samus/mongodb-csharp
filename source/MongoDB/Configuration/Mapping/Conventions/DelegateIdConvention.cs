@@ -14,7 +14,8 @@ namespace MongoDB.Configuration.Mapping.Conventions
         /// <param name="predicate">The predicate.</param>
         public DelegateIdConvention(Func<MemberInfo, bool> predicate)
             : base(predicate)
-        { }
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateIdConvention"/> class.
@@ -24,7 +25,8 @@ namespace MongoDB.Configuration.Mapping.Conventions
         /// <param name="bindingFlags">The binding flags.</param>
         public DelegateIdConvention(Func<MemberInfo, bool> predicate, MemberTypes memberTypes, BindingFlags bindingFlags)
             : base(predicate, memberTypes, bindingFlags)
-        { }
+        {
+        }
 
         /// <summary>
         /// Gets the member representing the id if one exists.

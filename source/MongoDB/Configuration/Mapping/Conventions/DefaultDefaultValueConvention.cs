@@ -12,8 +12,12 @@ namespace MongoDB.Configuration.Mapping.Conventions
         /// </summary>
         public static readonly DefaultDefaultValueConvention Instance = new DefaultDefaultValueConvention();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultDefaultValueConvention"/> class.
+        /// </summary>
         private DefaultDefaultValueConvention()
-        { }
+        {
+        }
 
         /// <summary>
         /// Gets the default value.

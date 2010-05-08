@@ -73,7 +73,7 @@ namespace MongoDB.Configuration.Mapping.Auto
         {
             _conventions = new ConventionProfile();
             _isSubClass = t => false;
-            _memberFinder = PublicMemberFinder.Instance;
+            _memberFinder = PublicOrProtectedMemberFinder.Instance;
         }
 
         /// <summary>
