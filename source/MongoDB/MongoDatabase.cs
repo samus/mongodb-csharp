@@ -11,7 +11,7 @@ namespace MongoDB
     /// </summary>
     public class MongoDatabase : IMongoDatabase
     {
-        private readonly MongoConfiguration _configuration;
+        private readonly IMongoConfiguration _configuration;
         private readonly Connection _connection;
         private DatabaseJavascript _javascript;
         private DatabaseMetadata _metadata;
@@ -21,7 +21,7 @@ namespace MongoDB
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
         public MongoDatabase(string connectionString)
-            : this(new MongoConfiguration {ConnectionString = connectionString})
+            : this(new MongoConfiguration { ConnectionString = connectionString })
         {
         }
 
@@ -29,7 +29,7 @@ namespace MongoDB
         /// Initializes a new instance of the <see cref="MongoDatabase"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        public MongoDatabase(MongoConfiguration configuration)
+        public MongoDatabase(IMongoConfiguration configuration)
             : this(configuration,
                 ConnectionFactory.GetConnection(configuration.ConnectionString),
                 new MongoConnectionStringBuilder(configuration.ConnectionString).Database)
@@ -42,7 +42,7 @@ namespace MongoDB
         /// <param name="configuration">The configuration.</param>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
-        public MongoDatabase(MongoConfiguration configuration, Connection connection, string name)
+        public MongoDatabase(IMongoConfiguration configuration, Connection connection, string name)
         {
             if(configuration == null)
                 throw new ArgumentNullException("configuration");

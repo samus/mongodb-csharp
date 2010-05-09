@@ -25,7 +25,7 @@ namespace MongoDB
         /// <param name = "databaseName">Name of the database.</param>
         /// <param name = "name">The name.</param>
         /// <param name = "connection">The connection.</param>
-        public CollectionMetadata(MongoConfiguration configuration, string databaseName, string name, Connection connection)
+        public CollectionMetadata(IMongoConfiguration configuration, string databaseName, string name, Connection connection)
         {
             _fullName = databaseName + "." + name;
             _name = name;

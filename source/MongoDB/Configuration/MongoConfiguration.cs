@@ -6,7 +6,7 @@ namespace MongoDB.Configuration
     /// <summary>
     /// 
     /// </summary>
-    public class MongoConfiguration
+    public class MongoConfiguration : IMongoConfiguration
     {
         /// <summary>
         /// MongoDB-CSharp default configuration.
@@ -50,17 +50,5 @@ namespace MongoDB.Configuration
         /// time is converted from UTC to local timezone after is was read.
         /// </remarks>
         public bool ReadLocalTime { get; set; }
-
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        public void Validate(){
-            if(ConnectionString == null)
-                throw new MongoException("ConnectionString can not be null");
-            if(MappingStore == null)
-                throw new MongoException("MappingStore can not be null");
-            if(SerializationFactory == null)
-                throw new MongoException("SerializationFactory can not be null");
-        }
     }
 }
