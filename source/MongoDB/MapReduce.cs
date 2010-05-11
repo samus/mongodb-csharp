@@ -232,7 +232,7 @@ namespace MongoDB
             catch(MongoCommandException mce)
             {
                 Result = new MapReduceResult(mce.Error);
-                //throw new MongoMapReduceException(mce, this);
+                throw new MongoMapReduceException(mce, this);
             }
         }
 
