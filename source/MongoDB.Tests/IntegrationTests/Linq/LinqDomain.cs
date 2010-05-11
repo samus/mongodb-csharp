@@ -1,31 +1,33 @@
 ﻿using System.Collections.Generic;
 
+using MongoDB.Attributes;
+
 namespace MongoDB.IntegrationTests.Linq
 {
     public class Person
     {
-        //[MongoAlias("fn")]
+        [MongoAlias("fn")]
         public string FirstName { get; set; }
 
-        //[MongoAlias("ln")]
+        [MongoAlias("ln")]
         public string LastName { get; set; }
 
-        //[MongoAlias("age")]
+        [MongoAlias("age")]
         public int Age { get; set; }
 
-        //[MongoAlias("add")]
+        [MongoAlias("add")]
         public Address PrimaryAddress { get; set; }
 
-        //[MongoAlias("otherAdds")]
+        [MongoAlias("otherAdds")]
         public List<Address> Addresses { get; set; }
 
-        //[MongoAlias("emps")]
+        [MongoAlias("emps")]
         public int[] EmployerIds { get; set; }
     }
 
     public class Address
     {
-        //[MongoAlias("city")]
+        [MongoAlias("city")]
         public string City { get; set; }
 
 		public bool IsInternational { get; set; }

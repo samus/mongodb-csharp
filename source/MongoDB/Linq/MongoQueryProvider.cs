@@ -259,7 +259,6 @@ namespace MongoDB.Linq
             var mapReduce = collection.GetType().GetMethod("MapReduce").Invoke(collection, null);
 
             var mapReduceCommand = (MapReduceCommand)mapReduce.GetType().GetProperty("Command").GetValue(mapReduce, null);
-
             mapReduceCommand.Map = new Code(queryObject.MapFunction);
             mapReduceCommand.Reduce = new Code(queryObject.ReduceFunction);
             mapReduceCommand.Finalize = new Code(queryObject.FinalizerFunction);
@@ -273,11 +272,8 @@ namespace MongoDB.Linq
             if (queryObject.NumberToSkip != 0)
                 throw new InvalidQueryException("MapReduce queries do no support Skips.");
 
-            //mapReduce.GetType().GetProperty()
-
             var executor = GetExecutor(typeof(Document), queryObject.Projector, queryObject.Aggregator, true);
-            return null;
-            //executor.Compile().DynamicInvoke(mapReduce.Documents);
+            return executor.Compile().DynamicInvoke(mapReduce.GetType().GetProperty("Documents").GetValue(mapReduce, null));
         }
 
         private static LambdaExpression GetExecutor(Type documentType, LambdaExpression projector, LambdaExpression aggregator, bool boxReturn)

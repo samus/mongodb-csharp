@@ -11,6 +11,7 @@ namespace MongoDB.Serialization
     {
         private readonly Stack<Type> _types;
         private readonly IMappingStore _mappingStore;
+        private bool _isMapReduce;
 
         public BsonClassMapDescriptor(IMappingStore mappingStore, Type rootType)
         {
@@ -91,6 +92,9 @@ namespace MongoDB.Serialization
 
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
 
+            //var doc = (Document)instance;
+            //if (doc.ContainsKey("mapreduce"))
+            //    _isMapReduce = true;
             return new DocumentClassMapPropertyDescriptor(_mappingStore, currentClassMap, document);
         }
 

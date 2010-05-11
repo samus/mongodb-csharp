@@ -47,7 +47,7 @@ namespace MongoDB
         ///   Gets the documents.
         /// </summary>
         /// <value>The documents.</value>
-        public IEnumerable<T> Documents
+        public IEnumerable<Document> Documents
         {
             get
             {
@@ -56,7 +56,7 @@ namespace MongoDB
                 if(Result == null || Result.Ok == false)
                     throw new InvalidOperationException("Documents cannot be iterated when an error was returned from execute.");
 
-                var docs = _database.GetCollection<T>().FindAll().Documents;
+                var docs = _database.GetCollection<Document>(Result.CollectionName).FindAll().Documents;
                 using((IDisposable)docs)
                 {
                     foreach(var doc in docs)
@@ -228,7 +228,7 @@ namespace MongoDB
 
             try
             {
-                Result = new MapReduceResult(_database.SendCommand(Command.Command));
+                Result = new MapReduceResult(_database.SendCommand(typeof(T), Command.Command));
             }
             catch(MongoCommandException exception)
             {
