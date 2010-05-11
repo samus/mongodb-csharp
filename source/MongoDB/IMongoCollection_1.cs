@@ -43,6 +43,15 @@ namespace MongoDB
         /// <summary>
         /// Finds and returns the first document in a selector query.
         /// </summary>
+        /// <param name="javascriptWhere">The where.</param>
+        /// <returns>
+        /// A <see cref="Document"/> from the collection.
+        /// </returns>
+        T FindOne(string javascriptWhere);
+
+        /// <summary>
+        /// Finds and returns the first document in a selector query.
+        /// </summary>
         /// <param name="selector">The selector.</param>
         /// <returns>
         /// A <see cref="Document"/> from the collection.
@@ -58,11 +67,12 @@ namespace MongoDB
         ICursor<T> FindAll();
 
         /// <summary>
-        ///   Uses the $where operator to query the collection.  The value of the where is Javascript that will
-        ///   produce a true for the documents that match the criteria.
+        /// Uses the $where operator to query the collection.  The value of the where is Javascript that will
+        /// produce a true for the documents that match the criteria.
         /// </summary>
-        /// <param name = "where">Javascript</param>
-        ICursor<T> Find(string where);
+        /// <param name="javascriptWhere">Javascript</param>
+        /// <returns></returns>
+        ICursor<T> Find(string javascriptWhere);
 
         /// <summary>
         /// Queries the collection using the query selector.

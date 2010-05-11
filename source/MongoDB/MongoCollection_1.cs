@@ -73,6 +73,20 @@ namespace MongoDB
         }
 
         /// <summary>
+        /// Finds and returns the first document in a selector query.
+        /// </summary>
+        /// <param name="javascriptWhere">The where.</param>
+        /// <returns>
+        /// A <see cref="Document"/> from the collection.
+        /// </returns>
+        public T FindOne(string javascriptWhere)
+        {
+            var spec = new Document { { "$where", new Code(javascriptWhere) } };
+            using(var cursor = Find(spec, -1, 0, null))
+                return cursor.Documents.FirstOrDefault();
+        }
+
+        /// <summary>
         /// Finds and returns the first document in a query.
         /// </summary>
         /// <param name="spec">A <see cref="Document"/> representing the query.</param>
@@ -80,14 +94,8 @@ namespace MongoDB
         /// A <see cref="Document"/> from the collection.
         /// </returns>
         public T FindOne(object spec){
-            var cursor = Find(spec, -1, 0, null);
-            foreach (var document in cursor.Documents) {
-                cursor.Dispose();
-                return document;
-            }
-            //FIXME Decide if this should throw a not found exception instead of returning null.
-            return null;
-            //this.Find(spec, -1, 0, null)[0];
+            using(var cursor = Find(spec, -1, 0, null))
+                return cursor.Documents.FirstOrDefault();
         }
 
         /// <summary>
@@ -102,10 +110,10 @@ namespace MongoDB
         /// <summary>
         /// Finds the specified where.
         /// </summary>
-        /// <param name="where">The where.</param>
+        /// <param name="javascriptWhere">The where.</param>
         /// <returns></returns>
-        public ICursor<T> Find(string @where){
-            var spec = new Document { { "$where", new Code(@where) } };
+        public ICursor<T> Find(string javascriptWhere){
+            var spec = new Document { { "$where", new Code(javascriptWhere) } };
             return Find(spec, 0, 0, null);
         }
 
