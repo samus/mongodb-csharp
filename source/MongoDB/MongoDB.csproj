@@ -130,7 +130,7 @@
     <Compile Include="Linq\Expressions\MongoExpression.cs" />
     <Compile Include="Linq\Translators\ExpressionReplacer.cs" />
     <Compile Include="MapReduce.cs" />
-    <Compile Include="MapReduceCommand.cs" />
+    <Compile Include="Commands\MapReduceCommand.cs" />
     <Compile Include="Results\MapReduceResult.cs" />
     <Compile Include="Util\ScopedDictionary.cs" />
     <Compile Include="Linq\Translators\AggregateChecker.cs" />

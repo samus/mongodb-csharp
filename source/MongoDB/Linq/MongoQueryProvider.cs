@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-
+using MongoDB.Commands;
 using MongoDB.Connections;
 using MongoDB.Linq.Expressions;
 using MongoDB.Linq.Translators;
@@ -255,23 +255,29 @@ namespace MongoDB.Linq
         {
             var miGetCollection = typeof(IMongoDatabase).GetMethods().Where(m => m.Name == "GetCollection" && m.GetGenericArguments().Length == 1 && m.GetParameters().Length == 1).Single().MakeGenericMethod(queryObject.DocumentType);
             var collection = miGetCollection.Invoke(queryObject.Database, new[] { queryObject.CollectionName });
+            
+            var mapReduce = collection.GetType().GetMethod("MapReduce").Invoke(collection, null);
 
-            var mapReduce = (MapReduce)collection.GetType().GetMethod("MapReduce").Invoke(collection, null);
-            mapReduce.Map(new Code(queryObject.MapFunction));
-            mapReduce.Reduce(new Code(queryObject.ReduceFunction));
-            mapReduce.Finalize(new Code(queryObject.FinalizerFunction));
-            mapReduce.Query(queryObject.Query);
+            var mapReduceCommand = (MapReduceCommand)mapReduce.GetType().GetProperty("Command").GetValue(mapReduce, null);
+
+            mapReduceCommand.Map = new Code(queryObject.MapFunction);
+            mapReduceCommand.Reduce = new Code(queryObject.ReduceFunction);
+            mapReduceCommand.Finalize = new Code(queryObject.FinalizerFunction);
+            mapReduceCommand.Query = queryObject.Query;
 
             if(queryObject.Sort != null)
-                mapReduce.Sort(queryObject.Sort);
+                mapReduceCommand.Sort = queryObject.Sort;
 
-            mapReduce.Limit(queryObject.NumberToLimit);
+            mapReduceCommand.Limit = queryObject.NumberToLimit;
 
             if (queryObject.NumberToSkip != 0)
                 throw new InvalidQueryException("MapReduce queries do no support Skips.");
 
+            //mapReduce.GetType().GetProperty()
+
             var executor = GetExecutor(typeof(Document), queryObject.Projector, queryObject.Aggregator, true);
-            return executor.Compile().DynamicInvoke(mapReduce.Documents);
+            return null;
+            //executor.Compile().DynamicInvoke(mapReduce.Documents);
         }
 
         private static LambdaExpression GetExecutor(Type documentType, LambdaExpression projector, LambdaExpression aggregator, bool boxReturn)

@@ -8,14 +8,15 @@ namespace MongoDB
     /// <summary>
     ///   Provides a Fluent interface to build and execute Map/Reduce calls.
     /// </summary>
-    public class MapReduce : IDisposable
+    public class MapReduce<T> : IDisposable
+        where T : class
     {
         private readonly IMongoDatabase _database;
         private bool _canModify = true;
         private bool _disposing;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "MapReduce" /> class.
+        ///   Initializes a new instance of the <see cref = "MapReduce&lt;T&gt;" /> class.
         /// </summary>
         /// <param name = "database">The database.</param>
         /// <param name = "name">The name.</param>
@@ -46,7 +47,7 @@ namespace MongoDB
         ///   Gets the documents.
         /// </summary>
         /// <value>The documents.</value>
-        public IEnumerable<Document> Documents
+        public IEnumerable<T> Documents
         {
             get
             {
@@ -55,7 +56,7 @@ namespace MongoDB
                 if(Result == null || Result.Ok == false)
                     throw new InvalidOperationException("Documents cannot be iterated when an error was returned from execute.");
 
-                var docs = _database[Result.CollectionName].FindAll().Documents;
+                var docs = _database.GetCollection<T>().FindAll().Documents;
                 using((IDisposable)docs)
                 {
                     foreach(var doc in docs)
@@ -86,7 +87,7 @@ namespace MongoDB
         ///   A map function must call emit(key,value) at least once, but may be invoked any number of times, 
         ///   as may be appropriate.
         /// </summary>
-        public MapReduce Map(string function)
+        public MapReduce<T> Map(string function)
         {
             return Map(new Code(function));
         }
@@ -96,7 +97,7 @@ namespace MongoDB
         ///   A map function must call emit(key,value) at least once, but may be invoked any number of times, 
         ///   as may be appropriate.
         /// </summary>
-        public MapReduce Map(Code function)
+        public MapReduce<T> Map(Code function)
         {
             TryModify();
             Command.Map = function;
@@ -111,7 +112,7 @@ namespace MongoDB
         ///   The MapReduce engine may invoke reduce functions iteratively; thus, these functions 
         ///   must be idempotent. If you need to perform an operation only once, use a finalize function.
         /// </remarks>
-        public MapReduce Reduce(string function)
+        public MapReduce<T> Reduce(string function)
         {
             return Reduce(new Code(function));
         }
@@ -124,7 +125,7 @@ namespace MongoDB
         ///   The MapReduce engine may invoke reduce functions iteratively; thus, these functions 
         ///   must be idempotent. If you need to perform an operation only once, use a finalize function.
         /// </remarks>
-        public MapReduce Reduce(Code function)
+        public MapReduce<T> Reduce(Code function)
         {
             TryModify();
             Command.Reduce = function;
@@ -134,7 +135,7 @@ namespace MongoDB
         /// <summary>
         ///   Query filter object
         /// </summary>
-        public MapReduce Query(Document query)
+        public MapReduce<T> Query(Document query)
         {
             TryModify();
             Command.Query = query;
@@ -144,7 +145,7 @@ namespace MongoDB
         /// <summary>
         ///   Sort the query.  Useful for optimization
         /// </summary>
-        public MapReduce Sort(Document sort)
+        public MapReduce<T> Sort(Document sort)
         {
             TryModify();
             Command.Sort = sort;
@@ -154,7 +155,7 @@ namespace MongoDB
         /// <summary>
         ///   Number of objects to return from collection
         /// </summary>
-        public MapReduce Limit(long limit)
+        public MapReduce<T> Limit(long limit)
         {
             TryModify();
             Command.Limit = limit;
@@ -167,7 +168,7 @@ namespace MongoDB
         /// <remarks>
         ///   A temporary collection is still used and then renamed to the target name atomically.
         /// </remarks>
-        public MapReduce Out(String name)
+        public MapReduce<T> Out(String name)
         {
             TryModify();
             Command.Out = name;
@@ -178,7 +179,7 @@ namespace MongoDB
         ///   When true the generated collection is not treated as temporary.  Specifying out automatically makes
         ///   the collection permanent
         /// </summary>
-        public MapReduce KeepTemp(bool keep)
+        public MapReduce<T> KeepTemp(bool keep)
         {
             TryModify();
             Command.KeepTemp = keep;
@@ -188,7 +189,7 @@ namespace MongoDB
         /// <summary>
         ///   Provides statistics on job execution time.
         /// </summary>
-        public MapReduce Verbose(bool val)
+        public MapReduce<T> Verbose(bool val)
         {
             TryModify();
             Command.Verbose = val;
@@ -198,7 +199,7 @@ namespace MongoDB
         /// <summary>
         ///   Function to apply to all the results when finished.
         /// </summary>
-        public MapReduce Finalize(Code function)
+        public MapReduce<T> Finalize(Code function)
         {
             TryModify();
             Command.Finalize = function;
@@ -208,7 +209,7 @@ namespace MongoDB
         /// <summary>
         ///   Document where fields go into javascript global scope
         /// </summary>
-        public MapReduce Scope(Document scope)
+        public MapReduce<T> Scope(Document scope)
         {
             TryModify();
             Command.Scope = scope;
@@ -229,10 +230,10 @@ namespace MongoDB
             {
                 Result = new MapReduceResult(_database.SendCommand(Command.Command));
             }
-            catch(MongoCommandException mce)
+            catch(MongoCommandException exception)
             {
-                Result = new MapReduceResult(mce.Error);
-                throw new MongoMapReduceException(mce, this);
+                Result = new MapReduceResult(exception.Error);
+                throw new MongoMapReduceException<T>(exception);
             }
         }
 

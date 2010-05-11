@@ -180,7 +180,7 @@ namespace MongoDB
         /// Maps the reduce.
         /// </summary>
         /// <returns></returns>
-        public MapReduce MapReduce(){
+        public MapReduce<Document> MapReduce(){
             return _collection.MapReduce();
         }
 
