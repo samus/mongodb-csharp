@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MongoDB.Commands;
 using MongoDB.Results;
 
 namespace MongoDB
