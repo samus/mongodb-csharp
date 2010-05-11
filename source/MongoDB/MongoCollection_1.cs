@@ -228,14 +228,6 @@ namespace MongoDB
             return new MapReduce(Database, Name);
         }
 
-        /// <summary>
-        /// Maps the reduce builder.
-        /// </summary>
-        /// <returns></returns>
-        public MapReduceBuilder MapReduceBuilder(){
-            return new MapReduceBuilder(MapReduce());
-        }
-
         ///<summary>
         ///  Count all items in the collection.
         ///</summary>

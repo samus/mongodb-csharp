@@ -148,12 +148,6 @@ namespace MongoDB
         /// <returns></returns>
         MapReduce MapReduce();
 
-        /// <summary>
-        ///   Provides a fluent interface into building a map reduce command against the database.
-        /// </summary>
-        /// <returns></returns>
-        MapReduceBuilder MapReduceBuilder();
-
         ///<summary>
         ///  Count all items in the collection.
         ///</summary>

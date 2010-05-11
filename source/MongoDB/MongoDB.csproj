@@ -129,6 +129,9 @@
     <Compile Include="Linq\Expressions\MongoExpressionExtensions.cs" />
     <Compile Include="Linq\Expressions\MongoExpression.cs" />
     <Compile Include="Linq\Translators\ExpressionReplacer.cs" />
+    <Compile Include="MapReduce.cs" />
+    <Compile Include="MapReduceCommand.cs" />
+    <Compile Include="Results\MapReduceResult.cs" />
     <Compile Include="Util\ScopedDictionary.cs" />
     <Compile Include="Linq\Translators\AggregateChecker.cs" />
     <Compile Include="Linq\Translators\AggregateRewriter.cs" />
@@ -294,8 +297,6 @@
     <Compile Include="CodeWScope.cs" />
     <Compile Include="Binary.cs" />
     <Compile Include="DatabaseJavascript.cs" />
-    <Compile Include="MapReduce.cs" />
-    <Compile Include="MapReduceBuilder.cs" />
     <Compile Include="Op.cs" />
     <Compile Include="Protocol\DeleteMessage.cs" />
     <Compile Include="Protocol\GetMoreMessage.cs" />

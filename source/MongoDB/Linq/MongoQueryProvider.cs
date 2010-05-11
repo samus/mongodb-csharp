@@ -257,15 +257,16 @@ namespace MongoDB.Linq
             var collection = miGetCollection.Invoke(queryObject.Database, new[] { queryObject.CollectionName });
 
             var mapReduce = (MapReduce)collection.GetType().GetMethod("MapReduce").Invoke(collection, null);
-            mapReduce.Map = new Code(queryObject.MapFunction);
-            mapReduce.Reduce = new Code(queryObject.ReduceFunction);
-            mapReduce.Finalize = new Code(queryObject.FinalizerFunction);
-            mapReduce.Query = queryObject.Query;
+            mapReduce.Map(new Code(queryObject.MapFunction));
+            mapReduce.Reduce(new Code(queryObject.ReduceFunction));
+            mapReduce.Finalize(new Code(queryObject.FinalizerFunction));
+            mapReduce.Query(queryObject.Query);
 
             if(queryObject.Sort != null)
-                mapReduce.Sort = queryObject.Sort;
+                mapReduce.Sort(queryObject.Sort);
 
-            mapReduce.Limit = queryObject.NumberToLimit;
+            mapReduce.Limit(queryObject.NumberToLimit);
+
             if (queryObject.NumberToSkip != 0)
                 throw new InvalidQueryException("MapReduce queries do no support Skips.");
 
