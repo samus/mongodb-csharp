@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Configuration;
 using MongoDB.Connections;
 
@@ -16,7 +18,8 @@ namespace MongoDB
         ///   Initializes a new instance of the <see cref = "Mongo" /> class.
         /// </summary>
         public Mongo()
-            : this(new MongoConfiguration()){
+            : this(new MongoConfiguration())
+        {
         }
 
         /// <summary>
@@ -24,14 +27,16 @@ namespace MongoDB
         /// </summary>
         /// <param name = "connectionString">The connection string.</param>
         public Mongo(string connectionString)
-            : this(new MongoConfiguration {ConnectionString = connectionString}){
+            : this(new MongoConfiguration {ConnectionString = connectionString})
+        {
         }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Mongo" /> class.
         /// </summary>
         /// <param name = "configuration">The mongo configuration.</param>
-        public Mongo(MongoConfiguration configuration){
+        public Mongo(MongoConfiguration configuration)
+        {
             if(configuration == null)
                 throw new ArgumentNullException("configuration");
 
@@ -44,7 +49,8 @@ namespace MongoDB
         /// <summary>
         ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose(){
+        public void Dispose()
+        {
             _connection.Dispose();
         }
 
@@ -52,7 +58,8 @@ namespace MongoDB
         ///   Gets the connection string.
         /// </summary>
         /// <value>The connection string.</value>
-        public string ConnectionString{
+        public string ConnectionString
+        {
             get { return _connection.ConnectionString; }
         }
 
@@ -61,7 +68,8 @@ namespace MongoDB
         /// </summary>
         /// <param name = "name">The name.</param>
         /// <returns></returns>
-        public IMongoDatabase GetDatabase(String name){
+        public IMongoDatabase GetDatabase(String name)
+        {
             return new MongoDatabase(_configuration, _connection, name);
         }
 
@@ -69,7 +77,8 @@ namespace MongoDB
         ///   Gets the <see cref = "MongoDatabase" /> with the specified name.
         /// </summary>
         /// <value></value>
-        public IMongoDatabase this[String name]{
+        public IMongoDatabase this[String name]
+        {
             get { return GetDatabase(name); }
         }
 
@@ -78,7 +87,8 @@ namespace MongoDB
         /// </summary>
         /// <returns></returns>
         /// <exception cref = "MongoDB.MongoConnectionException">Thrown when connection fails.</exception>
-        public void Connect(){
+        public void Connect()
+        {
             _connection.Open();
         }
 
@@ -86,7 +96,8 @@ namespace MongoDB
         ///   Tries to connect to server.
         /// </summary>
         /// <returns></returns>
-        public bool TryConnect(){
+        public bool TryConnect()
+        {
             try
             {
                 _connection.Open();
@@ -102,9 +113,27 @@ namespace MongoDB
         ///   Disconnects this instance.
         /// </summary>
         /// <returns></returns>
-        public bool Disconnect(){
+        public bool Disconnect()
+        {
             _connection.Close();
             return _connection.State == ConnectionState.Closed;
+        }
+
+        /// <summary>
+        ///   Gets the databases.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IMongoDatabase> GetDatabases()
+        {
+            if(_connection == null || _connection.State != ConnectionState.Opened)
+                throw new MongoException("Open connection required");
+
+            var result = _connection.SendCommand(_configuration.SerializationFactory, "admin", typeof(Document), new Document("listDatabases", 1));
+
+            return ((IEnumerable<Document>)result["databases"])
+                .Select(database => (string)database["name"])
+                .Select(name => new MongoDatabase(_configuration, _connection, name))
+                .Cast<IMongoDatabase>();
         }
     }
 }
