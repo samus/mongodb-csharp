@@ -129,7 +129,7 @@ namespace MongoDB
         ///   Maps the reduce.
         /// </summary>
         /// <returns></returns>
-        MapReduce<Document> MapReduce();
+        MapReduce MapReduce();
 
         /// <summary>
         ///   Counts this instance.

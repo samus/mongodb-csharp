@@ -232,8 +232,8 @@ namespace MongoDB
         /// Entrypoint into executing a map/reduce query against the collection.
         /// </summary>
         /// <returns>A <see cref="MapReduce"/></returns>
-        public MapReduce<T> MapReduce(){
-            return new MapReduce<T>(Database, Name);
+        public MapReduce MapReduce(){
+            return new MapReduce(Database, Name, typeof(T));
         }
 
         ///<summary>

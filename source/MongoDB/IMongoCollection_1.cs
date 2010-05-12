@@ -156,7 +156,7 @@ namespace MongoDB
         ///   Entrypoint into executing a map/reduce query against the collection.
         /// </summary>
         /// <returns></returns>
-        MapReduce<T> MapReduce();
+        MapReduce MapReduce();
 
         ///<summary>
         ///  Count all items in the collection.

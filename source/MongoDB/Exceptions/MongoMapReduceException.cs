@@ -5,7 +5,7 @@ namespace MongoDB
     /// <summary>
     /// Raised when a map reduce call fails. 
     /// </summary>
-    public class MongoMapReduceException<T> : MongoCommandException
+    public class MongoMapReduceException : MongoCommandException
     {
         /// <summary>
         /// Gets or sets the map reduce result.
@@ -14,7 +14,7 @@ namespace MongoDB
         public MapReduceResult MapReduceResult { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoMapReduceException&lt;T&gt;"/> class.
+        /// Initializes a new instance of the <see cref="MongoMapReduceException"/> class.
         /// </summary>
         /// <param name="exception">The exception.</param>
         public MongoMapReduceException(MongoCommandException exception)
