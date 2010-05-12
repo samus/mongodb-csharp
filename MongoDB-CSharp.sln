@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Tests", "source\Mon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "tools\Benchmark\Benchmark.csproj", "{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.DataContext", "source\MongoDB.DataContext\MongoDB.DataContext.csproj", "{5E413F58-FA04-4C9A-96B9-12AD43731C24}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,10 +53,6 @@ Global
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ACD68A0-0F2E-452A-90E3-3D1CB82C055B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E413F58-FA04-4C9A-96B9-12AD43731C24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E413F58-FA04-4C9A-96B9-12AD43731C24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E413F58-FA04-4C9A-96B9-12AD43731C24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E413F58-FA04-4C9A-96B9-12AD43731C24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

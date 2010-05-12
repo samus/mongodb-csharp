@@ -11,7 +11,6 @@ namespace MongoDB.Serialization
     {
         private readonly Stack<Type> _types;
         private readonly IMappingStore _mappingStore;
-        private bool _isMapReduce;
 
         public BsonClassMapDescriptor(IMappingStore mappingStore, Type rootType)
         {
