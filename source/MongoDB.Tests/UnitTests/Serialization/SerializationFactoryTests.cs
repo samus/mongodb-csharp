@@ -87,5 +87,32 @@ namespace MongoDB.UnitTests.Serialization
             Assert.IsNotNull(prop);
             Assert.AreEqual(0, prop.GetProperty());
         }
+
+        public class NullableProperty
+        {
+            public double? Value { get; set; }
+        }
+
+        [Test]
+        public void CanSetNullOnNullablPropertys()
+        {
+            var bson = Serialize(new Document("Value", null));
+
+            var obj = Deserialize<NullableProperty>(bson);
+
+            Assert.IsNotNull(obj);
+            Assert.IsNull(obj.Value);
+        }
+
+        [Test]
+        public void CanSetValueOnNullablPropertys()
+        {
+            var bson = Serialize(new Document("Value", 10));
+
+            var obj = Deserialize<NullableProperty>(bson);
+
+            Assert.IsNotNull(obj);
+            Assert.AreEqual(10,obj.Value);
+        }
     }
 }

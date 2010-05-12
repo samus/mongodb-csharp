@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace MongoDB.Configuration.Mapping.Model
 {
@@ -73,6 +74,12 @@ namespace MongoDB.Configuration.Mapping.Model
 
                     if(_memberReturnType.IsEnum)
                         value = Enum.ToObject(_memberReturnType, value);
+                    else if(_memberReturnType.IsGenericType && 
+                        _memberReturnType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        if(value!=null)
+                            value = Convert.ChangeType(value, _memberReturnType.GetGenericArguments().First());
+                    }
                     else if(code != TypeCode.Object)
                         value = Convert.ChangeType(value, _memberReturnType);
                 }
