@@ -78,7 +78,7 @@ namespace MongoDB.Configuration.Mapping.Model
                         _memberReturnType.GetGenericTypeDefinition() == typeof(Nullable<>))
                     {
                         if(value!=null)
-                            value = Convert.ChangeType(value, Nullable.GetUnderlyingType(valueType));
+                            value = Convert.ChangeType(value, Nullable.GetUnderlyingType(_memberReturnType));
                     }
                     else if(code != TypeCode.Object)
                         value = Convert.ChangeType(value, _memberReturnType);
