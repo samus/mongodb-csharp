@@ -221,11 +221,6 @@ namespace MongoDB
                     if(_reply == null)
                         throw new InvalidOperationException("Expecting reply but get null");
 
-                    //if(_limit < 0)
-                    //_limit = _limit * -1;
-
-                    Id = _reply.CursorId;
-
                     foreach(var document in _reply.Documents)
                         yield return document;
                 }
@@ -329,7 +324,11 @@ namespace MongoDB
 
             try
             {
-                return _connection.SendTwoWayMessage<TReply>(message, readerSettings);
+                var reply = _connection.SendTwoWayMessage<TReply>(message, readerSettings);
+                
+                Id = reply.CursorId;
+                
+                return reply;
             }
             catch(IOException exception)
             {
