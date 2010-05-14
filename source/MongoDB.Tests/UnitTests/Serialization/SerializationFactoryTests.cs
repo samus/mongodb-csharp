@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MongoDB.Configuration;
 using MongoDB.Serialization;
 using NUnit.Framework;
@@ -113,6 +114,27 @@ namespace MongoDB.UnitTests.Serialization
 
             Assert.IsNotNull(obj);
             Assert.AreEqual(10,obj.Value);
+        }
+
+        public class DictionaryProperty
+        {
+            public Dictionary<string, string> Test { get; set; }
+        }
+
+        [Test]
+        public void CanSerializeAndDeserializeDictionarys()
+        {
+            var dict = new DictionaryProperty
+            {
+                Test = new Dictionary<string, string> {{"test", "test"}}
+            };
+            var bson = Serialize<DictionaryProperty>(dict);
+
+            var prop = Deserialize<DictionaryProperty>(bson);
+
+            Assert.IsNotNull(prop);
+            Assert.IsNotNull(prop.Test);
+            Assert.Contains(new KeyValuePair<string,string>("test","test"),prop.Test);
         }
     }
 }
