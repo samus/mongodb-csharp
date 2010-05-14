@@ -62,6 +62,14 @@ namespace MongoDB
         }
 
         /// <summary>
+        /// Releases unmanaged resources and performs other cleanup operations before the
+        /// <see cref="Cursor&lt;T&gt;"/> is reclaimed by garbage collection.
+        /// </summary>
+        ~Cursor(){
+            Dispose(false);
+        }
+
+        /// <summary>
         /// Gets or sets the full name of the collection.
         /// </summary>
         /// <value>The full name of the collection.</value>
@@ -245,8 +253,18 @@ namespace MongoDB
         /// </summary>
         public void Dispose()
         {
-            if(Id == 0)
-                return; //All server side resources disposed of.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(Id == 0) //All server side resources disposed of.
+                return;
 
             KillCursor(Id);
         }
