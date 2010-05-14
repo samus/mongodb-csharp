@@ -34,7 +34,6 @@ namespace MongoDB
         public Cursor(ISerializationFactory serializationFactory, Connection connection, string fullCollectionName)
         {
             //Todo: should be internal
-            Id = -1;
             _connection = connection;
             FullCollectionName = fullCollectionName;
             _serializationFactory = serializationFactory;
@@ -60,6 +59,14 @@ namespace MongoDB
             _limit = limit;
             _skip = skip;
             _fields = fields;
+        }
+
+        /// <summary>
+        /// Releases unmanaged resources and performs other cleanup operations before the
+        /// <see cref="Cursor&lt;T&gt;"/> is reclaimed by garbage collection.
+        /// </summary>
+        ~Cursor(){
+            Dispose(false);
         }
 
         /// <summary>
@@ -173,11 +180,10 @@ namespace MongoDB
         /// </summary>
         /// <returns></returns>
         public Document Explain(){
-            //Fixme Return a single Document and not T
             TryModify();
             _specOpts["$explain"] = true;
 
-            var explainResult = GetQueryRepley<Document>();
+            var explainResult = RetrieveData<Document>();
             try
             {
                 var explain = explainResult.Documents.FirstOrDefault();
@@ -208,31 +214,32 @@ namespace MongoDB
         /// <value>The documents.</value>
         public IEnumerable<T> Documents {
             get {
-                if (_reply == null)
-                    RetrieveData();
-                if (_reply == null)
-                    throw new InvalidOperationException("Expecting reply but get null");
-                
-                var documents = _reply.Documents;
-                var documentCount = 0;
-                var shouldBreak = false;
-                
-                while (!shouldBreak) {
-                    foreach (var document in documents)
-                        if ((_limit == 0) || (_limit != 0 && documentCount < _limit)) {
-                            documentCount++;
-                            yield return document;
-                        } else
-                            yield break;
-                    
-                    if (Id != 0) {
-                        RetrieveMoreData();
-                        documents = _reply.Documents;
-                        if (documents == null)
-                            shouldBreak = true;
-                    } else
-                        shouldBreak = true;
+                do
+                {
+                    _reply = RetrieveData<T>();
+
+                    if(_reply == null)
+                        throw new InvalidOperationException("Expecting reply but get null");
+
+                    foreach(var document in _reply.Documents)
+                        yield return document;
                 }
+                while(Id > 0 && _limit<CursorPosition);
+            }
+        }
+
+        /// <summary>
+        /// Gets the cursor position.
+        /// </summary>
+        /// <value>The cursor position.</value>
+        public int CursorPosition
+        {
+            get
+            {
+                if(_reply == null)
+                    return 0;
+
+                return _reply.StartingFrom + _reply.NumberReturned;
             }
         }
 
@@ -241,11 +248,31 @@ namespace MongoDB
         /// </summary>
         public void Dispose()
         {
-            if (Id == 0)
-                //All server side resources disposed of.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if(Id == 0) //All server side resources disposed of.
                 return;
 
             KillCursor(Id);
+        }
+
+        /// <summary>
+        ///   Optionses the specified options.
+        /// </summary>
+        /// <param name = "options">The options.</param>
+        /// <returns></returns>
+        public ICursor<T> Options(QueryOptions options){
+            TryModify();
+            _options = options;
+            return this;
         }
 
         /// <summary>
@@ -264,76 +291,47 @@ namespace MongoDB
         }
 
         /// <summary>
-        ///   Optionses the specified options.
-        /// </summary>
-        /// <param name = "options">The options.</param>
-        /// <returns></returns>
-        public ICursor<T> Options(QueryOptions options){
-            TryModify();
-            _options = options;
-            return this;
-        }
-
-        /// <summary>
-        /// Gets the query repley.
+        /// Retrieves the data.
         /// </summary>
         /// <typeparam name="TReply">The type of the reply.</typeparam>
         /// <returns></returns>
-        private ReplyMessage<TReply> GetQueryRepley<TReply>() where TReply : class
+        private ReplyMessage<TReply> RetrieveData<TReply>() where TReply : class
         {
-            var writerSettings = _serializationFactory.GetBsonWriterSettings(typeof(T));
+            _isModifiable = false;
 
-            var query = new QueryMessage(writerSettings)
+            IRequestMessage message;
+
+            if(Id <= 0)
             {
-                FullCollectionName = FullCollectionName,
-                Query = BuildSpec(),
-                NumberToReturn = _limit,
-                NumberToSkip = _skip,
-                Options = _options
-            };
+                var writerSettings = _serializationFactory.GetBsonWriterSettings(typeof(T));
 
-            if(_fields != null)
-                query.ReturnFieldSelector = _fields;
+                message = new QueryMessage(writerSettings)
+                {
+                    FullCollectionName = FullCollectionName,
+                    Query = BuildSpec(),
+                    NumberToReturn = _limit,
+                    NumberToSkip = _skip,
+                    Options = _options,
+                    ReturnFieldSelector = _fields
+                };
+            }
+            else
+            {
+                message = new GetMoreMessage(FullCollectionName, Id, _limit);
+            }
 
             var readerSettings = _serializationFactory.GetBsonReaderSettings(typeof(T));
 
             try
             {
-                return _connection.SendTwoWayMessage<TReply>(query, readerSettings);
+                var reply = _connection.SendTwoWayMessage<TReply>(message, readerSettings);
+                
+                Id = reply.CursorId;
+                
+                return reply;
             }
             catch(IOException exception)
             {
-                throw new MongoConnectionException("Could not read data, communication failure", _connection, exception);
-            }
-        }
-
-        /// <summary>
-        ///   Retrieves the data.
-        /// </summary>
-        private void RetrieveData(){
-            _reply = GetQueryRepley<T>();
-            
-            Id = _reply.CursorId;
-            
-            if(_limit < 0)
-                _limit = _limit * -1;
-            
-            _isModifiable = false;
-        }
-
-        /// <summary>
-        ///   Retrieves the more data.
-        /// </summary>
-        private void RetrieveMoreData(){
-            var getMoreMessage = new GetMoreMessage(FullCollectionName, Id, _limit);
-            
-            var readerSettings = _serializationFactory.GetBsonReaderSettings(typeof(T));
-            
-            try {
-                _reply = _connection.SendTwoWayMessage<T>(getMoreMessage, readerSettings);
-                Id = _reply.CursorId;
-            } catch (IOException exception) {
-                Id = 0;
                 throw new MongoConnectionException("Could not read data, communication failure", _connection, exception);
             }
         }

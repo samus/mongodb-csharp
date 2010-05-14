@@ -1,5 +1,6 @@
 using System.Configuration;
 using NUnit.Framework;
+using System.Linq;
 
 namespace MongoDB.IntegrationTests
 {
@@ -43,6 +44,18 @@ namespace MongoDB.IntegrationTests
             {
                 var db = m["admin"];
                 db["$cmd"].FindOne(new Document().Add("listDatabases", 1.0));
+            }
+        }
+
+        [Test]
+        public void TestGetDatabasesReturnsSomething()
+        {
+            using(var m = new Mongo(_connectionString))
+            {
+                m.Connect();
+                var databaseCount = m.GetDatabases().Count();
+
+                Assert.Greater(databaseCount, 1);
             }
         }
 

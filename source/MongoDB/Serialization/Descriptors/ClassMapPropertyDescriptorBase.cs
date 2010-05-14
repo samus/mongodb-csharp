@@ -271,7 +271,7 @@ namespace MongoDB.Serialization.Descriptors
             {
                 StringBuilder memberName = new StringBuilder();
                 char c = Current;
-                while (c != '.' && c != ' ' && c != '(' && c != '[' && c != EOF)
+                while (Char.IsLetterOrDigit(c) || c == '_' || c == '$')
                 {
                     ReadChar(false);
                     memberName.Append(c);

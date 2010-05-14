@@ -146,7 +146,6 @@
     <Compile Include="UnitTests\Bson\TestBsonWriter.cs" />
     <Compile Include="IntegrationTests\TestDatabaseJavascript.cs" />
     <Compile Include="IntegrationTests\TestMapReduce.cs" />
-    <Compile Include="IntegrationTests\TestMapReduceBuilder.cs" />
     <Compile Include="IntegrationTests\TestConcurrency.cs" />
     <Compile Include="IntegrationTests\TestCollectionSafeMode.cs" />
     <Compile Include="MongoTestBase.cs" />

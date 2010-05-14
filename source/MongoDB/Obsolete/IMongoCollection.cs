@@ -132,12 +132,6 @@ namespace MongoDB
         MapReduce MapReduce();
 
         /// <summary>
-        ///   Maps the reduce builder.
-        /// </summary>
-        /// <returns></returns>
-        MapReduceBuilder MapReduceBuilder();
-
-        /// <summary>
         ///   Counts this instance.
         /// </summary>
         /// <returns></returns>

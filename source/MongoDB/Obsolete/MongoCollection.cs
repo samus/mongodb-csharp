@@ -185,14 +185,6 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Maps the reduce builder.
-        /// </summary>
-        /// <returns></returns>
-        public MapReduceBuilder MapReduceBuilder(){
-            return _collection.MapReduceBuilder();
-        }
-
-        /// <summary>
         /// Counts this instance.
         /// </summary>
         /// <returns></returns>
