@@ -122,8 +122,18 @@ namespace MongoDB.UnitTests.Serialization
         }
 
         [Test]
+        public void CanSerializeGenericDictionary()
+        {
+            var expectedBson = Serialize<Document>(new Document("Property", new Document() { { "key1", 10 }, { "key2", 20 } }));
+            var obj = new GenericDictionary { Property = new Dictionary<string, int> { { "key1", 10 }, { "key2", 20 } } };
+            var bson = Serialize<GenericDictionary>(obj);
+            Assert.AreEqual(expectedBson, bson);
+        }
+
+        [Test]
         public void CanSerializeAndDeserializeGenericDictionarys()
         {
+            var expectedBson = Serialize<Document>(new Document("Property", new Document() { { "key1", 10 }, { "key2", 20 } }));
             var obj = new GenericDictionary{Property = new Dictionary<string, int> { { "key1", 10 }, { "key2", 20 } }};
             var bson = Serialize<GenericDictionary>(obj);
             var prop = Deserialize<GenericDictionary>(bson);

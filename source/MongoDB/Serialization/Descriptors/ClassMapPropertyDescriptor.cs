@@ -35,10 +35,10 @@ namespace MongoDB.Serialization.Descriptors
         public override IEnumerable<BsonProperty> GetProperties()
         {
             if (ClassMap.HasId)
-                yield return CreateProperty(ClassMap.IdMap.Alias, ClassMap.IdMap.MemberReturnType, ClassMap.GetId(_instance));
+                yield return CreateProperty(ClassMap.IdMap.Alias, ClassMap.IdMap.MemberReturnType, ClassMap.GetId(_instance), false);
 
             if (ShouldPersistDiscriminator())
-                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
+                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             foreach (var memberMap in ClassMap.MemberMaps)
                 yield return CreateProperty(memberMap.Alias, GetValue(memberMap.MemberName));
@@ -58,7 +58,7 @@ namespace MongoDB.Serialization.Descriptors
         private BsonPropertyValue GetValue(string name)
         {
             if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
-                return new BsonPropertyValue(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
+                return new BsonPropertyValue(ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
             
             object value;
 
@@ -71,17 +71,22 @@ namespace MongoDB.Serialization.Descriptors
                 throw new InvalidOperationException("Attempting to get a property that does not exist.");
 
             var type = typeof(Document);
-
+            bool isDictionary = false;
             if (memberMap != null)
             {
                 type = memberMap.MemberReturnType;
                 if (memberMap is CollectionMemberMap)
                     type = ((CollectionMemberMap)memberMap).ElementType;
+                else if (memberMap is DictionaryMemberMap)
+                {
+                    type = ((DictionaryMemberMap)memberMap).ValueType;
+                    isDictionary = true;
+                }
             }
             else if (value != null)
                 type = value.GetType();
 
-            return new BsonPropertyValue(type, value);
+            return new BsonPropertyValue(type, value, isDictionary);
         }
     }
 }

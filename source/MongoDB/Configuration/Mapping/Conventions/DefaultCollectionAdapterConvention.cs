@@ -30,6 +30,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
             { typeof(IList), CreateArrayListCollectionType },
             { typeof(ICollection), CreateArrayListCollectionType },
             { typeof(IEnumerable), CreateArrayListCollectionType },
+            { typeof(HashSet<>), CreateGenericSetCollectionType },
             { typeof(List<>), CreateGenericListCollectionType },
             { typeof(IList<>), CreateGenericListCollectionType },
             { typeof(ICollection<>), CreateGenericListCollectionType },
@@ -47,6 +48,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
             { typeof(IList), GetArrayListElementType },
             { typeof(ICollection), GetArrayListElementType },
             { typeof(IEnumerable), GetArrayListElementType },
+            { typeof(HashSet<>), GetGenericSetElementType },
             { typeof(List<>), GetGenericListElementType },
             { typeof(IList<>), GetGenericListElementType },
             { typeof(ICollection<>), GetGenericListElementType },
@@ -124,6 +126,16 @@ namespace MongoDB.Configuration.Mapping.Conventions
         }
 
         private static Type GetGenericListElementType(Type type)
+        {
+            return type.GetGenericArguments()[0];
+        }
+
+        private static GenericSetCollectionAdapter CreateGenericSetCollectionType()
+        {
+            return new GenericSetCollectionAdapter();
+        }
+
+        private static Type GetGenericSetElementType(Type type)
         {
             return type.GetGenericArguments()[0];
         }

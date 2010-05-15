@@ -48,6 +48,8 @@ namespace MongoDB.Serialization.Builders
 
             if (memberMap is CollectionMemberMap)
                 return ((CollectionMemberMap)memberMap).ElementType;
+            else if (memberMap is DictionaryMemberMap)
+                return ((DictionaryMemberMap)memberMap).ValueType;
 
             return memberMap.MemberReturnType;
         }

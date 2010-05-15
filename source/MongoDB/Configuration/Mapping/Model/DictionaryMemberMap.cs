@@ -1,6 +1,9 @@
 ﻿using System;
-using MongoDB.Configuration.DictionaryAdapters;
 using System.Collections;
+using System.Linq;
+
+using MongoDB.Configuration.DictionaryAdapters;
+
 
 namespace MongoDB.Configuration.Mapping.Model
 {
@@ -39,7 +42,8 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <returns></returns>
         public override object GetValue(object instance)
         {
-            return base.GetValue(_dictionaryAdapter.GetPairs(instance));
+            var value = base.GetValue(instance);
+            return _dictionaryAdapter.GetDocument(value, _valueType);
         }
 
         /// <summary>
@@ -49,7 +53,7 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="value">The value.</param>
         public override void SetValue(object instance, object value)
         {
-            base.SetValue(instance, _dictionaryAdapter.CreateDictionary(_valueType, (DictionaryEntry[])value));
+            base.SetValue(instance, _dictionaryAdapter.CreateDictionary(_valueType, (Document)value));
         }
     }
 }

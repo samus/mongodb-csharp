@@ -15,14 +15,14 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// Creates the dictionary.
         /// </summary>
         /// <param name="valueType">Type of the value.</param>
-        /// <param name="pairs">The pairs.</param>
+        /// <param name="document">The document.</param>
         /// <returns></returns>
-        public object CreateDictionary(Type valueType, DictionaryEntry[] pairs)
+        public object CreateDictionary(Type valueType, Document document)
         {
             var closedType = OpenType.MakeGenericType(typeof(string), valueType);
             var instance = Activator.CreateInstance(closedType);
             var addMethod = closedType.GetMethod("Add", new [] { typeof(string), valueType });
-            foreach(var pair in pairs)
+            foreach (var pair in document)
                 addMethod.Invoke(instance, new [] {pair.Key, pair.Value });
 
             return instance;
@@ -31,11 +31,19 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <summary>
         /// Gets the pairs.
         /// </summary>
-        /// <param name="collection">The collection.</param>
+        /// <param name="dictionary">The collection.</param>
         /// <returns></returns>
-        public IEnumerable<DictionaryEntry> GetPairs(object collection)
+        public Document GetDocument(object dictionary, Type valueType)
         {
-            throw new NotImplementedException();
+            var type = typeof(KeyValuePair<,>).MakeGenericType(typeof(string), valueType);
+            var keyProperty = type.GetProperty("Key");
+            var valueProperty = type.GetProperty("Value");
+
+            var doc = new Document();
+            foreach (object e in (IEnumerable)dictionary)
+                doc.Add(keyProperty.GetValue(e, null).ToString(), valueProperty.GetValue(e, null));
+
+            return doc;
         }
     }
 }

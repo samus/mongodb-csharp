@@ -35,7 +35,7 @@ namespace MongoDB.Serialization.Descriptors
         public override IEnumerable<BsonProperty> GetProperties()
         {
             if (ShouldPersistDiscriminator())
-                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
+                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             foreach (PropertyInfo propertyInfo in _exampleType.GetProperties())
                 yield return CreateProperty(GetAliasFromMemberName(propertyInfo.Name), GetValue(propertyInfo));
@@ -49,26 +49,31 @@ namespace MongoDB.Serialization.Descriptors
         private BsonPropertyValue GetValue(PropertyInfo propertyInfo)
         {
             Type type;
-
             var value = propertyInfo.GetValue(_example, null);
             if (value != null && typeof(Code).IsAssignableFrom(value.GetType()))
             {
                 Code code = (Code)value;
                 code.Value = TranslateJavascript(code.Value);
-                return new BsonPropertyValue(typeof(Code), code);
+                return new BsonPropertyValue(typeof(Code), code, false);
             }
-            
+
+            bool isDictionary = false;
             var memberMap = GetMemberMapFromMemberName(propertyInfo.Name);
             if (memberMap != null)
             {
                 type = memberMap.MemberReturnType;
                 if (memberMap is CollectionMemberMap)
                     type = ((CollectionMemberMap)memberMap).ElementType;
+                else if (memberMap is DictionaryMemberMap)
+                {
+                    type = ((DictionaryMemberMap)memberMap).ValueType;
+                    isDictionary = true;
+                }
             }
             else
                 type = propertyInfo.PropertyType;
 
-            return new BsonPropertyValue(type, value);
+            return new BsonPropertyValue(type, value, isDictionary);
         }
     }
 }

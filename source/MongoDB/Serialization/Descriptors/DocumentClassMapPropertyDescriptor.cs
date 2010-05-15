@@ -32,7 +32,7 @@ namespace MongoDB.Serialization.Descriptors
         public override IEnumerable<BsonProperty> GetProperties()
         {
             if (ShouldPersistDiscriminator())
-                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
+                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             foreach (string key in _document.Keys)
             {
@@ -50,31 +50,37 @@ namespace MongoDB.Serialization.Descriptors
         private BsonPropertyValue GetValue(string name)
         {
             if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
-                return new BsonPropertyValue(ClassMap.Discriminator.GetType(), ClassMap.Discriminator);
+                return new BsonPropertyValue(ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             var value = _document[name];
             if (value != null && typeof(Code).IsAssignableFrom(value.GetType()))
             {
                 Code code = (Code)value;
                 code.Value = TranslateJavascript(code.Value);
-                return new BsonPropertyValue(typeof(Code), code);
+                return new BsonPropertyValue(typeof(Code), code, false);
             }
 
             var memberMap = GetMemberMapFromMemberName(name);
             var type = typeof(Document);
+            bool isDictionary = false;
 
             if (memberMap != null)
             {
                 type = memberMap.MemberReturnType;
                 if (memberMap is CollectionMemberMap)
                     type = ((CollectionMemberMap)memberMap).ElementType;
+                else if (memberMap is DictionaryMemberMap)
+                {
+                    type = ((DictionaryMemberMap)memberMap).ValueType;
+                    isDictionary = true;
+                }
             }
             else if (name.StartsWith("$") || name == "query" || name == "orderby") //we are a modifier, a special case of querying, or order fields
                 type = ClassMap.ClassType; //we'll pass this along so that the fields get replaced correctly...
             else if (value != null)
                 type = value.GetType();
 
-            return new BsonPropertyValue(type, value);
+            return new BsonPropertyValue(type, value, isDictionary);
         }
     }
 }

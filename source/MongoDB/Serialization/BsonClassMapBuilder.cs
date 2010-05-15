@@ -41,9 +41,6 @@ namespace MongoDB.Serialization
 
         public object BeginArray()
         {
-            if(typeof(IDictionary).IsAssignableFrom(_types.Peek()))
-                return new DictionaryBuilder(_types.Peek());
-            
             return new ArrayBuilder(_types.Peek());
         }
 

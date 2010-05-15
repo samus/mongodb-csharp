@@ -122,7 +122,6 @@ namespace MongoDB.Configuration.Mapping.Conventions
 
         private static Type GetGenericDictionaryValueType(Type type)
         {
-            type = type.GetGenericTypeDefinition();
             return type.GetGenericArguments()[1];
         }
     }

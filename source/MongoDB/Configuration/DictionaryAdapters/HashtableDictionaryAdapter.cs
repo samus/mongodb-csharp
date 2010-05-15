@@ -8,23 +8,39 @@ namespace MongoDB.Configuration.DictionaryAdapters
 {
     public class HashtableDictionaryAdapter : IDictionaryAdapter
     {
-        public object CreateDictionary(Type valueType, DictionaryEntry[] pairs)
+        /// <summary>
+        /// Creates the dictionary.
+        /// </summary>
+        /// <param name="valueType">Type of the value.</param>
+        /// <param name="document">The document.</param>
+        /// <returns></returns>
+        public object CreateDictionary(Type valueType, Document document)
         {
             var hashtable = new Hashtable();
 
-            foreach (var pair in pairs)
+            foreach (var pair in document)
                 hashtable.Add((string)pair.Key, pair.Value);
 
             return hashtable;
         }
 
-        public IEnumerable<DictionaryEntry> GetPairs(object collection)
+        /// <summary>
+        /// Gets the document.
+        /// </summary>
+        /// <param name="collection">The collection.</param>
+        /// <param name="valueType">Type of the value.</param>
+        /// <returns></returns>
+        public Document GetDocument(object collection, Type valueType)
         {
             var hashtable = collection as Hashtable;
             if (hashtable == null)
-                return Enumerable.Empty<DictionaryEntry>();
+                return new Document();
 
-            return hashtable.OfType<DictionaryEntry>();
+            var doc = new Document();
+            foreach (DictionaryEntry entry in hashtable)
+                doc.Add(entry.Key.ToString(), entry.Value);
+
+            return doc;
         }
     }
 }

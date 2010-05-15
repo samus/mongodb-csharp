@@ -13,15 +13,16 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// Creates the dictionary.
         /// </summary>
         /// <param name="valueType">Type of the value.</param>
-        /// <param name="pairs">The pairs.</param>
+        /// <param name="document">The document.</param>
         /// <returns></returns>
-        object CreateDictionary(Type valueType, DictionaryEntry[] pairs);
+        object CreateDictionary(Type valueType, Document document);
 
         /// <summary>
-        /// Gets the pairs.
+        /// Gets the document.
         /// </summary>
-        /// <param name="collection">The collection.</param>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <param name="valueType">Type of the value.</param>
         /// <returns></returns>
-        IEnumerable<DictionaryEntry> GetPairs(object collection);
+        Document GetDocument(object dictionary, Type valueType);
     }
 }

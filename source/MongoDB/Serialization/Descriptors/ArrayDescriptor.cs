@@ -51,7 +51,7 @@ namespace MongoDB.Serialization.Descriptors
             if(type == null)
                 type = value == null ? null : value.GetType();
 
-            return new BsonPropertyValue(type, value);
+            return new BsonPropertyValue(type, value, false);
         }
 
         

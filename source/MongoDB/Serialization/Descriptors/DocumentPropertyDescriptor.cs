@@ -40,7 +40,7 @@ namespace MongoDB.Serialization.Descriptors
         private BsonPropertyValue GetValue(object value)
         {
             var valueType = value == null ? typeof(Document) : value.GetType();
-            return new BsonPropertyValue(valueType, value);
+            return new BsonPropertyValue(valueType, value, false);
         }
     }
 }

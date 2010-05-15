@@ -11,6 +11,7 @@ namespace MongoDB.Serialization
     {
         private readonly Stack<Type> _types;
         private readonly IMappingStore _mappingStore;
+        private bool _isDictionaryProperty;
 
         public BsonClassMapDescriptor(IMappingStore mappingStore, Type rootType)
         {
@@ -19,6 +20,7 @@ namespace MongoDB.Serialization
             if (rootType == null)
                 throw new ArgumentNullException("rootType");
 
+            _isDictionaryProperty = false;
             _mappingStore = mappingStore;
             _types = new Stack<Type>();
             _types.Push(rootType);
@@ -44,7 +46,6 @@ namespace MongoDB.Serialization
         {
             return new ArrayDescriptor((IEnumerable)instance, _types.Peek());
         }
-
         public IEnumerable<BsonProperty> GetProperties(object instance)
         {
             return ((IPropertyDescriptor)instance).GetProperties();
@@ -55,7 +56,8 @@ namespace MongoDB.Serialization
             var value = property.Value as BsonPropertyValue;
             if (value == null)
                 return;
-            
+
+            _isDictionaryProperty = value.IsDictionary;
             _types.Push(value.Type);
             property.Value = value.Value;
         }
@@ -86,14 +88,16 @@ namespace MongoDB.Serialization
 
         private object BeginDocument(Document document)
         {
+            if (_isDictionaryProperty)
+            {
+                _isDictionaryProperty = false;
+                return new DictionaryPropertyDescriptor(document, _types.Peek());
+            }
             if (typeof(Document).IsAssignableFrom(_types.Peek()))
                 return new DocumentPropertyDescriptor(document);
 
             var currentClassMap = _mappingStore.GetClassMap(_types.Peek());
 
-            //var doc = (Document)instance;
-            //if (doc.ContainsKey("mapreduce"))
-            //    _isMapReduce = true;
             return new DocumentClassMapPropertyDescriptor(_mappingStore, currentClassMap, document);
         }
 

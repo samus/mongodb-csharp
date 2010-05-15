@@ -49,9 +49,9 @@ namespace MongoDB.Serialization.Descriptors
         /// <param name="valueType">Type of the value.</param>
         /// <param name="value">The value.</param>
         /// <returns></returns>
-        protected BsonProperty CreateProperty(string alias, Type valueType, object value)
+        protected BsonProperty CreateProperty(string alias, Type valueType, object value, bool isDictionary)
         {
-            return CreateProperty(alias, new BsonPropertyValue(valueType, value));
+            return CreateProperty(alias, new BsonPropertyValue(valueType, value, isDictionary));
         }
 
         /// <summary>
