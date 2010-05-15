@@ -116,25 +116,43 @@ namespace MongoDB.UnitTests.Serialization
             Assert.AreEqual(10,obj.Value);
         }
 
-        public class DictionaryProperty
+        public class GenericDictionary
         {
-            public Dictionary<string, string> Test { get; set; }
+            public Dictionary<string, int> Property { get; set; }
         }
 
         [Test]
-        public void CanSerializeAndDeserializeDictionarys()
+        public void CanSerializeAndDeserializeGenericDictionarys()
         {
-            var dict = new DictionaryProperty
-            {
-                Test = new Dictionary<string, string> {{"test", "test"}}
-            };
-            var bson = Serialize<DictionaryProperty>(dict);
-
-            var prop = Deserialize<DictionaryProperty>(bson);
+            var obj = new GenericDictionary{Property = new Dictionary<string, int> { { "key1", 10 }, { "key2", 20 } }};
+            var bson = Serialize<GenericDictionary>(obj);
+            var prop = Deserialize<GenericDictionary>(bson);
 
             Assert.IsNotNull(prop);
-            Assert.IsNotNull(prop.Test);
-            Assert.Contains(new KeyValuePair<string,string>("test","test"),prop.Test);
+            Assert.IsNotNull(prop.Property);
+            Assert.AreEqual(2,prop.Property.Count);
+            Assert.Contains(new KeyValuePair<string, int>("key1", 10), prop.Property);
+            Assert.Contains(new KeyValuePair<string, int>("key2", 20), prop.Property);
+        }
+
+        public class HashSetHelper
+        {
+            public HashSet<string> Property { get; set; }
+        }
+
+        [Test]
+        public void CanSerializeAndDeserializeHashSet()
+        {
+            var obj = new HashSetHelper {Property = new HashSet<string> {"test1", "test2"}};
+            var bson = Serialize<HashSetHelper>(obj);
+            var prop = Deserialize<HashSetHelper>(bson);
+
+            Assert.IsNotNull(prop);
+            Assert.IsNotNull(prop.Property);
+            Assert.AreEqual(2, prop.Property.Count);
+
+            Assert.IsTrue(prop.Property.Contains("test1"));
+            Assert.IsTrue(prop.Property.Contains("test2"));
         }
     }
 }

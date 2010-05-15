@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Configuration.Mapping;
@@ -39,7 +40,10 @@ namespace MongoDB.Serialization
         }
 
         public object BeginArray()
-        {            
+        {
+            if(typeof(IDictionary).IsAssignableFrom(_types.Peek()))
+                return new DictionaryBuilder(_types.Peek());
+            
             return new ArrayBuilder(_types.Peek());
         }
 
