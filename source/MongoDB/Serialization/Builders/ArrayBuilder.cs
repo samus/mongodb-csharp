@@ -38,9 +38,6 @@ namespace MongoDB.Serialization.Builders
             if(IsDocumentArray)
                 return GetTypedList();
 
-            if(_elementType.IsGenericType)
-                return Activator.CreateInstance(_elementType, GetTypedList());
-
             return _elements.ToArray();
         }
 

@@ -4,6 +4,7 @@ using System.Reflection;
 
 using MongoDB.Configuration.CollectionAdapters;
 using MongoDB.Configuration.IdGenerators;
+using MongoDB.Configuration.DictionaryAdapters;
 
 namespace MongoDB.Configuration.Mapping.Auto
 {
@@ -49,7 +50,7 @@ namespace MongoDB.Configuration.Mapping.Auto
         string GetCollectionName(Type classType);
 
         /// <summary>
-        /// Gets the type of the collection.
+        /// Gets the collection adapter.
         /// </summary>
         /// <param name="classType">Type of the class.</param>
         /// <param name="member">The member.</param>
@@ -73,6 +74,24 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <param name="member">The member.</param>
         /// <returns></returns>
         object GetDefaultValue(Type classType, MemberInfo member);
+
+        /// <summary>
+        /// Gets the dictionary adadpter.
+        /// </summary>
+        /// <param name="classType">Type of the class.</param>
+        /// <param name="member">The member.</param>
+        /// <param name="memberReturnType">Type of the member return.</param>
+        /// <returns></returns>
+        IDictionaryAdapter GetDictionaryAdadpter(Type classType, MemberInfo member, Type memberReturnType);
+
+        /// <summary>
+        /// Gets the type of the dictionary value.
+        /// </summary>
+        /// <param name="classType">Type of the class.</param>
+        /// <param name="member">The member.</param>
+        /// <param name="memberReturnType">Type of the member return.</param>
+        /// <returns></returns>
+        Type GetDictionaryValueType(Type classType, MemberInfo member, Type memberReturnType);
 
         /// <summary>
         /// Gets the descriminator for the class type.

@@ -5,6 +5,7 @@ using MongoDB.Configuration.CollectionAdapters;
 using MongoDB.Configuration.IdGenerators;
 using MongoDB.Configuration.Mapping.Conventions;
 using MongoDB.Util;
+using MongoDB.Configuration.DictionaryAdapters;
 
 namespace MongoDB.Configuration.Mapping.Auto
 {
@@ -136,6 +137,30 @@ namespace MongoDB.Configuration.Mapping.Auto
         }
 
         /// <summary>
+        /// Gets the dictionary adadpter.
+        /// </summary>
+        /// <param name="classType">Type of the class.</param>
+        /// <param name="member">The member.</param>
+        /// <param name="memberReturnType">Type of the member return.</param>
+        /// <returns></returns>
+        public IDictionaryAdapter GetDictionaryAdadpter(Type classType, MemberInfo member, Type memberReturnType)
+        {
+            return _profile.GetDictionaryAdadpter(classType, member, memberReturnType);
+        }
+
+        /// <summary>
+        /// Gets the type of the dictionary value.
+        /// </summary>
+        /// <param name="classType">Type of the class.</param>
+        /// <param name="member">The member.</param>
+        /// <param name="memberReturnType">Type of the member return.</param>
+        /// <returns></returns>
+        public Type GetDictionaryValueType(Type classType, MemberInfo member, Type memberReturnType)
+        {
+            return _profile.GetDictionaryValueType(classType, member, memberReturnType);
+        }
+
+        /// <summary>
         /// Gets the descriminator for the class type.
         /// </summary>
         /// <param name="classType">Type of the entity.</param>
@@ -245,5 +270,6 @@ namespace MongoDB.Configuration.Mapping.Auto
 
             return value;
         }
+        
     }
 }

@@ -11,6 +11,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
         private ICollectionAdapterConvention _collectionAdapterConvention;
         private ICollectionNameConvention _collectionNameConvention;
         private IDefaultValueConvention _defaultValueConvention;
+        private IDictionarynAdapterConvention _dictionaryAdapterConvention;
         private IDiscriminatorConvention _discriminatorConvention;
         private IDiscriminatorAliasConvention _discriminatorAliasConvention;
         private IExtendedPropertiesConvention _extendedPropertiesConvention;
@@ -79,6 +80,22 @@ namespace MongoDB.Configuration.Mapping.Conventions
                     throw new ArgumentNullException("value");
 
                 _defaultValueConvention = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the dictionary adapter convention.
+        /// </summary>
+        /// <value>The dictionary adapter convention.</value>
+        public IDictionarynAdapterConvention DictionaryAdapterConvention
+        {
+            get { return _dictionaryAdapterConvention; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                _dictionaryAdapterConvention = value;
             }
         }
 
@@ -187,6 +204,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
             _collectionNameConvention = new DelegateCollectionNameConvention(t =>  t.Name);
             _collectionAdapterConvention = DefaultCollectionAdapterConvention.Instance;
             _defaultValueConvention = DefaultDefaultValueConvention.Instance;
+            _dictionaryAdapterConvention = DefaultDictionaryAdapterConvention.Instance;
             _discriminatorConvention = new DelegateDiscriminatorConvention(t => t.Name);
             _discriminatorAliasConvention = new DelegateDiscriminatorAliasConvention(t => "_t");
             _extendedPropertiesConvention = new DelegateExtendedPropertiesConvention(m => m.Name == "ExtendedProperties");

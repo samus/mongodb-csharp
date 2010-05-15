@@ -10,7 +10,7 @@ namespace MongoDB.Configuration.Mapping.Model
     /// </summary>
     public class CollectionMemberMap : PersistentMemberMap
     {
-        private readonly ICollectionAdapter _collectionType;
+        private readonly ICollectionAdapter _collectionAdapter;
         private readonly Type _elementType;
 
         /// <summary>
@@ -31,12 +31,12 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="setter">The setter.</param>
         /// <param name="alias">The alias.</param>
         /// <param name="persistNull">if set to <c>true</c> [persist null].</param>
-        /// <param name="collectionType">Type of the collection.</param>
+        /// <param name="collectionAdapter">Type of the collection.</param>
         /// <param name="elementType">Type of the element.</param>
-        public CollectionMemberMap(string memberName, Type memberReturnType, Func<object, object> getter, Action<object, object> setter, string alias, bool persistNull, ICollectionAdapter collectionType, Type elementType)
+        public CollectionMemberMap(string memberName, Type memberReturnType, Func<object, object> getter, Action<object, object> setter, string alias, bool persistNull, ICollectionAdapter collectionAdapter, Type elementType)
             : base(memberName, memberReturnType, getter, setter, null, alias, persistNull)
         {
-            _collectionType = collectionType;
+            _collectionAdapter = collectionAdapter;
             _elementType = elementType;
         }
 
@@ -47,7 +47,7 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <returns></returns>
         public override object GetValue(object instance)
         {
-            var elements = _collectionType.GetElementsFromCollection(base.GetValue(instance));
+            var elements = _collectionAdapter.GetElementsFromCollection(base.GetValue(instance));
             var list = new ArrayList();
             foreach (var element in elements)
                 list.Add(element);
@@ -62,7 +62,7 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="value">The value.</param>
         public override void SetValue(object instance, object value)
         {
-            base.SetValue(instance, _collectionType.CreateCollection(_elementType, (object[])value));
+            base.SetValue(instance, _collectionAdapter.CreateCollection(_elementType, (object[])value));
         }
     }
 }

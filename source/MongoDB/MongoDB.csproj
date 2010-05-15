@@ -112,8 +112,14 @@
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
     <Compile Include="Configuration\CollectionAdapters\ArrayCollectionAdapter.cs" />
     <Compile Include="Configuration\Builders\MappingStoreBuilder.cs" />
+    <Compile Include="Configuration\DictionaryAdapters\GenericDictionaryDictionaryAdapter.cs" />
+    <Compile Include="Configuration\DictionaryAdapters\HashtableDictionaryAdapter.cs" />
+    <Compile Include="Configuration\DictionaryAdapters\DocumentDictionaryAdapter.cs" />
+    <Compile Include="Configuration\DictionaryAdapters\IDictionaryAdapter.cs" />
     <Compile Include="Configuration\IMongoConfiguration.cs" />
     <Compile Include="Configuration\IMongoConfigurationExtensions.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultDictionaryAdapterConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IDictionaryAdapterConvention.cs" />
     <Compile Include="Configuration\MongoConfigurationBuilder.cs" />
     <Compile Include="Configuration\Builders\AutoMappingProfileBuilder.cs" />
     <Compile Include="Configuration\Builders\ClassOverridesBuilder.cs" />
@@ -251,7 +257,7 @@
     <Compile Include="Configuration\Mapping\Model\ClassMap.cs" />
     <Compile Include="Configuration\Mapping\Model\ClassMapBase.cs" />
     <Compile Include="Configuration\Mapping\Model\CollectionMemberMap.cs" />
-    <Compile Include="Configuration\Mapping\Model\DocumentMemberMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\DictionaryMemberMap.cs" />
     <Compile Include="Configuration\Mapping\Model\ExtendedPropertiesMap.cs" />
     <Compile Include="Configuration\Mapping\Model\IClassMap.cs" />
     <Compile Include="Configuration\Mapping\Model\IdMap.cs" />
