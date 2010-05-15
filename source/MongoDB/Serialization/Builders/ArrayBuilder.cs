@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MongoDB.Serialization.Builders
 {
@@ -35,13 +36,23 @@ namespace MongoDB.Serialization.Builders
         public object BuildObject()
         {
             if(IsDocumentArray)
-            {
-                var type = GetResultListType();
+                return GetTypedList();
 
-                return type == typeof(object) ? _elements : CreateTypedList(type);
-            }
+            if(_elementType.IsGenericType)
+                return Activator.CreateInstance(_elementType, GetTypedList());
 
             return _elements.ToArray();
+        }
+
+        /// <summary>
+        /// Gets the typed list.
+        /// </summary>
+        /// <returns></returns>
+        private object GetTypedList()
+        {
+            var type = GetResultListType();
+
+            return type == typeof(object) ? _elements : CreateTypedList(type);
         }
 
         /// <summary>
@@ -54,6 +65,12 @@ namespace MongoDB.Serialization.Builders
             return _elementType;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is document array.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is document array; otherwise, <c>false</c>.
+        /// </value>
         private bool IsDocumentArray{
             get{ return _elementType == null;}
         }
@@ -70,11 +87,10 @@ namespace MongoDB.Serialization.Builders
 
             Type commonType = null;
 
-            foreach(var obj in _elements)
+            foreach(var objType in from obj in _elements
+                                   where obj != null
+                                   select obj.GetType())
             {
-                if(obj == null)
-                    continue;
-                var objType = obj.GetType();
                 if(commonType == null)
                     commonType = objType;
                 else if(commonType != objType)
