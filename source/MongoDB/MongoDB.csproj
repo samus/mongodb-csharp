@@ -132,6 +132,7 @@
     <Compile Include="MapReduce.cs" />
     <Compile Include="Commands\MapReduceCommand.cs" />
     <Compile Include="Results\MapReduceResult.cs" />
+    <Compile Include="Serialization\Builders\DictionaryBuilder.cs" />
     <Compile Include="Util\ScopedDictionary.cs" />
     <Compile Include="Linq\Translators\AggregateChecker.cs" />
     <Compile Include="Linq\Translators\AggregateRewriter.cs" />
