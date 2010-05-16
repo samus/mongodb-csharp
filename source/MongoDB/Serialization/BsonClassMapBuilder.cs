@@ -9,6 +9,7 @@ namespace MongoDB.Serialization
 {
     internal class BsonClassMapBuilder : IBsonObjectBuilder
     {
+        private bool _isDictionary;
         private readonly Stack<Type> _types;
         private readonly IMappingStore _mappingStore;
 
@@ -21,6 +22,12 @@ namespace MongoDB.Serialization
 
         public object BeginObject()
         {
+             if (_isDictionary)
+            {
+                 _isDictionary = false;
+                 return new DictionaryBuilder(_types.Peek());
+            }
+
             if (_types.Peek() == null || _types.Peek() == typeof(Document))
                 return new DocumentBuilder();
 
@@ -51,7 +58,14 @@ namespace MongoDB.Serialization
 
         public void BeginProperty(object instance, string name)
         {
-            _types.Push(((IObjectBuilder)instance).GetPropertyType(name));
+            var propDescriptor = ((IObjectBuilder)instance).GetPropertyDescriptor(name);
+            if (propDescriptor == null)
+                _types.Push(null);
+            else
+            {
+                _types.Push(propDescriptor.Type);
+                _isDictionary = propDescriptor.IsDictionary;
+            }
         }
 
         public void EndProperty(object instance, string name, object value)

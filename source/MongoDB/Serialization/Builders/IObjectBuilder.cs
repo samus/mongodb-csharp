@@ -8,6 +8,6 @@ namespace MongoDB.Serialization.Builders
 
         object BuildObject();
 
-        Type GetPropertyType(string name);
+        PropertyDescriptor GetPropertyDescriptor(string name);
     }
 }

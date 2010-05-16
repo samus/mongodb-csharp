@@ -43,16 +43,23 @@ namespace MongoDB.Serialization.Builders
             return _concreteEntityBuilder.BuildObject();
         }
 
-        public Type GetPropertyType(string name)
+        public PropertyDescriptor GetPropertyDescriptor(string name)
         {
             var memberMap = _classMap.GetMemberMapFromAlias(name);
             if (memberMap == null)
                 return null;
 
+            var type = memberMap.MemberReturnType;
+            bool isDictionary = false;
             if (memberMap is CollectionMemberMap)
-                return ((CollectionMemberMap)memberMap).ElementType;
+                type = ((CollectionMemberMap)memberMap).ElementType;
+            else if (memberMap is DictionaryMemberMap)
+            {
+                type = ((DictionaryMemberMap)memberMap).ValueType;
+                isDictionary = true;
+            }
 
-            return memberMap.MemberReturnType;
+            return new PropertyDescriptor() { Type = type, IsDictionary = isDictionary };
         }
     }
 }

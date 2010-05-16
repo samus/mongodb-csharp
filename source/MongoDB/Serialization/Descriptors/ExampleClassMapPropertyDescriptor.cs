@@ -48,7 +48,7 @@ namespace MongoDB.Serialization.Descriptors
         /// <returns></returns>
         private BsonPropertyValue GetValue(PropertyInfo propertyInfo)
         {
-            Type type;
+            Type type = null;
             var value = propertyInfo.GetValue(_example, null);
             if (value != null && typeof(Code).IsAssignableFrom(value.GetType()))
             {
@@ -61,7 +61,6 @@ namespace MongoDB.Serialization.Descriptors
             var memberMap = GetMemberMapFromMemberName(propertyInfo.Name);
             if (memberMap != null)
             {
-                type = memberMap.MemberReturnType;
                 if (memberMap is CollectionMemberMap)
                     type = ((CollectionMemberMap)memberMap).ElementType;
                 else if (memberMap is DictionaryMemberMap)
@@ -69,6 +68,9 @@ namespace MongoDB.Serialization.Descriptors
                     type = ((DictionaryMemberMap)memberMap).ValueType;
                     isDictionary = true;
                 }
+
+                if (type == null || type == typeof(object))
+                    type = memberMap.MemberReturnType;
             }
             else
                 type = propertyInfo.PropertyType;

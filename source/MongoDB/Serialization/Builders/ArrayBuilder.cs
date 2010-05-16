@@ -57,9 +57,9 @@ namespace MongoDB.Serialization.Builders
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public Type GetPropertyType(string name)
+        public PropertyDescriptor GetPropertyDescriptor(string name)
         {
-            return _elementType;
+            return new PropertyDescriptor() { Type = _elementType };
         }
 
         /// <summary>

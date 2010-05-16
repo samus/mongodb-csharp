@@ -131,11 +131,9 @@ namespace MongoDB.UnitTests.Serialization
         }
 
         [Test]
-        public void CanSerializeAndDeserializeGenericDictionarys()
+        public void CanDeserializeGenericDictionary()
         {
-            var expectedBson = Serialize<Document>(new Document("Property", new Document() { { "key1", 10 }, { "key2", 20 } }));
-            var obj = new GenericDictionary{Property = new Dictionary<string, int> { { "key1", 10 }, { "key2", 20 } }};
-            var bson = Serialize<GenericDictionary>(obj);
+            var bson = Serialize<Document>(new Document("Property", new Document() { { "key1", 10 }, { "key2", 20 } }));
             var prop = Deserialize<GenericDictionary>(bson);
 
             Assert.IsNotNull(prop);
@@ -143,6 +141,38 @@ namespace MongoDB.UnitTests.Serialization
             Assert.AreEqual(2,prop.Property.Count);
             Assert.Contains(new KeyValuePair<string, int>("key1", 10), prop.Property);
             Assert.Contains(new KeyValuePair<string, int>("key2", 20), prop.Property);
+        }
+
+        public class GenericDictionaryWithComplexType
+        {
+            public Dictionary<string, GenericDictionaryComplexType> Property { get; set; }
+        }
+
+        public class GenericDictionaryComplexType
+        {
+            public string Name { get; set; }
+        }
+
+        [Test]
+        public void CanSerializeGenericDictionaryWithComplexType()
+        {
+            var expectedBson = Serialize<Document>(new Document("Property", new Document() { { "key1", new Document("Name", "a") }, { "key2", new Document("Name", "b") } }));
+            var obj = new GenericDictionaryWithComplexType { Property = new Dictionary<string, GenericDictionaryComplexType> { { "key1", new GenericDictionaryComplexType() { Name = "a" } }, { "key2", new GenericDictionaryComplexType() { Name = "b" } } } };
+            var bson = Serialize<GenericDictionaryWithComplexType>(obj);
+            Assert.AreEqual(expectedBson, bson);
+        }
+
+        [Test]
+        public void CanDeserializeGenericDictionaryWithComplexType()
+        {
+            var bson = Serialize<Document>(new Document("Property", new Document() { { "key1", new Document("Name", "a") }, { "key2", new Document("Name", "b") } }));
+            var prop = Deserialize<GenericDictionaryWithComplexType>(bson);
+
+            Assert.IsNotNull(prop);
+            Assert.IsNotNull(prop.Property);
+            Assert.AreEqual(2, prop.Property.Count);
+            Assert.IsTrue(prop.Property["key1"].Name == "a");
+            Assert.IsTrue(prop.Property["key2"].Name == "b");
         }
 
         public class HashSetHelper
