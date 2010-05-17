@@ -39,7 +39,7 @@ namespace MongoDB
             if(configuration == null)
                 throw new ArgumentNullException("configuration");
 
-            configuration.Validate();
+            configuration.ValidateAndSeal();
 
             _configuration = configuration;
             _connection = ConnectionFactory.GetConnection(configuration.ConnectionString);
