@@ -12,7 +12,6 @@ namespace MongoDB
     {
         private readonly IMongoDatabase _database;
         private readonly Type _rootType;
-        private bool _canModify = true;
         private bool _disposing;
 
         /// <summary>
@@ -23,6 +22,7 @@ namespace MongoDB
         /// <param name = "rootType">Type of the root.</param>
         public MapReduce(IMongoDatabase database, string name, Type rootType)
         {
+            IsModifiable = true;
             if(database == null)
                 throw new ArgumentNullException("database");
             if(name == null)
@@ -34,6 +34,14 @@ namespace MongoDB
             _database = database;
             Command = new MapReduceCommand(name);
         }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is modifiable.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is modifiable; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsModifiable { get; private set; }
 
         /// <summary>
         ///   Gets the result.
@@ -228,7 +236,7 @@ namespace MongoDB
             if(Command.Command.Contains("map") == false || Command.Command.Contains("reduce") == false)
                 throw new InvalidOperationException("Cannot execute without a map and reduce function");
 
-            _canModify = false;
+            IsModifiable = false;
 
             try
             {
@@ -246,7 +254,7 @@ namespace MongoDB
         /// </summary>
         private void TryModify()
         {
-            if(_canModify == false)
+            if(IsModifiable == false)
                 throw new InvalidOperationException("Cannot modify a map/reduce that has already executed");
         }
     }

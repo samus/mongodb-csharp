@@ -44,7 +44,7 @@ namespace MongoDB.Configuration
             get { return _connectionString; }
             set
             {
-                EnsureModifiable();
+                TryModify();
                 _connectionString = value;
             }
         }
@@ -58,7 +58,7 @@ namespace MongoDB.Configuration
             get { return _serializationFactory; }
             set
             {
-                EnsureModifiable();
+                TryModify();
                 _serializationFactory = value;
             }
         }
@@ -72,7 +72,7 @@ namespace MongoDB.Configuration
             get { return _mappingStore; }
             set
             {
-                EnsureModifiable();
+                TryModify();
                 _mappingStore = value;
             }
         }
@@ -90,7 +90,7 @@ namespace MongoDB.Configuration
             get { return _readLocalTime; }
             set
             {
-                EnsureModifiable();
+                TryModify();
                 _readLocalTime = value;
             }
         }
@@ -98,7 +98,7 @@ namespace MongoDB.Configuration
         /// <summary>
         ///   Ensures the modifiable.
         /// </summary>
-        private void EnsureModifiable()
+        private void TryModify()
         {
             if(!IsModifiable)
                 throw new InvalidOperationException("Value can not not be modified");

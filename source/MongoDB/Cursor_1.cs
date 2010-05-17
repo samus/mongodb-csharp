@@ -16,7 +16,6 @@ namespace MongoDB
     {
         private readonly Connection _connection;
         private readonly Document _specOpts = new Document();
-        private bool _isModifiable = true;
         private object _spec;
         private object _fields;
         private int _limit;
@@ -33,6 +32,7 @@ namespace MongoDB
         /// <param name="fullCollectionName">Full name of the collection.</param>
         public Cursor(ISerializationFactory serializationFactory, Connection connection, string fullCollectionName)
         {
+            IsModifiable = true;
             //Todo: should be internal
             _connection = connection;
             FullCollectionName = fullCollectionName;
@@ -204,9 +204,7 @@ namespace MongoDB
         ///   Gets a value indicating whether this <see cref = "Cursor&lt;T&gt;" /> is modifiable.
         /// </summary>
         /// <value><c>true</c> if modifiable; otherwise, <c>false</c>.</value>
-        public bool IsModifiable {
-            get { return _isModifiable; }
-        }
+        public bool IsModifiable { get; private set; }
 
         /// <summary>
         ///   Gets the documents.
@@ -297,7 +295,7 @@ namespace MongoDB
         /// <returns></returns>
         private ReplyMessage<TReply> RetrieveData<TReply>() where TReply : class
         {
-            _isModifiable = false;
+            IsModifiable = false;
 
             IRequestMessage message;
 
@@ -340,9 +338,8 @@ namespace MongoDB
         ///   Tries the modify.
         /// </summary>
         private void TryModify(){
-            if (_isModifiable)
-                return;
-            throw new InvalidOperationException("Cannot modify a cursor that has already returned documents.");
+            if(!IsModifiable)
+                throw new InvalidOperationException("Cannot modify a cursor that has already returned documents.");
         }
 
         /// <summary>
