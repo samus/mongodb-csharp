@@ -11,7 +11,7 @@ namespace MongoDB
     public class Oid : IEquatable<Oid>, IComparable<Oid>, IFormattable
     {
         private static readonly OidGenerator OidGenerator = new OidGenerator();
-        private byte[] bytes;
+        private readonly byte[] _bytes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Oid"/> class.
@@ -31,7 +31,7 @@ namespace MongoDB
 
             value = value.Replace("\"", "");
             ValidateHex(value);
-            bytes = DecodeHex(value);
+            _bytes = DecodeHex(value);
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace MongoDB
             if(value == null)
                 throw new ArgumentNullException("value");
 
-            bytes = new byte[12];
-            Array.Copy(value, bytes, 12);
+            _bytes = new byte[12];
+            Array.Copy(value, _bytes, 12);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace MongoDB
             get
             {
                 var time = new byte[4];
-                Array.Copy(bytes, time, 4);
+                Array.Copy(_bytes, time, 4);
                 Array.Reverse(time);
                 var seconds = BitConverter.ToInt32(time, 0);
                 return BsonInfo.Epoch.AddSeconds(seconds);
@@ -83,10 +83,10 @@ namespace MongoDB
             if(ReferenceEquals(other, null))
                 return 1;
             var otherBytes = other.ToByteArray();
-            for(var x = 0; x < bytes.Length; x++)
-                if(bytes[x] < otherBytes[x])
+            for(var x = 0; x < _bytes.Length; x++)
+                if(_bytes[x] < otherBytes[x])
                     return -1;
-                else if(bytes[x] > otherBytes[x])
+                else if(_bytes[x] > otherBytes[x])
                     return 1;
             return 0;
         }
@@ -136,7 +136,7 @@ namespace MongoDB
         /// </returns>
         public override string ToString()
         {
-            return BitConverter.ToString(bytes).Replace("-", "").ToLower();
+            return BitConverter.ToString(_bytes).Replace("-", "").ToLower();
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace MongoDB
         public byte[] ToByteArray()
         {
             var ret = new byte[12];
-            Array.Copy(bytes, ret, 12);
+            Array.Copy(_bytes, ret, 12);
             return ret;
         }
 
