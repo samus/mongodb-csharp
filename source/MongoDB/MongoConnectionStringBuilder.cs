@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -292,11 +293,12 @@ namespace MongoDB
         /// Parses the servers.
         /// </summary>
         /// <param name="value">The value.</param>
-        private void ParseServers(string value){
+        private void ParseServers(string value)
+        {
             var servers = value.Split (',');
-                        
-            foreach (var server in servers) {
-                var serverMatch = ServerRegex.Match (server);
+
+            foreach(var serverMatch in servers.Select(server => ServerRegex.Match(server)))
+            {
                 if (!serverMatch.Success)
                     throw new FormatException (string.Format ("Invalid server in connection string: {0}", serverMatch.Value));
                             
