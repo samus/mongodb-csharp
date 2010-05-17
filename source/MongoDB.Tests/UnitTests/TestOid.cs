@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using NUnit.Framework;
 
 namespace MongoDB.UnitTests
@@ -124,9 +127,18 @@ namespace MongoDB.UnitTests
             string hex = "4a7067c30a57000000008ecb";
             Oid oid = new Oid(hex);
             
-            Assert.AreEqual("\"" + hex + "\"", oid.ToString());
+            Assert.AreEqual(hex, oid.ToString());
         }
-        
+
+        [Test]
+        public void TestFormatJ()
+        {
+            var hex = "4a7067c30a57000000008ecb";
+            var oid = new Oid(hex);
+
+            Assert.AreEqual("\"" + hex + "\"", oid.ToString("J"));
+        }
+
         [Test]
         public void TestEquals(){
             string hex = "4a7067c30a57000000008ecb";
@@ -171,5 +183,20 @@ namespace MongoDB.UnitTests
             Assert.AreEqual(firstOid.ToString(), secondOid.ToString());
         }
 
+        [Test]
+        public void TestOidCanBeSerialized(){
+            var serializer = new BinaryFormatter();
+
+            var oidSource = Oid.NewOid();
+            Oid oidDesc;
+            using(var mem = new MemoryStream())
+            {
+                serializer.Serialize(mem, oidSource);
+                mem.Position = 0;
+                oidDesc = (Oid)serializer.Deserialize(mem);
+            }
+
+            Assert.AreEqual(oidSource,oidDesc);
+        }
     }
 }

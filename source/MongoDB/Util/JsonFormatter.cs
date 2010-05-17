@@ -42,10 +42,12 @@ namespace MongoDB.Util
                 json.Append("null");
                 return;
             }
-            if (value is bool) {
+            if (value is bool)
+            {
                 json.Append(((bool)value) ? "true" : "false");
-            } else if(value is Document ||
-                value is Oid ||
+            }else if(value is Oid) {
+                json.Append(((Oid)value).ToString("J"));
+            }else if(value is Document ||
                 value is Binary ||
                 value is DBRef ||
                 value is MongoMinKey ||

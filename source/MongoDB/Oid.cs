@@ -7,10 +7,18 @@ namespace MongoDB
     /// <summary>
     ///   Oid is an immutable object that represents a Mongo ObjectId.
     /// </summary>
-    public class Oid : IEquatable<Oid>, IComparable<Oid>
+    [Serializable]
+    public class Oid : IEquatable<Oid>, IComparable<Oid>, IFormattable
     {
         private static readonly OidGenerator OidGenerator = new OidGenerator();
-        private readonly byte[] bytes;
+        protected byte[] bytes;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Oid"/> class.
+        /// </summary>
+        protected Oid()
+        {
+        }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Oid" /> class.
@@ -18,6 +26,9 @@ namespace MongoDB
         /// <param name = "value">The value.</param>
         public Oid(string value)
         {
+            if(value == null)
+                throw new ArgumentNullException("value");
+
             value = value.Replace("\"", "");
             ValidateHex(value);
             bytes = DecodeHex(value);
@@ -29,6 +40,9 @@ namespace MongoDB
         /// <param name = "value">The value.</param>
         public Oid(byte[] value)
         {
+            if(value == null)
+                throw new ArgumentNullException("value");
+
             bytes = new byte[12];
             Array.Copy(value, bytes, 12);
         }
@@ -122,7 +136,44 @@ namespace MongoDB
         /// </returns>
         public override string ToString()
         {
-            return String.Format("\"{0}\"", BitConverter.ToString(bytes).Replace("-", "").ToLower());
+            return BitConverter.ToString(bytes).Replace("-", "").ToLower();
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// <remarks>
+        /// J = Returns Javascript string
+        /// </remarks>
+        public string ToString(string format)
+        {
+            if(string.IsNullOrEmpty(format))
+                return ToString();
+            
+            if(format == "J")
+                return String.Format("\"{0}\"", ToString());
+            
+            throw new ArgumentException("Invalid format string","format");
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="formatProvider">The format provider.</param>
+        /// <returns>
+        /// A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// <remarks>
+        /// J = Returns Javascript string
+        /// </remarks>
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ToString(format);
         }
 
         /// <summary>
@@ -153,7 +204,7 @@ namespace MongoDB
         /// <param name = "b">The b.</param>
         /// <returns>The result of the operator.</returns>
         public static bool operator ==(Oid a, Oid b){
-            if (System.Object.ReferenceEquals(a, b)){
+            if (ReferenceEquals(a, b)){
                 return true;
             }
             if((Object)a == null || (Object)b == null){
