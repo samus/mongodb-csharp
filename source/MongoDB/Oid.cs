@@ -11,7 +11,7 @@ namespace MongoDB
     public class Oid : IEquatable<Oid>, IComparable<Oid>, IFormattable
     {
         private static readonly OidGenerator OidGenerator = new OidGenerator();
-        protected byte[] bytes;
+        private byte[] bytes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Oid"/> class.

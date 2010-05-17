@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MongoDB.Configuration.DictionaryAdapters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class HashtableDictionaryAdapter : IDictionaryAdapter
     {
         /// <summary>
@@ -19,7 +19,7 @@ namespace MongoDB.Configuration.DictionaryAdapters
             var hashtable = new Hashtable();
 
             foreach (var pair in document)
-                hashtable.Add((string)pair.Key, pair.Value);
+                hashtable.Add(pair.Key, pair.Value);
 
             return hashtable;
         }

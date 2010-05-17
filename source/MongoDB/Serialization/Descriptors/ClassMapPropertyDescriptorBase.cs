@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Configuration.Mapping.Model;
 using MongoDB.Configuration.Mapping;
 using System.Text;
@@ -48,6 +49,7 @@ namespace MongoDB.Serialization.Descriptors
         /// <param name="alias">The alias.</param>
         /// <param name="valueType">Type of the value.</param>
         /// <param name="value">The value.</param>
+        /// <param name="isDictionary">if set to <c>true</c> [is dictionary].</param>
         /// <returns></returns>
         protected BsonProperty CreateProperty(string alias, Type valueType, object value, bool isDictionary)
         {
@@ -85,7 +87,7 @@ namespace MongoDB.Serialization.Descriptors
                 return null;
 
             var currentType = memberMap.MemberReturnType;
-            for (int i = 1; i < parts.Length && memberMap != null; i++)
+            for (var i = 1; i < parts.Length; i++)
             {
                 var collectionMemberMap = memberMap as CollectionMemberMap;
                 if (collectionMemberMap != null)
@@ -174,12 +176,9 @@ namespace MongoDB.Serialization.Descriptors
             return _codeReplacer.Replace(code, ClassMap);
         }
 
-        private static bool IsNumeric(string s)
+        private static bool IsNumeric(IEnumerable<char> str)
         {
-            for (int i = 0; i < s.Length; i++)
-                if (!char.IsDigit(s[i]))
-                    return false;
-            return true;
+            return str.All(t => char.IsDigit(t));
         }
 
         /// <summary>

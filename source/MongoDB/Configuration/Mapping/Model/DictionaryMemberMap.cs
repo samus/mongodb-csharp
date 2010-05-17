@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Linq;
-
 using MongoDB.Configuration.DictionaryAdapters;
 
 
@@ -15,6 +12,8 @@ namespace MongoDB.Configuration.Mapping.Model
         private readonly IDictionaryAdapter _dictionaryAdapter;
         private readonly Type _valueType;
 
+        ///<summary>
+        ///</summary>
         public Type ValueType
         {
             get { return _valueType; }
@@ -28,6 +27,8 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="setter">The setter.</param>
         /// <param name="alias">The alias.</param>
         /// <param name="persistNull">if set to <c>true</c> [persist null].</param>
+        /// <param name="dictionaryAdapter">The dictionary adapter.</param>
+        /// <param name="valueType">Type of the value.</param>
         public DictionaryMemberMap(string memberName, Func<object, object> getter, Action<object, object> setter, string alias, bool persistNull, IDictionaryAdapter dictionaryAdapter, Type valueType)
             : base(memberName, typeof(Document), getter, setter, null, alias, persistNull)
         {

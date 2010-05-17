@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 
 namespace MongoDB.Configuration.DictionaryAdapters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class GenericDictionaryDictionaryAdapter : IDictionaryAdapter
     {
         private static readonly Type OpenType = typeof(Dictionary<,>);
@@ -32,6 +32,7 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// Gets the pairs.
         /// </summary>
         /// <param name="dictionary">The collection.</param>
+        /// <param name="valueType">Type of the value.</param>
         /// <returns></returns>
         public Document GetDocument(object dictionary, Type valueType)
         {
