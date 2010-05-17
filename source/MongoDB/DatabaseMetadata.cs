@@ -9,7 +9,7 @@ namespace MongoDB
     /// </summary>
     public class DatabaseMetadata
     {
-        private readonly IMongoConfiguration _configuration;
+        private readonly MongoConfiguration _configuration;
         private readonly Connection _connection;
         private readonly MongoDatabase _database;
         private readonly string _name;
@@ -20,7 +20,7 @@ namespace MongoDB
         /// <param name = "configuration">The configuration.</param>
         /// <param name = "name">The name.</param>
         /// <param name = "conn">The conn.</param>
-        public DatabaseMetadata(IMongoConfiguration configuration, string name, Connection conn)
+        public DatabaseMetadata(MongoConfiguration configuration, string name, Connection conn)
         {
             _configuration = configuration;
             _connection = conn;

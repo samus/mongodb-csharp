@@ -9,7 +9,7 @@ namespace MongoDB.Serialization
     /// </summary>
     public class SerializationFactory : ISerializationFactory
     {
-        private readonly IMongoConfiguration _configuration;
+        private readonly MongoConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
@@ -22,7 +22,7 @@ namespace MongoDB.Serialization
         /// Initializes a new instance of the <see cref="SerializationFactory"/> class.
         /// </summary>
         /// <param name="configuration">The mongo configuration.</param>
-        public SerializationFactory(IMongoConfiguration configuration)
+        public SerializationFactory(MongoConfiguration configuration)
         {
             _configuration = configuration;
             if(configuration == null)

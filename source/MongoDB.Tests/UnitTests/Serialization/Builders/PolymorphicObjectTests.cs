@@ -24,7 +24,7 @@ namespace MongoDB.UnitTests.Serialization.Builders
                     mapping.Map<ClassD>();
                 });
 
-                return configure.BuildConfiguration().MappingStore;
+                return configure.BuildMappingStore();
             }
         }
 

@@ -116,8 +116,6 @@
     <Compile Include="Configuration\DictionaryAdapters\HashtableDictionaryAdapter.cs" />
     <Compile Include="Configuration\DictionaryAdapters\DocumentDictionaryAdapter.cs" />
     <Compile Include="Configuration\DictionaryAdapters\IDictionaryAdapter.cs" />
-    <Compile Include="Configuration\IMongoConfiguration.cs" />
-    <Compile Include="Configuration\IMongoConfigurationExtensions.cs" />
     <Compile Include="Configuration\Mapping\Conventions\DefaultDictionaryAdapterConvention.cs" />
     <Compile Include="Configuration\Mapping\Conventions\IDictionaryAdapterConvention.cs" />
     <Compile Include="Configuration\MongoConfigurationBuilder.cs" />
@@ -128,7 +126,6 @@
     <Compile Include="Configuration\Mapping\Auto\OverridableAutoMappingProfile.cs" />
     <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
     <Compile Include="Configuration\MongoConfiguration.cs" />
-    <Compile Include="Exceptions\MongoConfigurationException.cs" />
     <Compile Include="IMongoDatabase.cs" />
     <Compile Include="Linq\ExecutionBuilder.cs" />
     <Compile Include="Linq\Expressions\Alias.cs" />

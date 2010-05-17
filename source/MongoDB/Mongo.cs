@@ -11,7 +11,7 @@ namespace MongoDB
     /// </summary>
     public class Mongo : IDisposable, IMongo
     {
-        private readonly IMongoConfiguration _configuration;
+        private readonly MongoConfiguration _configuration;
         private readonly Connection _connection;
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace MongoDB
         ///   Initializes a new instance of the <see cref = "Mongo" /> class.
         /// </summary>
         /// <param name = "configuration">The mongo configuration.</param>
-        public Mongo(IMongoConfiguration configuration){
+        public Mongo(MongoConfiguration configuration){
             if(configuration == null)
                 throw new ArgumentNullException("configuration");
 

@@ -18,7 +18,7 @@ namespace MongoDB.Configuration
         /// Builds the configuration.
         /// </summary>
         /// <returns></returns>
-        public IMongoConfiguration BuildConfiguration()
+        public MongoConfiguration BuildConfiguration()
         {
             if (_mappingStoreBuilder == null)
                 return new MongoConfiguration {
@@ -29,6 +29,17 @@ namespace MongoDB.Configuration
                 ConnectionString = _connectionString, 
                 MappingStore = _mappingStoreBuilder.BuildMappingStore()
             };
+        }
+
+        /// <summary>
+        /// Builds the mapping store.
+        /// </summary>
+        public IMappingStore BuildMappingStore()
+        {
+            if (_mappingStoreBuilder == null)
+                return new AutoMappingStore();
+
+            return _mappingStoreBuilder.BuildMappingStore();
         }
 
         /// <summary>

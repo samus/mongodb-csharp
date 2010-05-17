@@ -15,7 +15,7 @@ namespace MongoDB
     /// </summary>
     public class MongoCollection<T> : IMongoCollection<T> where T : class
     {
-        private readonly IMongoConfiguration _configuration;
+        private readonly MongoConfiguration _configuration;
         private readonly Connection _connection;
         private MongoDatabase _database;
         private CollectionMetadata _metaData;
@@ -27,7 +27,7 @@ namespace MongoDB
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        public MongoCollection(IMongoConfiguration configuration, Connection connection, string databaseName, string name)
+        public MongoCollection(MongoConfiguration configuration, Connection connection, string databaseName, string name)
         {
             //Todo: This should be internal
             Name = name;

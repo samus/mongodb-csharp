@@ -59,7 +59,7 @@ namespace MongoDB
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="name">The name.</param>
-        public MongoCollection(IMongoConfiguration configuration, Connection connection, string databaseName, string name)
+        public MongoCollection(MongoConfiguration configuration, Connection connection, string databaseName, string name)
         {
             _collection = new MongoCollection<Document>(configuration, connection, databaseName, name);
         }
