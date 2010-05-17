@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace MongoDB.UnitTests.Configuration
 {
     [TestFixture]
-    public class MongoConfigurationTests
+    public class MongoConfigurationBuilderTests
     {
         private class Person
         {
