@@ -10,7 +10,7 @@ namespace MongoDB
     /// <summary>
     /// 
     /// </summary>
-    public class OidGenerator
+    internal class OidGenerator
     {
         private int inc;
         private object inclock =  new object();
