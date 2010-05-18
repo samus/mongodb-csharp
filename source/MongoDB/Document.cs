@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Util;
 
 namespace MongoDB
@@ -474,9 +475,7 @@ namespace MongoDB
         /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
         /// </returns>
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator(){
-            foreach(var orderedKey in _orderedKeys){
-                yield return new KeyValuePair<string, object>(orderedKey, _dictionary[orderedKey]);
-            }
+            return _orderedKeys.Select(orderedKey => new KeyValuePair<string, object>(orderedKey, _dictionary[orderedKey])).GetEnumerator();
         }
 
         /// <summary>
