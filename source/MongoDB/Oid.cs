@@ -16,6 +16,9 @@ namespace MongoDB
         /// <summary>
         /// Initializes a new instance of the <see cref="Oid"/> class.
         /// </summary>
+        /// <remarks>
+        /// Needed for some serializers.
+        /// </remarks>
         protected Oid()
         {
         }

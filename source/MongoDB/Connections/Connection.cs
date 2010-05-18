@@ -79,9 +79,9 @@ namespace MongoDB.Connections
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
         public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage message, BsonReaderSettings readerSettings) where T:class {
-            if (State != ConnectionState.Opened) {
+            if(!IsConnected)
                 throw new MongoConnectionException ("Operation cannot be performed on a closed connection.", this);
-            }
+            
             try {
                 var reply = new ReplyMessage<T>(readerSettings);
                 lock (_connection) {
@@ -102,9 +102,9 @@ namespace MongoDB.Connections
         /// <param name="message">The message.</param>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
         public void SendMessage (IRequestMessage message){
-            if (State != ConnectionState.Opened) {
-                throw new MongoConnectionException ("Operation cannot be performed on a closed connection.", this);
-            }
+            if(!IsConnected)
+                throw new MongoConnectionException("Operation cannot be performed on a closed connection.", this);
+            
             try {
                 lock (_connection) {
                     message.Write (_connection.GetStream ());
@@ -117,11 +117,14 @@ namespace MongoDB.Connections
         }
 
         /// <summary>
-        /// Gets the state.
+        /// Gets a value indicating whether this instance is connected.
         /// </summary>
-        /// <value>The state.</value>
-        public ConnectionState State {
-            get { return _connection != null ? ConnectionState.Opened : ConnectionState.Closed; }
+        /// <value>
+        /// 	<c>true</c> if this instance is connected; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnected
+        {
+            get { return _connection != null && _connection.IsConnected; }
         }
 
         /// <summary>
@@ -168,7 +171,7 @@ namespace MongoDB.Connections
         /// Gets the stream.
         /// </summary>
         /// <returns></returns>
-        public Stream GetStream (){
+        internal Stream GetStream (){
             return _connection.GetStream ();
         }
 

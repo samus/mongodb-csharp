@@ -49,7 +49,7 @@ namespace MongoDB.IntegrationTests.Connections
             catch(IOException)
             {
                 //Should be able to resend.
-                Assert.IsTrue(conn.State == ConnectionState.Opened);
+                Assert.IsTrue(conn.IsConnected);
                 var qmsg = GenerateQueryMessage();
                 var rmsg = conn.SendTwoWayMessage(qmsg);
                 Assert.IsNotNull(rmsg);

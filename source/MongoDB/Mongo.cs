@@ -100,11 +100,11 @@ namespace MongoDB
             try
             {
                 _connection.Open();
-                return _connection.State == ConnectionState.Opened;
+                return _connection.IsConnected;
             }
             catch(MongoException)
             {
-                return _connection.State == ConnectionState.Opened;
+                return _connection.IsConnected;
             }
         }
 
@@ -115,7 +115,7 @@ namespace MongoDB
         public bool Disconnect()
         {
             _connection.Close();
-            return _connection.State == ConnectionState.Closed;
+            return _connection.IsConnected;
         }
 
         /// <summary>
@@ -124,9 +124,6 @@ namespace MongoDB
         /// <returns></returns>
         public IEnumerable<IMongoDatabase> GetDatabases()
         {
-            if(_connection == null || _connection.State != ConnectionState.Opened)
-                throw new MongoException("Open connection required");
-
             var result = _connection.SendCommand(_configuration.SerializationFactory, "admin", typeof(Document), new Document("listDatabases", 1));
 
             return ((IEnumerable<Document>)result["databases"])

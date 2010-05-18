@@ -256,7 +256,7 @@ namespace MongoDB
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if(Id == 0 || _connection.State != ConnectionState.Opened) //All server side resources disposed of.
+            if(Id == 0 || !_connection.IsConnected) //All server side resources disposed of.
                 return;
 
             KillCursor(Id);
