@@ -95,7 +95,7 @@
     <Compile Include="UnitTests\Bson\BsonTestBase.cs" />
     <Compile Include="UnitTests\Bson\TestBsonBinary.cs" />
     <Compile Include="UnitTests\Bson\TestRoundTrips.cs" />
-    <Compile Include="UnitTests\Configuration\MongoConfigurationTests.cs" />
+    <Compile Include="UnitTests\Configuration\MongoConfigurationBuilderTests.cs" />
     <Compile Include="IntegrationTests\Connections\TestConnection.cs" />
     <Compile Include="IntegrationTests\Connections\TestConnectionFactory.cs" />
     <Compile Include="IntegrationTests\Connections\TestPooledConnectionFactory.cs" />
@@ -104,6 +104,7 @@
     <Compile Include="IntegrationTests\Linq\LinqTestsBase.cs" />
     <Compile Include="IntegrationTests\Linq\MongoQueryTests.cs" />
     <Compile Include="IntegrationTests\Linq\MongoQueryProviderTests.cs" />
+    <Compile Include="UnitTests\Configuration\MongoConfigurationTests.cs" />
     <Compile Include="UnitTests\Serialization\Builders\DocumentPropertyTests.cs" />
     <Compile Include="UnitTests\Serialization\Builders\EmbeddedClassPropertyTests.cs" />
     <Compile Include="UnitTests\Serialization\Builders\EnumerablePropertyTests.cs" />
