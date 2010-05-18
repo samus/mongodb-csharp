@@ -14,6 +14,7 @@ namespace MongoDB
     {
         private readonly List<string> _orderedKeys;
         private readonly Dictionary<string,object > _dictionary;
+        private readonly IComparer<string> _keyComparer;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="Document"/> class.
@@ -26,12 +27,15 @@ namespace MongoDB
         /// <summary>
         /// Initialize a new instance of the <see cref="Document"/> class with an optional key sorter.
         /// </summary>
-        public Document(IEqualityComparer<string> comparer)
+        public Document(IComparer<string> keyComparer)
             :this()
-        {            
-            _dictionary = new Dictionary<string, object>(comparer);
+        {
+            if(keyComparer == null)
+                throw new ArgumentNullException("keyComparer");
+
+            _keyComparer = keyComparer;
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Document"/> class and
         /// add's the given values to it.
@@ -117,7 +121,7 @@ namespace MongoDB
         /// <param name="key">The key.</param>
         /// <returns></returns>
         public T Get<T>(string key){
-            object value = Get(key);
+            var value = Get(key);
             if (value == null)
                 return default(T);
             return (T)Convert.ChangeType(value, typeof(T));
@@ -170,6 +174,7 @@ namespace MongoDB
         {
             _dictionary.Add(key, value);
             _orderedKeys.Add(key);//Relies on ArgumentException from above if key already exists.
+            EnsureKeyOrdering();
             return this;
         }
 
@@ -217,6 +222,8 @@ namespace MongoDB
 
             _dictionary[key] = value;
 
+            EnsureKeyOrdering();
+
             return this;
         }
 
@@ -229,6 +236,7 @@ namespace MongoDB
         public void Insert(string key, object value, int position){
             _dictionary.Add(key, value);//Relies on ArgumentException from above if key already exists.
             _orderedKeys.Insert(position, key);
+            EnsureKeyOrdering();
         }
 
         /// <summary>
@@ -294,8 +302,7 @@ namespace MongoDB
         /// <exception cref="T:System.NotSupportedException">
         /// The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
         /// </exception>
-        void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
-        {
+        void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item){
             Add(item.Key, item.Value);
         }
 
@@ -494,6 +501,16 @@ namespace MongoDB
         /// </returns>
         public override string ToString(){
             return JsonFormatter.Serialize(this);
+        }
+
+        /// <summary>
+        /// Ensures the key ordering.
+        /// </summary>
+        private void EnsureKeyOrdering(){
+            if(_keyComparer==null)
+                return;
+
+            _orderedKeys.Sort(_keyComparer);
         }
     }
 }
