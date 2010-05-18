@@ -11,7 +11,8 @@ namespace MongoDB.UnitTests.Bson
     {
         private char euro = '\u20ac';
 
-        private string WriteStringAndGetHex(string val){
+        private string WriteStringAndGetHex(string val)
+        {
             var ms = new MemoryStream();
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             writer.Write(val, false);
@@ -19,7 +20,8 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestCalculateSizeOfComplexDoc(){
+        public void TestCalculateSizeOfComplexDoc()
+        {
             var doc = new Document();
             doc.Add("a", "a");
             doc.Add("b", 1);
@@ -32,7 +34,8 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestCalculateSizeOfEmptyDoc(){
+        public void TestCalculateSizeOfEmptyDoc()
+        {
             var doc = new Document();
             var ms = new MemoryStream();
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
@@ -41,10 +44,9 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestCalculateSizeOfSimpleDoc(){
-            var doc = new Document();
-            doc.Add("a", "a");
-            doc.Add("b", 1);
+        public void TestCalculateSizeOfSimpleDoc()
+        {
+            var doc = new Document {{"a", "a"}, {"b", 1}};
 
             var ms = new MemoryStream();
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
@@ -54,7 +56,18 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestNullsDontThrowExceptions(){
+        public void TestLocalDateTimeIsWrittenAsUtcTime()
+        {
+            var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Local);
+
+            var base64 = Serialize(new Document("time", dateTime));
+
+            Assert.AreEqual("EwAAAAl0aW1lAIDaHOklAQAAAA==", base64);
+        }
+
+        [Test]
+        public void TestNullsDontThrowExceptions()
+        {
             var ms = new MemoryStream();
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             var doc = new Document().Add("n", null);
@@ -69,7 +82,8 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestWriteArrayDoc(){
+        public void TestWriteArrayDoc()
+        {
             const string expected = "2000000002300002000000610002310002000000620002320002000000630000";
             var ms = new MemoryStream();
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
@@ -83,7 +97,8 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestWriteDocument(){
+        public void TestWriteDocument()
+        {
             var ms = new MemoryStream();
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             const string expected = "1400000002746573740005000000746573740000";
@@ -98,21 +113,39 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestWriteMultibyteString(){
+        public void TestWriteMultibyteString()
+        {
             var val = new StringBuilder().Append(euro, 3).ToString();
             var expected = BitConverter.ToString(Encoding.UTF8.GetBytes(val + '\0'));
             Assert.AreEqual(expected, WriteStringAndGetHex(val));
         }
 
         [Test]
-        public void TestWriteMultibyteStringLong(){
+        public void TestWriteMultibyteStringLong()
+        {
             var val = new StringBuilder().Append("ww").Append(euro, 180).ToString();
             var expected = BitConverter.ToString(Encoding.UTF8.GetBytes(val + '\0'));
             Assert.AreEqual(expected, WriteStringAndGetHex(val));
         }
 
         [Test]
-        public void TestWriteString(){
+        public void TestWriteSingle()
+        {
+            var expected = "000000E0FFFFEF47";
+            var ms = new MemoryStream();
+            var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
+            var val = Single.MaxValue;
+
+            writer.WriteValue(BsonType.Number, val);
+
+            var hexdump = BitConverter.ToString(ms.ToArray());
+            hexdump = hexdump.Replace("-", "");
+            Assert.AreEqual(expected, hexdump);
+        }
+
+        [Test]
+        public void TestWriteString()
+        {
             var ms = new MemoryStream();
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             const string expected = "54-65-73-74-73-2E-69-6E-73-65-72-74-73-00";
@@ -124,8 +157,34 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
+        public void TestWriteSymbol()
+        {
+            var expected = "0700000073796D626F6C00";
+
+            var ms = new MemoryStream();
+            var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
+            MongoSymbol val = "symbol";
+            Assert.IsTrue(String.IsInterned(val) != null);
+            writer.WriteValue(BsonType.Symbol, val);
+            var hexdump = BitConverter.ToString(ms.ToArray()).Replace("-", "");
+
+            Assert.AreEqual(expected, hexdump);
+        }
+
+        [Test]
+        public void TestWriteUtcTimeByDefault()
+        {
+            var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Utc);
+
+            var base64 = Serialize(new Document("time", dateTime));
+
+            Assert.AreEqual("EwAAAAl0aW1lAADJU+klAQAAAA==", base64);
+        }
+
+        [Test]
         [ExpectedException(typeof(ArgumentException), UserMessage = "Shouldn't be able to write large document")]
-        public void TestWritingTooLargeDocument(){
+        public void TestWritingTooLargeDocument()
+        {
             var ms = new MemoryStream();
             var writer = new BsonWriter(ms, new BsonDocumentDescriptor());
             var b = new Binary(new byte[BsonInfo.MaxDocumentSize]);
@@ -135,52 +194,11 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestWriteUtcTimeByDefault(){
-            var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Utc);
-            
-            var base64 = Serialize(new Document("time", dateTime));
-
-            Assert.AreEqual("EwAAAAl0aW1lAADJU+klAQAAAA==",base64);
-        }
-
-        [Test]
-        public void TestLocalDateTimeIsWrittenAsUtcTime()
+        public void TestWriteBytesAsBinary()
         {
-            var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Local);
+            var bson = Serialize(new Document("bytes", new byte[] {10, 12}));
 
-            var base64 = Serialize(new Document("time", dateTime));
-
-            Assert.AreEqual("EwAAAAl0aW1lAIDaHOklAQAAAA==", base64);
+            Assert.AreEqual("FwAAAAVieXRlcwAGAAAAAgIAAAAKDAA=",bson);
         }
-        
-        [Test]
-        public void TestWriteSingle(){
-            string expected = "000000E0FFFFEF47";
-            MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
-            Single val = Single.MaxValue;
-            
-            writer.WriteValue(BsonType.Number, val);
-            
-            string hexdump = BitConverter.ToString(ms.ToArray());
-            hexdump = hexdump.Replace("-","");
-            Assert.AreEqual(expected, hexdump);
-            
-            
-        }
-        
-        [Test]
-        public void TestWriteSymbol(){
-            string expected = "0700000073796D626F6C00";
-                   
-            MemoryStream ms = new MemoryStream();
-            BsonWriter writer = new BsonWriter(ms, new BsonDocumentDescriptor());
-            MongoSymbol val = "symbol";
-            Assert.IsTrue(String.IsInterned(val) != null);
-            writer.WriteValue(BsonType.Symbol, val);
-            string hexdump = BitConverter.ToString(ms.ToArray()).Replace("-","");
-            
-            Assert.AreEqual(expected, hexdump);
-        }        
     }
 }
