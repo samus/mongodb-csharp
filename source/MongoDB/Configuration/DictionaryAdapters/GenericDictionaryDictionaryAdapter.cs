@@ -40,8 +40,11 @@ namespace MongoDB.Configuration.DictionaryAdapters
             var keyProperty = type.GetProperty("Key");
             var valueProperty = type.GetProperty("Value");
 
+            if(dictionary==null)
+                return null;
+
             var doc = new Document();
-            foreach (object e in (IEnumerable)dictionary)
+            foreach (var e in (IEnumerable)dictionary)
                 doc.Add(keyProperty.GetValue(e, null).ToString(), valueProperty.GetValue(e, null));
 
             return doc;
