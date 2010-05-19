@@ -101,6 +101,7 @@
     <Compile Include="..\..\AssemblyInfoGlobal.cs">
       <Link>AssemblyInfoGlobal.cs</Link>
     </Compile>
+    <Compile Include="BinarySubtype.cs" />
     <Compile Include="Bson\BsonType.cs" />
     <Compile Include="Bson\BsonInfo.cs" />
     <Compile Include="Bson\BsonDocumentBuilder.cs" />
