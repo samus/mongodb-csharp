@@ -334,7 +334,7 @@ namespace MongoDB.Bson
             Position += 4;
             var subtype = _reader.ReadByte();
             Position ++;
-            if(subtype == (byte)Binary.TypeCode.General){
+            if(subtype == (byte)BinarySubtype.General){
                 size = _reader.ReadInt32();
                 Position += 4;
             }
@@ -348,7 +348,7 @@ namespace MongoDB.Bson
 
             return new Binary{
                 Bytes = bytes,
-                Subtype = (Binary.TypeCode)subtype
+                Subtype = (BinarySubtype)subtype
             };
         }
 

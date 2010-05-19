@@ -10,14 +10,14 @@ namespace MongoDB.UnitTests
         public void CanCreateBinary(){
             var binary = new Binary();
             Assert.IsNull(binary.Bytes);
-            Assert.AreEqual(Binary.TypeCode.Unknown, binary.Subtype);
+            Assert.AreEqual(BinarySubtype.Unknown, binary.Subtype);
         }
 
         [Test]
         public void CanCreateBinaryFromNull(){
             var binary = new Binary(null);
             Assert.IsNull(binary.Bytes);
-            Assert.AreEqual(Binary.TypeCode.General, binary.Subtype);
+            Assert.AreEqual(BinarySubtype.General, binary.Subtype);
         }
 
         [Test]
@@ -25,15 +25,15 @@ namespace MongoDB.UnitTests
             var bytes = new byte[] { 10 };
             var binary = new Binary(bytes);
             Assert.AreEqual(bytes,binary.Bytes);
-            Assert.AreEqual(Binary.TypeCode.General, binary.Subtype);
+            Assert.AreEqual(BinarySubtype.General, binary.Subtype);
         }
 
         [Test]
         public void CanCreateBinaryFromBytesAndSubtype(){
             var bytes = new byte[] {10};
-            var binary = new Binary(bytes,Binary.TypeCode.UserDefined);
+            var binary = new Binary(bytes,BinarySubtype.UserDefined);
             Assert.AreEqual(bytes, binary.Bytes);
-            Assert.AreEqual(Binary.TypeCode.UserDefined, binary.Subtype);
+            Assert.AreEqual(BinarySubtype.UserDefined, binary.Subtype);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace MongoDB.UnitTests
 
         [Test]
         public void CanBeCloned(){
-            var binarySource = new Binary(new byte[] {10, 20}, Binary.TypeCode.UserDefined);
+            var binarySource = new Binary(new byte[] {10, 20}, BinarySubtype.UserDefined);
             var binaryDest = binarySource.Clone() as Binary;
             Assert.IsNotNull(binaryDest);
             Assert.AreEqual(binarySource.Bytes,binaryDest.Bytes);

@@ -9,25 +9,6 @@ namespace MongoDB
     public class Binary : IEquatable<Binary>, ICloneable, IEnumerable<byte>
     {
         /// <summary>
-        /// </summary>
-        public enum TypeCode : byte
-        {
-            /// <summary>
-            /// </summary>
-            Unknown = 0,
-            /// <summary>
-            /// </summary>
-            General = 2,
-            // Uuid = 3 is now replaced by Guid
-            /// <summary>
-            /// </summary>
-            Md5 = 5,
-            /// <summary>
-            /// </summary>
-            UserDefined = 80
-        }
-
-        /// <summary>
         ///   Initializes a new instance of the <see cref = "Binary" /> class.
         /// </summary>
         public Binary()
@@ -41,7 +22,7 @@ namespace MongoDB
         public Binary(byte[] bytes)
         {
             Bytes = bytes;
-            Subtype = TypeCode.General;
+            Subtype = BinarySubtype.General;
         }
 
         /// <summary>
@@ -49,7 +30,7 @@ namespace MongoDB
         /// </summary>
         /// <param name = "bytes">The bytes.</param>
         /// <param name = "subtype">The subtype.</param>
-        public Binary(byte[] bytes, TypeCode subtype)
+        public Binary(byte[] bytes, BinarySubtype subtype)
         {
             Bytes = bytes;
             Subtype = subtype;
@@ -65,7 +46,7 @@ namespace MongoDB
         ///   Gets or sets the subtype.
         /// </summary>
         /// <value>The subtype.</value>
-        public TypeCode Subtype { get; set; }
+        public BinarySubtype Subtype { get; set; }
 
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.

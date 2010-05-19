@@ -134,7 +134,7 @@ namespace MongoDB.UnitTests.Util
         [Test]
         public void TestSerializeDocWithBinary(){
             var doc = new Document(){{"b", new Binary(){Bytes = new byte[]{0,1,2,3,4}, 
-                                                            Subtype = Binary.TypeCode.General}}};
+                                                            Subtype = BinarySubtype.General}}};
             Assert.AreEqual(@"{ ""b"": { ""$binary"": ""AAECAwQ="", ""$type"" : 2 } }", 
                             JsonFormatter.Serialize(doc));
         }

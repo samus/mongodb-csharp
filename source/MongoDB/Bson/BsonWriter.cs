@@ -143,7 +143,7 @@ namespace MongoDB.Bson
         /// <param name = "binary">The binary.</param>
         private void Write(Binary binary)
         {
-            if(binary.Subtype == Binary.TypeCode.General)
+            if(binary.Subtype == BinarySubtype.General)
             {
                 _writer.Write(binary.Bytes.Length + 4);
                 _writer.Write((byte)binary.Subtype);
@@ -421,7 +421,7 @@ namespace MongoDB.Bson
         {
             var size = 4; //size int
             size += 1; //subtype
-            if(binary.Subtype == Binary.TypeCode.General)
+            if(binary.Subtype == BinarySubtype.General)
                 size += 4; //embedded size int
             size += binary.Bytes.Length;
             return size;
