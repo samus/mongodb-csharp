@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MongoDB.Configuration.DictionaryAdapters
 {
@@ -36,14 +37,24 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <returns></returns>
         public Document GetDocument(object dictionary, Type valueType)
         {
-            var type = typeof(KeyValuePair<,>).MakeGenericType(typeof(string), valueType);
-            var keyProperty = type.GetProperty("Key");
-            var valueProperty = type.GetProperty("Value");
-
             if(dictionary==null)
                 return null;
 
+            var dictionaryType = dictionary.GetType();
+
+            if(!dictionaryType.IsGenericType)
+                throw new InvalidOperationException("Only generic IDictionary is supported");
+            if(dictionaryType.GetInterface(typeof(IDictionary<,>).FullName)==null)
+                throw new InvalidOperationException("Only generic IDictionary is supported");
+
+            var keyType = dictionaryType.GetGenericArguments().First();
+
+            var type = typeof(KeyValuePair<,>).MakeGenericType(keyType, valueType);
+            var keyProperty = type.GetProperty("Key");
+            var valueProperty = type.GetProperty("Value");
+
             var doc = new Document();
+
             foreach (var e in (IEnumerable)dictionary)
                 doc.Add(keyProperty.GetValue(e, null).ToString(), valueProperty.GetValue(e, null));
 
