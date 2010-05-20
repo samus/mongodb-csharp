@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace MongoDB
@@ -113,6 +114,21 @@ namespace MongoDB
         /// <returns></returns>
         public ICursor Hint(Document index){
             _cursor.Hint(index);
+            return this;
+        }
+
+        /// <summary>
+        /// Keeps the cursor open.
+        /// </summary>
+        /// <param name="value">if set to <c>true</c> [value].</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// By default cursors are closed automaticly after documents
+        /// are Enumerated.
+        /// </remarks>
+        public ICursor KeepCursor(bool value)
+        {
+            _cursor.KeepCursor(value);
             return this;
         }
 

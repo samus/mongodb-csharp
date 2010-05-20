@@ -22,6 +22,7 @@ namespace MongoDB
         private QueryOptions _options;
         private ReplyMessage<T> _reply;
         private int _skip;
+        private bool _keepCursor;
         private readonly ISerializationFactory _serializationFactory;
 
         /// <summary>
@@ -167,6 +168,21 @@ namespace MongoDB
         }
 
         /// <summary>
+        /// Keeps the cursor open.
+        /// </summary>
+        /// <param name="value">if set to <c>true</c> [value].</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// By default cursors are closed automaticly after documents 
+        /// are Enumerated. 
+        /// </remarks>
+        public ICursor<T> KeepCursor(bool value)
+        {
+            _keepCursor = value;
+            return this;
+        }
+
+        /// <summary>
         /// Snapshots the specified index.
         /// </summary>
         public ICursor<T> Snapshot(){
@@ -223,6 +239,9 @@ namespace MongoDB
                         yield return document;
                 }
                 while(Id > 0 && _limit<CursorPosition);
+
+                if(!_keepCursor)
+                    Dispose(true);
             }
         }
 

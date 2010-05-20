@@ -74,9 +74,20 @@ namespace MongoDB {
         /// Hints the specified index.
         /// </summary>
         /// <param name="index">The index.</param>
-        /// <returns></returns>
+        /// <returns></returns>        
         ICursor Hint(Document index);
-        
+
+        /// <summary>
+        /// Keeps the cursor open.
+        /// </summary>
+        /// <param name="value">if set to <c>true</c> [value].</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// By default cursors are closed automaticly after documents 
+        /// are Enumerated. 
+        /// </remarks>
+        ICursor KeepCursor(bool value);
+
         /// <summary>
         /// Snapshots this instance.
         /// </summary>
