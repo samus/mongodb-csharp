@@ -91,12 +91,12 @@ namespace MongoDB
         /// </exception>
         public void CopyTo(Document[] array, int arrayIndex)
         {
-            var query = new Document().Add("$orderby", new Document().Add("_id", 1));
-            var idx = arrayIndex;
-            foreach(var doc in _collection.Find(query, array.Length - 1, arrayIndex).Documents)
+            var query = new Document("$orderby", new Document("_id", 1));
+            var index = arrayIndex;
+            foreach(var document in _collection.Find(query, array.Length - 1, arrayIndex).Documents)
             {
-                array[idx] = doc;
-                idx++;
+                array[index] = document;
+                index++;
             }
         }
 
