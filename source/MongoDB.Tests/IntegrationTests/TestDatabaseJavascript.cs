@@ -138,24 +138,24 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestCopyTo()
         {
-            const int cnt = 5;
-            var funcs = new Document[cnt];
-            var func = new Code("function(x,y){return x +y;}");
+            const int count = 5;
+            var functions = new Document[count];
+            var funcCode = new Code("function(x,y){return x+y;}");
 
-            for(var i = 0; i < cnt; i++)
+            for(var i = 0; i < count; i++)
             {
-                var name = "_" + i + "fcopyTo";
-                var doc = new Document().Add("_id", name).Add("value", func);
-                _javascript[name] = doc;
+                var name = string.Format("_{0}fcopyTo", i);
+                _javascript[name] = new Document("_id", name).Add("value", funcCode);
             }
 
-            _javascript.CopyTo(funcs, 1);
-            Assert.IsNull(funcs[0]);
-            Assert.IsNotNull(funcs[1]);
-            Assert.IsNotNull(funcs[4]);
+            _javascript.CopyTo(functions, 1);
 
-            Assert.AreEqual("_1fcopyTo", funcs[1]["_id"]);
-            Assert.IsTrue(((string)funcs[1]["_id"]).StartsWith("_1")); //as long as no other _ named functions get in.
+            Assert.IsNull(functions[0]);
+            Assert.IsNotNull(functions[1]);
+            Assert.IsNotNull(functions[4]);
+
+            Assert.AreEqual("_1fcopyTo", functions[1]["_id"]);
+            Assert.IsTrue(((string)functions[1]["_id"]).StartsWith("_1")); //as long as no other _ named functions get in.
         }
 
         [Test]
