@@ -41,7 +41,7 @@ namespace MongoDB
         /// </exception>
         public void Add(Document item)
         {
-            if(_collection.FindOne(new Document().Add("_id", item["_id"])) != null)
+            if(_collection.FindOne(new Document("_id", item["_id"])) != null)
                 throw new ArgumentException(String.Format("Function {0} already exists in the database.", item["_id"]));
             _collection.Insert(item);
         }
@@ -91,12 +91,14 @@ namespace MongoDB
         /// </exception>
         public void CopyTo(Document[] array, int arrayIndex)
         {
-            var query = new Document("$orderby", new Document("_id", 1));
-            var index = arrayIndex;
-            foreach(var document in _collection.Find(query, array.Length - 1, arrayIndex).Documents)
+            using(var cursor = _collection.FindAll().Limit(array.Length - 1).Skip(arrayIndex).Sort("_id"))
             {
-                array[index] = document;
-                index++;
+                var index = arrayIndex;
+                foreach(var document in cursor.Documents)
+                {
+                    array[index] = document;
+                    index++;
+                }
             }
         }
 
