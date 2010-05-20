@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MongoDB
 {
@@ -17,9 +18,23 @@ namespace MongoDB
         /// <param name = "database">The database.</param>
         internal DatabaseJavascript(IMongoDatabase database)
         {
+            if(database == null)
+                throw new ArgumentNullException("database");
+
             _collection = database["system.js"];
-            //Needed for some versions of the db to retrieve the functions.
-            _collection.MetaData.CreateIndex(new Document().Add("_id", 1), true);
+
+            EnsureIndexExists();
+        }
+
+        /// <summary>
+        /// Ensures the index exists.
+        /// </summary>
+        /// <remarks>
+        /// Needed for some versions of the db to retrieve the functions.
+        /// </remarks>
+        private void EnsureIndexExists()
+        {
+            _collection.MetaData.CreateIndex(new Document("_id", 1), true);
         }
 
         /// <summary>
@@ -41,8 +56,9 @@ namespace MongoDB
         /// </exception>
         public void Add(Document item)
         {
-            if(_collection.FindOne(new Document("_id", item["_id"])) != null)
-                throw new ArgumentException(String.Format("Function {0} already exists in the database.", item["_id"]));
+            if(_collection.FindOne(new Document("_id", item.Id)) != null)
+                throw new ArgumentException(String.Format("Function {0} already exists in the database.", item.Id));
+
             _collection.Insert(item);
         }
 
@@ -128,10 +144,10 @@ namespace MongoDB
         {
             get
             {
-                var cnt = _collection.Count();
-                if(cnt > int.MaxValue)
+                var count = _collection.Count();
+                if(count > int.MaxValue)
                     return int.MaxValue; //lots of functions.
-                return (int)cnt;
+                return (int)count;
             }
         }
 
@@ -154,9 +170,11 @@ namespace MongoDB
         /// </returns>
         public IEnumerator<Document> GetEnumerator()
         {
-            foreach(var doc in _collection.FindAll().Documents)
-                yield return doc;
-            yield break;
+            using(var cursor = _collection.FindAll())
+            {
+                foreach(var document in cursor.Documents)
+                    yield return document;
+            }
         }
 
         /// <summary>
@@ -189,10 +207,7 @@ namespace MongoDB
         /// </summary>
         public List<string> GetFunctionNames()
         {
-            var list = new List<string>();
-            foreach(var document in _collection.FindAll().Documents)
-                list.Add((String)document["_id"]);
-            return list;
+            return _collection.FindAll().Documents.Select(document => (String)document.Id).ToList();
         }
 
         /// <summary>
@@ -212,7 +227,7 @@ namespace MongoDB
         /// <param name="func">The func.</param>
         public void Add(string name, Code func)
         {
-            Add(new Document().Add("_id", name).Add("value", func));
+            Add(new Document("_id", name).Add("value", func));
         }
 
         /// <summary>
@@ -226,7 +241,7 @@ namespace MongoDB
         /// </remarks>
         public void Add(string name, Code func, float version)
         {
-            Add(new Document().Add("_id", name).Add("value", func).Add("version", version));
+            Add(new Document("_id", name).Add("value", func).Add("version", version));
         }
 
         /// <summary>
@@ -259,7 +274,7 @@ namespace MongoDB
         /// <returns></returns>
         public bool Remove(string name)
         {
-            _collection.Remove(new Document().Add("_id", name));
+            _collection.Remove(new Document("_id", name));
             return true;
         }
     }
