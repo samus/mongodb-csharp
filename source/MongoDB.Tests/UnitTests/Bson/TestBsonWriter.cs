@@ -200,5 +200,15 @@ namespace MongoDB.UnitTests.Bson
 
             Assert.AreEqual("FwAAAAVieXRlcwAGAAAAAgIAAAAKDAA=",bson);
         }
+
+        [Test]
+        public void TestWriteTimeSpanAsTicks()
+        {
+            var span = TimeSpan.FromSeconds(123456);
+
+            var bson = Serialize(new Document("span", span));
+
+            Assert.AreEqual("EwAAABJzcGFuAACggnEfAQAAAA==",bson);
+        }
     }
 }

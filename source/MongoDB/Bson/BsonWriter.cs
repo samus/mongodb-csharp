@@ -68,7 +68,10 @@ namespace MongoDB.Bson
                     _writer.Write((int)obj);
                     return;
                 case BsonType.Long:
-                    _writer.Write((long)obj);
+                    if(obj is TimeSpan)
+                        _writer.Write(((TimeSpan)obj).Ticks);
+                    else
+                        _writer.Write((long)obj);
                     return;
                 case BsonType.Date:
                     Write((DateTime)obj);
@@ -579,6 +582,8 @@ namespace MongoDB.Bson
                 return BsonType.Oid;
             if(type == typeof(DateTime))
                 return BsonType.Date;
+            if(type == typeof(TimeSpan))
+                return BsonType.Long;
             if(type == typeof(MongoRegex))
                 return BsonType.Regex;
             if(type == typeof(DBRef))
