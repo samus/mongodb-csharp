@@ -98,7 +98,7 @@ namespace MongoDB.Configuration
         /// <summary>
         ///   Ensures the modifiable.
         /// </summary>
-        private void TryModify()
+        protected void TryModify()
         {
             if(!IsModifiable)
                 throw new InvalidOperationException("Value can not not be modified");
@@ -107,7 +107,7 @@ namespace MongoDB.Configuration
         /// <summary>
         /// Validates the and seal.
         /// </summary>
-        public void ValidateAndSeal()
+        public virtual void ValidateAndSeal()
         {
             if(ConnectionString == null)
                 throw new MongoException("ConnectionString can not be null");
