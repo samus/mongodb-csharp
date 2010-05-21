@@ -202,13 +202,23 @@ namespace MongoDB.UnitTests.Bson
         }
 
         [Test]
-        public void TestWriteTimeSpanAsTicks()
+        public void TestWriteTimeSpanAsLong()
         {
             var span = TimeSpan.FromSeconds(123456);
 
             var bson = Serialize(new Document("span", span));
 
             Assert.AreEqual("EwAAABJzcGFuAACggnEfAQAAAA==",bson);
+        }
+
+        [Test]
+        public void TestWriteUriAsString()
+        {
+            var uri = new Uri("http://www.microsoft.com");
+
+            var bson = Serialize(new Document("uri", uri));
+
+            Assert.AreEqual("KAAAAAJ1cmkAGgAAAGh0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS8AAA==",bson);
         }
     }
 }

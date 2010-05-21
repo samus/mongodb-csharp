@@ -83,10 +83,11 @@ namespace MongoDB.Bson
                     _writer.Write(Convert.ToDouble(obj));
                     return;
                 case BsonType.String:
-                {
-                    Write((String)obj);
+                    if(obj is string)
+                        Write((string)obj);
+                    else
+                        Write(obj.ToString());
                     return;
-                }
                 case BsonType.Obj:
                     if(obj is DBRef)
                         Write((DBRef)obj);
@@ -97,25 +98,17 @@ namespace MongoDB.Bson
                     WriteArray((IEnumerable)obj);
                     return;
                 case BsonType.Regex:
-                {
                     Write((MongoRegex)obj);
                     return;
-                }
                 case BsonType.Code:
-                {
                     Write((Code)obj);
                     return;
-                }
                 case BsonType.Symbol:
-                {
                     WriteValue(BsonType.String, ((MongoSymbol)obj).Value);
                     return;
-                }
                 case BsonType.CodeWScope:
-                {
                     Write((CodeWScope)obj);
                     return;
-                }
                 case BsonType.Binary:
                 {
                     if(obj is Guid)
@@ -343,25 +336,19 @@ namespace MongoDB.Bson
                 case BsonType.Number:
                     return sizeof(Double);
                 case BsonType.String:
-                    return CalculateSize((string)obj);
+                    if(obj is string)
+                        return CalculateSize((string)obj);
+                    return CalculateSize(obj.ToString());
                 case BsonType.Obj:
-                {
-                    if(obj.GetType() == typeof(DBRef))
-                        return CalculateSize((DBRef)obj);
-                    return CalculateSizeObject(obj);
-                }
+                    return obj.GetType() == typeof(DBRef) ? CalculateSize((DBRef)obj) : CalculateSizeObject(obj);
                 case BsonType.Array:
                     return CalculateSize((IEnumerable)obj);
                 case BsonType.Regex:
-                {
                     return CalculateSize((MongoRegex)obj);
-                }
                 case BsonType.Code:
                     return CalculateSize((Code)obj);
                 case BsonType.CodeWScope:
-                {
                     return CalculateSize((CodeWScope)obj);
-                }
                 case BsonType.Binary:
                 {
                     if(obj is Guid)
@@ -372,9 +359,7 @@ namespace MongoDB.Bson
                     return CalculateSize((Binary)obj);
                 }
                 case BsonType.Symbol:
-                {
                     return CalculateSize(((MongoSymbol)obj).Value, true);
-                }
             }
 
             throw new NotImplementedException(String.Format("Calculating size of {0} is not implemented.", obj.GetType().Name));
@@ -565,12 +550,13 @@ namespace MongoDB.Bson
 
             if(obj is Enum) //special case enums               
                 type = Enum.GetUnderlyingType(type);
-
             if(type == typeof(Double))
                 return BsonType.Number;
             if(type == typeof(Single))
                 return BsonType.Number;
             if(type == typeof(String))
+                return BsonType.String;
+            if(type == typeof(Uri))
                 return BsonType.String;
             if(type == typeof(int))
                 return BsonType.Integer;
