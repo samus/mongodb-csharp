@@ -10,13 +10,23 @@ namespace MongoDB.Configuration.Mapping.Model
     public class DictionaryMemberMap : PersistentMemberMap
     {
         private readonly IDictionaryAdapter _dictionaryAdapter;
-        private readonly Type _valueType;
 
-        ///<summary>
-        ///</summary>
+        /// <summary>
+        /// Gets the type of the key.
+        /// </summary>
+        /// <value>The type of the key.</value>
+        public Type KeyType
+        {
+            get { return _dictionaryAdapter.KeyType; }
+        }
+
+        /// <summary>
+        /// Gets the type of the value.
+        /// </summary>
+        /// <value>The type of the value.</value>
         public Type ValueType
         {
-            get { return _valueType; }
+            get { return _dictionaryAdapter.ValueType; }
         }
 
         /// <summary>
@@ -29,11 +39,10 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="persistNull">if set to <c>true</c> [persist null].</param>
         /// <param name="dictionaryAdapter">The dictionary adapter.</param>
         /// <param name="valueType">Type of the value.</param>
-        public DictionaryMemberMap(string memberName, Func<object, object> getter, Action<object, object> setter, string alias, bool persistNull, IDictionaryAdapter dictionaryAdapter, Type valueType)
+        public DictionaryMemberMap(string memberName, Func<object, object> getter, Action<object, object> setter, string alias, bool persistNull, IDictionaryAdapter dictionaryAdapter)
             : base(memberName, typeof(Document), getter, setter, null, alias, persistNull)
         {
             _dictionaryAdapter = dictionaryAdapter;
-            _valueType = valueType;
         }
 
         /// <summary>
@@ -44,7 +53,7 @@ namespace MongoDB.Configuration.Mapping.Model
         public override object GetValue(object instance)
         {
             var value = base.GetValue(instance);
-            return _dictionaryAdapter.GetDocument(value, _valueType);
+            return _dictionaryAdapter.GetDocument(value);
         }
 
         /// <summary>
@@ -54,7 +63,7 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="value">The value.</param>
         public override void SetValue(object instance, object value)
         {
-            base.SetValue(instance, _dictionaryAdapter.CreateDictionary(_valueType, (Document)value));
+            base.SetValue(instance, _dictionaryAdapter.CreateDictionary((Document)value));
         }
     }
 }

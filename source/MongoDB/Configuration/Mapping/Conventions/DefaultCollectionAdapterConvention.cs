@@ -63,7 +63,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        public ICollectionAdapter GetCollectionType(Type type)
+        public ICollectionAdapter GetCollectionAdapter(Type type)
         {
             CollectionTypeFactoryDelegate factory;
             if (CollectionTypes.TryGetValue(type, out factory))

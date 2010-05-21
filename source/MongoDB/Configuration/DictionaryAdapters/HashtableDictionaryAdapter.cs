@@ -9,12 +9,30 @@ namespace MongoDB.Configuration.DictionaryAdapters
     public class HashtableDictionaryAdapter : IDictionaryAdapter
     {
         /// <summary>
+        /// Gets the type of the key.
+        /// </summary>
+        /// <value>The type of the key.</value>
+        public Type KeyType
+        {
+            get { return typeof(object); }
+        }
+
+        /// <summary>
+        /// Gets the type of the value.
+        /// </summary>
+        /// <value>The type of the value.</value>
+        public Type ValueType
+        {
+            get { return typeof(object); }
+        }
+
+        /// <summary>
         /// Creates the dictionary.
         /// </summary>
         /// <param name="valueType">Type of the value.</param>
         /// <param name="document">The document.</param>
         /// <returns></returns>
-        public object CreateDictionary(Type valueType, Document document)
+        public object CreateDictionary(Document document)
         {
             var hashtable = new Hashtable();
 
@@ -30,7 +48,7 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <param name="collection">The collection.</param>
         /// <param name="valueType">Type of the value.</param>
         /// <returns></returns>
-        public Document GetDocument(object collection, Type valueType)
+        public Document GetDocument(object collection)
         {
             var hashtable = collection as Hashtable;
             if (hashtable == null)

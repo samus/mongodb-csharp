@@ -10,17 +10,10 @@ namespace MongoDB.Configuration.Mapping.Conventions
     public interface IDictionarynAdapterConvention
     {
         /// <summary>
-        /// Gets the type of the dictionary.
+        /// Gets the dictionary adapter.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        IDictionaryAdapter GetDictionaryType(Type type);
-
-        /// <summary>
-        /// Gets the type of the value.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns></returns>
-        Type GetValueType(Type type);
+        IDictionaryAdapter GetDictionaryAdapter(Type type);
     }
 }

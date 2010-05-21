@@ -82,16 +82,7 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <param name="member">The member.</param>
         /// <param name="memberReturnType">Type of the member return.</param>
         /// <returns></returns>
-        IDictionaryAdapter GetDictionaryAdadpter(Type classType, MemberInfo member, Type memberReturnType);
-
-        /// <summary>
-        /// Gets the type of the dictionary value.
-        /// </summary>
-        /// <param name="classType">Type of the class.</param>
-        /// <param name="member">The member.</param>
-        /// <param name="memberReturnType">Type of the member return.</param>
-        /// <returns></returns>
-        Type GetDictionaryValueType(Type classType, MemberInfo member, Type memberReturnType);
+        IDictionaryAdapter GetDictionaryAdapter(Type classType, MemberInfo member, Type memberReturnType);
 
         /// <summary>
         /// Gets the descriminator for the class type.

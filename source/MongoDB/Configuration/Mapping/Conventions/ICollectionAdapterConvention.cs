@@ -10,11 +10,11 @@ namespace MongoDB.Configuration.Mapping.Conventions
     public interface ICollectionAdapterConvention
     {
         /// <summary>
-        /// Gets the type of the collection.
+        /// Gets the collection adapter.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        ICollectionAdapter GetCollectionType(Type type);
+        ICollectionAdapter GetCollectionAdapter(Type type);
 
         /// <summary>
         /// Gets the type of the element.

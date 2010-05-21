@@ -8,12 +8,30 @@ namespace MongoDB.Configuration.DictionaryAdapters
     public class DocumentDictionaryAdapter : IDictionaryAdapter
     {
         /// <summary>
+        /// Gets the type of the key.
+        /// </summary>
+        /// <value>The type of the key.</value>
+        public Type KeyType
+        {
+            get { return typeof(string); }
+        }
+
+        /// <summary>
+        /// Gets the type of the value.
+        /// </summary>
+        /// <value>The type of the value.</value>
+        public Type ValueType
+        {
+            get { return typeof(object); }
+        }
+
+        /// <summary>
         /// Creates the dictionary.
         /// </summary>
         /// <param name="valueType">Type of the value.</param>
         /// <param name="document">The document.</param>
         /// <returns></returns>
-        public object CreateDictionary(Type valueType, Document document)
+        public object CreateDictionary(Document document)
         {
             return document;
         }
@@ -24,7 +42,7 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <param name="dictionary">The collection.</param>
         /// <param name="valueType">Type of the value.</param>
         /// <returns></returns>
-        public Document GetDocument(object dictionary, Type valueType)
+        public Document GetDocument(object dictionary)
         {
             return dictionary as Document;
         }

@@ -30,24 +30,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
             { typeof(Document), CreateDocumentType },
             { typeof(IDictionary), CreateHashtableType },
             { typeof(Hashtable), CreateHashtableType },
-            { typeof(IEnumerable<DictionaryEntry>), CreateHashtableType },
-            { typeof(Dictionary<,>), CreateGenericDictionaryType },
-            { typeof(IDictionary<,>), CreateGenericDictionaryType },
-        };
-
-        private delegate Type ValueTypeFactoryDelegate(Type type);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private static readonly Dictionary<Type, ValueTypeFactoryDelegate> ValueTypes = new Dictionary<Type, ValueTypeFactoryDelegate>
-        {
-            { typeof(Document), GetDocumentValueType },
-            { typeof(IDictionary), GetHashtableValueType },
-            { typeof(Hashtable), GetHashtableValueType },
-            { typeof(IEnumerable<DictionaryEntry>), GetHashtableValueType },
-            { typeof(Dictionary<,>), GetGenericDictionaryValueType },
-            { typeof(IDictionary<,>), GetGenericDictionaryValueType },
+            { typeof(IEnumerable<DictionaryEntry>), CreateHashtableType }
         };
 
         private DefaultDictionaryAdapterConvention()
@@ -58,7 +41,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns></returns>
-        public IDictionaryAdapter GetDictionaryType(Type type)
+        public IDictionaryAdapter GetDictionaryAdapter(Type type)
         {
             DictionaryTypeFactoryDelegate factory;
             if (DictionaryTypes.TryGetValue(type, out factory))
@@ -66,30 +49,13 @@ namespace MongoDB.Configuration.Mapping.Conventions
 
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
             {
-                Type genericType = type.GetGenericTypeDefinition();
-                if (DictionaryTypes.TryGetValue(genericType, out factory))
-                    return factory();
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the type of the value.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns></returns>
-        public Type GetValueType(Type type)
-        {
-            ValueTypeFactoryDelegate factory;
-            if (ValueTypes.TryGetValue(type, out factory))
-                return factory(type);
-
-            if (type.IsGenericType && !type.IsGenericTypeDefinition)
-            {
                 var genericType = type.GetGenericTypeDefinition();
-                if (ValueTypes.TryGetValue(genericType, out factory))
-                    return factory(type);
+                if (genericType == typeof(IDictionary<,>) || genericType == typeof(Dictionary<,>))
+                {
+                    var genericArgs = type.GetGenericArguments();
+                    Type adapterType = typeof(GenericDictionaryDictionaryAdapter<,>).MakeGenericType(genericArgs[0], genericArgs[1]);
+                    return (IDictionaryAdapter)Activator.CreateInstance(adapterType);
+                }
             }
 
             return null;
@@ -100,29 +66,9 @@ namespace MongoDB.Configuration.Mapping.Conventions
             return new DocumentDictionaryAdapter();
         }
 
-        private static Type GetDocumentValueType(Type type)
-        {
-            return typeof(object);
-        }
-
         private static IDictionaryAdapter CreateHashtableType()
         {
             return new HashtableDictionaryAdapter();
-        }
-
-        private static Type GetHashtableValueType(Type type)
-        {
-            return typeof(object);
-        }
-
-        private static IDictionaryAdapter CreateGenericDictionaryType()
-        {
-            return new GenericDictionaryDictionaryAdapter();
-        }
-
-        private static Type GetGenericDictionaryValueType(Type type)
-        {
-            return type.GetGenericArguments()[1];
         }
     }
 }

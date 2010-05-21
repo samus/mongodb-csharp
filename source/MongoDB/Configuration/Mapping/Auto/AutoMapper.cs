@@ -175,16 +175,15 @@ namespace MongoDB.Configuration.Mapping.Auto
         private PersistentMemberMap CreateMemberMap(Type classType, MemberInfo member){
             var memberReturnType = member.GetReturnType();
 
-            var dictionaryType = _profile.GetDictionaryAdadpter(classType, member, memberReturnType);
-            if (dictionaryType != null)
+            var dictionaryAdapter = _profile.GetDictionaryAdapter(classType, member, memberReturnType);
+            if (dictionaryAdapter != null)
                 return new DictionaryMemberMap(
                     member.Name,
                     MemberReflectionOptimizer.GetGetter(member),
                     MemberReflectionOptimizer.GetSetter(member),
                     _profile.GetAlias(classType, member),
                     _profile.GetPersistNull(classType, member),
-                    dictionaryType,
-                    _profile.GetDictionaryValueType(classType, member, memberReturnType));
+                    dictionaryAdapter);
 
             var collectionType = _profile.GetCollectionAdapter(classType, member, memberReturnType);
             if(collectionType != null)

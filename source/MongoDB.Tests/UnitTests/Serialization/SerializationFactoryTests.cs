@@ -193,7 +193,7 @@ namespace MongoDB.UnitTests.Serialization
         [Test]
         public void CanDeserializeIntGenericDictionaryWithComplexType()
         {
-            var bson = Serialize<Document>(new Document("Dict", new Document { { "key1", new Document("Name", "a") }, { "key2", new Document("Name", "b") } }));
+            var bson = Serialize<Document>(new Document("Dict", new Document { { "1", new Document("Name", "a") }, { "2", new Document("Name", "b") } }));
             var prop = Deserialize<GenericIntDictionaryWithComplexType>(bson);
 
             Assert.IsNotNull(prop);

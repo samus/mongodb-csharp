@@ -8,9 +8,25 @@ namespace MongoDB.Configuration.DictionaryAdapters
     /// <summary>
     /// 
     /// </summary>
-    public class GenericDictionaryDictionaryAdapter : IDictionaryAdapter
+    public class GenericDictionaryDictionaryAdapter<TKey, TValue> : IDictionaryAdapter
     {
-        private static readonly Type OpenType = typeof(Dictionary<,>);
+        /// <summary>
+        /// Gets the type of the key.
+        /// </summary>
+        /// <value>The type of the key.</value>
+        public Type KeyType 
+        { 
+            get { return typeof(TKey); } 
+        }
+
+        /// <summary>
+        /// Gets the type of the value.
+        /// </summary>
+        /// <value>The type of the value.</value>
+        public Type ValueType
+        {
+            get { return typeof(TValue); }
+        }
 
         /// <summary>
         /// Creates the dictionary.
@@ -18,13 +34,11 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <param name="valueType">Type of the value.</param>
         /// <param name="document">The document.</param>
         /// <returns></returns>
-        public object CreateDictionary(Type valueType, Document document)
+        public object CreateDictionary(Document document)
         {
-            var closedType = OpenType.MakeGenericType(typeof(string), valueType);
-            var instance = Activator.CreateInstance(closedType);
-            var addMethod = closedType.GetMethod("Add", new [] { typeof(string), valueType });
+            var instance = new Dictionary<TKey, TValue>();
             foreach (var pair in document)
-                addMethod.Invoke(instance, new [] {pair.Key, pair.Value });
+                instance.Add((TKey)Convert.ChangeType(pair.Key, typeof(TKey)), (TValue)pair.Value);
 
             return instance;
         }
@@ -35,28 +49,17 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <param name="dictionary">The collection.</param>
         /// <param name="valueType">Type of the value.</param>
         /// <returns></returns>
-        public Document GetDocument(object dictionary, Type valueType)
+        public Document GetDocument(object dictionary)
         {
-            if(dictionary==null)
+            var instance = dictionary as IDictionary<TKey, TValue>;
+
+            if (instance == null)
                 return null;
-
-            var dictionaryType = dictionary.GetType();
-
-            if(!dictionaryType.IsGenericType)
-                throw new InvalidOperationException("Only generic IDictionary is supported");
-            if(dictionaryType.GetInterface(typeof(IDictionary<,>).FullName)==null)
-                throw new InvalidOperationException("Only generic IDictionary is supported");
-
-            var keyType = dictionaryType.GetGenericArguments().First();
-
-            var type = typeof(KeyValuePair<,>).MakeGenericType(keyType, valueType);
-            var keyProperty = type.GetProperty("Key");
-            var valueProperty = type.GetProperty("Value");
 
             var doc = new Document();
 
-            foreach (var e in (IEnumerable)dictionary)
-                doc.Add(keyProperty.GetValue(e, null).ToString(), valueProperty.GetValue(e, null));
+            foreach (var e in instance)
+                doc.Add(e.Key.ToString(), e.Value);
 
             return doc;
         }
