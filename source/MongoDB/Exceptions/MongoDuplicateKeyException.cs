@@ -5,6 +5,7 @@ namespace MongoDB
     /// <summary>
     /// Raised when an action causes a unique constraint violation in an index. 
     /// </summary>
+    [Serializable]
     public class MongoDuplicateKeyException : MongoOperationException
     {
         /// <summary>

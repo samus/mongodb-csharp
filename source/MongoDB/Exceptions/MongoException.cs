@@ -5,6 +5,7 @@ namespace MongoDB
     /// <summary>
     /// Base class for all Mongo Exceptions
     /// </summary>
+    [Serializable]
     public class MongoException : Exception
     {
         /// <summary>

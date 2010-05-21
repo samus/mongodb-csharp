@@ -6,6 +6,7 @@ namespace MongoDB
     /// <summary>
     /// 
     /// </summary>
+    [Serializable]
     public class MongoConnectionException : MongoException
     {
         /// <summary>

@@ -1,3 +1,4 @@
+using System;
 using MongoDB.Results;
 
 namespace MongoDB 
@@ -5,6 +6,7 @@ namespace MongoDB
     /// <summary>
     /// Raised when a map reduce call fails. 
     /// </summary>
+    [Serializable]
     public class MongoMapReduceException : MongoCommandException
     {
         /// <summary>

@@ -5,6 +5,7 @@ namespace MongoDB
     /// <summary>
     /// 
     /// </summary>
+    [Serializable]
     public class MongoOperationException : MongoException
     {
         /// <summary>

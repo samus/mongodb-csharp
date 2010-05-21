@@ -8,6 +8,7 @@ namespace MongoDB
     /// <remarks>
     /// It is only another class because Mongo makes a distinction and it may be helpful.
     /// </remarks>
+    [Serializable]
     public class MongoDuplicateKeyUpdateException : MongoDuplicateKeyException
     {
         /// <summary>
