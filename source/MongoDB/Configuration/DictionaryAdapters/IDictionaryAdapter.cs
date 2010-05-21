@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace MongoDB.Configuration.DictionaryAdapters
 {
@@ -32,7 +30,6 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// Gets the document.
         /// </summary>
         /// <param name="dictionary">The dictionary.</param>
-        /// <param name="valueType">Type of the value.</param>
         /// <returns></returns>
         Document GetDocument(object dictionary);
     }

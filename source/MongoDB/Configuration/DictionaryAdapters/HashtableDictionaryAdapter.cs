@@ -29,7 +29,6 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <summary>
         /// Creates the dictionary.
         /// </summary>
-        /// <param name="valueType">Type of the value.</param>
         /// <param name="document">The document.</param>
         /// <returns></returns>
         public object CreateDictionary(Document document)
@@ -46,7 +45,6 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// Gets the document.
         /// </summary>
         /// <param name="collection">The collection.</param>
-        /// <param name="valueType">Type of the value.</param>
         /// <returns></returns>
         public Document GetDocument(object collection)
         {

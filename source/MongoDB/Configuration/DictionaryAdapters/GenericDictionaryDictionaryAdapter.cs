@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,23 +30,17 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <summary>
         /// Creates the dictionary.
         /// </summary>
-        /// <param name="valueType">Type of the value.</param>
         /// <param name="document">The document.</param>
         /// <returns></returns>
         public object CreateDictionary(Document document)
         {
-            var instance = new Dictionary<TKey, TValue>();
-            foreach (var pair in document)
-                instance.Add((TKey)Convert.ChangeType(pair.Key, typeof(TKey)), (TValue)pair.Value);
-
-            return instance;
+            return document.ToDictionary(pair => (TKey)Convert.ChangeType(pair.Key, typeof(TKey)), pair => (TValue)pair.Value);
         }
 
         /// <summary>
         /// Gets the pairs.
         /// </summary>
         /// <param name="dictionary">The collection.</param>
-        /// <param name="valueType">Type of the value.</param>
         /// <returns></returns>
         public Document GetDocument(object dictionary)
         {
