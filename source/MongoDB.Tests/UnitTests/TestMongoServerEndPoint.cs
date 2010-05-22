@@ -27,7 +27,7 @@ namespace MongoDB.UnitTests
         public void CanBeXmlSerialized()
         {
             var source = new MongoServerEndPoint("myserver", 12345);
-            var serializer = new XmlSerializer(typeof(Oid));
+            var serializer = new XmlSerializer(typeof(MongoServerEndPoint));
 
             var writer = new StringWriter();
             serializer.Serialize(writer, source);
