@@ -92,6 +92,15 @@ namespace MongoDB.UnitTests
         }
 
         [Test]
+        public void CanBeEqual()
+        {
+            var binary1 = new Binary(new byte[] { 10, 20 }, BinarySubtype.Md5);
+            var binary2 = new Binary(new byte[] { 10, 20 }, BinarySubtype.Md5);
+
+            Assert.AreEqual(binary1,binary2);
+        }
+
+        [Test]
         public void CanBeXmlSerialized()
         {
             var source = new Binary(new byte[] { 10, 20 }, BinarySubtype.Md5);
