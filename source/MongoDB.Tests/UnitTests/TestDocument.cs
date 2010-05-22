@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using NUnit.Framework;
 
 namespace MongoDB.UnitTests
@@ -278,6 +279,38 @@ namespace MongoDB.UnitTests
             var d = new Document();
             d["test"] = 1;
             Assert.AreEqual(1, d["test"]);
+        }
+
+        [Test]
+        public void CanBeBinarySerialized()
+        {
+            var docSource = new Document("key1", "value1").Add("key2", 10);
+            var formatter = new BinaryFormatter();
+
+            var mem = new MemoryStream();
+            formatter.Serialize(mem, docSource);
+            mem.Position = 0;
+
+            var docDest = (Document)formatter.Deserialize(mem);
+
+            Assert.AreEqual(2,docDest.Count);
+            Assert.AreEqual(docSource["key1"], docDest["key1"]);
+            Assert.AreEqual(docSource["key2"], docDest["key2"]);
+        }
+
+        [Test]
+        public void CanBeXmlSerialized()
+        {
+            var docSource = new Document("key1", "value1").Add("key2", 10);
+            var serializer = new XmlSerializer(typeof(Document));
+
+            var writer = new StringWriter();
+            serializer.Serialize(writer, docSource);
+            var docDest = (Document)serializer.Deserialize(new StringReader(writer.ToString()));
+
+            Assert.AreEqual(2, docDest.Count);
+            Assert.AreEqual(docSource["key1"], docDest["key1"]);
+            Assert.AreEqual(docSource["key2"], docDest["key2"]);
         }
     }
 }
