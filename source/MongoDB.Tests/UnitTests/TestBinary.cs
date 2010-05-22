@@ -104,7 +104,20 @@ namespace MongoDB.UnitTests
         public void CanBeXmlSerialized()
         {
             var source = new Binary(new byte[] { 10, 20 }, BinarySubtype.Md5);
-            var serializer = new XmlSerializer(typeof(Oid));
+            var serializer = new XmlSerializer(typeof(Binary));
+
+            var writer = new StringWriter();
+            serializer.Serialize(writer, source);
+            var dest = (Binary)serializer.Deserialize(new StringReader(writer.ToString()));
+
+            Assert.AreEqual(source, dest);
+        }
+
+        [Test]
+        public void CanBeXmlSerializedWhenNullBytes()
+        {
+            var source = new Binary(null, BinarySubtype.Md5);
+            var serializer = new XmlSerializer(typeof(Binary));
 
             var writer = new StringWriter();
             serializer.Serialize(writer, source);
