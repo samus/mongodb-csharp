@@ -1,6 +1,5 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
 using NUnit.Framework;
 
 namespace MongoDB.UnitTests
@@ -24,17 +23,28 @@ namespace MongoDB.UnitTests
         }
 
         [Test]
-        public void CanBeXmlSerialized()
+        public void CanBeConstructedWithValue()
         {
-            var source = new CodeWScope("code", new Document("key", "value"));
-            var serializer = new XmlSerializer(typeof(CodeWScope));
+            var code = new CodeWScope("code");
 
-            var writer = new StringWriter();
-            serializer.Serialize(writer, source);
-            var dest = (CodeWScope)serializer.Deserialize(new StringReader(writer.ToString()));
-
-            Assert.AreEqual(source, dest);
+            Assert.AreEqual("code", code.Value);
         }
 
+        [Test]
+        public void CanBeConstructoredWithNull()
+        {
+            var code = new CodeWScope(null);
+
+            Assert.IsNull(code.Value);
+        }
+
+        [Test]
+        public void CanBeEqual()
+        {
+            var code1 = new CodeWScope("code", new Document("key", "value"));
+            var code2 = new CodeWScope("code", new Document("key", "value"));
+
+            Assert.AreEqual(code1, code2);
+        }
     }
 }
