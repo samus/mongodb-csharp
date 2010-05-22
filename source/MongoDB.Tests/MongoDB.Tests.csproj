@@ -129,6 +129,8 @@
     <Compile Include="UnitTests\IO\TestQueryMessage.cs" />
     <Compile Include="IntegrationTests\TestCollection.cs" />
     <Compile Include="IntegrationTests\TestCollection_1.cs" />
+    <Compile Include="UnitTests\TestCode.cs" />
+    <Compile Include="UnitTests\TestCodeWScope.cs" />
     <Compile Include="UnitTests\TestConnectionStringBuilder.cs" />
     <Compile Include="IntegrationTests\TestCursor.cs" />
     <Compile Include="IntegrationTests\TestDatabase.cs" />
@@ -143,6 +145,7 @@
     <None Include="Test-Data\tests.reads.txt" />
     <None Include="Test-Data\tests.smallreads.txt" />
     <Compile Include="UnitTests\TestMongoRegex.cs" />
+    <Compile Include="UnitTests\TestMongoServerEndPoint.cs" />
     <Compile Include="UnitTests\TestOid.cs" />
     <Compile Include="UnitTests\TestOidGenerator.cs" />
     <Compile Include="UnitTests\Bson\TestBsonWriter.cs" />
