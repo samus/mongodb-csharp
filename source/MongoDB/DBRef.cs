@@ -11,7 +11,8 @@ namespace MongoDB
     ///   does no special handling of them. Any referential integrity must be maintained by the application
     ///   not the database.
     /// </remarks>
-    public sealed class DBRef
+    [Serializable]
+    public sealed class DBRef : IEquatable<DBRef>
     {
         internal const string IdName = "$id";
         internal const string MetaName = "metadata";
@@ -124,11 +125,11 @@ namespace MongoDB
         /// The <paramref name="obj"/> parameter is null.
         /// </exception>
         public override bool Equals(object obj){
-            if(obj is DBRef){
-                var comp = (DBRef)obj;
-                return comp.Id.Equals(Id) && comp.CollectionName.Equals(CollectionName);
-            }
-            return base.Equals(obj);
+            if(ReferenceEquals(null, obj))
+                return false;
+            if(ReferenceEquals(this, obj))
+                return true;
+            return obj.GetType() == typeof(DBRef) && Equals((DBRef)obj);
         }
 
         /// <summary>
@@ -138,8 +139,13 @@ namespace MongoDB
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
         public override int GetHashCode(){
-            unchecked{
-                return ((_collectionName != null ? _collectionName.GetHashCode() : 0)*397) ^ (_id != null ? _id.GetHashCode() : 0);
+            unchecked
+            {
+                var result = (_document != null ? _document.GetHashCode() : 0);
+                result = (result*397) ^ (_collectionName != null ? _collectionName.GetHashCode() : 0);
+                result = (result*397) ^ (_id != null ? _id.GetHashCode() : 0);
+                result = (result*397) ^ (_metadata != null ? _metadata.GetHashCode() : 0);
+                return result;
             }
         }
 
@@ -178,6 +184,44 @@ namespace MongoDB
         /// <returns>The result of the conversion.</returns>
         public static explicit operator Document(DBRef dbRef){
             return dbRef._document;
+        }
+
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+        /// </returns>
+        public bool Equals(DBRef other)
+        {
+            if(ReferenceEquals(null, other))
+                return false;
+            if(ReferenceEquals(this, other))
+                return true;
+            return Equals(other._document, _document) && Equals(other._collectionName, _collectionName) && Equals(other._id, _id) && Equals(other._metadata, _metadata);
+        }
+
+        /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>The result of the operator.</returns>
+        public static bool operator ==(DBRef left, DBRef right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="left">The left.</param>
+        /// <param name="right">The right.</param>
+        /// <returns>The result of the operator.</returns>
+        public static bool operator !=(DBRef left, DBRef right)
+        {
+            return !Equals(left, right);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace MongoDB.UnitTests
         public void TestEqualsUsingSameValues()
         {
             const string colname = "tests";
-            var id = "32312312";
+            const string id = "32312312";
             var r = new DBRef(colname, id);
             var r2 = new DBRef(colname, id);
 
