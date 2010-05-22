@@ -6,7 +6,7 @@ namespace MongoDB
     /// <summary>
     /// </summary>
     [Serializable]
-    public class Code : IEquatable<Code>
+    public sealed class Code : IEquatable<Code>
     {
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Code" /> class.

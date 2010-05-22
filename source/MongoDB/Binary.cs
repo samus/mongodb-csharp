@@ -11,7 +11,7 @@ namespace MongoDB
     /// <summary>
     /// </summary>
     [Serializable]
-    public class Binary : IEquatable<Binary>, ICloneable, IEnumerable<byte>, IXmlSerializable
+    public sealed class Binary : IEquatable<Binary>, ICloneable, IEnumerable<byte>, IXmlSerializable
     {
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Binary" /> class.

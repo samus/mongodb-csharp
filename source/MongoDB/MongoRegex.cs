@@ -8,7 +8,7 @@ namespace MongoDB
     /// <summary>
     /// </summary>
     [Serializable]
-    public class MongoRegex : IEquatable<MongoRegex>, IXmlSerializable
+    public sealed class MongoRegex : IEquatable<MongoRegex>, IXmlSerializable
     {
         /// <summary>
         ///   Initializes a new instance of the <see cref = "MongoRegex" /> class.

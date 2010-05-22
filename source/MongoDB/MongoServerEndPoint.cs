@@ -11,7 +11,7 @@ namespace MongoDB
     /// Represents a mongodb server with host and port.
     /// </summary>
     [Serializable]
-    public class MongoServerEndPoint : EndPoint, IEquatable<MongoServerEndPoint>, IXmlSerializable
+    public sealed class MongoServerEndPoint : EndPoint, IEquatable<MongoServerEndPoint>, IXmlSerializable
     {
         /// <summary>
         /// The mongo default host name.
