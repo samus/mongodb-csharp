@@ -147,5 +147,18 @@ namespace MongoDB.UnitTests
 
             Assert.AreEqual(source, dest);
         }
+
+        [Test]
+        public void CanBeXmlSerializedWhenValueNull()
+        {
+            var source = new MongoSymbol(null);
+            var serializer = new XmlSerializer(typeof(MongoSymbol));
+
+            var writer = new StringWriter();
+            serializer.Serialize(writer, source);
+            var dest = (MongoSymbol)serializer.Deserialize(new StringReader(writer.ToString()));
+
+            Assert.AreEqual(source, dest);
+        }
     }
 }
