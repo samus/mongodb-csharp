@@ -33,10 +33,10 @@ namespace MongoDB.UnitTests
         public void TestEqOperator(){
             var a = new MongoSymbol("a");
             var a2 = new MongoSymbol("a");
-            var astr = "a";
+            const string astr = "a";
 
             var b = new MongoSymbol("b");
-            var bstr = "b";
+            const string bstr = "b";
 
             Assert.IsTrue(a == a);
             Assert.IsTrue(a == a2);
@@ -57,10 +57,10 @@ namespace MongoDB.UnitTests
         public void TestEquals(){
             var a = new MongoSymbol("a");
             var a2 = new MongoSymbol("a");
-            var astr = "a";
+            const string astr = "a";
 
             var b = new MongoSymbol("b");
-            var bstr = "b";
+            const string bstr = "b";
 
             Assert.IsTrue(a.Equals(a2));
             Assert.IsTrue(a2.Equals(a));
@@ -75,10 +75,10 @@ namespace MongoDB.UnitTests
         public void TestNotEqOperator(){
             var a = new MongoSymbol("a");
             var a2 = new MongoSymbol("a");
-            var astr = "a";
+            const string astr = "a";
 
             var b = new MongoSymbol("b");
-            var bstr = "b";
+            const string bstr = "b";
 
             Assert.IsFalse(a != a);
             Assert.IsFalse(a != a2);
@@ -95,7 +95,7 @@ namespace MongoDB.UnitTests
 
         [Test]
         public void TestToString(){
-            var val = "symbol";
+            const string val = "symbol";
             var sym = new MongoSymbol(val);
 
             string str = sym;

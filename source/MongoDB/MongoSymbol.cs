@@ -5,6 +5,7 @@ namespace MongoDB
     /// <summary>
     ///   Type to hold an interned string that maps to the bson symbol type.
     /// </summary>
+    [Serializable]
     public struct MongoSymbol : IEquatable<MongoSymbol>, IEquatable<String>, IComparable<MongoSymbol>, IComparable<String>
     {
         /// <summary>
@@ -82,7 +83,7 @@ namespace MongoDB
         /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
         /// </returns>
         public bool Equals(MongoSymbol other){
-            return Value.Equals(other.Value);
+            return Equals(other.Value, Value);
         }
 
         /// <summary>
@@ -114,7 +115,9 @@ namespace MongoDB
         /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj){
-            return Value.Equals(obj);
+            if(ReferenceEquals(null, obj))
+                return false;
+            return obj.GetType() == typeof(MongoSymbol) && Equals((MongoSymbol)obj);
         }
 
         /// <summary>
@@ -227,7 +230,7 @@ namespace MongoDB
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
         public override int GetHashCode(){
-            return Value.GetHashCode();
+            return (Value != null ? Value.GetHashCode() : 0);
         }
     }
 }
