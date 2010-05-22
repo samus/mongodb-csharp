@@ -11,7 +11,7 @@ namespace MongoDB
     ///   Oid is an immutable object that represents a Mongo ObjectId.
     /// </summary>
     [Serializable]
-    public class Oid : IEquatable<Oid>, IComparable<Oid>, IFormattable, IXmlSerializable
+    public sealed class Oid : IEquatable<Oid>, IComparable<Oid>, IFormattable, IXmlSerializable
     {
         private static readonly OidGenerator OidGenerator = new OidGenerator();
         private byte[] _bytes;
@@ -22,7 +22,7 @@ namespace MongoDB
         /// <remarks>
         /// Needed for some serializers.
         /// </remarks>
-        protected Oid()
+        private Oid()
         {
         }
 
@@ -255,7 +255,7 @@ namespace MongoDB
         ///   Validates the hex.
         /// </summary>
         /// <param name = "value">The value.</param>
-        protected void ValidateHex(string value)
+        private void ValidateHex(string value)
         {
             if(value == null || value.Length != 24)
                 throw new ArgumentException("Oid strings should be 24 characters");
@@ -270,7 +270,7 @@ namespace MongoDB
         /// </summary>
         /// <param name = "value">The value.</param>
         /// <returns></returns>
-        protected static byte[] DecodeHex(string value)
+        private static byte[] DecodeHex(string value)
         {
             var numberChars = value.Length;
 
