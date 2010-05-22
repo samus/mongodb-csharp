@@ -22,9 +22,7 @@ namespace MongoDB
         /// Gets the <see cref="MongoDB.IMongoDatabase"></see> with the specified name.
         /// </summary>
         /// <value></value>
-        IMongoDatabase this[string name] {
-            get;
-        }
+        IMongoDatabase this[string name] { get; }
 
         /// <summary>
         /// Connects this instance.
