@@ -1,3 +1,6 @@
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using NUnit.Framework;
 using System.Linq;
 
@@ -71,6 +74,34 @@ namespace MongoDB.UnitTests
             Assert.AreEqual(2,array.Length);
             Assert.AreEqual(10, array[0]);
             Assert.AreEqual(20, array[1]);
+        }
+
+        [Test]
+        public void CanBeBinarySerialized()
+        {
+            var source = new Binary(new byte[] {10, 20}, BinarySubtype.Md5);
+            var formatter = new BinaryFormatter();
+
+            var mem = new MemoryStream();
+            formatter.Serialize(mem, source);
+            mem.Position = 0;
+
+            var dest = (Binary)formatter.Deserialize(mem);
+
+            Assert.AreEqual(source, dest);
+        }
+
+        [Test]
+        public void CanBeXmlSerialized()
+        {
+            var source = new Binary(new byte[] { 10, 20 }, BinarySubtype.Md5);
+            var serializer = new XmlSerializer(typeof(Oid));
+
+            var writer = new StringWriter();
+            serializer.Serialize(writer, source);
+            var dest = (Binary)serializer.Deserialize(new StringReader(writer.ToString()));
+
+            Assert.AreEqual(source, dest);
         }
     }
 }

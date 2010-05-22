@@ -12,29 +12,29 @@ namespace MongoDB.UnitTests
         [Test]
         public void CanBeBinarySerialized()
         {
-            var oidSource = Oid.NewOid();
+            var source = Oid.NewOid();
             var formatter = new BinaryFormatter();
 
             var mem = new MemoryStream();
-            formatter.Serialize(mem, oidSource);
+            formatter.Serialize(mem, source);
             mem.Position = 0;
 
-            var oidDest = (Oid)formatter.Deserialize(mem);
+            var dest = (Oid)formatter.Deserialize(mem);
 
-            Assert.AreEqual(oidSource, oidDest);
+            Assert.AreEqual(source, dest);
         }
 
         [Test]
         public void CanBeXmlSerialized()
         {
-            var oidSource = Oid.NewOid();
+            var source = Oid.NewOid();
             var serializer = new XmlSerializer(typeof(Oid));
 
             var writer = new StringWriter();
-            serializer.Serialize(writer, oidSource);
-            var oidDest = (Oid)serializer.Deserialize(new StringReader(writer.ToString()));
+            serializer.Serialize(writer, source);
+            var dest = (Oid)serializer.Deserialize(new StringReader(writer.ToString()));
 
-            Assert.AreEqual(oidSource, oidDest);
+            Assert.AreEqual(source, dest);
         }
 
         [Test]

@@ -11,13 +11,13 @@ namespace MongoDB.UnitTests
     [TestFixture]
     public class TestDocument
     {
-        private void AreEqual(Document d1, Document d2)
+        private static void AreEqual(Document d1, Document d2)
         {
             if(!d1.Equals(d2))
                 Assert.Fail(string.Format("Documents don't match\r\nExpected: {0}\r\nActual:   {1}", d1, d2));
         }
 
-        private void AreNotEqual(Document d1, Document d2)
+        private static void AreNotEqual(Document d1, Document d2)
         {
             if(d1.Equals(d2))
                 Assert.Fail(string.Format("Documents match\r\nExpected: not {0}\r\nActual:       {1}", d1, d2));
@@ -284,33 +284,33 @@ namespace MongoDB.UnitTests
         [Test]
         public void CanBeBinarySerialized()
         {
-            var docSource = new Document("key1", "value1").Add("key2", 10);
+            var source = new Document("key1", "value1").Add("key2", 10);
             var formatter = new BinaryFormatter();
 
             var mem = new MemoryStream();
-            formatter.Serialize(mem, docSource);
+            formatter.Serialize(mem, source);
             mem.Position = 0;
 
-            var docDest = (Document)formatter.Deserialize(mem);
+            var dest = (Document)formatter.Deserialize(mem);
 
-            Assert.AreEqual(2,docDest.Count);
-            Assert.AreEqual(docSource["key1"], docDest["key1"]);
-            Assert.AreEqual(docSource["key2"], docDest["key2"]);
+            Assert.AreEqual(2,dest.Count);
+            Assert.AreEqual(source["key1"], dest["key1"]);
+            Assert.AreEqual(source["key2"], dest["key2"]);
         }
 
         [Test]
         public void CanBeXmlSerialized()
         {
-            var docSource = new Document("key1", "value1").Add("key2", 10);
+            var source = new Document("key1", "value1").Add("key2", 10);
             var serializer = new XmlSerializer(typeof(Document));
 
             var writer = new StringWriter();
-            serializer.Serialize(writer, docSource);
-            var docDest = (Document)serializer.Deserialize(new StringReader(writer.ToString()));
+            serializer.Serialize(writer, source);
+            var dest = (Document)serializer.Deserialize(new StringReader(writer.ToString()));
 
-            Assert.AreEqual(2, docDest.Count);
-            Assert.AreEqual(docSource["key1"], docDest["key1"]);
-            Assert.AreEqual(docSource["key2"], docDest["key2"]);
+            Assert.AreEqual(2, dest.Count);
+            Assert.AreEqual(source["key1"], dest["key1"]);
+            Assert.AreEqual(source["key2"], dest["key2"]);
         }
     }
 }

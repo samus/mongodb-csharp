@@ -1,4 +1,7 @@
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Xml.Serialization;
 using NUnit.Framework;
 
 namespace MongoDB.UnitTests
@@ -115,6 +118,34 @@ namespace MongoDB.UnitTests
             Assert.IsTrue(string.IsInterned(s2.Value) != null, "Second value was not interned");
 
             Assert.IsTrue(ReferenceEquals(s.Value, s2.Value));
+        }
+
+        [Test]
+        public void CanBeBinarySerialized()
+        {
+            var source = new MongoSymbol("value");
+            var formatter = new BinaryFormatter();
+
+            var mem = new MemoryStream();
+            formatter.Serialize(mem, source);
+            mem.Position = 0;
+
+            var dest = (MongoSymbol)formatter.Deserialize(mem);
+
+            Assert.AreEqual(source, dest);
+        }
+
+        [Test]
+        public void CanBeXmlSerialized()
+        {
+            var source = new MongoSymbol("value");
+            var serializer = new XmlSerializer(typeof(MongoSymbol));
+
+            var writer = new StringWriter();
+            serializer.Serialize(writer, source);
+            var dest = (MongoSymbol)serializer.Deserialize(new StringReader(writer.ToString()));
+
+            Assert.AreEqual(source, dest);
         }
     }
 }
