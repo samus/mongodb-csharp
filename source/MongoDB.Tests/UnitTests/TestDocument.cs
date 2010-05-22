@@ -301,7 +301,7 @@ namespace MongoDB.UnitTests
         [Test]
         public void CanBeXmlSerialized()
         {
-            var source = new Document("key1", "value1").Add("key2", 10);
+            var source = new Document("key1", "value1").Add("key2", new Document("key", "value").Add("key2", null));
             var serializer = new XmlSerializer(typeof(Document));
 
             var writer = new StringWriter();
