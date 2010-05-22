@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using NUnit.Framework;
 
 namespace MongoDB.UnitTests
@@ -8,6 +9,34 @@ namespace MongoDB.UnitTests
     [TestFixture]
     public class TestOid
     {
+        [Test]
+        public void CanBeBinarySerialized()
+        {
+            var oidSource = Oid.NewOid();
+            var formatter = new BinaryFormatter();
+
+            var mem = new MemoryStream();
+            formatter.Serialize(mem, oidSource);
+            mem.Position = 0;
+
+            var oidDest = (Oid)formatter.Deserialize(mem);
+
+            Assert.AreEqual(oidSource, oidDest);
+        }
+
+        [Test]
+        public void CanBeXmlSerialized()
+        {
+            var oidSource = Oid.NewOid();
+            var serializer = new XmlSerializer(typeof(Oid));
+
+            var writer = new StringWriter();
+            serializer.Serialize(writer, oidSource);
+            var oidDest = (Oid)serializer.Deserialize(new StringReader(writer.ToString()));
+
+            Assert.AreEqual(oidSource, oidDest);
+        }
+
         [Test]
         public void TestCtor()
         {
