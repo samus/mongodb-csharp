@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MongoDB
 {
@@ -87,21 +88,6 @@ namespace MongoDB
         }
 
         /// <summary>
-        ///   Indicates whether the current object is equal to another object of the same type.
-        /// </summary>
-        /// <returns>
-        ///   true if the current object is equal to the <paramref name = "other" /> parameter; otherwise, false.
-        /// </returns>
-        /// <param name = "other">An object to compare with this object.
-        /// </param>
-        public bool Equals(Binary other)
-        {
-            if(ReferenceEquals(null, other))
-                return false;
-            return ReferenceEquals(this, other) || Equals(other.Bytes, Bytes);
-        }
-
-        /// <summary>
         /// Performs an implicit conversion from <see cref="MongoDB.Binary"/> to <see cref="System.Byte"/>.
         /// </summary>
         /// <param name="binary">The binary.</param>
@@ -128,38 +114,6 @@ namespace MongoDB
         }
 
         /// <summary>
-        ///   Determines whether the specified <see cref = "T:System.Object" /> is equal to the current <see cref = "T:System.Object" />.
-        /// </summary>
-        /// <returns>
-        ///   true if the specified <see cref = "T:System.Object" /> is equal to the current <see cref = "T:System.Object" />; otherwise, false.
-        /// </returns>
-        /// <param name = "obj">The <see cref = "T:System.Object" /> to compare with the current <see cref = "T:System.Object" />. 
-        /// </param>
-        /// <exception cref = "T:System.NullReferenceException">The <paramref name = "obj" /> parameter is null.
-        /// </exception>
-        /// <filterpriority>2</filterpriority>
-        public override bool Equals(object obj)
-        {
-            if(ReferenceEquals(null, obj))
-                return false;
-            if(ReferenceEquals(this, obj))
-                return true;
-            return obj.GetType() == typeof(Binary) && Equals((Binary)obj);
-        }
-
-        /// <summary>
-        ///   Serves as a hash function for a particular type.
-        /// </summary>
-        /// <returns>
-        ///   A hash code for the current <see cref = "T:System.Object" />.
-        /// </returns>
-        /// <filterpriority>2</filterpriority>
-        public override int GetHashCode()
-        {
-            return (Bytes != null ? Bytes.GetHashCode() : 0);
-        }
-
-        /// <summary>
         ///   Implements the operator ==.
         /// </summary>
         /// <param name = "left">The left.</param>
@@ -179,6 +133,55 @@ namespace MongoDB
         public static bool operator !=(Binary left, Binary right)
         {
             return !Equals(left, right);
+        }
+
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+        /// </returns>
+        public bool Equals(Binary other)
+        {
+            if(ReferenceEquals(null, other))
+                return false;
+            if(ReferenceEquals(this, other))
+                return true;
+            return  other.Bytes.SequenceEqual(Bytes) && Equals(other.Subtype, Subtype);
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="T:System.NullReferenceException">
+        /// The <paramref name="obj"/> parameter is null.
+        /// </exception>
+        public override bool Equals(object obj)
+        {
+            if(ReferenceEquals(null, obj))
+                return false;
+            if(ReferenceEquals(this, obj))
+                return true;
+            return obj.GetType() == typeof(Binary) && Equals((Binary)obj);
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Bytes != null ? Bytes.GetHashCode() : 0)*397) ^ Subtype.GetHashCode();
+            }
         }
 
         /// <summary>
