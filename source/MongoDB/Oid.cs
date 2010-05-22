@@ -52,6 +52,18 @@ namespace MongoDB
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Oid"/> class.
+        /// </summary>
+        /// <param name="oid">The oid.</param>
+        public Oid(Oid oid)
+        {
+            if(oid == null)
+                throw new ArgumentNullException("oid");
+
+            _bytes = oid._bytes;
+        }
+
+        /// <summary>
         ///   Gets the created.
         /// </summary>
         /// <value>The created.</value>

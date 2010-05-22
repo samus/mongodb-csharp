@@ -88,7 +88,7 @@ namespace MongoDB.UnitTests
         }
 
         [Test]
-        public void TestIDCharacters()
+        public void TestIdCharacters()
         {
             var thrown = false;
             try
@@ -103,7 +103,7 @@ namespace MongoDB.UnitTests
         }
 
         [Test]
-        public void TestIDLength()
+        public void TestIdLength()
         {
             var thrown = false;
             try
@@ -246,6 +246,15 @@ namespace MongoDB.UnitTests
             Assert.IsNotNull(bytes2);
             Assert.AreEqual(12, bytes2.Length);
             Assert.AreEqual(bytes, bytes2);
+        }
+
+        [Test]
+        public void TestCopyConstructor()
+        {
+            var source = Oid.NewOid();
+            var dest = new Oid(source);
+
+            Assert.AreEqual(source,dest);
         }
     }
 }
