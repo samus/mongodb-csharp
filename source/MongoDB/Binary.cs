@@ -6,6 +6,7 @@ namespace MongoDB
 {
     /// <summary>
     /// </summary>
+    [Serializable]
     public class Binary : IEquatable<Binary>, ICloneable, IEnumerable<byte>
     {
         /// <summary>
