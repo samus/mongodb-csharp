@@ -7,16 +7,16 @@ namespace MongoDB.Configuration.Mapping.Auto
     /// <summary>
     /// 
     /// </summary>
-    public class PublicOrProtectedMemberFinder : IMemberFinder
+    public class DefaultMemberFinder : IMemberFinder
     {
         ///<summary>
         ///</summary>
-        public static readonly PublicOrProtectedMemberFinder Instance = new PublicOrProtectedMemberFinder();
+        public static readonly DefaultMemberFinder Instance = new DefaultMemberFinder();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublicOrProtectedMemberFinder"/> class.
+        /// Initializes a new instance of the <see cref="DefaultMemberFinder"/> class.
         /// </summary>
-        private PublicOrProtectedMemberFinder()
+        private DefaultMemberFinder()
         {
         }
 
@@ -32,18 +32,18 @@ namespace MongoDB.Configuration.Mapping.Auto
                 var getMethod = prop.GetGetMethod(true);
                 var setMethod = prop.GetSetMethod(true);
 
-                if(getMethod==null||setMethod==null)
+                if(getMethod==null || getMethod.IsPrivate || setMethod==null)
                     continue;
 
-                if(getMethod.IsPrivate||setMethod.IsPrivate)
+                if (setMethod.GetParameters().Length != 1) //an indexer
                     continue;
 
                 yield return prop;
             }
 
-            foreach (var field in type.GetFields())
+            foreach (var field in type.GetFields()) //all public fields
             {
-                if (!field.IsInitOnly && !field.IsLiteral)
+                if (!field.IsInitOnly && !field.IsLiteral) //readonly
                     yield return field;
             }
         }

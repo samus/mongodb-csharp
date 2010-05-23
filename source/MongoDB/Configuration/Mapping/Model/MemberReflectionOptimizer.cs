@@ -164,7 +164,7 @@ namespace MongoDB.Configuration.Mapping.Model
 
             if (!propertyInfo.CanWrite)
                 throw new InvalidOperationException("Cannot create a setter for a readonly property.");
-            
+
             ParameterExpression instanceParameter = Expression.Parameter(typeof(object), "target");
             ParameterExpression valueParameter = Expression.Parameter(typeof(object), "value");
 
