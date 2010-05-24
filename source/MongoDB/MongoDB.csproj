@@ -231,7 +231,7 @@
     <Compile Include="Configuration\Mapping\Auto\IAutoMappingProfile.cs" />
     <Compile Include="Configuration\Mapping\Auto\IMemberFinder.cs" />
     <Compile Include="Configuration\Mapping\Auto\MemberOverrides.cs" />
-    <Compile Include="Configuration\Mapping\Auto\PublicOrProtectedMemberFinder.cs" />
+    <Compile Include="Configuration\Mapping\Auto\DefaultMemberFinder.cs" />
     <Compile Include="Configuration\Mapping\Conventions\ConventionProfile.cs" />
     <Compile Include="Configuration\Mapping\Conventions\DefaultCollectionAdapterConvention.cs" />
     <Compile Include="Configuration\Mapping\Conventions\DefaultDefaultValueConvention.cs" />

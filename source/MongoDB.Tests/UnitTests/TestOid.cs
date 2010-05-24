@@ -136,7 +136,7 @@ namespace MongoDB.UnitTests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void TestNullValue()
         {
             new Oid(String.Empty);

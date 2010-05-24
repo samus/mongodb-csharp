@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -165,20 +165,18 @@ namespace MongoDB.Configuration.Mapping.Model
             if (!propertyInfo.CanWrite)
                 throw new InvalidOperationException("Cannot create a setter for a readonly property.");
 
-            var method = new DynamicMethod("Set" + propertyInfo.Name, null, new[] { typeof(object), typeof(object) }, true);
-            var gen = method.GetILGenerator();
+            ParameterExpression instanceParameter = Expression.Parameter(typeof(object), "target");
+            ParameterExpression valueParameter = Expression.Parameter(typeof(object), "value");
 
-            var sourceType = propertyInfo.DeclaringType;
-            var setter = propertyInfo.GetSetMethod(true);
+            Expression<Action<object, object>> lambda = Expression.Lambda<Action<object, object>>(
+                    Expression.Call(
+                        Expression.Convert(instanceParameter, propertyInfo.DeclaringType),
+                        propertyInfo.GetSetMethod(true), 
+                        Expression.Convert(valueParameter, propertyInfo.PropertyType)),
+                    instanceParameter,
+                    valueParameter);
 
-            gen.Emit(OpCodes.Ldarg_0);
-            gen.Emit(OpCodes.Castclass, sourceType);
-            gen.Emit(OpCodes.Ldarg_1);
-            gen.Emit(OpCodes.Unbox_Any, propertyInfo.PropertyType);
-            gen.Emit(OpCodes.Callvirt, setter);
-            gen.Emit(OpCodes.Ret);
-
-            var result = (Action<object, object>)method.CreateDelegate(typeof(Action<object, object>));
+            var result = lambda.Compile();
             setterCache[key] = result;
             return result;
         }
