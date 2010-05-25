@@ -16,12 +16,12 @@ namespace MongoDB.IntegrationTests
 
         public override void OnInit()
         {
-            var finds = TestsDatabase["finds"];
+            var finds = DB["finds"];
             for(var j = 1; j < 100; j++)
                 finds.Insert(new Document {{"x", 4}, {"h", "hi"}, {"j", j}});
             for(var j = 100; j < 105; j++)
                 finds.Insert(new Document {{"x", 4}, {"n", 1}, {"j", j}});
-            var charreads = TestsDatabase["charreads"];
+            var charreads = DB["charreads"];
             charreads.Insert(new Document {{"test", "1234" + POUND + "56"}});
         }
 
@@ -33,7 +33,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestArrayInsert()
         {
-            var inserts = TestsDatabase["inserts"];
+            var inserts = DB["inserts"];
             var indoc1 = new Document();
             indoc1["song"] = "The Axe";
             indoc1["artist"] = "Tinsley Ellis";
@@ -58,7 +58,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestCount()
         {
-            var counts = TestsDatabase["counts"];
+            var counts = DB["counts"];
             var top = 100;
             for(var i = 0; i < top; i++)
                 counts.Insert(new Document().Add("Last", "Cordr").Add("First", "Sam").Add("cnt", i));
@@ -69,14 +69,14 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestCountInvalidCollection()
         {
-            var counts = TestsDatabase["counts_wtf"];
+            var counts = DB["counts_wtf"];
             Assert.AreEqual(0, counts.Count());
         }
 
         [Test]
         public void TestCountWithSpec()
         {
-            var counts = TestsDatabase["counts_spec"];
+            var counts = DB["counts_spec"];
             counts.Insert(new Document().Add("Last", "Cordr").Add("First", "Sam").Add("cnt", 1));
             counts.Insert(new Document().Add("Last", "Cordr").Add("First", "Sam").Add("cnt", 2));
             counts.Insert(new Document().Add("Last", "Corder").Add("First", "Sam").Add("cnt", 3));
@@ -89,7 +89,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestDelete()
         {
-            var deletes = TestsDatabase["deletes"];
+            var deletes = DB["deletes"];
             var doc = new Document();
             doc["y"] = 1;
             doc["x"] = 2;
@@ -114,7 +114,7 @@ namespace MongoDB.IntegrationTests
             var fields = new Document();
             fields["x"] = 1;
 
-            var c = TestsDatabase["finds"].Find(query, -1, 0, fields);
+            var c = DB["finds"].Find(query, -1, 0, fields);
             foreach(var result in c.Documents)
             {
                 Assert.IsNotNull(result);
@@ -129,7 +129,7 @@ namespace MongoDB.IntegrationTests
             var query = new Document();
             query["j"] = new Document().Add("$gt", 20);
 
-            var c = TestsDatabase["finds"].Find(query);
+            var c = DB["finds"].Find(query);
             foreach(var result in c.Documents)
             {
                 Assert.IsNotNull(result);
@@ -142,7 +142,7 @@ namespace MongoDB.IntegrationTests
         public void TestFindNulls()
         {
             var query = new Document().Add("n", null);
-            var numnulls = TestsDatabase["finds"].Count(query);
+            var numnulls = DB["finds"].Count(query);
             Assert.AreEqual(99, numnulls);
         }
 
@@ -151,7 +151,7 @@ namespace MongoDB.IntegrationTests
         {
             var query = new Document();
             query["j"] = 10;
-            var result = TestsDatabase["finds"].FindOne(query);
+            var result = DB["finds"].FindOne(query);
             Assert.IsNotNull(result);
             Assert.AreEqual(4, result["x"]);
             Assert.AreEqual(10, result["j"]);
@@ -162,7 +162,7 @@ namespace MongoDB.IntegrationTests
         {
             var query = new Document();
             query["not_there"] = 10;
-            var result = TestsDatabase["finds"].FindOne(query);
+            var result = DB["finds"].FindOne(query);
             Assert.IsNull(result);
         }
 
@@ -170,7 +170,7 @@ namespace MongoDB.IntegrationTests
         public void TestFindOneObjectContainingUKPound()
         {
             var query = new Document();
-            var result = TestsDatabase["charreads"].FindOne(query);
+            var result = DB["charreads"].FindOne(query);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Contains("test"));
             Assert.AreEqual("1234£56", result["test"]);
@@ -179,7 +179,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestFindWhereEquivalency()
         {
-            var col = TestsDatabase["finds"];
+            var col = DB["finds"];
             var lt = new Document().Add("j", new Document().Add("$lt", 5));
             var where = "this.j < 5";
             var explicitWhere = new Document().Add("$where", new Code(where));
@@ -194,7 +194,7 @@ namespace MongoDB.IntegrationTests
         
         [Test]
         public void TestFindAndModifyReturnsOldDocument() {
-            IMongoCollection collection = TestsDatabase["find_and_modify"];
+            IMongoCollection collection = DB["find_and_modify"];
             Document person = new Document().Append("First", "Sally").Append("Last", "Simmons");
             collection.Insert(person);
             
@@ -206,7 +206,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestFindAndModifyReturnsNewDocument() {
-            IMongoCollection collection = TestsDatabase["find_and_modify"];
+            IMongoCollection collection = DB["find_and_modify"];
             Document person = new Document().Append("First", "Susie").Append("Last", "O'Hara");
             collection.Insert(person);
             
@@ -218,7 +218,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestFindAndModifySortsResults() {
-            IMongoCollection collection = TestsDatabase["find_and_modify"];
+            IMongoCollection collection = DB["find_and_modify"];
             Document doc1 = new Document().Append("handled", false).Append("priority", 1).Append("value", "Test 1");
             Document doc2 = new Document().Append("handled", false).Append("priority", 2).Append("value", "Test 2");
             collection.Insert(doc1);
@@ -236,7 +236,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestFindAndModifyReturnNullForNoRecordFound() {
-            IMongoCollection collection = TestsDatabase["find_and_modify"];
+            IMongoCollection collection = DB["find_and_modify"];
             Document spec = new Document().Append("FirstName", "Noone");
             Document loaded = collection.FindAndModify(new Document().Append("First", "Darlene"), spec, true);
             
@@ -247,7 +247,7 @@ namespace MongoDB.IntegrationTests
         public void TestInsertBulkLargerThan4MBOfDocuments()
         {
             var b = new Binary(new byte[1024*1024*2]);
-            var inserts = TestsDatabase["inserts"];
+            var inserts = DB["inserts"];
             try
             {
                 var docs = new Document[10];
@@ -269,7 +269,7 @@ namespace MongoDB.IntegrationTests
         {
             var b = new Binary(new byte[1024*1024]);
             var big = new Document {{"name", "Big Document"}, {"b1", b}, {"b2", b}, {"b3", b}, {"b4", b}};
-            var inserts = TestsDatabase["inserts"];
+            var inserts = DB["inserts"];
             var thrown = false;
             try
             {
@@ -290,7 +290,7 @@ namespace MongoDB.IntegrationTests
         public void TestInsertOfArray()
         {
             var ogen = new OidGenerator();
-            var inserts = TestsDatabase["inserts"];
+            var inserts = DB["inserts"];
             var album = new Document();
             album["_id"] = ogen.Generate();
             album["artist"] = "Popa Chubby";
@@ -315,7 +315,7 @@ namespace MongoDB.IntegrationTests
         public void TestManualWhere()
         {
             var query = new Document().Add("$where", new Code("this.j % 2 == 0"));
-            var c = TestsDatabase["finds"].Find(query);
+            var c = DB["finds"].Find(query);
             foreach(var result in c.Documents)
             {
                 Assert.IsNotNull(result);
@@ -327,7 +327,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestPoundSymbolInsert()
         {
-            var inserts = TestsDatabase["inserts"];
+            var inserts = DB["inserts"];
             var indoc = new Document().Add("x", "1234" + POUND + "56").Add("y", 1);
             inserts.Insert(indoc);
 
@@ -339,7 +339,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestReallySimpleInsert()
         {
-            var inserts = TestsDatabase["inserts"];
+            var inserts = DB["inserts"];
             var indoc = new Document();
             indoc["y"] = 1;
             indoc["x"] = 2;
@@ -353,7 +353,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestSave()
         {
-            var saves = TestsDatabase["saves"];
+            var saves = DB["saves"];
             var count = 100;
             for(var i = 0; i < count; i++)
                 saves.Save(new Document {{"x", i}, {"desc", "This document is number: " + i}, {"y", 1}});
@@ -373,7 +373,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestSaveInsertDocumentIfExists()
         {
-            var saves = TestsDatabase["updates"];
+            var saves = DB["updates"];
             saves.Delete(new Document());
 
             var document1 = new Document("name", "Alien1");
@@ -395,7 +395,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestSaveInsertDocumentIfNotExists()
         {
-            var saves = TestsDatabase["updates"];
+            var saves = DB["updates"];
             saves.Delete(new Document());
 
             saves.Save(new Document("name", "Sam"));
@@ -410,7 +410,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestSimpleInsert()
         {
-            var inserts = TestsDatabase["inserts"];
+            var inserts = DB["inserts"];
             var indoc = new Document();
             indoc["song"] = "Palmdale";
             indoc["artist"] = "Afroman";
@@ -426,7 +426,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestUpdateMany()
         {
-            var updates = TestsDatabase["updates"];
+            var updates = DB["updates"];
 
             updates.Insert(new Document().Add("Last", "Cordr").Add("First", "Sam"));
             updates.Insert(new Document().Add("Last", "Cordr").Add("First", "Sam2"));
@@ -464,7 +464,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestUpdatePartial()
         {
-            var updates = TestsDatabase["updates"];
+            var updates = DB["updates"];
             var coolness = 5;
             var einstein = new Document {{"Last", "Einstien"}, {"First", "Albert"}, {"Coolness", coolness++}};
             updates.Insert(einstein);
@@ -486,7 +486,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestUpdateUpsertExisting()
         {
-            var updates = TestsDatabase["updates"];
+            var updates = DB["updates"];
             var doc = new Document();
             doc["First"] = "Mtt";
             doc["Last"] = "Brewer";
@@ -510,7 +510,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestUpdateUpsertNotExisting()
         {
-            var updates = TestsDatabase["updates"];
+            var updates = DB["updates"];
             var doc = new Document();
             doc["First"] = "Sam";
             doc["Last"] = "CorderNE";
@@ -525,7 +525,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestWhere()
         {
-            var c = TestsDatabase["finds"].Find("this.j % 2 == 0");
+            var c = DB["finds"].Find("this.j % 2 == 0");
             foreach(var result in c.Documents)
             {
                 Assert.IsNotNull(result);

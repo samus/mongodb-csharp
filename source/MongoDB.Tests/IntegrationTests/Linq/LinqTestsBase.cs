@@ -15,8 +15,8 @@ namespace MongoDB.IntegrationTests.Linq
         [SetUp]
         public virtual void TestSetup()
         {
-            Collection = TestsDatabase.GetCollection<Person>("people");
-            DocumentCollection = TestsDatabase.GetCollection("people");
+            Collection = DB.GetCollection<Person>("people");
+            DocumentCollection = DB.GetCollection("people");
         }
     }
 }

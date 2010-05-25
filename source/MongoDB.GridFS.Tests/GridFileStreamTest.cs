@@ -20,7 +20,7 @@ namespace MongoDB.GridFS
         }
         
         public override void OnInit (){
-            fs = new GridFile(TestsDatabase, filesystem);
+            fs = new GridFile(DB, filesystem);
         }
 
         
@@ -272,7 +272,7 @@ namespace MongoDB.GridFS
             gfs.SetLength(length);
             gfs.WriteByte(2);
             gfs.Close();
-            GridFileInfo gfi = new GridFileInfo(TestsDatabase,filesystem,filename);
+            GridFileInfo gfi = new GridFileInfo(DB,filesystem,filename);
 
             Assert.AreEqual(length + 1, gfi.Length);
             Assert.AreEqual(6, CountChunks(filesystem,id));
@@ -343,11 +343,11 @@ namespace MongoDB.GridFS
 
 
         protected Document GrabChunk(Object fileid, int chunk){
-            return TestsDatabase[filesystem + ".chunks"].FindOne(new Document().Add("files_id", fileid).Add("n", chunk));
+            return DB[filesystem + ".chunks"].FindOne(new Document().Add("files_id", fileid).Add("n", chunk));
         }
         
         protected Object CreateDummyFile(string filename, int size, int chunksize, int initialOffset){
-            GridFileInfo gfi = new GridFileInfo(TestsDatabase, "gfstream", filename);
+            GridFileInfo gfi = new GridFileInfo(DB, "gfstream", filename);
             gfi.ChunkSize = chunksize;            
             GridFileStream gfs = gfi.Create();
             Object id = gfs.GridFileInfo.Id;

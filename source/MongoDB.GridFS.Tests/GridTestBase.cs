@@ -31,7 +31,7 @@ namespace MongoDB.GridFS
         }
         
         public long CountChunks(string filesystem, Object fileid){
-            return TestsDatabase[filesystem + ".chunks"].Count(new Document().Add("files_id", fileid));
+            return DB[filesystem + ".chunks"].Count(new Document().Add("files_id", fileid));
         }        
         
     }

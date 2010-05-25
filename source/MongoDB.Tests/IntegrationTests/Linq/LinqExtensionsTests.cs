@@ -41,13 +41,13 @@ namespace MongoDB.IntegrationTests.Linq
         [SetUp]
         public void TestSetup()
         {
-            personCollection = this.TestsDatabase.GetCollection<Person>("people");
+            personCollection = this.DB.GetCollection<Person>("people");
             personCollection.Delete(new { }, true);
             personCollection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42, Address = new Address { City = "London" } }, true);
             personCollection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35, Address = new Address { City = "Paris" } }, true);
             personCollection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21, Address = new Address { City = "Chicago" } }, true);
 
-            orgCollection = this.TestsDatabase.GetCollection<Organization>("orgs");
+            orgCollection = this.DB.GetCollection<Organization>("orgs");
             orgCollection.Delete(new { }, true);
             orgCollection.Insert(new Organization { Name = "The Muffler Shanty", Address = new Address { City = "London" } }, true);
         }

@@ -16,10 +16,10 @@ namespace MongoDB.IntegrationTests
 
         public override void OnInit()
         {
-            TestsDatabase["system.js"].Delete(new Document());
-            _javascript = TestsDatabase.Javascript;
+            DB["system.js"].Delete(new Document());
+            _javascript = DB.Javascript;
 
-            var jsreads = TestsDatabase["jsreads"];
+            var jsreads = DB["jsreads"];
             for(var j = 1; j < 10; j++)
                 jsreads.Insert(new Document {{"j", j}});
         }
@@ -27,7 +27,7 @@ namespace MongoDB.IntegrationTests
         protected void AddFunction(string name)
         {
             var func = new Code("function(x,y){return x + y;}");
-            TestsDatabase["system.js"].Insert(new Document().Add("_id", name).Add("value", func));
+            DB["system.js"].Insert(new Document().Add("_id", name).Add("value", func));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestCanGetDatabaseJSObject()
         {
-            Assert.IsNotNull(TestsDatabase.Javascript);
+            Assert.IsNotNull(DB.Javascript);
         }
 
         [Test]
@@ -162,7 +162,7 @@ namespace MongoDB.IntegrationTests
         public void TestExec()
         {
             _javascript.Add("lt4", new Code("function(doc){return doc.j < 4;}"));
-            var cnt = TestsDatabase["reads"].Find("lt4(this)").Documents.Count();
+            var cnt = DB["reads"].Find("lt4(this)").Documents.Count();
             Assert.AreEqual(3, cnt);
         }
 
@@ -172,7 +172,7 @@ namespace MongoDB.IntegrationTests
             _javascript.Add("lt", new Code("function(doc){ return doc.j < limit;}"));
             var scope = new Document().Add("limit", 5);
             var query = new Document().Add("$where", new CodeWScope("lt(this)", scope));
-            var cnt = TestsDatabase["jsreads"].Find(query).Documents.Count();
+            var cnt = DB["jsreads"].Find(query).Documents.Count();
             Assert.AreEqual(4, cnt);
         }
 
