@@ -21,7 +21,7 @@ namespace MongoDB.IntegrationTests
         }
         
         public override void OnInit (){
-            var col = (IMongoCollection)DB["threadsmallreads"];
+            var col = (IMongoCollection)TestsDatabase["threadsmallreads"];
             for(int j = 0; j < 4; j++){
                 col.Insert(new Document(){{"x", 4},{"j", j}});
             }
@@ -33,7 +33,7 @@ namespace MongoDB.IntegrationTests
             Mongo db = new Mongo();
             db.Connect();
 
-            IMongoCollection col = DB["threadinserts"];
+            IMongoCollection col = TestsDatabase["threadinserts"];
             
             List<string> identifiers = new List<string>{"A", "B", "C", "D"};
             List<Thread> threads = new List<Thread>();
@@ -66,7 +66,7 @@ namespace MongoDB.IntegrationTests
             List<Reader> readers = new List<Reader>();
             int iterations = 50;
             foreach(string colname in colnames){
-                Reader r = new Reader{Iterations = iterations, Collection = DB[colname]};
+                Reader r = new Reader{Iterations = iterations, Collection = TestsDatabase[colname]};
                 readers.Add(r);
                 ThreadStart ts = new ThreadStart(r.DoReads);
                 Thread thread = new Thread(ts);                
@@ -76,7 +76,7 @@ namespace MongoDB.IntegrationTests
             
             try{
                 //Connection still alive?
-                DB["smallreads"].Count();
+                TestsDatabase["smallreads"].Count();
             }catch(Exception e){
                 Assert.Fail(e.Message);
             }
@@ -90,7 +90,7 @@ namespace MongoDB.IntegrationTests
             Mongo db = new Mongo();
             db.Connect();
 
-            IMongoCollection col = DB["threadreadinserts"];
+            IMongoCollection col = TestsDatabase["threadreadinserts"];
             
             List<string> identifiers = new List<string>{"A", "B", "C", "D"};
             List<string> colnames = new List<string>{"threadsmallreads", "threadsmallreads",
@@ -106,7 +106,7 @@ namespace MongoDB.IntegrationTests
                 threads.Add(thread);
             }            
             foreach(string colname in colnames){
-                Reader r = new Reader{Iterations = readiterations, Collection = DB[colname]};
+                Reader r = new Reader{Iterations = readiterations, Collection = TestsDatabase[colname]};
                 readers.Add(r);
                 ThreadStart ts = new ThreadStart(r.DoReads);
                 Thread thread = new Thread(ts);                

@@ -18,19 +18,19 @@ namespace MongoDB.GridFS
 
         [Test]
         public void TestFileDoesNotExist(){
-            GridFile fs = new GridFile(DB);
+            GridFile fs = new GridFile(TestsDatabase);
             Assert.IsFalse(fs.Exists("non-existent filename"));
         }
 
         [Test]
         public void TestFileDoes(){
-            GridFile fs = new GridFile(DB);
+            GridFile fs = new GridFile(TestsDatabase);
             fs.Create("exists.txt");
             Assert.IsTrue(fs.Exists("exists.txt"));
         }
         [Test]
         public void TestCopy(){
-            GridFile fs = new GridFile(DB, "gfcopy");
+            GridFile fs = new GridFile(TestsDatabase, "gfcopy");
             GridFileStream gfs = fs.Create("original.txt");
             gfs.WriteByte(1);
             gfs.Seek(1024 * 256 * 2, SeekOrigin.Begin);
@@ -46,7 +46,7 @@ namespace MongoDB.GridFS
         public void TestModeCreateNew(){
             Object id;
             string filename = "createnew.txt";
-            GridFile gf = new GridFile(DB,"gfcreate");
+            GridFile gf = new GridFile(TestsDatabase,"gfcreate");
             using(GridFileStream gfs = gf.Create(filename, FileMode.CreateNew)){
                 id = gfs.GridFileInfo.Id;
                 TextWriter tw = new StreamWriter(gfs);

@@ -16,14 +16,14 @@ namespace MongoDB.IntegrationTests
         }
         
         public override void OnInit (){
-            IMongoCollection its = DB["indextests"];
+            IMongoCollection its = TestsDatabase["indextests"];
             its.Insert(createDoc("S","A","Anderson","OH"));
             its.Insert(createDoc("T","B","Delhi","OH"));
             its.Insert(createDoc("F","B","Cincinnati","OH"));
             its.Insert(createDoc("U","D","Newtown","OH"));
             its.Insert(createDoc("J","E","Newport","KY"));
 
-            adminDb = DB.GetSisterDatabase("admin");
+            adminDb = TestsDatabase.GetSisterDatabase("admin");
             //adminDb.MetaData.AddUser(adminuser, adminpass);
         }
 
@@ -33,14 +33,14 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestGetOptions(){
-            CollectionMetadata cmd = DB["reads"].MetaData;
+            CollectionMetadata cmd = TestsDatabase["reads"].MetaData;
             Document options = cmd.Options;
             Assert.IsNotNull(options);
         }
 
         [Test]
         public void TestGetIndexes(){
-            CollectionMetadata cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = TestsDatabase["indextests"].MetaData;
             Dictionary<string, Document> indexes = cmd.Indexes;
 
             Assert.IsNotNull(indexes);
@@ -52,7 +52,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestCreateIndex(){
-            CollectionMetadata cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = TestsDatabase["indextests"].MetaData;
             cmd.CreateIndex("lastnames", new Document().Add("lname", IndexOrder.Ascending), false);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["lastnames"]);
@@ -60,7 +60,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestCreateIndexNoNames(){
-            CollectionMetadata cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = TestsDatabase["indextests"].MetaData;
             cmd.CreateIndex(new Document().Add("lname", IndexOrder.Ascending).Add("fname", IndexOrder.Ascending), true);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["_lname_fname_unique_"]);
@@ -68,7 +68,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestDropIndex(){
-            CollectionMetadata cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = TestsDatabase["indextests"].MetaData;
             cmd.CreateIndex("firstnames", new Document().Add("fname", IndexOrder.Ascending), false);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["firstnames"]);
@@ -78,13 +78,13 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestRename(){
-            DB["rename"].Insert(new Document(){{"test", "rename"}});
-            Assert.AreEqual(1, DB["rename"].Count());
-            CollectionMetadata cmd = DB["rename"].MetaData;
+            TestsDatabase["rename"].Insert(new Document(){{"test", "rename"}});
+            Assert.AreEqual(1, TestsDatabase["rename"].Count());
+            CollectionMetadata cmd = TestsDatabase["rename"].MetaData;
             cmd.Rename("renamed");
-            Assert.IsFalse(DB.GetCollectionNames().Contains(DB.Name + ".rename"), "Shouldn't have found collection");
-            Assert.IsTrue(DB.GetCollectionNames().Contains(DB.Name + ".renamed"),"Should have found collection");
-            Assert.AreEqual(1, DB["renamed"].Count());
+            Assert.IsFalse(TestsDatabase.GetCollectionNames().Contains(TestsDatabase.Name + ".rename"), "Shouldn't have found collection");
+            Assert.IsTrue(TestsDatabase.GetCollectionNames().Contains(TestsDatabase.Name + ".renamed"),"Should have found collection");
+            Assert.AreEqual(1, TestsDatabase["renamed"].Count());
         }
 
         protected Document createDoc(string fname, string lname, string city, string state){

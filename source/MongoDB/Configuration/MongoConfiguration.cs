@@ -8,13 +8,9 @@ namespace MongoDB.Configuration
     /// </summary>
     public class MongoConfiguration
     {
-        /// <summary>
-        ///   MongoDB-CSharp default configuration.
-        /// </summary>
-        public static readonly MongoConfiguration Default = new MongoConfiguration();
+        private static MongoConfiguration _default;
 
         private string _connectionString;
-
         private IMappingStore _mappingStore;
         private bool _readLocalTime;
         private ISerializationFactory _serializationFactory;
@@ -29,6 +25,27 @@ namespace MongoDB.Configuration
             _mappingStore = new AutoMappingStore();
             _serializationFactory = new SerializationFactory(this);
             _readLocalTime = true;
+        }
+
+        /// <summary>
+        ///   Gets the default.
+        /// </summary>
+        /// <value>The default.</value>
+        public static MongoConfiguration Default
+        {
+            get
+            {
+                if(_default == null)
+                {
+                    var configuration = new MongoConfiguration();
+                    var section = MongoConfigurationSection.GetSection();
+                    if(section != null)
+                        section.UpdateConfiguration(configuration);
+                    _default = configuration;
+                }
+
+                return _default;
+            }
         }
 
         ///<summary>
@@ -105,7 +122,7 @@ namespace MongoDB.Configuration
         }
 
         /// <summary>
-        /// Validates the and seal.
+        ///   Validates the and seal.
         /// </summary>
         public virtual void ValidateAndSeal()
         {

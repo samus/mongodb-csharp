@@ -29,7 +29,7 @@ namespace MongoDB.IntegrationTests
 
         public override void OnInit()
         {
-            _collection = DB["mr"];
+            _collection = TestsDatabase["mr"];
             _collection.Insert(new Document().Add("_id", 1).Add("tags", new[] {"dog", "cat"}));
             _collection.Insert(new Document().Add("_id", 2).Add("tags", new[] {"dog"}));
             _collection.Insert(new Document().Add("_id", 3).Add("tags", new[] {"mouse", "cat", "dog"}));
@@ -109,10 +109,10 @@ namespace MongoDB.IntegrationTests
                 mrb.RetrieveData();
                 Assert.IsNotNull(mrb.Result);
                 Assert.IsTrue(mrb.Result.Ok);
-                tempcollname = DB.Name + "." + mrb.Result.CollectionName;
-                Assert.IsTrue(DB.GetCollectionNames().Contains(tempcollname));
+                tempcollname = TestsDatabase.Name + "." + mrb.Result.CollectionName;
+                Assert.IsTrue(TestsDatabase.GetCollectionNames().Contains(tempcollname));
             }
-            Assert.IsFalse(DB.GetCollectionNames().Contains(tempcollname));
+            Assert.IsFalse(TestsDatabase.GetCollectionNames().Contains(tempcollname));
         }
 
         [Test]

@@ -13,7 +13,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestEvalNoScope(){
-            var result = DB.Eval("function(){return 3;}");
+            var result = TestsDatabase.Eval("function(){return 3;}");
             Assert.AreEqual(3, result["retval"]);
         }
 
@@ -21,7 +21,7 @@ namespace MongoDB.IntegrationTests
         public void TestEvalWithScope(){
             var val = 3;
             var scope = new Document().Add("x", val);
-            var result = DB.Eval("function(){return x;}", scope);
+            var result = TestsDatabase.Eval("function(){return x;}", scope);
             Assert.AreEqual(val, result["retval"]);
         }
 
@@ -31,7 +31,7 @@ namespace MongoDB.IntegrationTests
             var y = 4;
             var func = "adder = function(a, b){return a + b;}; return adder(x,y)";
             var scope = new Document().Add("x", x).Add("y", y);
-            var result = DB.Eval(func, scope);
+            var result = TestsDatabase.Eval(func, scope);
             Console.Out.WriteLine(result.ToString());
             Assert.AreEqual(x + y, result["retval"]);
         }
@@ -41,13 +41,13 @@ namespace MongoDB.IntegrationTests
             var id = new Oid("BAD067c30a57000000008ecb");
             var rf = new DBRef("refs", id);
 
-            var target = DB.FollowReference(rf);
+            var target = TestsDatabase.FollowReference(rf);
             Assert.IsNull(target, "FollowReference returned wasn't null");
         }
 
         [Test]
         public void TestFollowReference(){
-            var refs = DB["refs"];
+            var refs = TestsDatabase["refs"];
             var id = new Oid("4a7067c30a57000000008ecb");
             var msg = "this has an oid key";
             var doc = new Document {{"_id", id}, {"msg", msg}};
@@ -55,7 +55,7 @@ namespace MongoDB.IntegrationTests
 
             var rf = new DBRef("refs", id);
 
-            var target = DB.FollowReference(rf);
+            var target = TestsDatabase.FollowReference(rf);
             Assert.IsNotNull(target, "FollowReference returned null");
             Assert.IsTrue(target.Contains("msg"));
             Assert.AreEqual(msg, target["msg"]);
@@ -63,7 +63,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestGetCollectionNames(){
-            var names = DB.GetCollectionNames();
+            var names = TestsDatabase.GetCollectionNames();
             Assert.IsNotNull(names, "No collection names returned");
             Assert.IsTrue(names.Count > 0);
             Assert.IsTrue(names.Contains("tests.inserts"));
@@ -71,53 +71,53 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestGetLastError(){
-            var errcol = DB["errcol"];
+            var errcol = TestsDatabase["errcol"];
             errcol.MetaData.CreateIndex(new Document {{"x", IndexOrder.Ascending}}, true);
             var dup = new Document {{"x", 1}, {"y", 2}};
             errcol.Insert(dup);
-            var error = DB.GetLastError();
+            var error = TestsDatabase.GetLastError();
             Assert.AreEqual(null, error["err"]);
 
             errcol.Insert(dup);
-            error = DB.GetLastError();
+            error = TestsDatabase.GetLastError();
 
             Assert.IsFalse(null == error["err"]);
         }
 
         [Test]
         public void TestGetLastErrorNoError(){
-            DB["noerror"].Insert(new Document {{"a", 1}, {"b", 2}});
-            var error = DB.GetLastError();
+            TestsDatabase["noerror"].Insert(new Document {{"a", 1}, {"b", 2}});
+            var error = TestsDatabase.GetLastError();
             Assert.AreEqual(null, error["err"]);
         }
 
         [Test]
         public void TestGetPrevError(){
-            var col = DB["preverror"];
+            var col = TestsDatabase["preverror"];
             col.MetaData.CreateIndex(new Document {{"x", IndexOrder.Ascending}}, true);
             var docs = new List<Document>();
             for(var x = 0; x < 10; x++)
                 docs.Add(new Document {{"x", x}, {"y", 2}});
             docs.Add(new Document {{"x", 1}, {"y", 4}}); //the dupe
-            DB.ResetError();
-            Assert.AreEqual(null, DB.GetLastError()["err"]);
+            TestsDatabase.ResetError();
+            Assert.AreEqual(null, TestsDatabase.GetLastError()["err"]);
 
             col.Insert(docs);
-            var error = DB.GetLastError();
+            var error = TestsDatabase.GetLastError();
 
             Assert.IsFalse(null == error["err"]);
         }
 
         [Test]
         public void TestReferenceNonOid(){
-            var refs = DB["refs"];
+            var refs = TestsDatabase["refs"];
 
             var doc = new Document().Add("_id", 123).Add("msg", "this has a non oid key");
             refs.Insert(doc);
 
             var rf = new DBRef("refs", 123);
 
-            var recv = DB.FollowReference(rf);
+            var recv = TestsDatabase.FollowReference(rf);
 
             Assert.IsNotNull(recv);
             Assert.IsTrue(recv.Contains("msg"));
