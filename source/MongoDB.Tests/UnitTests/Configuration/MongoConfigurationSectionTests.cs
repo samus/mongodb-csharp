@@ -67,5 +67,22 @@ namespace MongoDB.UnitTests.Configuration
             section.UpdateConfiguration(config);
             Assert.AreEqual("Server=localhost:27017", config.ConnectionString);
         }
+
+        [Test]
+        public void CanReadLocalTimeFromConfig()
+        {
+            var section = ReadFromFile(2);   
+            Assert.IsNotNull(section);
+            Assert.AreEqual(false,section.ReadLocalTime);
+        }
+
+        [Test]
+        public void CanUpdateConfigurationFromReadLocalTime()
+        {
+            var section = ReadFromFile(2);
+            Assert.IsNotNull(section);
+            var config = section.CreateConfiguration();
+            Assert.AreEqual(false, config.ReadLocalTime);
+        }
     }
 }

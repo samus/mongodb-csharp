@@ -28,6 +28,20 @@ namespace MongoDB.Configuration
         }
 
         /// <summary>
+        ///   Reads DataTime from server as local time.
+        /// </summary>
+        /// <value><c>true</c> if [read local time]; otherwise, <c>false</c>.</value>
+        /// <remarks>
+        ///   MongoDB stores all time values in UTC timezone. If true the
+        ///   time is converted from UTC to local timezone after is was read.
+        /// </remarks>
+        [ConfigurationProperty("readLocalTime", DefaultValue = true)]
+        public bool ReadLocalTime
+        {
+            get{return (bool)this["readLocalTime"];}
+        }
+
+        /// <summary>
         /// Gets the section with name Mongo.
         /// </summary>
         /// <returns></returns>
@@ -74,6 +88,8 @@ namespace MongoDB.Configuration
                 if(connection != null)
                     configuration.ConnectionString = connection.ConnectionString;
             }
+
+            configuration.ReadLocalTime = ReadLocalTime;
         }
     }
 }
