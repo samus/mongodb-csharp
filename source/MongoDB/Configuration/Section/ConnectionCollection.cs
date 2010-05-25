@@ -1,7 +1,7 @@
 using System;
 using System.Configuration;
 
-namespace MongoDB.Configuration
+namespace MongoDB.Configuration.Section
 {
     /// <summary>
     /// 
@@ -43,7 +43,7 @@ namespace MongoDB.Configuration
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MongoDB.Configuration.ConnectionElement"/> at the specified index.
+        /// Gets or sets the <see cref="ConnectionElement"/> at the specified index.
         /// </summary>
         /// <value></value>
         public ConnectionElement this[int index] {
@@ -57,7 +57,7 @@ namespace MongoDB.Configuration
         }
 
         /// <summary>
-        /// Gets the <see cref="MongoDB.Configuration.ConnectionElement"/> with the specified name.
+        /// Gets the <see cref="ConnectionElement"/> with the specified name.
         /// </summary>
         /// <value></value>
         public new ConnectionElement this[string Name] {

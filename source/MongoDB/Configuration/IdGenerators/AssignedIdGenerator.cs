@@ -1,6 +1,4 @@
-﻿using System;
-
-using MongoDB.Configuration.Mapping.Model;
+﻿using MongoDB.Configuration.Mapping.Model;
 
 namespace MongoDB.Configuration.IdGenerators
 {
@@ -18,6 +16,7 @@ namespace MongoDB.Configuration.IdGenerators
         public object Generate(object entity, IdMap idMap)
         {
             var id = idMap.GetValue(entity);
+
             if (Equals(id, idMap.UnsavedValue))
                 throw new IdGenerationException(string.Format("Ids for {0} must be manually assigned before saving.", entity.GetType()));
 

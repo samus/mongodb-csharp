@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using MongoDB.Configuration.Mapping.Model;
+using MongoDB.Configuration.Mapping.Util;
 using MongoDB.Util;
 
 namespace MongoDB.Configuration.Mapping.Auto

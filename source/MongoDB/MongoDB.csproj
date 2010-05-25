@@ -219,7 +219,7 @@
     <Compile Include="Configuration\CollectionAdapters\ICollectionAdapter.cs" />
     <Compile Include="Configuration\IdGenerators\AssignedIdGenerator.cs" />
     <Compile Include="Configuration\IdGenerators\GuidCombGenerator.cs" />
-    <Compile Include="Configuration\IdGenerators\IdGenerationException.cs" />
+    <Compile Include="Exceptions\IdGenerationException.cs" />
     <Compile Include="Configuration\IdGenerators\IIdGenerator.cs" />
     <Compile Include="Configuration\IdGenerators\OidGenerator.cs" />
     <Compile Include="Configuration\Mapping\AutoMappingStore.cs" />
@@ -262,7 +262,7 @@
     <Compile Include="Configuration\Mapping\Model\IClassMap.cs" />
     <Compile Include="Configuration\Mapping\Model\IdMap.cs" />
     <Compile Include="Configuration\Mapping\Model\MemberMapBase.cs" />
-    <Compile Include="Configuration\Mapping\Model\MemberReflectionOptimizer.cs" />
+    <Compile Include="Configuration\Mapping\Util\MemberReflectionOptimizer.cs" />
     <Compile Include="Configuration\Mapping\Model\PersistentMemberMap.cs" />
     <Compile Include="Configuration\Mapping\Model\SubClassMap.cs" />
     <Compile Include="Connections\RawConnection.cs" />
@@ -330,8 +330,8 @@
     <Compile Include="Util\Inflector.cs" />
     <Compile Include="Util\JsonFormatter.cs" />
     <Compile Include="Configuration\MongoConfigurationSection.cs" />
-    <Compile Include="Configuration\ConnectionElement.cs" />
-    <Compile Include="Configuration\ConnectionCollection.cs" />
+    <Compile Include="Configuration\Section\ConnectionElement.cs" />
+    <Compile Include="Configuration\Section\ConnectionCollection.cs" />
     <Compile Include="Cursor_1.cs" />
     <Compile Include="ICursor_1.cs" />
     <Compile Include="IMongoCollection_1.cs" />

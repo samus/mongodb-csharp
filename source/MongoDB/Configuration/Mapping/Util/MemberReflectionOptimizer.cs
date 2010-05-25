@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using MongoDB.Util;
 
-namespace MongoDB.Configuration.Mapping.Model
+namespace MongoDB.Configuration.Mapping.Util
 {
     /// <summary>
     /// </summary>

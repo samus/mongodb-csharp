@@ -6,12 +6,12 @@ namespace MongoDB
     /// 
     /// </summary>
     [Serializable]
-    public class UnmappedMemberException : MongoException
+    public class IdGenerationException : MongoException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnmappedMemberException"/> class.
+        /// Initializes a new instance of the <see cref="IdGenerationException"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public UnmappedMemberException(string message) : base(message) { }
+        public IdGenerationException(string message) : base(message) { }
     }
 }

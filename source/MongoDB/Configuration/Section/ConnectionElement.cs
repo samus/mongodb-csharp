@@ -1,7 +1,7 @@
 using System;
 using System.Configuration;
 
-namespace MongoDB.Configuration
+namespace MongoDB.Configuration.Section
 {
 
     /// <summary>

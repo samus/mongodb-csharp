@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace MongoDB.Configuration.Mapping.Model
 {
@@ -8,8 +7,6 @@ namespace MongoDB.Configuration.Mapping.Model
     public class MemberMapBase
     {
         private readonly Func<object, object> _getter;
-        private readonly string _memberName;
-        private readonly Type _memberReturnType;
         private readonly Action<object, object> _setter;
 
         /// <summary>
@@ -25,8 +22,8 @@ namespace MongoDB.Configuration.Mapping.Model
                 throw new ArgumentNullException("memberReturnType");
 
             _getter = getter;
-            _memberName = memberName;
-            _memberReturnType = memberReturnType;
+            MemberName = memberName;
+            MemberReturnType = memberReturnType;
             _setter = setter;
         }
 
@@ -34,19 +31,13 @@ namespace MongoDB.Configuration.Mapping.Model
         ///   Gets the name of the member.
         /// </summary>
         /// <value>The name of the member.</value>
-        public string MemberName
-        {
-            get { return _memberName; }
-        }
+        public string MemberName { get; private set; }
 
         /// <summary>
         ///   Gets the type of the member return.
         /// </summary>
         /// <value>The type of the member return.</value>
-        public Type MemberReturnType
-        {
-            get { return _memberReturnType; }
-        }
+        public Type MemberReturnType { get; private set; }
 
         /// <summary>
         ///   Gets the value.
@@ -67,29 +58,29 @@ namespace MongoDB.Configuration.Mapping.Model
         {
             var valueType = value != null ? value.GetType() : typeof(object);
 
-            if(valueType != _memberReturnType)
+            if(valueType != MemberReturnType)
                 try
                 {
                     var code = Convert.GetTypeCode(value);
 
-                    if(_memberReturnType.IsEnum)
-                        value = Enum.ToObject(_memberReturnType, value);
-                    else if(_memberReturnType.IsGenericType && 
-                        _memberReturnType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    if(MemberReturnType.IsEnum)
+                        value = Enum.ToObject(MemberReturnType, value);
+                    else if(MemberReturnType.IsGenericType && 
+                        MemberReturnType.GetGenericTypeDefinition() == typeof(Nullable<>))
                     {
                         if(value!=null)
-                            value = Convert.ChangeType(value, Nullable.GetUnderlyingType(_memberReturnType));
+                            value = Convert.ChangeType(value, Nullable.GetUnderlyingType(MemberReturnType));
                     }
                     else if(code != TypeCode.Object)
-                        value = Convert.ChangeType(value, _memberReturnType);
+                        value = Convert.ChangeType(value, MemberReturnType);
                 }
                 catch(FormatException exception)
                 {
-                    throw new MongoException("Can not convert value from " + valueType + " to " + _memberReturnType + " on " + instance.GetType() + "." + _memberName, exception);
+                    throw new MongoException("Can not convert value from " + valueType + " to " + MemberReturnType + " on " + instance.GetType() + "." + MemberName, exception);
                 }
                 catch(ArgumentException exception)
                 {
-                    throw new MongoException("Can not convert value from " + valueType + " to " + _memberReturnType + " on " + instance.GetType() + "." + _memberName, exception);
+                    throw new MongoException("Can not convert value from " + valueType + " to " + MemberReturnType + " on " + instance.GetType() + "." + MemberName, exception);
                 }
 
             _setter(instance, value);

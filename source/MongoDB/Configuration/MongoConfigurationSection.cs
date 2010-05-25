@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Linq;
+using MongoDB.Configuration.Section;
 
 namespace MongoDB.Configuration
 {
