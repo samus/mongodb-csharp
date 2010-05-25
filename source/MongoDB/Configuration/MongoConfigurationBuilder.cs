@@ -69,7 +69,7 @@ namespace MongoDB.Configuration
         /// Set the apps settings key from which to pull the connection string,
         /// </summary>
         /// <param name="key">The key.</param>
-        public void ConnectionStringAppSettingKey(string key)
+        public void ReadConnectionStringFromAppSettings(string key)
         {
             _connectionString = ConfigurationManager.AppSettings[key];
         }
