@@ -158,7 +158,7 @@
     <Compile Include="UnitTests\TestBinary.cs" />
     <Compile Include="UnitTests\TestOp.cs" />
     <Compile Include="UnitTests\Util\TestJsonUtils.cs" />
-    <Compile Include="UnitTests\Configuration\TestConfigurationSection.cs" />
+    <Compile Include="UnitTests\Configuration\ConfigurationSectionTests.cs" />
     <Compile Include="UnitTests\TestMongoSymbol.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +212,9 @@
       <DeployService-RelativeDeployPath>MongoDB.Driver.Tests.dll.config</DeployService-RelativeDeployPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="Test-Sections\Test1.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
 </Project>
