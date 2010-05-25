@@ -212,9 +212,9 @@
       <DeployService-RelativeDeployPath>MongoDB.Driver.Tests.dll.config</DeployService-RelativeDeployPath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="Test-Sections\Test1.config">
+    <EmbeddedResource Include="UnitTests\Configuration\MongoConfigurationSectionTests.1.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
 </Project>

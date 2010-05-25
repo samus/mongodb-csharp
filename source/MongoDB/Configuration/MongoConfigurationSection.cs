@@ -72,7 +72,7 @@ namespace MongoDB.Configuration
             {
                 var connection = Connections.Cast<ConnectionElement>().FirstOrDefault(c=>c.IsDefault);
                 if(connection != null)
-                    connection.ConnectionString = connection.ConnectionString;
+                    configuration.ConnectionString = connection.ConnectionString;
             }
         }
     }
