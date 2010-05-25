@@ -301,7 +301,7 @@
     <Compile Include="MongoServerEndPoint.cs" />
     <Compile Include="Oid.cs" />
     <Compile Include="MongoRegex.cs" />
-    <Compile Include="OidGenerator.cs" />
+    <Compile Include="Util\OidGenerator.cs" />
     <Compile Include="Code.cs" />
     <Compile Include="CodeWScope.cs" />
     <Compile Include="Binary.cs" />
