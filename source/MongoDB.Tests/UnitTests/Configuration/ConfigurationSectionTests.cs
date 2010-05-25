@@ -21,17 +21,18 @@ namespace MongoDB.UnitTests.Configuration
         }
 
         [Test]
-        public void CanReadDefaultFromTestsConfig()
+        public void CanReadFromTestsConfig()
         {
             var config = MongoConfigurationSection.GetSection();
             Assert.IsNotNull(config);
             Assert.AreEqual("Server=localhost:27017", config.Connections["default"].ConnectionString);
+            Assert.AreEqual("Server=localhost:27018", config.Connections["local21018"].ConnectionString);
         }
 
         [Test]
-        public void CanReadlocal21018FromTestsConfig()
+        public void CanReadWithNonDefaultSectionName()
         {
-            var config = MongoConfigurationSection.GetSection();
+            var config = MongoConfigurationSection.GetSection("mongoNonDefaultName");
             Assert.IsNotNull(config);
             Assert.AreEqual("Server=localhost:27018", config.Connections["local21018"].ConnectionString);
         }
