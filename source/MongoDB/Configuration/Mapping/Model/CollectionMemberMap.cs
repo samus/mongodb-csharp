@@ -11,16 +11,12 @@ namespace MongoDB.Configuration.Mapping.Model
     public class CollectionMemberMap : PersistentMemberMap
     {
         private readonly ICollectionAdapter _collectionAdapter;
-        private readonly Type _elementType;
 
         /// <summary>
         /// Gets the type of the element.
         /// </summary>
         /// <value>The type of the element.</value>
-        public Type ElementType
-        {
-            get { return _elementType; }
-        }
+        public Type ElementType { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectionMemberMap"/> class.
@@ -37,7 +33,7 @@ namespace MongoDB.Configuration.Mapping.Model
             : base(memberName, memberReturnType, getter, setter, null, alias, persistNull)
         {
             _collectionAdapter = collectionAdapter;
-            _elementType = elementType;
+            ElementType = elementType;
         }
 
         /// <summary>
@@ -49,6 +45,7 @@ namespace MongoDB.Configuration.Mapping.Model
         {
             var elements = _collectionAdapter.GetElementsFromCollection(base.GetValue(instance));
             var list = new ArrayList();
+            
             foreach (var element in elements)
                 list.Add(element);
 
@@ -62,7 +59,7 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="value">The value.</param>
         public override void SetValue(object instance, object value)
         {
-            base.SetValue(instance, _collectionAdapter.CreateCollection(_elementType, (object[])value));
+            base.SetValue(instance, _collectionAdapter.CreateCollection(ElementType, (object[])value));
         }
     }
 }

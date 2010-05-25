@@ -10,16 +10,12 @@ namespace MongoDB.Configuration.Mapping.Model
     public sealed class IdMap : PersistentMemberMap
     {
         private readonly IIdGenerator _generator;
-        private readonly object _unsavedValue;
 
         /// <summary>
         /// Gets the id's unsaved value.
         /// </summary>
         /// <value>The unsaved value.</value>
-        public object UnsavedValue
-        {
-            get { return _unsavedValue; }
-        }
+        public object UnsavedValue { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IdMap"/> class.
@@ -34,7 +30,7 @@ namespace MongoDB.Configuration.Mapping.Model
             : base(memberName, memberType, getter, setter, null, "_id", true)
         {
             _generator = generator;
-            _unsavedValue = unsavedValue;
+            UnsavedValue = unsavedValue;
         }
 
         /// <summary>

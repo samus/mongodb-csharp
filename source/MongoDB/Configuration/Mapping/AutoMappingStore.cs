@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using MongoDB.Configuration.Mapping.Auto;
 using MongoDB.Configuration.Mapping.Model;
 
 namespace MongoDB.Configuration.Mapping
 {
     /// <summary>
-    /// 
     /// </summary>
     public class AutoMappingStore : IMappingStore
     {
@@ -16,65 +14,74 @@ namespace MongoDB.Configuration.Mapping
         private readonly IMappingStore _wrappedMappingStore;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoMappingStore"/> class.
+        ///   Initializes a new instance of the <see cref = "AutoMappingStore" /> class.
         /// </summary>
         public AutoMappingStore()
             : this((IAutoMapper)null, null)
-        { }
+        {
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoMappingStore"/> class.
+        ///   Initializes a new instance of the <see cref = "AutoMappingStore" /> class.
         /// </summary>
-        /// <param name="profile">The profile.</param>
+        /// <param name = "profile">The profile.</param>
         public AutoMappingStore(IAutoMappingProfile profile)
             : this(new AutoMapper(profile), null)
-        { }
+        {
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoMappingStore"/> class.
+        ///   Initializes a new instance of the <see cref = "AutoMappingStore" /> class.
         /// </summary>
-        /// <param name="autoMapper">The auto mapper.</param>
+        /// <param name = "autoMapper">The auto mapper.</param>
         public AutoMappingStore(IAutoMapper autoMapper)
             : this(autoMapper, null)
-        { }
+        {
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoMappingStore"/> class.
+        ///   Initializes a new instance of the <see cref = "AutoMappingStore" /> class.
         /// </summary>
-        /// <param name="profile">The profile.</param>
-        /// <param name="mappingStore">The mapping store.</param>
+        /// <param name = "profile">The profile.</param>
+        /// <param name = "mappingStore">The mapping store.</param>
         public AutoMappingStore(IAutoMappingProfile profile, IMappingStore mappingStore)
             : this(new AutoMapper(profile), mappingStore)
-        { }
+        {
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoMappingStore"/> class.
+        ///   Initializes a new instance of the <see cref = "AutoMappingStore" /> class.
         /// </summary>
-        /// <param name="autoMapper">The auto mapper.</param>
-        /// <param name="mappingStore">The mapping store.</param>
+        /// <param name = "autoMapper">The auto mapper.</param>
+        /// <param name = "mappingStore">The mapping store.</param>
         public AutoMappingStore(IAutoMapper autoMapper, IMappingStore mappingStore)
         {
-            _autoMapper = autoMapper ?? new AutoMapper();
+            if(autoMapper == null)
+                throw new ArgumentNullException("autoMapper");
+            if(mappingStore == null)
+                throw new ArgumentNullException("mappingStore");
+
+            _autoMapper = autoMapper;
             _autoMaps = new Dictionary<Type, IClassMap>();
             _wrappedMappingStore = mappingStore;
         }
 
         /// <summary>
-        /// Gets the class map for the specified class type.
+        ///   Gets the class map for the specified class type.
         /// </summary>
-        /// <param name="classType">Type of the entity.</param>
+        /// <param name = "classType">Type of the entity.</param>
         /// <returns></returns>
         public IClassMap GetClassMap(Type classType)
         {
             IClassMap classMap;
 
-            if (_autoMaps.TryGetValue(classType, out classMap))
+            if(_autoMaps.TryGetValue(classType, out classMap))
                 return classMap;
 
-            if (_wrappedMappingStore != null)
+            if(_wrappedMappingStore != null)
             {
                 classMap = _wrappedMappingStore.GetClassMap(classType);
-                if (classMap != null)
+                if(classMap != null)
                     return classMap;
             }
 

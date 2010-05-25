@@ -16,6 +16,7 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="setter">The setter.</param>
         public ExtendedPropertiesMap(string memberName, Type memberReturnType, Func<object, object> getter, Action<object, object> setter)
             : base(memberName, memberReturnType, getter, setter)
-        { }
+        {
+        }
     }
 }
