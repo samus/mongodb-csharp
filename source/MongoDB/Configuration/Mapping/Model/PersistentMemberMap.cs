@@ -7,27 +7,17 @@ namespace MongoDB.Configuration.Mapping.Model
     /// </summary>
     public class PersistentMemberMap : MemberMapBase
     {
-        private readonly string _alias;
-        private readonly object _defaultValue;
-        private readonly bool _persistNull;
-
         /// <summary>
         /// Gets the alias in which to store the value.
         /// </summary>
         /// <value>The name.</value>
-        public string Alias
-        {
-            get { return _alias; }
-        }
+        public string Alias { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether [default value].
         /// </summary>
         /// <value><c>true</c> if [default value]; otherwise, <c>false</c>.</value>
-        public object DefaultValue
-        {
-            get { return _defaultValue; }
-        }
+        public object DefaultValue { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether or not null should be persisted to the database.
@@ -35,10 +25,7 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <value>
         /// 	<c>true</c> if the null should be persisted; otherwise, <c>false</c>.
         /// </value>
-        public bool PersistNull
-        {
-            get { return _persistNull; }
-        }
+        public bool PersistNull { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PersistentMemberMap"/> class.
@@ -53,9 +40,9 @@ namespace MongoDB.Configuration.Mapping.Model
         public PersistentMemberMap(string memberName, Type memberReturnType, Func<object, object> getter, Action<object, object> setter, object defaultValue, string alias, bool persistNull)
             : base(memberName, memberReturnType, getter, setter)
         {
-            _alias = alias;
-            _defaultValue = defaultValue;
-            _persistNull = persistNull;
+            Alias = alias;
+            DefaultValue = defaultValue;
+            PersistNull = persistNull;
         }
     }
 }
