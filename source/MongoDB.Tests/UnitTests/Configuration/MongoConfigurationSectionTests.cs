@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace MongoDB.UnitTests.Configuration
 {
     [TestFixture]
-    public class ConfigurationSectionTests
+    public class MongoConfigurationSectionTests
     {
         private static MongoConfigurationSection ReadFromFile(string name)
         {
