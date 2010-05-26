@@ -31,6 +31,9 @@ namespace MongoDB.Results
         /// <summary>
         /// Gets or sets the extended properties.
         /// </summary>
+        /// <remarks>
+        /// Stores all propertys which are not maped.
+        /// </remarks>
         /// <value>The extended properties.</value>
         public Document ExtendedProperties { get; set; }
     }

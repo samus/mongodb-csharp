@@ -24,9 +24,10 @@ namespace MongoDB.Serialization
         /// <param name="configuration">The mongo configuration.</param>
         public SerializationFactory(MongoConfiguration configuration)
         {
-            _configuration = configuration;
             if(configuration == null)
                 throw new ArgumentNullException("configuration");
+
+            _configuration = configuration;
         }
 
         /// <summary>
