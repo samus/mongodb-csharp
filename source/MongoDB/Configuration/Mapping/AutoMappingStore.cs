@@ -17,7 +17,7 @@ namespace MongoDB.Configuration.Mapping
         ///   Initializes a new instance of the <see cref = "AutoMappingStore" /> class.
         /// </summary>
         public AutoMappingStore()
-            : this((IAutoMapper)null, null)
+            : this(new AutoMapper())
         {
         }
 
@@ -58,8 +58,6 @@ namespace MongoDB.Configuration.Mapping
         {
             if(autoMapper == null)
                 throw new ArgumentNullException("autoMapper");
-            if(mappingStore == null)
-                throw new ArgumentNullException("mappingStore");
 
             _autoMapper = autoMapper;
             _autoMaps = new Dictionary<Type, IClassMap>();
