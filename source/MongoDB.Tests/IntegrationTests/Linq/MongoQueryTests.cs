@@ -80,22 +80,6 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
-        public void NullCheck()
-        {
-            var people = Collection.Linq().Where(x => x.MidName == null).ToArray();
-
-            Assert.AreEqual(2, people.Length);
-        }
-
-        [Test]
-        public void NotNullCheck()
-        {
-            var people = Collection.Linq().Where(x => x.MidName != null).ToArray();
-
-            Assert.AreEqual(1, people.Length);
-        }
-
-        [Test]
         public void Chained()
         {
             var people = Collection.Linq()
@@ -292,6 +276,22 @@ namespace MongoDB.IntegrationTests.Linq
             var people = Collection.Linq().Where(x => x.Addresses.ElementAt(1).City == "Tokyo").ToList();
 
             Assert.AreEqual(1, people.Count);
+        }
+
+        [Test]
+        public void NotNullCheck()
+        {
+            var people = Collection.Linq().Where(x => x.MidName != null).ToArray();
+
+            Assert.AreEqual(1, people.Length);
+        }
+
+        [Test]
+        public void NullCheck()
+        {
+            var people = Collection.Linq().Where(x => x.MidName == null).ToArray();
+
+            Assert.AreEqual(2, people.Length);
         }
 
         [Test]
