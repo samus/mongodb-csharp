@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using MongoDB.Attributes;
 
@@ -23,6 +24,8 @@ namespace MongoDB.IntegrationTests.Linq
 
         [MongoAlias("emps")]
         public int[] EmployerIds { get; set; }
+
+        public string MidName { get; set; }
     }
 
     public class Address

@@ -18,6 +18,7 @@ namespace MongoDB.IntegrationTests.Linq
                 new Person
                 {
                     FirstName = "Bob",
+                    MidName = "Bart",
                     LastName = "McBob",
                     Age = 42,
                     PrimaryAddress = new Address {City = "London", IsInternational = true, AddressType = AddressType.Company},
@@ -76,6 +77,22 @@ namespace MongoDB.IntegrationTests.Linq
             var people = Enumerable.ToList(Collection.Linq().Where(x => !x.PrimaryAddress.IsInternational));
 
             Assert.AreEqual(0, people.Count);
+        }
+
+        [Test]
+        public void NullCheck()
+        {
+            var people = Collection.Linq().Where(x => x.MidName == null).ToArray();
+
+            Assert.AreEqual(2, people.Length);
+        }
+
+        [Test]
+        public void NotNullCheck()
+        {
+            var people = Collection.Linq().Where(x => x.MidName != null).ToArray();
+
+            Assert.AreEqual(1, people.Length);
         }
 
         [Test]
