@@ -314,6 +314,19 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void ProjectionWithLocalCreation_ChildobjectShouldNotBeNull()
+        {
+            var people = Collection.Linq()
+                .Select(p => new PersonWrapper(p, p.FirstName))
+                .FirstOrDefault();
+
+            Assert.IsNotNull(people);
+            Assert.IsNotNull(people.Name);
+            Assert.IsNotNull(people.Person);
+            Assert.IsNotNull(people.Person.PrimaryAddress);
+        }
+
+        [Test]
         public void ProjectionWithConstraints()
         {
             var people = (from p in Collection.Linq()

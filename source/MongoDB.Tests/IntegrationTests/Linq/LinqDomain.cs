@@ -43,4 +43,16 @@ namespace MongoDB.IntegrationTests.Linq
         Company,
         Private
     }
+
+    public class PersonWrapper
+    {
+        public Person Person { get; set; }
+        public string Name { get; set; }
+
+        public PersonWrapper(Person person, string name)
+        {
+            Person = person;
+            Name = name;
+        }
+    }
 }
