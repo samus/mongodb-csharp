@@ -256,6 +256,30 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void NotNullCheck()
+        {
+            var people = Collection.Linq().Where(x => x.MidName != null);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("MidName", Op.NotEqual<string>(null)), queryObject.Query);
+        }
+
+        [Test]
+        public void NullCheck()
+        {
+            var people = Collection.Linq().Where(x => x.MidName == null);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("MidName", null), queryObject.Query);
+        }
+
+        [Test]
         public void OrderBy()
         {
             var people = Collection.Linq().OrderBy(x => x.Age).ThenByDescending(x => x.LastName);
