@@ -318,6 +318,20 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void ProjectionWithLocalCreation_ChildobjectShouldNotBeNull()
+        {
+            var people = Collection.Linq()
+                .Select(p => new PersonWrapper(p, p.FirstName));
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count());
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(0, queryObject.Query.Count);
+
+        }
+
+        [Test]
         public void Regex_IsMatch()
         {
             var people = from p in Collection.Linq()
