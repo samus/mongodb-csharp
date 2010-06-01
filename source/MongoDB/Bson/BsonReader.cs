@@ -321,7 +321,7 @@ namespace MongoDB.Bson
         private object ReadRegex(){
             return new MongoRegex{
                 Expression = ReadString(),
-                Options = ReadString()
+                RawOptions = ReadString()
             };
         }
 

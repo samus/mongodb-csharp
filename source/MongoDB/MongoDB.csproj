@@ -138,6 +138,7 @@
     <Compile Include="Linq\Translators\ExpressionReplacer.cs" />
     <Compile Include="MapReduce.cs" />
     <Compile Include="Commands\MapReduceCommand.cs" />
+    <Compile Include="MongoRegexOption.cs" />
     <Compile Include="Results\MapReduceResult.cs" />
     <Compile Include="Serialization\Builders\DictionaryBuilder.cs" />
     <Compile Include="Serialization\Builders\PropertyDescriptor.cs" />

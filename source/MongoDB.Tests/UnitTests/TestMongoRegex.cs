@@ -9,19 +9,53 @@ namespace MongoDB.UnitTests
     public class TestMongoRegex
     {
         [Test]
-        public void CanBeCunstructedFromNullExceptionAndOptions()
+        public void CanBeCunstructedFromNullExpressionAndOptions()
         {
             var regex = new MongoRegex(null, null);
             Assert.IsNull(regex.Expression);
-            Assert.IsNull(regex.Options);
+            Assert.IsNull(regex.RawOptions);
         }
 
         [Test]
         public void CanBeConstructed()
         {
+            var regex = new MongoRegex("expression");
+            Assert.AreEqual("expression", regex.Expression);
+            Assert.AreEqual(string.Empty, regex.RawOptions);
+        }
+
+        [Test]
+        public void CanBeConstructedWithOption()
+        {
             var regex = new MongoRegex("expression", "options");
             Assert.AreEqual("expression",regex.Expression);
-            Assert.AreEqual("options",regex.Options);
+            Assert.AreEqual("options",regex.RawOptions);
+        }
+
+        [Test]
+        public void CanBeConstructedWithMongoRegexOption()
+        {
+            var regex = new MongoRegex("expression", MongoRegexOption.IgnoreCase | MongoRegexOption.IgnorePatternWhitespace | MongoRegexOption.Multiline);
+            Assert.AreEqual("expression", regex.Expression);
+            Assert.AreEqual("img", regex.RawOptions);
+        }
+
+        [Test]
+        public void CanReadOptions()
+        {
+            var regex = new MongoRegex("expression", "img");
+            Assert.AreEqual(MongoRegexOption.IgnoreCase | MongoRegexOption.IgnorePatternWhitespace | MongoRegexOption.Multiline, regex.Options);
+        }
+
+        [Test]
+        public void CanSetOptions()
+        {
+            var regex = new MongoRegex("expression", null)
+            {
+                Options = MongoRegexOption.IgnoreCase & MongoRegexOption.IgnorePatternWhitespace
+            };
+
+            Assert.AreEqual("ig",regex.RawOptions);
         }
 
         [Test]

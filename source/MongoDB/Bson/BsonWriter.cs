@@ -200,7 +200,7 @@ namespace MongoDB.Bson
         private void Write(MongoRegex regex)
         {
             Write(regex.Expression, false);
-            Write(regex.Options, false);
+            Write(regex.RawOptions, false);
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace MongoDB.Bson
         public int CalculateSize(MongoRegex regex)
         {
             var size = CalculateSize(regex.Expression, false);
-            size += CalculateSize(regex.Options, false);
+            size += CalculateSize(regex.RawOptions, false);
             return size;
         }
 
