@@ -164,9 +164,12 @@ namespace MongoDB.Linq
 
         private ProjectionExpression Translate(Expression expression)
         {
+            var rootQueryable = new RootQueryableFinder().Find(expression);
+            var elementType = ((IQueryable)((ConstantExpression)rootQueryable).Value).ElementType;
+
             expression = PartialEvaluator.Evaluate(expression, CanBeEvaluatedLocally);
 
-            expression = new FieldBinder().Bind(expression);
+            expression = new FieldBinder().Bind(expression, elementType);
             expression = new QueryBinder(this, expression).Bind(expression);
             expression = new AggregateRewriter().Rewrite(expression);
             expression = new RedundantFieldRemover().Remove(expression);

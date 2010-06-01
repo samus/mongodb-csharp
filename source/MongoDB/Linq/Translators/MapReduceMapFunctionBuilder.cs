@@ -66,6 +66,8 @@ namespace MongoDB.Linq.Translators
             for (int i = 0, n = fields.Count; i < n; i++)
             {
                 _currentAggregateName = fields[i].Name;
+                if (_currentAggregateName == "*")
+                    continue;
                 Visit(fields[i].Expression);
             }
 

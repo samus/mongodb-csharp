@@ -290,7 +290,17 @@ namespace MongoDB.Linq.Translators
                 doc = (Document)sub;
             }
 
-            doc[scope.Key] = scope.Value;
+            if (scope.Value is MongoDBConstant)
+            {
+                switch ((MongoDBConstant)scope.Value)
+                {
+                    case MongoDBConstant.Null:
+                        doc[scope.Key] = null;
+                        break;
+                }
+            }
+            else
+                doc[scope.Key] = scope.Value;
         }
 
         private void VisitPredicate(Expression expression, bool hasPredicate)

@@ -8,6 +8,14 @@ namespace MongoDB.Linq.Expressions
 {
     internal static class MongoExpressionExtensions
     {
+        public static bool HasSelectAllField(this IEnumerable<FieldDeclaration> fields)
+        {
+            if (fields == null)
+                return true;
+
+            return fields.Any(f => f.Name == "*");
+        }
+
         public static SelectExpression AddField(this SelectExpression select, FieldDeclaration field)
         {
             List<FieldDeclaration> fields = new List<FieldDeclaration>(select.Fields);

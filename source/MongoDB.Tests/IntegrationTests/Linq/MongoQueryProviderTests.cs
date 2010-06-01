@@ -256,6 +256,30 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void NotNullCheck()
+        {
+            var people = Collection.Linq().Where(x => x.MidName != null);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("MidName", Op.NotEqual<string>(null)), queryObject.Query);
+        }
+
+        [Test]
+        public void NullCheck()
+        {
+            var people = Collection.Linq().Where(x => x.MidName == null);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("MidName", null), queryObject.Query);
+        }
+
+        [Test]
         public void OrderBy()
         {
             var people = Collection.Linq().OrderBy(x => x.Age).ThenByDescending(x => x.LastName);
@@ -291,6 +315,20 @@ namespace MongoDB.IntegrationTests.Linq
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("Age", new Document().Merge(Op.GreaterThan(21)).Merge(Op.LessThan(42))), queryObject.Query);
+        }
+
+        [Test]
+        public void ProjectionWithLocalCreation_ChildobjectShouldNotBeNull()
+        {
+            var people = Collection.Linq()
+                .Select(p => new PersonWrapper(p, p.FirstName));
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count());
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(0, queryObject.Query.Count);
+
         }
 
         [Test]

@@ -49,7 +49,7 @@ namespace MongoDB.Linq.Translators
                 _queryObject.ReduceFunction = new MapReduceReduceFunctionBuilder().Build(select.Fields);
                 _queryObject.FinalizerFunction = new MapReduceFinalizerFunctionBuilder().Build(select.Fields);
             }
-            else if(!_queryAttributes.IsCount)
+            else if(!_queryAttributes.IsCount && !select.Fields.HasSelectAllField())
             {
                 var fieldGatherer = new FieldGatherer();
                 foreach (var field in select.Fields)

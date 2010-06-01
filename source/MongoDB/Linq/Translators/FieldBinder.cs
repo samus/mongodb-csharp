@@ -17,11 +17,13 @@ namespace MongoDB.Linq.Translators
 
         private Alias _alias;
         private FieldFinder _finder;
+        private Type _elementType;
 
-        public Expression Bind(Expression expression)
+        public Expression Bind(Expression expression, Type elementType)
         {
             _alias = new Alias();
             _finder = new FieldFinder();
+            _elementType = elementType;
             return Visit(expression);
         }
 
@@ -35,6 +37,14 @@ namespace MongoDB.Linq.Translators
                 return new FieldExpression(exp, _alias, fieldName);
 
             return base.Visit(exp);
+        }
+
+        protected override Expression VisitParameter(ParameterExpression p)
+        {
+            if(p.Type == _elementType)
+                return new FieldExpression(p, _alias, "*");
+
+            return base.VisitParameter(p);
         }
 
         private class FieldFinder : ExpressionVisitor
