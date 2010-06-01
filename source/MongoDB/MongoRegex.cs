@@ -28,20 +28,20 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoRegex"/> class.
+        ///   Initializes a new instance of the <see cref = "MongoRegex" /> class.
         /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <param name="options">The options.</param>
-        public MongoRegex(string expression,MongoRegexOption options)
+        /// <param name = "expression">The expression.</param>
+        /// <param name = "options">The options.</param>
+        public MongoRegex(string expression, MongoRegexOption options)
         {
             Expression = expression;
             Options = options;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MongoRegex"/> class.
+        ///   Initializes a new instance of the <see cref = "MongoRegex" /> class.
         /// </summary>
-        /// <param name="regex">The regex.</param>
+        /// <param name = "regex">The regex.</param>
         public MongoRegex(Regex regex)
         {
             if(regex == null)
@@ -71,7 +71,7 @@ namespace MongoDB
         public string Expression { get; set; }
 
         /// <summary>
-        /// Gets or sets the options.
+        ///   Gets or sets the options.
         /// </summary>
         /// <value>The options.</value>
         public MongoRegexOption Options
@@ -80,7 +80,7 @@ namespace MongoDB
             {
                 var options = MongoRegexOption.None;
 
-                if(RawOptions!=null)
+                if(RawOptions != null)
                 {
                     if(RawOptions.Contains("i"))
                         options = options | MongoRegexOption.IgnoreCase;
@@ -106,6 +106,27 @@ namespace MongoDB
         ///   any nonconforming options will be dropped when converting to this representation
         /// </summary>
         public string RawOptions { get; set; }
+
+        /// <summary>
+        /// Builds a .Net Regex.
+        /// </summary>
+        /// <returns></returns>
+        public Regex BuildRegex()
+        {
+            var options = RegexOptions.None;
+
+            if(RawOptions != null)
+            {
+                if(RawOptions.Contains("i"))
+                    options = options | RegexOptions.IgnoreCase;
+                if(RawOptions.Contains("m"))
+                    options = options | RegexOptions.Multiline;
+                if(RawOptions.Contains("g"))
+                    options = options | RegexOptions.IgnorePatternWhitespace;
+            }
+
+            return new Regex(Expression,options);
+        }
 
         /// <summary>
         ///   Indicates whether the current object is equal to another object of the same type.

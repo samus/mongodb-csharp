@@ -111,5 +111,16 @@ namespace MongoDB.UnitTests
 
             Assert.AreEqual(source, dest);
         }
+
+        [Test]
+        public void CanBuildNetRegex()
+        {
+            var regex = new MongoRegex("expression", MongoRegexOption.IgnoreCase|MongoRegexOption.IgnorePatternWhitespace|MongoRegexOption.Multiline);
+            var netRegex = regex.BuildRegex();
+
+            Assert.IsNotNull(netRegex);
+            Assert.AreEqual("expression",netRegex.ToString());
+            Assert.AreEqual(RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase | RegexOptions.Multiline, netRegex.Options);
+        }
     }
 }
