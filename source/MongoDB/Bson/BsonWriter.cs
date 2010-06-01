@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MongoDB.Bson
 {
@@ -98,7 +99,10 @@ namespace MongoDB.Bson
                     WriteArray((IEnumerable)obj);
                     return;
                 case BsonType.Regex:
-                    Write((MongoRegex)obj);
+                    if(obj is Regex)
+                        Write(new MongoRegex((Regex)obj));
+                    else
+                        Write((MongoRegex)obj);
                     return;
                 case BsonType.Code:
                     Write((Code)obj);
@@ -344,6 +348,8 @@ namespace MongoDB.Bson
                 case BsonType.Array:
                     return CalculateSize((IEnumerable)obj);
                 case BsonType.Regex:
+                    if(obj is Regex)
+                        return CalculateSize(new MongoRegex((Regex)obj));
                     return CalculateSize((MongoRegex)obj);
                 case BsonType.Code:
                     return CalculateSize((Code)obj);
@@ -571,6 +577,8 @@ namespace MongoDB.Bson
             if(type == typeof(TimeSpan))
                 return BsonType.Long;
             if(type == typeof(MongoRegex))
+                return BsonType.Regex;
+            if(type == typeof(Regex))
                 return BsonType.Regex;
             if(type == typeof(DBRef))
                 return BsonType.Obj;

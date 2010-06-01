@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using MongoDB.Bson;
 using NUnit.Framework;
 
@@ -219,6 +220,27 @@ namespace MongoDB.UnitTests.Bson
             var bson = Serialize(new Document("uri", uri));
 
             Assert.AreEqual("KAAAAAJ1cmkAGgAAAGh0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS8AAA==",bson);
+        }
+
+        [Test]
+        public void TestWriteMongoRegex()
+        {
+            var regex = new MongoRegex("expression",
+                MongoRegexOption.IgnoreCase | MongoRegexOption.IgnorePatternWhitespace | MongoRegexOption.Multiline);
+
+            var bson = Serialize(new Document("regex", regex));
+
+            Assert.AreEqual("GwAAAAtyZWdleABleHByZXNzaW9uAGltZwAA",bson);
+        }
+
+        [Test]
+        public void TestWriteNetRegex()
+        {
+            var regex = new Regex("expression", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
+
+            var bson = Serialize(new Document("regex", regex));
+
+            Assert.AreEqual("GwAAAAtyZWdleABleHByZXNzaW9uAGltZwAA", bson);
         }
     }
 }
