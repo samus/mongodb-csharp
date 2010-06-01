@@ -119,6 +119,7 @@
     <Compile Include="Configuration\DictionaryAdapters\IDictionaryAdapter.cs" />
     <Compile Include="Configuration\Mapping\Conventions\DefaultDictionaryAdapterConvention.cs" />
     <Compile Include="Configuration\Mapping\Conventions\IDictionaryAdapterConvention.cs" />
+    <Compile Include="Configuration\Mapping\Util\ValueConverter.cs" />
     <Compile Include="Configuration\MongoConfigurationBuilder.cs" />
     <Compile Include="Configuration\Builders\AutoMappingProfileBuilder.cs" />
     <Compile Include="Configuration\Builders\ClassOverridesBuilder.cs" />

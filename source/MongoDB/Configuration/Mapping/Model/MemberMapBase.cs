@@ -1,4 +1,5 @@
 ﻿using System;
+using MongoDB.Configuration.Mapping.Util;
 
 namespace MongoDB.Configuration.Mapping.Model
 {
@@ -56,32 +57,14 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name = "value">The value.</param>
         public virtual void SetValue(object instance, object value)
         {
-            var valueType = value != null ? value.GetType() : typeof(object);
-
-            if(valueType != MemberReturnType)
-                try
-                {
-                    var code = Convert.GetTypeCode(value);
-
-                    if(MemberReturnType.IsEnum)
-                        value = Enum.ToObject(MemberReturnType, value);
-                    else if(MemberReturnType.IsGenericType && 
-                        MemberReturnType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                    {
-                        if(value!=null)
-                            value = Convert.ChangeType(value, Nullable.GetUnderlyingType(MemberReturnType));
-                    }
-                    else if(code != TypeCode.Object)
-                        value = Convert.ChangeType(value, MemberReturnType);
-                }
-                catch(FormatException exception)
-                {
-                    throw new MongoException("Can not convert value from " + valueType + " to " + MemberReturnType + " on " + instance.GetType() + "." + MemberName, exception);
-                }
-                catch(ArgumentException exception)
-                {
-                    throw new MongoException("Can not convert value from " + valueType + " to " + MemberReturnType + " on " + instance.GetType() + "." + MemberName, exception);
-                }
+            try
+            {
+                value = ValueConverter.Convert(value, MemberReturnType);
+            }
+            catch(MongoException exception)
+            {
+                throw new MongoException("Con not convert value on type " + instance.GetType(),exception);
+            }
 
             _setter(instance, value);
         }
