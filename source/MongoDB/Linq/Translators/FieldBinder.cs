@@ -10,7 +10,7 @@ namespace MongoDB.Linq.Translators
 {
     internal class FieldBinder : ExpressionVisitor
     {
-        private static readonly HashSet<Type> CollectionTypes = new HashSet<Type>()
+        private static readonly HashSet<Type> CollectionTypes = new HashSet<Type>
         {
             typeof(ICollection), typeof(ICollection<>)
         };

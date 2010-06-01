@@ -16,14 +16,14 @@ namespace MongoDB.Serialization.Builders
             _classMap = classMap;
             _instance = classMap.CreateInstance();
 
-            if (_classMap.HasExtendedProperties)
-            {
-                var extPropType = _classMap.ExtendedPropertiesMap.MemberReturnType;
-                if (extPropType == typeof(IDictionary<string, object>))
-                    extPropType = typeof(Dictionary<string, object>);
-                _extendedProperties = (IDictionary<string, object>)Activator.CreateInstance(extPropType);
-                _classMap.ExtendedPropertiesMap.SetValue(_instance, _extendedProperties);
-            }
+            if(!_classMap.HasExtendedProperties)
+                return;
+            
+            var extPropType = _classMap.ExtendedPropertiesMap.MemberReturnType;
+            if (extPropType == typeof(IDictionary<string, object>))
+                extPropType = typeof(Dictionary<string, object>);
+            _extendedProperties = (IDictionary<string, object>)Activator.CreateInstance(extPropType);
+            _classMap.ExtendedPropertiesMap.SetValue(_instance, _extendedProperties);
         }
 
         public void AddProperty(string name, object value)
@@ -47,7 +47,7 @@ namespace MongoDB.Serialization.Builders
                 return null;
 
             var type = memberMap.MemberReturnType;
-            bool isDictionary = false;
+            var isDictionary = false;
             if (memberMap is CollectionMemberMap)
                 type = ((CollectionMemberMap)memberMap).ElementType;
             else if (memberMap is DictionaryMemberMap)

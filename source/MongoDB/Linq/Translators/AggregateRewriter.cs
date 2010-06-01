@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using MongoDB.Linq.Expressions;
 using System.Linq.Expressions;
 
@@ -10,7 +8,7 @@ namespace MongoDB.Linq.Translators
     internal class AggregateRewriter : MongoExpressionVisitor
     {
         ILookup<Alias, AggregateSubqueryExpression> _lookup;
-        Dictionary<AggregateSubqueryExpression, Expression> _map;
+        readonly Dictionary<AggregateSubqueryExpression, Expression> _map;
 
         public AggregateRewriter()
         {
