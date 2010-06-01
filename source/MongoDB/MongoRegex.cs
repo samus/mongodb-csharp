@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -35,6 +36,22 @@ namespace MongoDB
         {
             Expression = expression;
             Options = options;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MongoRegex"/> class.
+        /// </summary>
+        /// <param name="regex">The regex.</param>
+        public MongoRegex(Regex regex)
+        {
+            if(regex == null)
+                throw new ArgumentNullException("regex");
+
+            Expression = regex.ToString();
+
+            ToggleOption("i", (regex.Options & RegexOptions.IgnoreCase) != 0);
+            ToggleOption("m", (regex.Options & RegexOptions.Multiline) != 0);
+            ToggleOption("g", (regex.Options & RegexOptions.IgnorePatternWhitespace) != 0);
         }
 
         /// <summary>

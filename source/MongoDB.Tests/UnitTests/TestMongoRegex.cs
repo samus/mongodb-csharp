@@ -1,5 +1,6 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using NUnit.Framework;
 
@@ -30,6 +31,18 @@ namespace MongoDB.UnitTests
             var regex = new MongoRegex("expression", "options");
             Assert.AreEqual("expression",regex.Expression);
             Assert.AreEqual("options",regex.RawOptions);
+        }
+
+        [Test]
+        public void CanBeConstructedFromRegex()
+        {
+            const RegexOptions options = RegexOptions.IgnoreCase |
+                                         RegexOptions.IgnorePatternWhitespace |
+                                         RegexOptions.Multiline;
+
+            var regex = new MongoRegex(new Regex("expression", options));
+            Assert.AreEqual("expression", regex.Expression);
+            Assert.AreEqual("img", regex.RawOptions);
         }
 
         [Test]
