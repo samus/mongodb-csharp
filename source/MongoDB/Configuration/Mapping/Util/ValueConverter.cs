@@ -35,5 +35,15 @@ namespace MongoDB.Configuration.Mapping.Util
 
             return value;
         }
+
+        public static Array ConvertArray(object[] elements, Type type)
+        {
+            var array = Array.CreateInstance(type, elements.Length);
+
+            for(var i = 0; i < elements.Length; i++)
+                array.SetValue(Convert(elements[i], type), i);
+
+            return array;
+        }
     }
 }

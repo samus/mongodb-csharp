@@ -222,5 +222,28 @@ namespace MongoDB.UnitTests.Serialization
             Assert.IsTrue(prop.Property.Contains("test1"));
             Assert.IsTrue(prop.Property.Contains("test2"));
         }
+
+        public class EnumHelper
+        {
+            public enum Test
+            {
+                A=1,
+                B=2
+            }
+
+            public List<Test> Tests { get; set; }
+        }
+
+        [Test]
+        public void CanSerializerAndDesializeEnumLists()
+        {
+            var helper = new EnumHelper {Tests = new List<EnumHelper.Test> {EnumHelper.Test.A}};
+            var bson = Serialize<EnumHelper>(helper);
+            var deserialize = Deserialize<EnumHelper>(bson);
+
+            Assert.IsNotNull(deserialize);
+            Assert.IsNotNull(deserialize.Tests);
+            Assert.Contains(EnumHelper.Test.A, deserialize.Tests);
+        }
     }
 }

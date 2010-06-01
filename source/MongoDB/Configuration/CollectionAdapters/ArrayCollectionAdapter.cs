@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using MongoDB.Configuration.Mapping.Util;
 
 namespace MongoDB.Configuration.CollectionAdapters
 {
@@ -16,9 +17,7 @@ namespace MongoDB.Configuration.CollectionAdapters
         /// <returns></returns>
         public object CreateCollection(Type elementType, object[] elements)
         {
-            var array = Array.CreateInstance(elementType, elements.Length);
-            elements.CopyTo(array, 0);
-            return array;
+            return ValueConverter.ConvertArray(elements, elementType);
         }
 
         /// <summary>

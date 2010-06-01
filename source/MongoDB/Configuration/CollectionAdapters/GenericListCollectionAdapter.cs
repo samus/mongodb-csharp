@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using MongoDB.Configuration.Mapping.Util;
 
 namespace MongoDB.Configuration.CollectionAdapters
 {
@@ -20,8 +21,7 @@ namespace MongoDB.Configuration.CollectionAdapters
         public object CreateCollection(Type elementType, object[] elements)
         {
             var closedListType = OpenListType.MakeGenericType(elementType);
-            var typedElements = Array.CreateInstance(elementType, elements.Length);
-            Array.Copy(elements, typedElements, elements.Length);
+            var typedElements = ValueConverter.ConvertArray(elements, elementType);
             return Activator.CreateInstance(closedListType, typedElements);
         }
 
