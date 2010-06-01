@@ -26,6 +26,8 @@ namespace MongoDB.IntegrationTests.Linq
         public int[] EmployerIds { get; set; }
 
         public string MidName { get; set; }
+
+        public Oid LinkedId { get; set; }
     }
 
     public class Address

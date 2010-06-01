@@ -295,6 +295,14 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void NullCheckOnClassTypes()
+        {
+            var people = Collection.Linq().Where(x => x.LinkedId == null).ToArray();
+
+            Assert.AreEqual(3, people.Length);
+        }
+
+        [Test]
         public void OrderBy()
         {
             var people = Collection.Linq().OrderBy(x => x.Age).ThenByDescending(x => x.LastName).ToList();
