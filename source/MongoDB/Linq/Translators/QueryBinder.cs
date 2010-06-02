@@ -47,9 +47,6 @@ namespace MongoDB.Linq.Translators
 
         protected override Expression VisitConstant(ConstantExpression c)
         {
-            if (c.Value == null)
-                c = Expression.Constant(MongoDBConstant.Null, c.Type);
-
             if (IsCollection(c.Value))
                 return GetCollectionProjection(c.Value);
             return base.VisitConstant(c);

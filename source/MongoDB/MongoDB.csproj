@@ -137,7 +137,6 @@
     <Compile Include="Linq\Expressions\MongoExpressionExtensions.cs" />
     <Compile Include="Linq\Expressions\MongoExpression.cs" />
     <Compile Include="Linq\Translators\ExpressionReplacer.cs" />
-    <Compile Include="Linq\Translators\MongoDBConstant.cs" />
     <Compile Include="MapReduce.cs" />
     <Compile Include="Commands\MapReduceCommand.cs" />
     <Compile Include="MongoRegexOption.cs" />

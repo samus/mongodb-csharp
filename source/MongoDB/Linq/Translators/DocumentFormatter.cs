@@ -254,7 +254,7 @@ namespace MongoDB.Linq.Translators
 
         private void AddCondition(object value)
         {
-            _scopes.Peek().AddCondition(value);
+            _scopes.Peek().AddCondition(value ?? NullPlaceHolder.Instance);
         }
 
         private void AddCondition(string name, object value)
@@ -290,15 +290,8 @@ namespace MongoDB.Linq.Translators
                 doc = (Document)sub;
             }
 
-            if (scope.Value is MongoDBConstant)
-            {
-                switch ((MongoDBConstant)scope.Value)
-                {
-                    case MongoDBConstant.Null:
-                        doc[scope.Key] = null;
-                        break;
-                }
-            }
+            if (scope.Value is NullPlaceHolder)
+                doc[scope.Key] = null;
             else
                 doc[scope.Key] = scope.Value;
         }
@@ -322,6 +315,14 @@ namespace MongoDB.Linq.Translators
         private static bool IsBoolean(Expression expression)
         {
             return expression.Type == typeof(bool) || expression.Type == typeof(bool?);
+        }
+
+        private class NullPlaceHolder
+        {
+            public static readonly NullPlaceHolder Instance = new NullPlaceHolder();
+
+            private NullPlaceHolder()
+            { }
         }
 
         private class Scope
