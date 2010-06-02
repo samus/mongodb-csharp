@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using MongoDB.Bson;
+using MongoDB.Util;
 using NUnit.Framework;
 
 namespace MongoDB.UnitTests.Bson

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-
 using MongoDB.Linq.Expressions;
-using System.Collections.ObjectModel;
 
 namespace MongoDB.Linq.Translators
 {
@@ -41,10 +36,10 @@ namespace MongoDB.Linq.Translators
                         where = fromSelect.Where;
                 }
 
-                var groupBy = select.GroupBy != null ? select.GroupBy : fromSelect.GroupBy;
+                var groupBy = select.GroupBy ?? fromSelect.GroupBy;
                 var orderBy = select.OrderBy != null && select.OrderBy.Count > 0 ? select.OrderBy : fromSelect.OrderBy;
-                var skip = select.Skip != null ? select.Skip : fromSelect.Skip;
-                var take = select.Take != null ? select.Take : fromSelect.Take;
+                var skip = select.Skip ?? fromSelect.Skip;
+                var take = select.Take ?? fromSelect.Take;
                 bool distinct = select.IsDistinct | fromSelect.IsDistinct;
                 var fields = select.Fields.Count > 0 ? select.Fields : fromSelect.Fields;
 
@@ -125,11 +120,7 @@ namespace MongoDB.Linq.Translators
 
         private static bool IsSimpleProjection(SelectExpression select)
         {
-            foreach (var field in select.Fields)
-                if (string.IsNullOrEmpty(field.Name))
-                    return false;
-
-            return true;
+            return select.Fields.All(field => !string.IsNullOrEmpty(field.Name));
         }
     }
 }

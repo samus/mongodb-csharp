@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-
 using MongoDB.Linq.Expressions;
 
 namespace MongoDB.Linq.Translators
@@ -18,7 +15,7 @@ namespace MongoDB.Linq.Translators
         private List<FieldDeclaration> _fields;
         private Dictionary<FieldExpression, FieldExpression> _map;
         private Alias _newAlias;
-        private Nominator _nominator;
+        private readonly Nominator _nominator;
         private int columnIndex;
 
         public FieldProjector(Func<Expression, bool> canBeField)
@@ -117,7 +114,7 @@ namespace MongoDB.Linq.Translators
 
         private class Nominator : MongoExpressionVisitor
         {
-            private Func<Expression, bool> _predicate;
+            private readonly Func<Expression, bool> _predicate;
             private HashSet<Expression> _candidates;
             private bool _isBlocked;
 

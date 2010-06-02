@@ -1,4 +1,5 @@
 using System;
+using MongoDB.Util;
 using NUnit.Framework;
 
 namespace MongoDB.UnitTests

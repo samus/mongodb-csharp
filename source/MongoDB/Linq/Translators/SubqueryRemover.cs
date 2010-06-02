@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
-
 using MongoDB.Linq.Expressions;
 
 namespace MongoDB.Linq.Translators
@@ -20,10 +16,7 @@ namespace MongoDB.Linq.Translators
 
         protected override Expression VisitSelect(SelectExpression s)
         {
-            if (_selectsToRemove.Contains(s))
-                return Visit(s.From);
-
-            return base.VisitSelect(s);
+            return _selectsToRemove.Contains(s) ? Visit(s.From) : base.VisitSelect(s);
         }
     }
 }

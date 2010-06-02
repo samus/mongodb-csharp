@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using MongoDB.Util;
 using NUnit.Framework;
 
 namespace MongoDB.IntegrationTests

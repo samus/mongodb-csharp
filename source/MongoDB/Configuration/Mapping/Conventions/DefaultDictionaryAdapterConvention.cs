@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
-using MongoDB.Configuration.CollectionAdapters;
 using MongoDB.Configuration.DictionaryAdapters;
 
 namespace MongoDB.Configuration.Mapping.Conventions

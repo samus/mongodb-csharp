@@ -6,16 +6,16 @@ using System.Text.RegularExpressions;
 namespace MongoDB.Util
 {
     /// <summary>
-    /// This was ripped out of SubSonic I believe.
+    ///   This was ripped out of SubSonic I believe.
     /// </summary>
     public static class Inflector
     {
-        private static readonly List<InflectorRule> _plurals = new List<InflectorRule>();
-        private static readonly List<InflectorRule> _singulars = new List<InflectorRule>();
-        private static readonly List<string> _uncountables = new List<string>();
+        private static readonly List<InflectorRule> Plurals = new List<InflectorRule>();
+        private static readonly List<InflectorRule> Singulars = new List<InflectorRule>();
+        private static readonly List<string> Uncountables = new List<string>();
 
         /// <summary>
-        /// Initializes the <see cref="Inflector"/> class.
+        ///   Initializes the <see cref = "Inflector" /> class.
         /// </summary>
         static Inflector()
         {
@@ -82,10 +82,10 @@ namespace MongoDB.Util
         }
 
         /// <summary>
-        /// Adds the irregular rule.
+        ///   Adds the irregular rule.
         /// </summary>
-        /// <param name="singular">The singular.</param>
-        /// <param name="plural">The plural.</param>
+        /// <param name = "singular">The singular.</param>
+        /// <param name = "plural">The plural.</param>
         private static void AddIrregularRule(string singular, string plural)
         {
             AddPluralRule(String.Concat("(", singular[0], ")", singular.Substring(1), "$"),
@@ -95,93 +95,91 @@ namespace MongoDB.Util
         }
 
         /// <summary>
-        /// Adds the unknown count rule.
+        ///   Adds the unknown count rule.
         /// </summary>
-        /// <param name="word">The word.</param>
+        /// <param name = "word">The word.</param>
         private static void AddUnknownCountRule(string word)
         {
-            _uncountables.Add(word.ToLower());
+            Uncountables.Add(word.ToLower());
         }
 
         /// <summary>
-        /// Adds the plural rule.
+        ///   Adds the plural rule.
         /// </summary>
-        /// <param name="rule">The rule.</param>
-        /// <param name="replacement">The replacement.</param>
+        /// <param name = "rule">The rule.</param>
+        /// <param name = "replacement">The replacement.</param>
         private static void AddPluralRule(string rule, string replacement)
         {
-            _plurals.Add(new InflectorRule(rule, replacement));
+            Plurals.Add(new InflectorRule(rule, replacement));
         }
 
         /// <summary>
-        /// Adds the singular rule.
+        ///   Adds the singular rule.
         /// </summary>
-        /// <param name="rule">The rule.</param>
-        /// <param name="replacement">The replacement.</param>
+        /// <param name = "rule">The rule.</param>
+        /// <param name = "replacement">The replacement.</param>
         private static void AddSingularRule(string rule, string replacement)
         {
-            _singulars.Add(new InflectorRule(rule, replacement));
+            Singulars.Add(new InflectorRule(rule, replacement));
         }
 
         /// <summary>
-        /// Makes the plural.
+        ///   Makes the plural.
         /// </summary>
-        /// <param name="word">The word.</param>
+        /// <param name = "word">The word.</param>
         /// <returns></returns>
         public static string MakePlural(string word)
         {
-            return ApplyRules(_plurals, word);
+            return ApplyRules(Plurals, word);
         }
 
         /// <summary>
-        /// Makes the singular.
+        ///   Makes the singular.
         /// </summary>
-        /// <param name="word">The word.</param>
+        /// <param name = "word">The word.</param>
         /// <returns></returns>
         public static string MakeSingular(string word)
         {
-            return ApplyRules(_singulars, word);
+            return ApplyRules(Singulars, word);
         }
 
         /// <summary>
-        /// Applies the rules.
+        ///   Applies the rules.
         /// </summary>
-        /// <param name="rules">The rules.</param>
-        /// <param name="word">The word.</param>
+        /// <param name = "rules">The rules.</param>
+        /// <param name = "word">The word.</param>
         /// <returns></returns>
         private static string ApplyRules(IList<InflectorRule> rules, string word)
         {
-            string result = word;
-            if (!_uncountables.Contains(word.ToLower()))
-            {
-                for (int i = rules.Count - 1; i >= 0; i--)
+            var result = word;
+            if(!Uncountables.Contains(word.ToLower()))
+                for(var i = rules.Count - 1; i >= 0; i--)
                 {
-                    string currentPass = rules[i].Apply(word);
-                    if (currentPass != null)
-                    {
-                        result = currentPass;
-                        break;
-                    }
+                    var currentPass = rules[i].Apply(word);
+                    if(currentPass == null)
+                        continue;
+                    result = currentPass;
+                    break;
                 }
-            }
             return result;
         }
 
         /// <summary>
-        /// Converts the string to title case.
+        ///   Converts the string to title case.
         /// </summary>
-        /// <param name="word">The word.</param>
+        /// <param name = "word">The word.</param>
         /// <returns></returns>
         public static string ToTitleCase(string word)
         {
-            return Regex.Replace(ToHumanCase(AddUnderscores(word)), @"\b([a-z])",
+            return Regex.Replace(ToHumanCase(AddUnderscores(word)),
+                @"\b([a-z])",
                 match => match.Captures[0].Value.ToUpper());
         }
 
         /// <summary>
-        /// Converts the string to human case.
+        ///   Converts the string to human case.
         /// </summary>
-        /// <param name="lowercaseAndUnderscoredWord">The lowercase and underscored word.</param>
+        /// <param name = "lowercaseAndUnderscoredWord">The lowercase and underscored word.</param>
         /// <returns></returns>
         public static string ToHumanCase(string lowercaseAndUnderscoredWord)
         {
@@ -189,20 +187,20 @@ namespace MongoDB.Util
         }
 
         /// <summary>
-        /// Convert string to proper case
+        ///   Convert string to proper case
         /// </summary>
-        /// <param name="sourceString">The source string.</param>
+        /// <param name = "sourceString">The source string.</param>
         /// <returns></returns>
         public static string ToProper(string sourceString)
         {
-            string propertyName = ToPascalCase(sourceString);
+            var propertyName = ToPascalCase(sourceString);
             return propertyName;
         }
 
         /// <summary>
-        /// Converts the string to pascal case.
+        ///   Converts the string to pascal case.
         /// </summary>
-        /// <param name="lowercaseAndUnderscoredWord">The lowercase and underscored word.</param>
+        /// <param name = "lowercaseAndUnderscoredWord">The lowercase and underscored word.</param>
         /// <returns></returns>
         public static string ToPascalCase(string lowercaseAndUnderscoredWord)
         {
@@ -210,43 +208,41 @@ namespace MongoDB.Util
         }
 
         /// <summary>
-        /// Converts text to pascal case...
+        ///   Converts text to pascal case...
         /// </summary>
-        /// <param name="text">The text.</param>
-        /// <param name="removeUnderscores">if set to <c>true</c> [remove underscores].</param>
+        /// <param name = "text">The text.</param>
+        /// <param name = "removeUnderscores">if set to <c>true</c> [remove underscores].</param>
         /// <returns></returns>
         public static string ToPascalCase(string text, bool removeUnderscores)
         {
-            if (String.IsNullOrEmpty(text))
+            if(String.IsNullOrEmpty(text))
                 return text;
 
             text = text.Replace("_", " ");
-            string joinString = removeUnderscores ? String.Empty : "_";
-            string[] words = text.Split(' ');
-            if (words.Length > 1)// || char.IsUpper(words[0][0]))
+            var joinString = removeUnderscores ? String.Empty : "_";
+            var words = text.Split(' ');
+            if(words.Length > 1) // || char.IsUpper(words[0][0]))
             {
-                for (int i = 0; i < words.Length; i++)
-                {
-                    if (words[i].Length > 0)
+                for(var i = 0; i < words.Length; i++)
+                    if(words[i].Length > 0)
                     {
-                        string word = words[i];
-                        string restOfWord = word.Substring(1);
+                        var word = words[i];
+                        var restOfWord = word.Substring(1);
 
                         restOfWord = restOfWord.ToLower(CultureInfo.CurrentUICulture);
 
-                        char firstChar = char.ToUpper(word[0], CultureInfo.CurrentUICulture);
+                        var firstChar = char.ToUpper(word[0], CultureInfo.CurrentUICulture);
                         words[i] = String.Concat(firstChar, restOfWord);
                     }
-                }
                 return String.Join(joinString, words);
             }
             return String.Concat(words[0].Substring(0, 1).ToUpper(CultureInfo.CurrentUICulture), words[0].Substring(1));
         }
 
         /// <summary>
-        /// Converts the string to camel case.
+        ///   Converts the string to camel case.
         /// </summary>
-        /// <param name="lowercaseAndUnderscoredWord">The lowercase and underscored word.</param>
+        /// <param name = "lowercaseAndUnderscoredWord">The lowercase and underscored word.</param>
         /// <returns></returns>
         public static string ToCamelCase(string lowercaseAndUnderscoredWord)
         {
@@ -254,22 +250,25 @@ namespace MongoDB.Util
         }
 
         /// <summary>
-        /// Adds the underscores.
+        ///   Adds the underscores.
         /// </summary>
-        /// <param name="pascalCasedWord">The pascal cased word.</param>
+        /// <param name = "pascalCasedWord">The pascal cased word.</param>
         /// <returns></returns>
         public static string AddUnderscores(string pascalCasedWord)
         {
             return
                 Regex.Replace(
-                    Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])",
-                        "$1_$2"), @"[-\s]", "_").ToLower();
+                    Regex.Replace(Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"),
+                        @"([a-z\d])([A-Z])",
+                        "$1_$2"),
+                    @"[-\s]",
+                    "_").ToLower();
         }
 
         /// <summary>
-        /// Converts the underscores to dashes.
+        ///   Converts the underscores to dashes.
         /// </summary>
-        /// <param name="underscoredWord">The underscored word.</param>
+        /// <param name = "underscoredWord">The underscored word.</param>
         /// <returns></returns>
         public static string ConvertUnderscoresToDashes(string underscoredWord)
         {
@@ -277,9 +276,9 @@ namespace MongoDB.Util
         }
 
         /// <summary>
-        /// Makes the initial caps.
+        ///   Makes the initial caps.
         /// </summary>
-        /// <param name="word">The word.</param>
+        /// <param name = "word">The word.</param>
         /// <returns></returns>
         public static string MakeInitialCaps(string word)
         {
@@ -287,37 +286,33 @@ namespace MongoDB.Util
         }
 
         /// <summary>
-        /// Makes the initial lower case.
+        ///   Makes the initial lower case.
         /// </summary>
-        /// <param name="word">The word.</param>
+        /// <param name = "word">The word.</param>
         /// <returns></returns>
         public static string MakeInitialLowerCase(string word)
         {
             return String.Concat(word.Substring(0, 1).ToLower(), word.Substring(1));
         }
 
-        #region Nested type: InflectorRule
-
         /// <summary>
-        /// Summary for the InflectorRule class
+        ///   Summary for the InflectorRule class
         /// </summary>
         private class InflectorRule
         {
             /// <summary>
-            /// 
             /// </summary>
-            public readonly Regex regex;
+            private readonly Regex regex;
 
             /// <summary>
-            /// 
             /// </summary>
-            public readonly string replacement;
+            private readonly string replacement;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="InflectorRule"/> class.
+            ///   Initializes a new instance of the <see cref = "InflectorRule" /> class.
             /// </summary>
-            /// <param name="regexPattern">The regex pattern.</param>
-            /// <param name="replacementText">The replacement text.</param>
+            /// <param name = "regexPattern">The regex pattern.</param>
+            /// <param name = "replacementText">The replacement text.</param>
             public InflectorRule(string regexPattern, string replacementText)
             {
                 regex = new Regex(regexPattern, RegexOptions.IgnoreCase);
@@ -325,23 +320,21 @@ namespace MongoDB.Util
             }
 
             /// <summary>
-            /// Applies the specified word.
+            ///   Applies the specified word.
             /// </summary>
-            /// <param name="word">The word.</param>
+            /// <param name = "word">The word.</param>
             /// <returns></returns>
             public string Apply(string word)
             {
-                if (!regex.IsMatch(word))
+                if(!regex.IsMatch(word))
                     return null;
 
-                string replace = regex.Replace(word, replacement);
-                if (word == word.ToUpper())
+                var replace = regex.Replace(word, replacement);
+                if(word == word.ToUpper())
                     replace = replace.ToUpper();
 
                 return replace;
             }
         }
-
-        #endregion
     }
 }

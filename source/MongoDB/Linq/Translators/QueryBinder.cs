@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-
 using MongoDB.Linq.Expressions;
 
 namespace MongoDB.Linq.Translators
@@ -15,9 +13,9 @@ namespace MongoDB.Linq.Translators
         private Expression _currentGroupElement;
         private Dictionary<Expression, GroupByInfo> _groupByMap;
         private Dictionary<ParameterExpression, Expression> _map;
-        private FieldProjector _projector;
+        private readonly FieldProjector _projector;
         private IQueryProvider _provider;
-        private Expression _root;
+        private readonly Expression _root;
         private List<OrderExpression> _thenBy;
         private bool _inField;
 
@@ -90,7 +88,7 @@ namespace MongoDB.Linq.Translators
             if (source == m.Expression)
                 return m;
 
-            return m = Expression.MakeMemberAccess(source, m.Member);
+            return Expression.MakeMemberAccess(source, m.Member);
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
@@ -128,7 +126,7 @@ namespace MongoDB.Linq.Translators
                         case "SingleOrDefault":
                             if (m.Arguments.Count == 1)
                                 return BindFirstOrSingle(m.Arguments[0], null, m.Method.Name, m == _root);
-                            else if (m.Arguments.Count == 2)
+                            if (m.Arguments.Count == 2)
                             {
                                 var predicate = (LambdaExpression)StripQuotes(m.Arguments[1]);
                                 return BindFirstOrSingle(m.Arguments[0], predicate, m.Method.Name, m == _root);
@@ -139,20 +137,23 @@ namespace MongoDB.Linq.Translators
                         case "Average":
                         case "Min":
                         case "Max":
-                            if (m.Arguments.Count == 1)
-                                return BindAggregate(m.Arguments[0], m.Method, null, m == _root);
-                            else if (m.Arguments.Count == 2)
+                            switch(m.Arguments.Count)
                             {
-                                var argument = (LambdaExpression)StripQuotes(m.Arguments[1]);
-                                return BindAggregate(m.Arguments[0], m.Method, argument, m == _root);
+                                case 1:
+                                    return BindAggregate(m.Arguments[0], m.Method, null, m == _root);
+                                case 2:
+                                {
+                                    var argument = (LambdaExpression)StripQuotes(m.Arguments[1]);
+                                    return BindAggregate(m.Arguments[0], m.Method, argument, m == _root);
+                                }
                             }
                             break;
                         case "GroupBy":
                             if (m.Arguments.Count == 2)
                                 return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), null, null);
-                            else if (m.Arguments.Count == 3)
+                            if (m.Arguments.Count == 3)
                                 return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), (LambdaExpression)StripQuotes(m.Arguments[2]), null);
-                            else if (m.Arguments.Count == 4)
+                            if (m.Arguments.Count == 4)
                                 return BindGroupBy(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), (LambdaExpression)StripQuotes(m.Arguments[2]), (LambdaExpression)StripQuotes(m.Arguments[3]));
                             break;
                     }
@@ -165,9 +166,7 @@ namespace MongoDB.Linq.Translators
         protected override Expression VisitParameter(ParameterExpression p)
         {
             Expression e;
-            if (_map.TryGetValue(p, out e))
-                return e;
-            return p;
+            return _map.TryGetValue(p, out e) ? e : p;
         }
 
         private Expression BindAggregate(Expression source, MethodInfo method, LambdaExpression argument, bool isRoot)
@@ -364,8 +363,7 @@ namespace MongoDB.Linq.Translators
             var projection = VisitSequence(source);
 
             _map[orderSelector.Parameters[0]] = projection.Projector;
-            var orderings = new List<OrderExpression>();
-            orderings.Add(new OrderExpression(orderType, Visit(orderSelector.Body)));
+            var orderings = new List<OrderExpression> {new OrderExpression(orderType, Visit(orderSelector.Body))};
             if (thenBye != null)
             {
                 for (int i = thenBye.Count - 1; i >= 0; i--)
@@ -412,7 +410,6 @@ namespace MongoDB.Linq.Translators
         {
             var projection = VisitSequence(source);
             take = Visit(take);
-            var select = projection.Source;
             var alias = new Alias();
             var fieldProjection = _projector.ProjectFields(projection.Projector, alias, projection.Source.Alias);
             return new ProjectionExpression(
@@ -474,7 +471,7 @@ namespace MongoDB.Linq.Translators
                 case (ExpressionType)MongoExpressionType.Projection:
                     return (ProjectionExpression)expression;
                 case ExpressionType.New:
-                    NewExpression newExpression = (NewExpression)expression;
+                    var newExpression = (NewExpression)expression;
                     if (expression.Type.IsGenericType && expression.Type.GetGenericTypeDefinition() == typeof(Grouping<,>))
                         return (ProjectionExpression)newExpression.Arguments[1];
                     break;
@@ -545,7 +542,7 @@ namespace MongoDB.Linq.Translators
                 return true;
             if (a is MethodInfo && b is PropertyInfo)
                 return a == ((PropertyInfo)b).GetGetMethod();
-            else if (a is PropertyInfo && b is MethodInfo)
+            if (a is PropertyInfo && b is MethodInfo)
                 return ((PropertyInfo)a).GetGetMethod() == b;
             return false;
         }
@@ -567,7 +564,6 @@ namespace MongoDB.Linq.Translators
                 Alias = alias;
                 Element = element;
             }
-
         }
     }
 }

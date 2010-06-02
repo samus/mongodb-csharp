@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using MongoDB.Commands;
-using MongoDB.Connections;
 using MongoDB.Linq.Expressions;
 using MongoDB.Linq.Translators;
-using MongoDB.Serialization;
 
 namespace MongoDB.Linq
 {
@@ -141,7 +138,7 @@ namespace MongoDB.Linq
         internal object ExecuteQueryObject(MongoQueryObject queryObject){
             if (queryObject.IsCount)
                 return ExecuteCount(queryObject);
-            else if (queryObject.IsMapReduce)
+            if (queryObject.IsMapReduce)
                 return ExecuteMapReduce(queryObject);
             return ExecuteFind(queryObject);
         }
@@ -238,9 +235,11 @@ namespace MongoDB.Linq
             Document spec;
             if (queryObject.Sort != null)
             {
-                spec = new Document();
-                spec.Add("query", queryObject.Query);
-                spec.Add("orderby", queryObject.Sort);
+                spec = new Document
+                {
+                    {"query", queryObject.Query}, 
+                    {"orderby", queryObject.Sort}
+                };
             }
             else
                 spec = queryObject.Query;
@@ -279,7 +278,8 @@ namespace MongoDB.Linq
             return executor.Compile().DynamicInvoke(mapReduce.GetType().GetProperty("Documents").GetValue(mapReduce, null));
         }
 
-        private static LambdaExpression GetExecutor(Type documentType, LambdaExpression projector, LambdaExpression aggregator, bool boxReturn)
+        private static LambdaExpression GetExecutor(Type documentType, LambdaExpression projector,  
+            Expression aggregator, bool boxReturn)
         {
             var documents = Expression.Parameter(typeof(IEnumerable<>).MakeGenericType(documentType), "documents");
             Expression body = Expression.Call(
@@ -299,8 +299,7 @@ namespace MongoDB.Linq
 
         private static IEnumerable<TResult> Project<TDocument, TResult>(IEnumerable<TDocument> documents, Func<TDocument, TResult> projector)
         {
-            foreach (var doc in documents)
-                yield return projector(doc);
+            return documents.Select(projector);
         }
 
         private class RootQueryableFinder : MongoExpressionVisitor

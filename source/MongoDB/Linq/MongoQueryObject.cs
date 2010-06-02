@@ -5,9 +5,6 @@ namespace MongoDB.Linq
 {
     internal class MongoQueryObject
     {
-        private Document _query;
-        private Document _sort;
-
         /// <summary>
         /// Gets or sets the aggregator.
         /// </summary>
@@ -92,19 +89,13 @@ namespace MongoDB.Linq
         /// Gets or sets the query.
         /// </summary>
         /// <value>The query.</value>
-        public Document Query
-        {
-            get { return _query; }
-        }
+        public Document Query { get; private set; }
 
         /// <summary>
         /// Gets the sort.
         /// </summary>
         /// <value>The sort.</value>
-        public Document Sort
-        {
-            get { return _sort; }
-        }
+        public Document Sort { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoQueryObject"/> class.
@@ -112,7 +103,7 @@ namespace MongoDB.Linq
         public MongoQueryObject()
         {
             Fields = new Document();
-            _query = new Document();
+            Query = new Document();
         }
 
         /// <summary>
@@ -122,9 +113,9 @@ namespace MongoDB.Linq
         /// <param name="value">The value.</param>
         public void AddSort(string name, int value)
         {
-            if(_sort == null)
-                _sort = new Document();
-            _sort.Add(name, value);
+            if(Sort == null)
+                Sort = new Document();
+            Sort.Add(name, value);
         }
 
         /// <summary>
@@ -133,7 +124,7 @@ namespace MongoDB.Linq
         /// <param name="document">The document.</param>
         public void SetQueryDocument(Document document)
         {
-            _query = document;
+            Query = document;
         }
 
         /// <summary>
@@ -142,7 +133,7 @@ namespace MongoDB.Linq
         /// <param name="whereClause">The where clause.</param>
         public void SetWhereClause(string whereClause)
         {
-            _query = Op.Where(whereClause);
+            Query = Op.Where(whereClause);
         }
 
         /// <summary>

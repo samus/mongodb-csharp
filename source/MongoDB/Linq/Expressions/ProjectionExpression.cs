@@ -1,37 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
     internal class ProjectionExpression : MongoExpression
     {
-        private readonly SelectExpression _source;
-        private readonly Expression _projector;
-        private readonly LambdaExpression _aggregator;
-
-        public LambdaExpression Aggregator
-        {
-            get { return _aggregator; }
-        }
+        public LambdaExpression Aggregator { get; private set; }
 
         public bool IsSingleton
         {
-            get { return _aggregator != null && _aggregator.Body.Type == _projector.Type; }
+            get { return Aggregator != null && Aggregator.Body.Type == Projector.Type; }
         }
 
-        public Expression Projector
-        {
-            get { return _projector; }
-        }
+        public Expression Projector { get; private set; }
 
-        public SelectExpression Source
-        {
-            get { return _source; }
-        }
-
+        public SelectExpression Source { get; private set; }
 
         public ProjectionExpression(SelectExpression source, Expression projector)
             : this(source, projector, null)
@@ -40,9 +23,9 @@ namespace MongoDB.Linq.Expressions
         public ProjectionExpression(SelectExpression source, Expression projector, LambdaExpression aggregator)
             : base(MongoExpressionType.Projection, aggregator != null ? aggregator.Body.Type : typeof(IEnumerable<>).MakeGenericType(projector.Type))
         {
-            _source = source;
-            _projector = projector;
-            _aggregator = aggregator;
+            Source = source;
+            Projector = projector;
+            Aggregator = aggregator;
         }
     }
 }

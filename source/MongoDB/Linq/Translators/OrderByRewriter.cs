@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
-
 using MongoDB.Linq.Expressions;
 using System.Collections.ObjectModel;
 
@@ -81,33 +77,34 @@ namespace MongoDB.Linq.Translators
 
         private void PrependOrderings(IList<OrderExpression> newOrderings)
         {
-            if (newOrderings != null)
+            if(newOrderings == null)
+                return;
+            
+            if (_gatheredOrderings == null)
             {
-                if (_gatheredOrderings == null)
+                _gatheredOrderings = new List<OrderExpression>();
+                _uniqueColumns = new HashSet<string>();
+            }
+
+            for (int i = newOrderings.Count - 1; i >= 0; i--)
+            {
+                var ordering = newOrderings[i];
+                var field = ordering.Expression as FieldExpression;
+                if (field != null)
                 {
-                    _gatheredOrderings = new List<OrderExpression>();
-                    _uniqueColumns = new HashSet<string>();
-                }
-                for (int i = newOrderings.Count - 1; i >= 0; i--)
-                {
-                    var ordering = newOrderings[i];
-                    var field = ordering.Expression as FieldExpression;
-                    if (field != null)
+                    var hash = field.Alias + ":" + field.Name;
+                    if (!_uniqueColumns.Contains(hash))
                     {
-                        var hash = field.Alias + ":" + field.Name;
-                        if (!_uniqueColumns.Contains(hash))
-                        {
-                            _gatheredOrderings.Insert(0, ordering);
-                            _uniqueColumns.Add(hash);
-                        }
-                    }
-                    else
                         _gatheredOrderings.Insert(0, ordering);
+                        _uniqueColumns.Add(hash);
+                    }
                 }
+                else
+                    _gatheredOrderings.Insert(0, ordering);
             }
         }
 
-        private BindResult RebindOrderings(IEnumerable<OrderExpression> orderings, Alias alias, HashSet<Alias> existingAliases, IEnumerable<FieldDeclaration> existingFields)
+        private BindResult RebindOrderings(IEnumerable<OrderExpression> orderings, Alias alias, ICollection<Alias> existingAliases, IEnumerable<FieldDeclaration> existingFields)
         {
             List<FieldDeclaration> newFields = null;
             var newOrderings = new List<OrderExpression>();
@@ -116,63 +113,50 @@ namespace MongoDB.Linq.Translators
                 var expression = ordering.Expression;
                 var field = expression as FieldExpression;
 
-                if (field == null || (existingAliases != null && existingAliases.Contains(field.Alias)))
+                if(field != null && (existingAliases == null || !existingAliases.Contains(field.Alias)))
+                    continue;
+                
+                int ordinal = 0;
+                foreach (var fieldDecl in existingFields)
                 {
-                    int ordinal = 0;
-                    foreach (var fieldDecl in existingFields)
+                    var fieldDeclExpression = fieldDecl.Expression as FieldExpression;
+                    if (fieldDecl.Expression == ordering.Expression || (field != null && fieldDeclExpression != null && field.Alias == fieldDeclExpression.Alias && field.Name == fieldDeclExpression.Name))
                     {
-                        var fieldDeclExpression = fieldDecl.Expression as FieldExpression;
-                        if (fieldDecl.Expression == ordering.Expression || (field != null && fieldDeclExpression != null && field.Alias == fieldDeclExpression.Alias && field.Name == fieldDeclExpression.Name))
-                        {
+                        if(field != null)
                             expression = new FieldExpression(field.Expression, alias, fieldDecl.Name);
-                            break;
-                        }
-                        ordinal++;
+                        break;
                     }
-
-                    if (expression == ordering.Expression)
-                    {
-                        if (newFields == null)
-                        {
-                            newFields = new List<FieldDeclaration>(existingFields);
-                            existingFields = newFields;
-                        }
-
-                        var fieldName = field != null ? field.Name : "_$f" + ordinal;
-                        newFields.Add(new FieldDeclaration(fieldName, ordering.Expression));
-                        expression = new FieldExpression(expression, alias, fieldName);
-                    }
-
-                    newOrderings.Add(new OrderExpression(ordering.OrderType, expression));
+                    ordinal++;
                 }
+
+                if (expression == ordering.Expression)
+                {
+                    if (newFields == null)
+                    {
+                        newFields = new List<FieldDeclaration>(existingFields);
+                        existingFields = newFields;
+                    }
+
+                    var fieldName = field != null ? field.Name : "_$f" + ordinal;
+                    newFields.Add(new FieldDeclaration(fieldName, ordering.Expression));
+                    expression = new FieldExpression(expression, alias, fieldName);
+                }
+
+                newOrderings.Add(new OrderExpression(ordering.OrderType, expression));
             }
             return new BindResult(existingFields, newOrderings);
         }
 
         private class BindResult
         {
-            private ReadOnlyCollection<FieldDeclaration> _fields;
-            private ReadOnlyCollection<OrderExpression> _orderings;
+            public ReadOnlyCollection<FieldDeclaration> Fields { get; private set; }
 
-            public ReadOnlyCollection<FieldDeclaration> Fields
-            {
-                get { return _fields; }
-            }
-
-            public ReadOnlyCollection<OrderExpression> Orderings
-            {
-                get {return _orderings; }
-            }
+            public ReadOnlyCollection<OrderExpression> Orderings { get; private set; }
 
             public BindResult(IEnumerable<FieldDeclaration> fields, IEnumerable<OrderExpression> orderings)
             {
-                _fields = fields as ReadOnlyCollection<FieldDeclaration>;
-                if (_fields == null)
-                    _fields = new List<FieldDeclaration>(fields).AsReadOnly();
-
-                _orderings = orderings as ReadOnlyCollection<OrderExpression>;
-                if (_orderings == null)
-                    _orderings = new List<OrderExpression>(orderings).AsReadOnly();
+                Fields = fields as ReadOnlyCollection<FieldDeclaration> ?? new List<FieldDeclaration>(fields).AsReadOnly();
+                Orderings = orderings as ReadOnlyCollection<OrderExpression> ?? new List<OrderExpression>(orderings).AsReadOnly();
             }
         }
     }

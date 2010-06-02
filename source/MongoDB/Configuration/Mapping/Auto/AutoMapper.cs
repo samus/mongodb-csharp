@@ -115,7 +115,7 @@ namespace MongoDB.Configuration.Mapping.Auto
                 subClassMap.Discriminator = discriminator;
             else
             {
-                Array array = null;
+                Array array;
                 if(parentDiscriminator.GetType().IsArray)
                     array = Array.CreateInstance(typeof(object), ((Array)parentDiscriminator).Length + 1);
                 else

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Attributes;
+using MongoDB.Util;
 using NUnit.Framework;
 
 namespace MongoDB.IntegrationTests

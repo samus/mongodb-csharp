@@ -5,16 +5,16 @@ using System.Security.Cryptography;
 using System.Text;
 using MongoDB.Bson;
 
-namespace MongoDB
+namespace MongoDB.Util
 {
     /// <summary>
     /// </summary>
     internal class OidGenerator
     {
-        private readonly object inclock = new object();
-        private int inc;
-        private byte[] machineHash;
-        private byte[] procID;
+        private readonly object _inclock = new object();
+        private int _inc;
+        private byte[] _machineHash;
+        private byte[] _procId;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "OidGenerator" /> class.
@@ -41,10 +41,10 @@ namespace MongoDB
             Array.Copy(time, 0, oid, copyidx, 4);
             copyidx += 4;
 
-            Array.Copy(machineHash, 0, oid, copyidx, 3);
+            Array.Copy(_machineHash, 0, oid, copyidx, 3);
             copyidx += 3;
 
-            Array.Copy(procID, 2, oid, copyidx, 2);
+            Array.Copy(_procId, 2, oid, copyidx, 2);
             copyidx += 2;
 
             var inc = BitConverter.GetBytes(GenerateInc());
@@ -72,9 +72,9 @@ namespace MongoDB
         /// <returns></returns>
         private int GenerateInc()
         {
-            lock(inclock)
+            lock(_inclock)
             {
-                return ++inc;
+                return ++_inc;
             }
         }
 
@@ -83,9 +83,9 @@ namespace MongoDB
         /// </summary>
         private void GenerateConstants()
         {
-            machineHash = GenerateHostHash();
-            procID = BitConverter.GetBytes(GenerateProcId());
-            Array.Reverse(procID);
+            _machineHash = GenerateHostHash();
+            _procId = BitConverter.GetBytes(GenerateProcId());
+            Array.Reverse(_procId);
         }
 
         /// <summary>

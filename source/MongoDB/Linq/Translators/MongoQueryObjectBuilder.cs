@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MongoDB.Linq.Expressions;
 using System.Linq.Expressions;
-using System.Collections.ObjectModel;
 
 namespace MongoDB.Linq.Translators
 {
@@ -141,8 +137,8 @@ namespace MongoDB.Linq.Translators
 
         private class QueryAttributesGatherer : MongoExpressionVisitor
         {
-            public bool _isCount { get; private set; }
-            public bool _isMapReduce { get; private set; }
+            private bool _isCount { get; set; }
+            private bool _isMapReduce { get; set; }
 
             public QueryAttributes Gather(Expression expression)
             {
@@ -161,6 +157,7 @@ namespace MongoDB.Linq.Translators
 
                 if (select.GroupBy != null)
                     _isMapReduce = true;
+                
                 else if (hasAggregates)
                 {
                     if (select.Fields.Count == 1 && select.Fields[0].Expression.NodeType == (ExpressionType)MongoExpressionType.Aggregate)

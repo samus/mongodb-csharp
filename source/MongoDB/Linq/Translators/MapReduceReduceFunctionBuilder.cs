@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
 using MongoDB.Linq.Expressions;
 using System.Linq.Expressions;
@@ -10,17 +8,11 @@ namespace MongoDB.Linq.Translators
 {
     internal class MapReduceReduceFunctionBuilder : MongoExpressionVisitor
     {
-        private JavascriptFormatter _formatter;
         private StringBuilder _declare;
         private StringBuilder _loop;
         private StringBuilder _return;
         private List<KeyValuePair<string, string>> _returnValues;
         private string _currentAggregateName;
-
-        public MapReduceReduceFunctionBuilder()
-        {
-            _formatter = new JavascriptFormatter();
-        }
 
         public string Build(ReadOnlyCollection<FieldDeclaration> fields)
         {

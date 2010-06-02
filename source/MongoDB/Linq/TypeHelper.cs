@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MongoDB.Linq
 {
@@ -7,34 +8,24 @@ namespace MongoDB.Linq
     {
         private static Type FindIEnumerable(Type seqType)
         {
-            if (seqType == null || seqType == typeof(string))
+            if(seqType == null || seqType == typeof(string))
                 return null;
-            if (seqType.IsArray)
+            if(seqType.IsArray)
                 return typeof(IEnumerable<>).MakeGenericType(seqType.GetElementType());
-            if (seqType.IsGenericType)
-            {
-                foreach (Type arg in seqType.GetGenericArguments())
+            if(seqType.IsGenericType)
+                foreach(var arg in seqType.GetGenericArguments())
                 {
-                    Type ienum = typeof(IEnumerable<>).MakeGenericType(arg);
-                    if (ienum.IsAssignableFrom(seqType))
-                    {
+                    var ienum = typeof(IEnumerable<>).MakeGenericType(arg);
+                    if(ienum.IsAssignableFrom(seqType))
                         return ienum;
-                    }
                 }
-            }
-            Type[] ifaces = seqType.GetInterfaces();
-            if (ifaces != null && ifaces.Length > 0)
-            {
-                foreach (Type iface in ifaces)
-                {
-                    Type ienum = FindIEnumerable(iface);
-                    if (ienum != null) return ienum;
-                }
-            }
-            if (seqType.BaseType != null && seqType.BaseType != typeof(object))
-            {
+            var ifaces = seqType.GetInterfaces();
+            if(ifaces != null && ifaces.Length > 0)
+                foreach(var ienum in ifaces.Select(iface => FindIEnumerable(iface))
+                    .Where(ienum => ienum != null))
+                    return ienum;
+            if(seqType.BaseType != null && seqType.BaseType != typeof(object))
                 return FindIEnumerable(seqType.BaseType);
-            }
             return null;
         }
 
@@ -45,9 +36,8 @@ namespace MongoDB.Linq
 
         internal static Type GetElementType(Type seqType)
         {
-            Type ienum = FindIEnumerable(seqType);
-            if (ienum == null) return seqType;
-            return ienum.GetGenericArguments()[0];
+            var ienum = FindIEnumerable(seqType);
+            return ienum == null ? seqType : ienum.GetGenericArguments()[0];
         }
 
         internal static bool IsNullableType(Type type)
@@ -62,11 +52,7 @@ namespace MongoDB.Linq
 
         internal static Type GetNonNullableType(Type type)
         {
-            if (IsNullableType(type))
-            {
-                return type.GetGenericArguments()[0];
-            }
-            return type;
+            return IsNullableType(type) ? type.GetGenericArguments()[0] : type;
         }
     }
 }

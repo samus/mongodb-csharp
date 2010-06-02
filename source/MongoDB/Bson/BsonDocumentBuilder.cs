@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MongoDB.Bson
 {
@@ -78,20 +79,22 @@ namespace MongoDB.Bson
         /// </summary>
         /// <param name = "doc">The doc.</param>
         /// <returns></returns>
-        private Type GetTypeForIEnumerable(Document doc)
+        private Type GetTypeForIEnumerable(IDictionary<string, object> doc)
         {
             if(doc.Keys.Count < 1)
                 return typeof(Object);
+            
             Type comp = null;
-            foreach(var key in doc.Keys)
+            
+            foreach(var test in doc.Keys.Select(key => doc[key])
+                .Select(obj => obj.GetType()))
             {
-                var obj = doc[key];
-                var test = obj.GetType();
                 if(comp == null)
                     comp = test;
                 else if(comp != test)
                     return typeof(Object);
             }
+
             return comp;
         }
 

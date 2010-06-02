@@ -52,14 +52,14 @@ namespace MongoDB.Linq.Translators
 
         private class AggregateGatherer : MongoExpressionVisitor
         {
-            private List<AggregateSubqueryExpression> _aggregates;
+            private readonly List<AggregateSubqueryExpression> _aggregates;
 
             public AggregateGatherer()
             {
                 _aggregates = new List<AggregateSubqueryExpression>();
             }
 
-            public List<AggregateSubqueryExpression> Gather(Expression expression)
+            public IEnumerable<AggregateSubqueryExpression> Gather(Expression expression)
             {
                 Visit(expression);
                 return _aggregates;

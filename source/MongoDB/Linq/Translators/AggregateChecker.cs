@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-
+﻿using System.Linq.Expressions;
 using MongoDB.Linq.Expressions;
 
 namespace MongoDB.Linq.Translators
@@ -11,9 +6,6 @@ namespace MongoDB.Linq.Translators
     internal class AggregateChecker : MongoExpressionVisitor
     {
         private bool _hasAggregate;
-
-        public AggregateChecker()
-        { }
 
         public bool HasAggregates(Expression expression)
         {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Collections.ObjectModel;
 
@@ -69,9 +66,7 @@ namespace MongoDB.Linq.Expressions
         public SelectExpression(Alias alias, IEnumerable<FieldDeclaration> fields, Expression from, Expression where, IEnumerable<OrderExpression> orderBy, Expression groupBy, bool isDistinct, Expression skip, Expression take)
             : base(MongoExpressionType.Select, typeof(void), alias)
         {
-            _fields = fields as ReadOnlyCollection<FieldDeclaration>;
-            if (_fields == null)
-                _fields = new List<FieldDeclaration>(fields).AsReadOnly();
+            _fields = fields as ReadOnlyCollection<FieldDeclaration> ?? new List<FieldDeclaration>(fields).AsReadOnly();
 
             _orderBy = orderBy as ReadOnlyCollection<OrderExpression>;
             if (_orderBy == null && orderBy != null)

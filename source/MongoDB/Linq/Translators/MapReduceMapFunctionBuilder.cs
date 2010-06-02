@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
 using MongoDB.Linq.Expressions;
 using System.Linq.Expressions;
@@ -10,7 +8,7 @@ namespace MongoDB.Linq.Translators
 {
     internal class MapReduceMapFunctionBuilder : MongoExpressionVisitor
     {
-        private JavascriptFormatter _formatter;
+        private readonly JavascriptFormatter _formatter;
         private Dictionary<string, string> _initMap;
         private string _currentAggregateName;
 
@@ -21,13 +19,10 @@ namespace MongoDB.Linq.Translators
 
         public string Build(ReadOnlyCollection<FieldDeclaration> fields, Expression groupBy)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append("function() { emit(");
 
-            if (groupBy == null)
-                sb.Append("1");
-            else
-                sb.Append(_formatter.FormatJavascript(groupBy));
+            sb.Append(groupBy == null ? "1" : _formatter.FormatJavascript(groupBy));
 
             sb.Append(", ");
 

@@ -8,12 +8,10 @@ namespace MongoDB.Linq.Translators
     internal class FieldGatherer : MongoExpressionVisitor
     {
         private List<FieldExpression> _fields;
-        private Expression _root;
-
+        
         public ReadOnlyCollection<FieldExpression> Gather(Expression exp)
         {
             _fields = new List<FieldExpression>();
-            _root = exp;
             Visit(exp);
             return _fields.AsReadOnly();
         }

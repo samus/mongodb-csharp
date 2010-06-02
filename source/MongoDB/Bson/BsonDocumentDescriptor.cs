@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MongoDB.Bson
 {
@@ -37,10 +38,10 @@ namespace MongoDB.Bson
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns></returns>
-        public IEnumerable<BsonProperty> GetProperties(object instance){
+        public IEnumerable<BsonProperty> GetProperties(object instance)
+        {
             var document = (Document)instance;
-            foreach(var key in document.Keys)
-                yield return new BsonProperty(key);
+            return document.Keys.Select(key => new BsonProperty(key));
         }
 
         /// <summary>

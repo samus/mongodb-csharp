@@ -61,10 +61,7 @@ namespace MongoDB.Configuration.Builders
             if (config == null)
                 throw new ArgumentNullException("config");
 
-            var dp = _defaultProfile as AutoMappingProfile;
-
-            if (dp == null)
-                dp = new AutoMappingProfile();
+            var dp = _defaultProfile as AutoMappingProfile ?? new AutoMappingProfile();
 
             config(new AutoMappingProfileBuilder(dp));
             _defaultProfile = dp;

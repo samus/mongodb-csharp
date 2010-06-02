@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -190,10 +189,15 @@ namespace MongoDB.Linq.Translators
                         _js.AppendFormat("/{0}/", EvaluateConstant<string>(m.Arguments[0]));
                         break;
                     case "SubString":
-                        if (m.Arguments.Count == 1)
-                            _js.AppendFormat(".substr({0})", EvaluateConstant<int>(m.Arguments[0]));
-                        else if (m.Arguments.Count == 2)
-                            _js.AppendFormat(".substr({0})", EvaluateConstant<int>(m.Arguments[0]), EvaluateConstant<int>(m.Arguments[1]));
+                        switch(m.Arguments.Count)
+                        {
+                            case 1:
+                                _js.AppendFormat(".substr({0})", EvaluateConstant<int>(m.Arguments[0]));
+                                break;
+                            case 2:
+                                _js.AppendFormat(".substr({0})", EvaluateConstant<int>(m.Arguments[0]), EvaluateConstant<int>(m.Arguments[1]));
+                                break;
+                        }
                         break;
                     case "ToLower":
                         _js.Append(".toLowerCase()");
@@ -219,7 +223,7 @@ namespace MongoDB.Linq.Translators
                         throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
 
                     Visit(field);
-                    string value = null;
+                    string value;
                     if (m.Object == null)
                         value = EvaluateConstant<string>(m.Arguments[1]);
                     else
@@ -290,14 +294,14 @@ namespace MongoDB.Linq.Translators
         private class JavascriptObjectFormatter : MongoExpressionVisitor
         {
             private StringBuilder _js;
-            private JavascriptFormatter _formatter;
+            private readonly JavascriptFormatter _formatter;
 
             public JavascriptObjectFormatter()
             {
                 _formatter = new JavascriptFormatter();
             }
 
-            public string FormatObject(NewExpression nex)
+            public string FormatObject(Expression nex)
             {
                 _js = new StringBuilder("{");
                 Visit(nex);

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-
+﻿using System.Linq.Expressions;
 using MongoDB.Linq.Expressions;
 
 namespace MongoDB.Linq.Translators
@@ -15,24 +10,21 @@ namespace MongoDB.Linq.Translators
 
         public Expression Replace(Expression expression, Expression searchFor, Expression replaceWith)
         {
-            this._searchFor = searchFor;
-            this._replaceWith = replaceWith;
+            _searchFor = searchFor;
+            _replaceWith = replaceWith;
             return Visit(expression);
         }
 
         public Expression ReplaceAll(Expression expression, Expression[] searchFor, Expression[] replaceWith)
         {
-            for (int i = 0, n = searchFor.Length; i < n; i++)
+            for(var i = 0; i < searchFor.Length; i++)
                 expression = Replace(expression, searchFor[i], replaceWith[i]);
             return expression;
         }
 
         protected override Expression Visit(Expression exp)
         {
-            if (exp == _searchFor)
-                return _replaceWith;
-            return base.Visit(exp);
+            return exp == _searchFor ? _replaceWith : base.Visit(exp);
         }
-
     }
 }

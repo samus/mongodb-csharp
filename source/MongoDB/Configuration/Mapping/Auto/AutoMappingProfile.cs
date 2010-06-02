@@ -177,10 +177,7 @@ namespace MongoDB.Configuration.Mapping.Auto
             var att = member.GetCustomAttribute<MongoDefaultAttribute>(true);
             if (att != null)
                 defaultValue = att.Value;
-            if (defaultValue == null)
-                defaultValue = _conventions.DefaultValueConvention.GetDefaultValue(member.GetReturnType());
-
-            return defaultValue;
+            return defaultValue ?? (_conventions.DefaultValueConvention.GetDefaultValue(member.GetReturnType()));
         }
 
         /// <summary>

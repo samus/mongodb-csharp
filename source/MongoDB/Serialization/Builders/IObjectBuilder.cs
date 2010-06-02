@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MongoDB.Serialization.Builders
+﻿namespace MongoDB.Serialization.Builders
 {
     internal interface IObjectBuilder
     {

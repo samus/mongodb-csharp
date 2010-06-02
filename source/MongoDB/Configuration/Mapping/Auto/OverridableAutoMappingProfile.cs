@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using MongoDB.Configuration.CollectionAdapters;
 using MongoDB.Configuration.DictionaryAdapters;
@@ -57,9 +58,8 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <returns></returns>
         public IEnumerable<MemberInfo> FindMembers(Type classType)
         {
-            foreach(var member in _profile.FindMembers(classType))
-                if((bool)GetMemberOverrideValue(classType, member, o => !o.Ignore, v => v.HasValue, true))
-                    yield return member;
+            return _profile.FindMembers(classType)
+                .Where(member => (bool)GetMemberOverrideValue(classType, member, o => !o.Ignore, v => v.HasValue, true));
         }
 
         /// <summary>

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Text.RegularExpressions;
 
 using MongoDB.Linq.Expressions;
@@ -192,14 +190,21 @@ namespace MongoDB.Linq.Translators
                 VisitPredicate(field, true);
 
                 var value = EvaluateConstant<string>(m.Arguments[0]);
-                if (m.Method.Name == "StartsWith")
-                    AddCondition(new MongoRegex(string.Format("^{0}", value)));
-                else if (m.Method.Name == "EndsWith")
-                    AddCondition(new MongoRegex(string.Format("{0}$", value)));
-                else if (m.Method.Name == "Contains")
-                    AddCondition(new MongoRegex(string.Format("{0}", value)));
-                else
-                    throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
+                
+                switch(m.Method.Name)
+                {
+                    case "StartsWith":
+                        AddCondition(new MongoRegex(string.Format("^{0}", value)));
+                        break;
+                    case "EndsWith":
+                        AddCondition(new MongoRegex(string.Format("{0}$", value)));
+                        break;
+                    case "Contains":
+                        AddCondition(new MongoRegex(string.Format("{0}", value)));
+                        break;
+                    default:
+                        throw new NotSupportedException(string.Format("The string method {0} is not supported.", m.Method.Name));
+                }
 
                 PopConditionScope();
                 return m;
@@ -213,7 +218,7 @@ namespace MongoDB.Linq.Translators
                         throw new InvalidQueryException(string.Format("The mongo field must be the operator for a string operation of type {0}.", m.Method.Name));
 
                     VisitPredicate(field, true);
-                    string value = null;
+                    string value;
                     if (m.Object == null)
                         value = EvaluateConstant<string>(m.Arguments[1]);
                     else

@@ -1,38 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
+﻿using System.Linq.Expressions;
 
 namespace MongoDB.Linq.Expressions
 {
     internal class FieldExpression : MongoExpression
     {
-        private readonly Alias _alias;
-        private readonly Expression _expression;
-        private readonly string _name;
+        public Alias Alias { get; private set; }
 
-        public Alias Alias
-        {
-            get { return _alias; }
-        }
+        public Expression Expression { get; private set; }
 
-        public Expression Expression
-        {
-            get { return _expression; }
-        }
-
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name { get; private set; }
 
         public FieldExpression(Expression expression, Alias alias, string name)
             : base(MongoExpressionType.Field, expression.Type)
         {
-            _alias = alias;
-            _expression = expression;
-            _name = name;
+            Alias = alias;
+            Expression = expression;
+            Name = name;
         }
     }
 }

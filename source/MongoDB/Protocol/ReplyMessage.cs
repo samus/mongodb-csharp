@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using MongoDB.Bson;
-using MongoDB.Serialization;
 
 namespace MongoDB.Protocol
 {

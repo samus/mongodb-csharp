@@ -1,53 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MongoDB.Util
 {
     internal class ScopedDictionary<TKey, TValue>
     {
-        ScopedDictionary<TKey, TValue> previous;
-        Dictionary<TKey, TValue> map;
+        private readonly Dictionary<TKey, TValue> _map;
+        private readonly ScopedDictionary<TKey, TValue> _previous;
 
         public ScopedDictionary(ScopedDictionary<TKey, TValue> previous)
         {
-            this.previous = previous;
-            this.map = new Dictionary<TKey, TValue>();
+            _previous = previous;
+            _map = new Dictionary<TKey, TValue>();
         }
 
         public ScopedDictionary(ScopedDictionary<TKey, TValue> previous, IEnumerable<KeyValuePair<TKey, TValue>> pairs)
             : this(previous)
         {
-            foreach (var p in pairs)
-            {
-                this.map.Add(p.Key, p.Value);
-            }
+            foreach(var p in pairs)
+                _map.Add(p.Key, p.Value);
         }
 
         public void Add(TKey key, TValue value)
         {
-            this.map.Add(key, value);
+            _map.Add(key, value);
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            for (ScopedDictionary<TKey, TValue> scope = this; scope != null; scope = scope.previous)
-            {
-                if (scope.map.TryGetValue(key, out value))
+            for(var scope = this; scope != null; scope = scope._previous)
+                if(scope._map.TryGetValue(key, out value))
                     return true;
-            }
             value = default(TValue);
             return false;
         }
 
         public bool ContainsKey(TKey key)
         {
-            for (ScopedDictionary<TKey, TValue> scope = this; scope != null; scope = scope.previous)
-            {
-                if (scope.map.ContainsKey(key))
+            for(var scope = this; scope != null; scope = scope._previous)
+                if(scope._map.ContainsKey(key))
                     return true;
-            }
             return false;
         }
     }

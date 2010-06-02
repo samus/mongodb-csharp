@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace MongoDB.Linq.Expressions
 {
@@ -10,55 +8,60 @@ namespace MongoDB.Linq.Expressions
     {
         public static bool HasSelectAllField(this IEnumerable<FieldDeclaration> fields)
         {
-            if (fields == null)
-                return true;
-
-            return fields.Any(f => f.Name == "*");
+            return fields == null || fields.Any(f => f.Name == "*");
         }
 
         public static SelectExpression AddField(this SelectExpression select, FieldDeclaration field)
         {
-            List<FieldDeclaration> fields = new List<FieldDeclaration>(select.Fields);
-            fields.Add(field);
+            var fields = new List<FieldDeclaration>(select.Fields) {field};
             return select.SetFields(fields);
         }
 
         public static string GetAvailableFieldName(this SelectExpression select, string baseName)
         {
-            string name = baseName;
-            int n = 0;
-            while (!IsUniqueName(select, name))
-            {
+            var name = baseName;
+            var n = 0;
+            while(!IsUniqueName(select, name))
                 name = baseName + (n++);
-            }
             return name;
         }
 
         public static SelectExpression RemoveField(this SelectExpression select, FieldDeclaration field)
         {
-            List<FieldDeclaration> fields = new List<FieldDeclaration>(select.Fields);
+            var fields = new List<FieldDeclaration>(select.Fields);
             fields.Remove(field);
             return select.SetFields(fields);
         }
 
         public static SelectExpression SetFields(this SelectExpression select, IEnumerable<FieldDeclaration> fields)
         {
-            return new SelectExpression(select.Alias, fields.OrderBy(f => f.Name), select.From, select.Where, select.OrderBy, select.GroupBy, select.IsDistinct, select.Skip, select.Take);
+            return new SelectExpression(select.Alias,
+                fields.OrderBy(f => f.Name),
+                select.From,
+                select.Where,
+                select.OrderBy,
+                select.GroupBy,
+                select.IsDistinct,
+                select.Skip,
+                select.Take);
         }
 
         public static SelectExpression SetWhere(this SelectExpression select, Expression where)
         {
-            return new SelectExpression(select.Alias, select.Fields, select.From, where, select.OrderBy, select.GroupBy, select.IsDistinct, select.Skip, select.Take);
+            return new SelectExpression(select.Alias,
+                select.Fields,
+                select.From,
+                where,
+                select.OrderBy,
+                select.GroupBy,
+                select.IsDistinct,
+                select.Skip,
+                select.Take);
         }
 
         private static bool IsUniqueName(SelectExpression select, string name)
         {
-            foreach (var field in select.Fields)
-            {
-                if (field.Name == name)
-                    return false;
-            }
-            return true;
+            return select.Fields.All(field => field.Name != name);
         }
     }
 }

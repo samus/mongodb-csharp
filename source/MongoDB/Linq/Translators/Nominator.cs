@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-
 using MongoDB.Linq.Expressions;
 
 namespace MongoDB.Linq.Translators
 {
     internal class Nominator : MongoExpressionVisitor
     {
-        private Func<Expression, bool> _predicate;
+        private readonly Func<Expression, bool> _predicate;
         private HashSet<Expression> _candidates;
         private bool _isBlocked;
 
