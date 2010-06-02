@@ -46,7 +46,6 @@ namespace MongoDB.Linq.Translators
                         return mapped;
 
                     Alias alias = _existingAliases.Contains(field.Alias) ? field.Alias : _newAlias;
-                    var ordinal = _fields.Count;
                     var fieldName = GetUniqueFieldName(field.Name);
                     _fields.Add(new FieldDeclaration(fieldName, field));
                     return new FieldExpression(exp, alias, field.Name);

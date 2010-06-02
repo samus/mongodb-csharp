@@ -59,7 +59,7 @@ namespace MongoDB.Serialization.Builders
                 isDictionary = true;
             }
 
-            return new PropertyDescriptor() { Type = type, IsDictionary = isDictionary };
+            return new PropertyDescriptor { Type = type, IsDictionary = isDictionary };
         }
     }
 }

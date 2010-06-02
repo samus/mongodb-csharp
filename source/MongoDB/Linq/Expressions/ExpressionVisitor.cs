@@ -308,8 +308,7 @@ namespace MongoDB.Linq.Expressions
             {
                 if (nex.Members != null)
                     return Expression.New(nex.Constructor, args, nex.Members);
-                else
-                    return Expression.New(nex.Constructor, args);
+                return Expression.New(nex.Constructor, args);
             }
             return nex;
         }
@@ -341,14 +340,9 @@ namespace MongoDB.Linq.Expressions
             IEnumerable<Expression> exprs = this.VisitExpressionList(na.Expressions);
             if (exprs != na.Expressions)
             {
-                if (na.NodeType == ExpressionType.NewArrayInit)
-                {
-                    return Expression.NewArrayInit(na.Type.GetElementType(), exprs);
-                }
-                else
-                {
-                    return Expression.NewArrayBounds(na.Type.GetElementType(), exprs);
-                }
+                return na.NodeType == ExpressionType.NewArrayInit
+                           ? Expression.NewArrayInit(na.Type.GetElementType(), exprs)
+                           : Expression.NewArrayBounds(na.Type.GetElementType(), exprs);
             }
             return na;
         }

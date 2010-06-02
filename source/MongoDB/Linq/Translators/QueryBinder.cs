@@ -206,7 +206,6 @@ namespace MongoDB.Linq.Translators
                 argExpression = projection.Projector;
 
             var alias = new Alias();
-            var fieldProjection = _projector.ProjectFields(projection.Projector, alias, projection.Source.Alias);
             Expression aggregateExpression = new AggregateExpression(returnType, aggregateType, argExpression, distinct);
             var selectType = typeof(IEnumerable<>).MakeGenericType(returnType);
             string fieldName = "_$agg" + (_aggregateCount++);
@@ -249,7 +248,6 @@ namespace MongoDB.Linq.Translators
         private Expression BindDistinct(Expression source)
         {
             var projection = VisitSequence(source);
-            var select = projection.Source;
             var alias = new Alias();
             var fieldProjection = _projector.ProjectFields(projection.Projector, alias, projection.Source.Alias);
             return new ProjectionExpression(
@@ -283,7 +281,7 @@ namespace MongoDB.Linq.Translators
             {
                 var elementType = projection.Projector.Type;
                 var p = Expression.Parameter(typeof(IEnumerable<>).MakeGenericType(elementType), "p");
-                var lambda = Expression.Lambda(Expression.Call(typeof(Enumerable), kind, new Type[] { elementType }, p), p);
+                var lambda = Expression.Lambda(Expression.Call(typeof(Enumerable), kind, new[] { elementType }, p), p);
                 return new ProjectionExpression(projection.Source, projection.Projector, lambda);
             }
             return projection;
@@ -398,7 +396,6 @@ namespace MongoDB.Linq.Translators
         {
             var projection = VisitSequence(source);
             skip = Visit(skip);
-            var select = projection.Source;
             var alias = new Alias();
             var fieldProjection = _projector.ProjectFields(projection.Projector, alias, projection.Source.Alias);
             return new ProjectionExpression(
@@ -443,9 +440,7 @@ namespace MongoDB.Linq.Translators
             var collectionAlias = new Alias();
             var selectAlias = new Alias();
             var collection = (IMongoQueryable)value;
-            var bindings = new List<MemberBinding>();
             var fields = new List<FieldDeclaration>();
-            var resultType = typeof(IEnumerable<>).MakeGenericType(collection.ElementType);
             return new ProjectionExpression(
                 new SelectExpression(selectAlias, fields, new CollectionExpression(collectionAlias, collection.Database, collection.CollectionName, collection.ElementType), null),
                 Expression.Parameter(collection.ElementType, "document"));

@@ -286,7 +286,7 @@ namespace MongoDB.Linq.Translators
             if (c.Value == null)
                 return "null";
             if (c.Type == typeof(string) || c.Type == typeof(StringBuilder))
-                return string.Format(@"""{0}""", c.Value.ToString());
+                return string.Format(@"""{0}""", c.Value);
 
             return c.Value.ToString();
         }

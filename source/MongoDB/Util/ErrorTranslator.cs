@@ -69,6 +69,7 @@ namespace MongoDB.Util
                 case "12010":
                 case "12011":
                 case "12012":
+                goto default;
                 default:{
                     return new MongoOperationException(message, error);
                 }

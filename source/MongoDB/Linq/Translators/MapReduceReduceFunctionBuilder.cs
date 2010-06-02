@@ -36,7 +36,7 @@ namespace MongoDB.Linq.Translators
             _loop.Append("});");
             _return.Append("};}");
 
-            return _declare.ToString() + _loop.ToString() + _return.ToString();
+            return _declare.ToString() + _loop + _return;
         }
 
         protected override Expression VisitAggregate(AggregateExpression aggregate)

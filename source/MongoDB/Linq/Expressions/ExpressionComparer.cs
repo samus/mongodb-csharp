@@ -136,7 +136,7 @@ namespace MongoDB.Linq.Expressions
 
         protected virtual bool CompareConstant(ConstantExpression a, ConstantExpression b)
         {
-            return object.Equals(a.Value, b.Value);
+            return Equals(a.Value, b.Value);
         }
 
         protected virtual bool CompareParameter(ParameterExpression a, ParameterExpression b)

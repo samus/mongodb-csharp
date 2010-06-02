@@ -26,7 +26,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
         public IIdGenerator GetGenerator(Type type)
         {
             if (type == typeof(Oid))
-                return new IdGenerators.OidGenerator();
+                return new OidGenerator();
 
             if (type == typeof(Guid))
                 return new GuidCombGenerator();

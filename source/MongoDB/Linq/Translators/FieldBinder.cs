@@ -93,7 +93,7 @@ namespace MongoDB.Linq.Translators
                 return b;
             }
 
-            protected override Expression VisitMemberAccess(System.Linq.Expressions.MemberExpression m)
+            protected override Expression VisitMemberAccess(MemberExpression m)
             {
                 var declaringType = m.Member.DeclaringType;
                 if (!IsNativeToMongo(declaringType) && !IsCollection(declaringType))

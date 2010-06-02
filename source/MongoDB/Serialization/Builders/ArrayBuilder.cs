@@ -59,7 +59,7 @@ namespace MongoDB.Serialization.Builders
         /// <returns></returns>
         public PropertyDescriptor GetPropertyDescriptor(string name)
         {
-            return new PropertyDescriptor() { Type = _elementType };
+            return new PropertyDescriptor { Type = _elementType };
         }
 
         /// <summary>

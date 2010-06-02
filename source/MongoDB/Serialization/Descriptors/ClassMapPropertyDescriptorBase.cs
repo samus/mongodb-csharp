@@ -215,7 +215,7 @@ namespace MongoDB.Serialization.Descriptors
                 _input = input;
                 _output = new StringBuilder();
                 _position = 0;
-                while (Read()) ;
+                while (Read()){}
                 return _output.ToString();
             }
 
