@@ -605,6 +605,10 @@ namespace MongoDB.Bson
             if(_descriptor.IsObject(obj))
                 return BsonType.Obj;
 
+            if(type == typeof(Decimal))
+                throw new ArgumentOutOfRangeException("Decimal is not supported in the BSON spec. So it is also not supported in MongoDB. " +
+                                                      "You could convert it to double or store it as Binary instead.");
+
             throw new ArgumentOutOfRangeException(String.Format("Type: {0} not recognized", type.FullName));
         }
     }
