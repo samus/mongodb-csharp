@@ -81,6 +81,19 @@ namespace MongoDB.IntegrationTests.SecondServer
             }
         }
 
+        [Test]
+        [ExpectedException(typeof(MongoException))]
+        public void TryUnautenticatedInsertWithoutSendingACommand()
+        {
+            using(var mongo = ConnectAndAuthenticatedMongo("noexisting", "noexisting"))
+            {
+                mongo.Connect();
+
+                var collection = mongo[TestDatabaseName]["testCollection"];
+                collection.Insert(new Document().Add("value", 84), false);
+            }
+        }
+
 	    private Mongo ConnectAndAuthenticatedMongo(string username,string password)
         {
 	        var builder = new MongoConnectionStringBuilder(_connectionString)

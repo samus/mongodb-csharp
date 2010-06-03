@@ -158,7 +158,7 @@ namespace MongoDB
         public ICursor<T> Find(object spec, int limit, int skip, object fields){
             if (spec == null)
                 spec = new Document();
-            return new Cursor<T>(_configuration.SerializationFactory, _connection, FullName, spec, limit, skip, fields);
+            return new Cursor<T>(_configuration.SerializationFactory, _connection, DatabaseName, Name, spec, limit, skip, fields);
         }
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace MongoDB
             insertMessage.Documents = insertDocument.ToArray();
             
             try {
-                _connection.SendMessage(insertMessage);
+                _connection.SendMessage(insertMessage,DatabaseName);
             } catch (IOException exception) {
                 throw new MongoConnectionException("Could not insert document, communication failure", _connection, exception);
             }
@@ -376,7 +376,7 @@ namespace MongoDB
                 {
                     FullCollectionName = FullName,
                     Selector = selector
-                });
+                },DatabaseName);
             } catch (IOException exception) {
                 throw new MongoConnectionException("Could not delete document, communication failure", _connection, exception);
             }
@@ -398,7 +398,7 @@ namespace MongoDB
                 {
                     FullCollectionName = FullName,
                     Selector = selector
-                });
+                }, DatabaseName);
             }
             catch(IOException exception)
             {
@@ -478,7 +478,7 @@ namespace MongoDB
                     Selector = selector,
                     Document = document,
                     Flags = (int)flags
-                });
+                }, DatabaseName);
             } catch (IOException exception) {
                 throw new MongoConnectionException("Could not update document, communication failure", _connection, exception);
             }

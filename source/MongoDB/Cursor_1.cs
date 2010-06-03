@@ -15,6 +15,7 @@ namespace MongoDB
     public class Cursor<T> : ICursor<T> where T : class
     {
         private readonly Connection _connection;
+        private readonly string _databaseName;
         private readonly Document _specOpts = new Document();
         private object _spec;
         private object _fields;
@@ -30,13 +31,15 @@ namespace MongoDB
         /// </summary>
         /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connection">The conn.</param>
-        /// <param name="fullCollectionName">Full name of the collection.</param>
-        public Cursor(ISerializationFactory serializationFactory, Connection connection, string fullCollectionName)
+        /// <param name="databaseName">Name of the database.</param>
+        /// <param name="collectionName">Name of the collection.</param>
+        public Cursor(ISerializationFactory serializationFactory, Connection connection, string databaseName, string collectionName)
         {
             IsModifiable = true;
             //Todo: should be internal
             _connection = connection;
-            FullCollectionName = fullCollectionName;
+            _databaseName = databaseName;
+            FullCollectionName = databaseName + "." + collectionName;
             _serializationFactory = serializationFactory;
         }
 
@@ -45,13 +48,14 @@ namespace MongoDB
         /// </summary>
         /// <param name="serializationFactory">The serialization factory.</param>
         /// <param name="connection">The conn.</param>
-        /// <param name="fullCollectionName">Full name of the collection.</param>
+        /// <param name="databaseName">Name of the database.</param>
+        /// <param name="collectionName">Name of the collection.</param>
         /// <param name="spec">The spec.</param>
         /// <param name="limit">The limit.</param>
         /// <param name="skip">The skip.</param>
         /// <param name="fields">The fields.</param>
-        public Cursor(ISerializationFactory serializationFactory, Connection connection, string fullCollectionName, object spec, int limit, int skip, object fields)
-            : this(serializationFactory, connection, fullCollectionName)
+        public Cursor(ISerializationFactory serializationFactory, Connection connection, string databaseName, string collectionName, object spec, int limit, int skip, object fields)
+            : this(serializationFactory, connection, databaseName, collectionName)
         {
             //Todo: should be internal
             if (spec == null)
@@ -300,7 +304,7 @@ namespace MongoDB
             var killCursorsMessage = new KillCursorsMessage(cursorId);
             
             try {
-                _connection.SendMessage(killCursorsMessage);
+                _connection.SendMessage(killCursorsMessage,_databaseName);
                 Id = 0;
             } catch (IOException exception) {
                 throw new MongoConnectionException("Could not read data, communication failure", _connection, exception);
@@ -341,7 +345,8 @@ namespace MongoDB
 
             try
             {
-                var reply = _connection.SendTwoWayMessage<TReply>(message, readerSettings);
+
+                var reply = _connection.SendTwoWayMessage<TReply>(message, readerSettings, _databaseName);
                 
                 Id = reply.CursorId;
                 

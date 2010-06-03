@@ -61,13 +61,14 @@ namespace MongoDB.Connections
             get { return _connection.EndPoint; }
         }
 
-         /// <summary>
+        /// <summary>
         /// Sends the two way message.
         /// </summary>
         /// <param name="message">The MSG.</param>
+        /// <param name="database">The database.</param>
         /// <returns></returns>
-        public ReplyMessage<Document> SendTwoWayMessage(IRequestMessage message){
-            return SendTwoWayMessage<Document>(message,new BsonReaderSettings());
+        public ReplyMessage<Document> SendTwoWayMessage(IRequestMessage message, string database){
+            return SendTwoWayMessage<Document>(message,new BsonReaderSettings(), database);
         }
 
         /// <summary>
@@ -76,42 +77,77 @@ namespace MongoDB.Connections
         /// <typeparam name="T"></typeparam>
         /// <param name="message">The message.</param>
         /// <param name="readerSettings">The reader settings.</param>
+        /// <param name="database">The database.</param>
         /// <returns></returns>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage message, BsonReaderSettings readerSettings) where T:class {
+        public ReplyMessage<T> SendTwoWayMessage<T>(IRequestMessage message, BsonReaderSettings readerSettings, string database) where T:class {
+            AuthenticateIfRequired(database);
+
+            return SendTwoWayMessageCore<T>(message, readerSettings);
+        }
+
+        /// <summary>
+        /// Sends the two way message core.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="message">The message.</param>
+        /// <param name="readerSettings">The reader settings.</param>
+        /// <returns></returns>
+        internal ReplyMessage<T> SendTwoWayMessageCore<T>(IRequestMessage message, BsonReaderSettings readerSettings) where T : class
+        {
             if(!IsConnected)
-                throw new MongoConnectionException ("Operation cannot be performed on a closed connection.", this);
-            
-            try {
+                throw new MongoConnectionException("Operation cannot be performed on a closed connection.", this);
+
+            try
+            {
                 var reply = new ReplyMessage<T>(readerSettings);
-                lock (_connection) {
-                    message.Write (_connection.GetStream ());
-                    reply.Read (_connection.GetStream ());
+                lock(_connection)
+                {
+                    message.Write(_connection.GetStream());
+                    reply.Read(_connection.GetStream());
                 }
                 return reply;
-            } catch (IOException) {
-                ReplaceInvalidConnection ();
+            }
+            catch(IOException)
+            {
+                ReplaceInvalidConnection();
                 throw;
             }
-            
+
         }
 
         /// <summary>
         /// Used for sending a message that gets no reply such as insert or update.
         /// </summary>
         /// <param name="message">The message.</param>
+        /// <param name="database">The database.</param>
         /// <exception cref="IOException">A reconnect will be issued but it is up to the caller to handle the error.</exception>
-        public void SendMessage (IRequestMessage message){
+        public void SendMessage(IRequestMessage message, string database){
+            AuthenticateIfRequired(database);
+
+            SendMessageCore(message);
+        }
+
+        /// <summary>
+        /// Sends the message core.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        internal void SendMessageCore(IRequestMessage message)
+        {
             if(!IsConnected)
                 throw new MongoConnectionException("Operation cannot be performed on a closed connection.", this);
-            
-            try {
-                lock (_connection) {
-                    message.Write (_connection.GetStream ());
+
+            try
+            {
+                lock(_connection)
+                {
+                    message.Write(_connection.GetStream());
                 }
-            } catch (IOException) {
+            }
+            catch(IOException)
+            {
                 //Sending doesn't seem to always trigger the detection of a closed socket.
-                ReplaceInvalidConnection ();
+                ReplaceInvalidConnection();
                 throw;
             }
         }
@@ -134,7 +170,7 @@ namespace MongoDB.Connections
         /// A <see cref="System.String"/>
         /// </param>
         public void SendMsgMessage (String message){
-            SendMessage(new MsgMessage{Message = message});
+            SendMessageCore(new MsgMessage{Message = message});
         }
 
         /// <summary>
@@ -250,10 +286,10 @@ namespace MongoDB.Connections
 
             try
             {
-                var reply = SendTwoWayMessage<T>(query, readerSettings);
+                var reply = SendTwoWayMessageCore<T>(query, readerSettings);
 
                 if(reply.CursorId > 0)
-                    SendMessage(new KillCursorsMessage(reply.CursorId));
+                    SendMessage(new KillCursorsMessage(reply.CursorId),database);
 
                 return reply.Documents.FirstOrDefault();
             }
@@ -298,7 +334,10 @@ namespace MongoDB.Connections
             };
             try
             {
-                SendCommandCore<Document>(serializationFactory, databaseName, typeof(Document), auth);
+                var result = SendCommandCore<Document>(serializationFactory, databaseName, typeof(Document), auth);
+                
+                if(!Convert.ToBoolean(result["ok"]))
+                    throw new MongoException("Authentication faild for " + builder.Username);
             }
             catch(MongoCommandException exception)
             {

@@ -44,14 +44,14 @@ namespace MongoDB.IntegrationTests.Connections
             try
             {
                 var qmsg = GenerateQueryMessage();
-                conn.SendTwoWayMessage(qmsg);
+                conn.SendTwoWayMessage(qmsg,string.Empty);
             }
             catch(IOException)
             {
                 //Should be able to resend.
                 Assert.IsTrue(conn.IsConnected);
                 var qmsg = GenerateQueryMessage();
-                var rmsg = conn.SendTwoWayMessage(qmsg);
+                var rmsg = conn.SendTwoWayMessage(qmsg, string.Empty);
                 Assert.IsNotNull(rmsg);
             }
         }
@@ -64,7 +64,7 @@ namespace MongoDB.IntegrationTests.Connections
             conn.Open();
 
             var qmsg = GenerateQueryMessage();
-            conn.SendTwoWayMessage(qmsg);
+            conn.SendTwoWayMessage(qmsg, string.Empty);
 
             conn.Close();
         }
