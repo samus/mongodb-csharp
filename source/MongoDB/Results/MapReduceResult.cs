@@ -88,7 +88,7 @@ namespace MongoDB.Results
         /// <value><c>true</c> if ok; otherwise, <c>false</c>.</value>
         public Boolean Ok
         {
-            get { return (1.0 == Convert.ToDouble(_result["ok"])); }
+            get { return (Convert.ToBoolean(_result["ok"])); }
         }
 
         /// <summary>

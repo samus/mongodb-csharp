@@ -225,7 +225,7 @@ namespace MongoDB.Connections
 
             var result = SendCommandCore<Document>(factory, database, rootType, command);
 
-            if((double)result["ok"] != 1.0)
+            if(!Convert.ToBoolean(result["ok"]))
             {
                 var msg = string.Empty;
                 if(result.Contains("msg"))

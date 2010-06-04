@@ -1,3 +1,4 @@
+using System;
 using MongoDB.Configuration;
 using MongoDB.Connections;
 using MongoDB.Util;
@@ -70,7 +71,7 @@ namespace MongoDB
         public bool DropCollection(string name)
         {
             var result = _database.SendCommand(new Document().Add("drop", name));
-            return result.Contains("ok") && ((double)result["ok"] == 1);
+            return result.Contains("ok") && Convert.ToBoolean(result["ok"]);
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace MongoDB
         public bool DropDatabase()
         {
             var result = _database.SendCommand("dropDatabase");
-            return result.Contains("ok") && ((double)result["ok"] == 1);
+            return result.Contains("ok") && Convert.ToBoolean(result["ok"]);
         }
 
         /// <summary>
