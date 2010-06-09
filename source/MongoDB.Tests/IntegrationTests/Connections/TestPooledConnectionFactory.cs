@@ -138,7 +138,7 @@ namespace MongoDB.IntegrationTests.Connections
         }
 
         [Test]
-        public void TestIfConnectionLifetimeIsReachedItDosenotReturndToPool()
+        public void TestIfConnectionLifetimeIsReachedItDoesNotReturndToPool()
         {
             var builder = new MongoConnectionStringBuilder
             {

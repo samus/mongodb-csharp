@@ -3,7 +3,7 @@
 namespace MongoDB.UnitTests.Serialization.Descriptors
 {
     [TestFixture]
-    [Ignore("Currently we dose not plan to support this. As alternative you can use Mo or Linq.")]
+    [Ignore("Currently we do not plan to support this. As an alternative you can use Mo or Linq.")]
     public class ModifierTests : SerializationTestBase
     {
         public class ModifierEntity

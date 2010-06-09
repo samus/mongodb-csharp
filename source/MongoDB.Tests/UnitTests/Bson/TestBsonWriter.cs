@@ -59,11 +59,15 @@ namespace MongoDB.UnitTests.Bson
         [Test]
         public void TestLocalDateTimeIsWrittenAsUtcTime()
         {
-            var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Local);
+            var localtzoffset = TimeZoneInfo.Local.BaseUtcOffset.Hours;
+
+            var dateTime = new DateTime(2010, 1, 1, 11, 0, 0, DateTimeKind.Local);
+            var utcTime = new DateTime(2010, 1, 1, 11 - localtzoffset, 0, 0, DateTimeKind.Utc);
 
             var base64 = Serialize(new Document("time", dateTime));
+            var expected = Serialize(new Document("time", utcTime));
 
-            Assert.AreEqual("EwAAAAl0aW1lAIDaHOklAQAAAA==", base64);
+            Assert.AreEqual(expected, base64);
         }
 
         [Test]
