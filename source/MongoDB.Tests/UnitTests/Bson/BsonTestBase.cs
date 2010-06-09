@@ -34,5 +34,29 @@ namespace MongoDB.UnitTests.Bson
                 return (Document)reader.ReadObject();
             }
         }
+
+
+        protected byte[] HexToBytes(string hex)
+        {
+            //TODO externalize somewhere.
+            if (hex.Length % 2 == 1)
+            {
+                Console.WriteLine("uneven number of hex pairs.");
+                hex = "0" + hex;
+            }
+            var numberChars = hex.Length;
+            var bytes = new byte[numberChars / 2];
+            for (var i = 0; i < numberChars; i += 2)
+                try
+                {
+                    bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+                }
+                catch
+                {
+                    //failed to convert these 2 chars, they may contain illegal charracters
+                    bytes[i / 2] = 0;
+                }
+            return bytes;
+        }
     }
 }

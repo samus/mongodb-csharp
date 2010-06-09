@@ -32,7 +32,7 @@ namespace MongoDB.IntegrationTests
         }
 
         [Test]
-        public void TestTryConnectDoseNotThrowIfConnectionFailed(){
+        public void TestTryConnectDoesNotThrowIfConnectionFailed(){
             using(var m = new Mongo("Server=notexists"))
                 Assert.IsFalse(m.TryConnect());
         }
@@ -59,7 +59,7 @@ namespace MongoDB.IntegrationTests
             }
         }
 
-        public void TestDoseNotThrowIfDisposeIsCalledTwice(){
+        public void TestDoesNotThrowIfDisposeIsCalledTwice(){
             using(var m = new Mongo(_connectionString))
             {
                 m.Dispose();

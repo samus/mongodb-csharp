@@ -33,29 +33,6 @@ namespace MongoDB.UnitTests.Bson
             return reader.ReadLengthString();
         }
 
-        private byte[] HexToBytes(string hex){
-            //TODO externalize somewhere.
-            if(hex.Length%2 == 1)
-            {
-                Console.WriteLine("uneven number of hex pairs.");
-                hex = "0" + hex;
-            }
-            var numberChars = hex.Length;
-            var bytes = new byte[numberChars/2];
-            for(var i = 0; i < numberChars; i += 2)
-                try
-                {
-                    bytes[i/2] = Convert.ToByte(hex.Substring(i, 2), 16);
-                }
-                catch
-                {
-                    //failed to convert these 2 chars, they may contain illegal charracters
-                    bytes[i/2] = 0;
-                }
-            return bytes;
-        }
-
-
         [Test]
         public void TestReadDocWithDocs(){
             //            Document doc = new Document().Append("a", new Document().Append("b", new Document().Append("c",new Document())));
@@ -281,7 +258,7 @@ namespace MongoDB.UnitTests.Bson
             var document = Deserialize("EwAAAAl0aW1lAADJU+klAQAAAA==");
 
             var dateTime = new DateTime(2010, 1, 1, 10, 0, 0, DateTimeKind.Utc);
-
+            
             Assert.AreEqual(dateTime, document["time"]);
         }
 
@@ -291,7 +268,9 @@ namespace MongoDB.UnitTests.Bson
 
             var document = Deserialize("EwAAAAl0aW1lAADJU+klAQAAAA==", settings);
 
-            var dateTime = new DateTime(2010, 1, 1, 11, 0, 0, DateTimeKind.Local);
+            var localtzoffset =TimeZoneInfo.Local.BaseUtcOffset.Hours - 1; //gmt offset the local date was saved in along with the local offset.
+
+            var dateTime = new DateTime(2010, 1, 1, 11, 0, 0, DateTimeKind.Local).AddHours(localtzoffset);
             Assert.AreEqual(dateTime, document["time"]);
         }
     }
