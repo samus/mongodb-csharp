@@ -5,7 +5,7 @@
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\tools\MSBuild.Community.Tasks</MSBuildCommunityTasksPath>
     <ExtensionTasksPath>$(MSBuildProjectDirectory)\tools\MSBuild.ExtensionPack</ExtensionTasksPath>
-    <DeployPath>$(MSBuildProjectDirectory)\deploy</DeployPath>
+    <DeployPath>$(MSBuildProjectDirectory)\redist</DeployPath>
     <DeployTmp>$(DeployPath)\tmp</DeployTmp>
     <SourceProject>$(MSBuildProjectDirectory)\MongoDB-CSharp.sln</SourceProject>
   </PropertyGroup>
