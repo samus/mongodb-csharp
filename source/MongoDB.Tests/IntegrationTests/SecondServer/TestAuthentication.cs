@@ -119,7 +119,7 @@ namespace MongoDB.IntegrationTests.SecondServer
 
 	    [TestFixtureTearDown]
 	    public void TestTearDown(){
-            using(var mongo = ConnectAndAuthenticatedMongo(AdminUser, AdminUser))
+            using(var mongo = ConnectAndAuthenticatedMongo(AdminUser, AdminPass))
             {
                 mongo[TestDatabaseName].Metadata.RemoveUser(TestUser);
                 mongo["admin"].Metadata.RemoveUser(AdminUser);
