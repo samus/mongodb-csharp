@@ -1,0 +1,381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B125BBA6-BFFD-44FA-9254-9B1754CD8AF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>MongoDB</AssemblyName>
+    <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\scorder\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <RunCodeAnalysis>True</RunCodeAnalysis>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>MongoDB.Driver</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>MongoDB</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\StrongName.snk</AssemblyOriginatorKeyFile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;CODE_ANALYSIS;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DocumentationFile>bin\Debug\MongoDB.xml</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <GenerateDocumentation>true</GenerateDocumentation>
+    <DocumentationFile>bin\Release\MongoDB.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <DefineConstants>
+    </DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentation>true</GenerateDocumentation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyInfoGlobal.cs">
+      <Link>AssemblyInfoGlobal.cs</Link>
+    </Compile>
+    <Compile Include="BinarySubtype.cs" />
+    <Compile Include="Bson\BsonType.cs" />
+    <Compile Include="Bson\BsonInfo.cs" />
+    <Compile Include="Bson\BsonDocumentBuilder.cs" />
+    <Compile Include="Bson\BsonDocumentDescriptor.cs" />
+    <Compile Include="Bson\BsonProperty.cs" />
+    <Compile Include="Bson\BsonReaderSettings.cs" />
+    <Compile Include="Bson\BsonWriterSettings.cs" />
+    <Compile Include="Bson\IBsonObjectBuilder.cs" />
+    <Compile Include="Bson\IBsonObjectDescriptor.cs" />
+    <Compile Include="Configuration\CollectionAdapters\ArrayCollectionAdapter.cs" />
+    <Compile Include="Configuration\Builders\MappingStoreBuilder.cs" />
+    <Compile Include="Configuration\DictionaryAdapters\GenericDictionaryDictionaryAdapter.cs" />
+    <Compile Include="Configuration\DictionaryAdapters\HashtableDictionaryAdapter.cs" />
+    <Compile Include="Configuration\DictionaryAdapters\DocumentDictionaryAdapter.cs" />
+    <Compile Include="Configuration\DictionaryAdapters\IDictionaryAdapter.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultDictionaryAdapterConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IDictionaryAdapterConvention.cs" />
+    <Compile Include="Configuration\Mapping\Util\ValueConverter.cs" />
+    <Compile Include="Configuration\MongoConfigurationBuilder.cs" />
+    <Compile Include="Configuration\Builders\AutoMappingProfileBuilder.cs" />
+    <Compile Include="Configuration\Builders\ClassOverridesBuilder.cs" />
+    <Compile Include="Configuration\Builders\MemberOverridesBuilder.cs" />
+    <Compile Include="Configuration\Mapping\Auto\ClassOverridesMap.cs" />
+    <Compile Include="Configuration\Mapping\Auto\OverridableAutoMappingProfile.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\MemberFinderBase.cs" />
+    <Compile Include="Configuration\MongoConfiguration.cs" />
+    <Compile Include="IMongoDatabase.cs" />
+    <Compile Include="Linq\ExecutionBuilder.cs" />
+    <Compile Include="Linq\Expressions\Alias.cs" />
+    <Compile Include="Linq\Expressions\AliasedExpression.cs" />
+    <Compile Include="Linq\Expressions\ExpressionComparer.cs" />
+    <Compile Include="Linq\Expressions\MongoExpressionComparer.cs" />
+    <Compile Include="Linq\Expressions\MongoExpressionExtensions.cs" />
+    <Compile Include="Linq\Expressions\MongoExpression.cs" />
+    <Compile Include="Linq\Translators\ExpressionReplacer.cs" />
+    <Compile Include="MapReduce.cs" />
+    <Compile Include="Commands\MapReduceCommand.cs" />
+    <Compile Include="MongoRegexOption.cs" />
+    <Compile Include="Results\MapReduceResult.cs" />
+    <Compile Include="Serialization\Builders\DictionaryBuilder.cs" />
+    <Compile Include="Serialization\Builders\PropertyDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\DictionaryPropertyDescriptor.cs" />
+    <Compile Include="Util\ScopedDictionary.cs" />
+    <Compile Include="Linq\Translators\AggregateChecker.cs" />
+    <Compile Include="Linq\Translators\AggregateRewriter.cs" />
+    <Compile Include="Linq\Translators\FieldMapper.cs" />
+    <Compile Include="Linq\Translators\MapReduceFinalizerFunctionBuilder.cs" />
+    <Compile Include="Linq\Translators\DeclaredAliasGatherer.cs" />
+    <Compile Include="Linq\Translators\QueryDuplicator.cs" />
+    <Compile Include="Linq\Translators\RedundantFieldRemover.cs" />
+    <Compile Include="Linq\Translators\SubqueryRemover.cs" />
+    <Compile Include="Linq\Translators\MapReduceReduceFunctionBuilder.cs" />
+    <Compile Include="Linq\Translators\FieldGatherer.cs" />
+    <Compile Include="Linq\Expressions\AggregateExpression.cs" />
+    <Compile Include="Linq\Expressions\AggregateSubqueryExpression.cs" />
+    <Compile Include="Linq\Expressions\AggregateType.cs" />
+    <Compile Include="Linq\Expressions\CollectionExpression.cs" />
+    <Compile Include="Linq\Expressions\FieldDeclaration.cs" />
+    <Compile Include="Linq\Expressions\FieldExpression.cs" />
+    <Compile Include="Linq\Expressions\MongoExpressionType.cs" />
+    <Compile Include="Linq\Translators\Nominator.cs" />
+    <Compile Include="Linq\Expressions\OrderExpression.cs" />
+    <Compile Include="Linq\Expressions\OrderType.cs" />
+    <Compile Include="Linq\Expressions\ProjectionExpression.cs" />
+    <Compile Include="Linq\Expressions\ScalarExpression.cs" />
+    <Compile Include="Linq\Expressions\SelectExpression.cs" />
+    <Compile Include="Linq\Expressions\ExpressionVisitor.cs" />
+    <Compile Include="Linq\Expressions\SubqueryExpression.cs" />
+    <Compile Include="Linq\Translators\FieldBinder.cs" />
+    <Compile Include="Linq\Translators\JavascriptFormatter.cs" />
+    <Compile Include="Linq\Grouping.cs" />
+    <Compile Include="Linq\IMongoQueryable.cs" />
+    <Compile Include="Linq\InvalidQueryException.cs" />
+    <Compile Include="Linq\LinqExtensions.cs" />
+    <Compile Include="Linq\Expressions\MongoExpressionVisitor.cs" />
+    <Compile Include="Linq\Translators\FieldProjector.cs" />
+    <Compile Include="Linq\DocumentQuery.cs" />
+    <Compile Include="Linq\Translators\MapReduceMapFunctionBuilder.cs" />
+    <Compile Include="Linq\MongoQuery.cs" />
+    <Compile Include="Linq\Translators\OrderByRewriter.cs" />
+    <Compile Include="Linq\Translators\ProjectionBuilder.cs" />
+    <Compile Include="Linq\MongoQueryable.cs" />
+    <Compile Include="Linq\Translators\QueryBinder.cs" />
+    <Compile Include="Linq\MongoQueryProvider.cs" />
+    <Compile Include="Linq\MongoQueryObject.cs" />
+    <Compile Include="Linq\Translators\DocumentFormatter.cs" />
+    <Compile Include="Linq\Translators\PartialEvaluator.cs" />
+    <Compile Include="Linq\Translators\RedundantSubqueryRemover.cs" />
+    <Compile Include="Linq\Translators\MongoQueryObjectBuilder.cs" />
+    <Compile Include="Linq\TypeHelper.cs" />
+    <Compile Include="Mo.cs" />
+    <Compile Include="Results\FindAndModifyResult.cs" />
+    <Compile Include="Serialization\Builders\ArrayBuilder.cs" />
+    <Compile Include="Serialization\Builders\ConcreteClassMapBuilder.cs" />
+    <Compile Include="Serialization\Builders\DocumentBuilder.cs" />
+    <Compile Include="Serialization\Builders\IObjectBuilder.cs" />
+    <Compile Include="Serialization\BsonClassMapBuilder.cs" />
+    <Compile Include="Serialization\Builders\PolymorphicClassMapBuilder.cs" />
+    <Compile Include="Serialization\ClassMapObjectDescriptorAdapter.cs" />
+    <Compile Include="Serialization\Descriptors\ArrayDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\BsonPropertyValue.cs" />
+    <Compile Include="Serialization\Descriptors\ClassMapPropertyDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\ClassMapPropertyDescriptorBase.cs" />
+    <Compile Include="Serialization\Descriptors\DocumentClassMapPropertyDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\DocumentPropertyDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\ExampleClassMapPropertyDescriptor.cs" />
+    <Compile Include="Serialization\Descriptors\IPropertyDescriptor.cs" />
+    <Compile Include="Serialization\BsonClassMapDescriptor.cs" />
+    <Compile Include="Serialization\DocumentObjectDescriptorAdapter.cs" />
+    <Compile Include="Serialization\IObjectDescriptor.cs" />
+    <Compile Include="Serialization\SerializationFactory.cs" />
+    <Compile Include="Exceptions\UnmappedMemberException.cs" />
+    <Compile Include="Results\CommandResultBase.cs" />
+    <Compile Include="Configuration\CollectionAdapters\ArrayListCollectionAdapter.cs" />
+    <Compile Include="Configuration\CollectionAdapters\GenericListCollectionAdapter.cs" />
+    <Compile Include="Configuration\CollectionAdapters\GenericSetCollectionAdapter.cs" />
+    <Compile Include="Configuration\CollectionAdapters\ICollectionAdapter.cs" />
+    <Compile Include="Configuration\IdGenerators\AssignedIdGenerator.cs" />
+    <Compile Include="Configuration\IdGenerators\GuidCombGenerator.cs" />
+    <Compile Include="Exceptions\IdGenerationException.cs" />
+    <Compile Include="Configuration\IdGenerators\IIdGenerator.cs" />
+    <Compile Include="Configuration\IdGenerators\OidGenerator.cs" />
+    <Compile Include="Configuration\Mapping\AutoMappingStore.cs" />
+    <Compile Include="Configuration\Mapping\Auto\AggregateAutoMapper.cs" />
+    <Compile Include="Configuration\Mapping\Auto\AutoMapper.cs" />
+    <Compile Include="Configuration\Mapping\Auto\AutoMappingProfile.cs" />
+    <Compile Include="Configuration\Mapping\Auto\ClassOverrides.cs" />
+    <Compile Include="Configuration\Mapping\Auto\IAutoMapper.cs" />
+    <Compile Include="Configuration\Mapping\Auto\IAutoMappingProfile.cs" />
+    <Compile Include="Configuration\Mapping\Auto\IMemberFinder.cs" />
+    <Compile Include="Configuration\Mapping\Auto\MemberOverrides.cs" />
+    <Compile Include="Configuration\Mapping\Auto\DefaultMemberFinder.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\ConventionProfile.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultCollectionAdapterConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultDefaultValueConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultIdGeneratorConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DefaultIdUnsavedValueConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateAliasConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateCollectionNameConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateDiscriminatorAliasConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateDiscriminatorConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IAliasConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\ICollectionAdapterConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\ICollectionNameConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IDefaultValueConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IDiscriminatorAliasConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IDiscriminatorConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IExtendedPropertiesConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IIdConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IIdGeneratorConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\IIdUnsavedValueConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateExtendedPropertiesConvention.cs" />
+    <Compile Include="Configuration\Mapping\Conventions\DelegateIdConvention.cs" />
+    <Compile Include="Configuration\Mapping\IMappingStore.cs" />
+    <Compile Include="Configuration\Mapping\Model\ClassMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\ClassMapBase.cs" />
+    <Compile Include="Configuration\Mapping\Model\CollectionMemberMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\DictionaryMemberMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\ExtendedPropertiesMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\IClassMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\IdMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\MemberMapBase.cs" />
+    <Compile Include="Configuration\Mapping\Util\MemberReflectionOptimizer.cs" />
+    <Compile Include="Configuration\Mapping\Model\PersistentMemberMap.cs" />
+    <Compile Include="Configuration\Mapping\Model\SubClassMap.cs" />
+    <Compile Include="Connections\RawConnection.cs" />
+    <Compile Include="CollectionMetadata.cs" />
+    <Compile Include="Connections\Connection.cs" />
+    <Compile Include="Connections\ConnectionFactory.cs" />
+    <Compile Include="Connections\ConnectionFactoryBase.cs" />
+    <Compile Include="Connections\IConnectionFactory.cs" />
+    <Compile Include="Connections\PooledConnectionFactory.cs" />
+    <Compile Include="Connections\SimpleConnectionFactory.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Bson\BsonWriter.cs" />
+    <Compile Include="DatabaseMetadata.cs" />
+    <Compile Include="DBRef.cs" />
+    <Compile Include="Document.cs" />
+    <Compile Include="Exceptions\MongoCommandException.cs" />
+    <Compile Include="Exceptions\MongoConnectionException.cs" />
+    <Compile Include="Exceptions\MongoDuplicateKeyException.cs" />
+    <Compile Include="Exceptions\MongoDuplicateKeyUpdateException.cs" />
+    <Compile Include="Exceptions\MongoException.cs" />
+    <Compile Include="Exceptions\MongoMapReduceException.cs" />
+    <Compile Include="Exceptions\MongoOperationException.cs" />
+    <Compile Include="Obsolete\ICursor.cs" />
+    <Compile Include="IMongo.cs" />
+    <Compile Include="Obsolete\IMongoCollection.cs" />
+    <Compile Include="IndexOrder.cs" />
+    <Compile Include="Mongo.cs" />
+    <Compile Include="Bson\BsonReader.cs" />
+    <Compile Include="Obsolete\Cursor.cs" />
+    <Compile Include="Obsolete\MongoCollection.cs" />
+    <Compile Include="MongoCollection_1.cs" />
+    <Compile Include="MongoConnectionStringBuilder.cs" />
+    <Compile Include="MongoDatabase.cs" />
+    <Compile Include="MongoMaxKey.cs" />
+    <Compile Include="MongoMinKey.cs" />
+    <Compile Include="MongoServerEndPoint.cs" />
+    <Compile Include="Oid.cs" />
+    <Compile Include="MongoRegex.cs" />
+    <Compile Include="Util\OidGenerator.cs" />
+    <Compile Include="Code.cs" />
+    <Compile Include="CodeWScope.cs" />
+    <Compile Include="Binary.cs" />
+    <Compile Include="DatabaseJavascript.cs" />
+    <Compile Include="Op.cs" />
+    <Compile Include="Protocol\DeleteMessage.cs" />
+    <Compile Include="Protocol\GetMoreMessage.cs" />
+    <Compile Include="Protocol\InsertMessage.cs" />
+    <Compile Include="Protocol\IRequestMessage.cs" />
+    <Compile Include="Protocol\KillCursorsMessage.cs" />
+    <Compile Include="Protocol\MessageBase.cs" />
+    <Compile Include="Protocol\MessageHeader.cs" />
+    <Compile Include="Protocol\MsgMessage.cs" />
+    <Compile Include="Protocol\OpCode.cs" />
+    <Compile Include="Protocol\QueryMessage.cs" />
+    <Compile Include="Protocol\ReplyMessage.cs" />
+    <Compile Include="Protocol\RequestMessageBase.cs" />
+    <Compile Include="Protocol\UpdateMessage.cs" />
+    <Compile Include="QueryOptions.cs" />
+    <Compile Include="Attributes\MongoDefaultAttribute.cs" />
+    <Compile Include="Attributes\MongoIgnoreAttribute.cs" />
+    <Compile Include="Attributes\MongoAliasAttribute.cs" />
+    <Compile Include="Serialization\ISerializationFactory.cs" />
+    <Compile Include="UpdateFlags.cs" />
+    <Compile Include="Util\ErrorTranslator.cs" />
+    <Compile Include="Util\Inflector.cs" />
+    <Compile Include="Util\JsonFormatter.cs" />
+    <Compile Include="Configuration\MongoConfigurationSection.cs" />
+    <Compile Include="Configuration\Section\ConnectionElement.cs" />
+    <Compile Include="Configuration\Section\ConnectionCollection.cs" />
+    <Compile Include="Cursor_1.cs" />
+    <Compile Include="ICursor_1.cs" />
+    <Compile Include="IMongoCollection_1.cs" />
+    <Compile Include="Util\MongoHash.cs" />
+    <Compile Include="Util\ReflectionExtensions.cs" />
+    <Compile Include="MongoSymbol.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>
+      </ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\StrongName.snk">
+      <Link>StrongName.snk</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+</Project>
