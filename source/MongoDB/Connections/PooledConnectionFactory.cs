@@ -8,7 +8,7 @@ namespace MongoDB.Connections
     ///   Connection pool implementation based on this document:
     ///   http://msdn.microsoft.com/en-us/library/8xx3tyca%28VS.100%29.aspx
     /// </summary>
-    public class PooledConnectionFactory : ConnectionFactoryBase
+    internal class PooledConnectionFactory : ConnectionFactoryBase
     {
         private readonly object _syncObject = new object();
         private readonly Queue<RawConnection> _freeConnections = new Queue<RawConnection>();

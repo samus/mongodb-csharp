@@ -6,7 +6,7 @@ namespace MongoDB.Connections
     /// <summary>
     /// 
     /// </summary>
-    public abstract class ConnectionFactoryBase : IConnectionFactory
+    internal abstract class ConnectionFactoryBase : IConnectionFactory
     {
         private int _endPointPointer;
 

@@ -5,7 +5,7 @@ namespace MongoDB.Connections
     /// <summary>
     /// 
     /// </summary>
-    public interface IConnectionFactory : IDisposable
+    internal interface IConnectionFactory : IDisposable
     {
         /// <summary>
         /// Opens a connection.

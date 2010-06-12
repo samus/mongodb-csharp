@@ -8,7 +8,7 @@ namespace MongoDB.Connections
     /// Represents a raw connection on the wire which is managed by the 
     /// connection pool.
     /// </summary>
-    public class RawConnection : IDisposable
+    internal class RawConnection : IDisposable
     {
         private readonly TcpClient _client = new TcpClient();
         private readonly List<string> _authenticatedDatabases = new List<string>();

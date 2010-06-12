@@ -5,7 +5,7 @@ namespace MongoDB.Connections
     /// <summary>
     /// Simple connection factory which only creates and closes connections.
     /// </summary>
-    public class SimpleConnectionFactory : ConnectionFactoryBase
+    internal class SimpleConnectionFactory : ConnectionFactoryBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleConnectionFactory"/> class.
