@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    public static class MongoQueryable
+    internal static class MongoQueryable
     {
         /// <summary>
         /// Keys the specified document.

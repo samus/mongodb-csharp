@@ -7,8 +7,7 @@ namespace MongoDB.Linq {
     /// It is not meant to be used outside of expressions, since most functions and operators return
     /// fake data and are only used to extract parameter information from expressions.
     /// </summary>
-    public class DocumentQuery {
-
+    internal class DocumentQuery {
         /// <summary>
         /// 
         /// </summary>

@@ -13,7 +13,7 @@ namespace MongoDB.Linq
     /// <summary>
     /// 
     /// </summary>
-    public class MongoQueryProvider : IQueryProvider
+    internal class MongoQueryProvider : IQueryProvider
     {
         private readonly string _collectionName;
         private readonly IMongoDatabase _database;

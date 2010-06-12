@@ -9,7 +9,7 @@ namespace MongoDB.Linq
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TElement">The type of the element.</typeparam>
-    public class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
+    internal class Grouping<TKey, TElement> : IGrouping<TKey, TElement>
     {
         private readonly TKey _key;
         private readonly IEnumerable<TElement> _group;

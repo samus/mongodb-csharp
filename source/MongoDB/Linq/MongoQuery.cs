@@ -10,7 +10,7 @@ namespace MongoDB.Linq
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class MongoQuery<T> : IOrderedQueryable<T>, IMongoQueryable
+    internal class MongoQuery<T> : IOrderedQueryable<T>, IMongoQueryable
     {
         private readonly Expression _expression;
         private readonly MongoQueryProvider _provider;
