@@ -62,6 +62,7 @@ namespace MongoDB
         /// <param name="fields">The fields.</param>
         /// <returns></returns>
         public ICursor Fields(Document fields){
+            _cursor.Fields(fields);
             return this;
         }
 

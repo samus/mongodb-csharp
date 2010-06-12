@@ -5,6 +5,7 @@ namespace MongoDB
 {
     /// <summary>
     /// </summary>
+    [Obsolete("Uses IMongoCollection<Document> instead. This class will be possible not included in future releases.")]
     public interface IMongoCollection
     {
         /// <summary>
