@@ -175,7 +175,7 @@
     <Compile Include="Linq\Translators\JavascriptFormatter.cs" />
     <Compile Include="Linq\Grouping.cs" />
     <Compile Include="Linq\IMongoQueryable.cs" />
-    <Compile Include="Linq\InvalidQueryException.cs" />
+    <Compile Include="Exceptions\InvalidQueryException.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="Linq\Expressions\MongoExpressionVisitor.cs" />
     <Compile Include="Linq\Translators\FieldProjector.cs" />
