@@ -33,10 +33,10 @@ namespace MongoDB
         /// <param name="connection">The conn.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="collectionName">Name of the collection.</param>
-        public Cursor(ISerializationFactory serializationFactory, Connection connection, string databaseName, string collectionName)
+        internal Cursor(ISerializationFactory serializationFactory, Connection connection, string databaseName, string collectionName)
         {
+            //Todo: add public constrcutor for users to call
             IsModifiable = true;
-            //Todo: should be internal
             _connection = connection;
             _databaseName = databaseName;
             FullCollectionName = databaseName + "." + collectionName;
@@ -54,10 +54,10 @@ namespace MongoDB
         /// <param name="limit">The limit.</param>
         /// <param name="skip">The skip.</param>
         /// <param name="fields">The fields.</param>
-        public Cursor(ISerializationFactory serializationFactory, Connection connection, string databaseName, string collectionName, object spec, int limit, int skip, object fields)
+        internal Cursor(ISerializationFactory serializationFactory, Connection connection, string databaseName, string collectionName, object spec, int limit, int skip, object fields)
             : this(serializationFactory, connection, databaseName, collectionName)
         {
-            //Todo: should be internal
+            //Todo: add public constrcutor for users to call
             if (spec == null)
                 spec = new Document();
             _spec = spec;

@@ -34,6 +34,7 @@ namespace MongoDB
                 ConnectionFactory.GetConnection(configuration.ConnectionString),
                 new MongoConnectionStringBuilder(configuration.ConnectionString).Database)
         {
+            //Todo: Add check for null
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace MongoDB
         /// <param name="configuration">The configuration.</param>
         /// <param name="connection">The conn.</param>
         /// <param name="name">The name.</param>
-        public MongoDatabase(MongoConfiguration configuration, Connection connection, string name)
+        internal MongoDatabase(MongoConfiguration configuration, Connection connection, string name)
         {
             if(configuration == null)
                 throw new ArgumentNullException("configuration");

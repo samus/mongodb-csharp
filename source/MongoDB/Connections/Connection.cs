@@ -18,7 +18,7 @@ namespace MongoDB.Connections
     /// by a new fresh connection.
     /// </remarks>
     /// </summary>
-    public class Connection : IDisposable
+    internal class Connection : IDisposable
     {
         private readonly IConnectionFactory _factory;
         private RawConnection _connection;

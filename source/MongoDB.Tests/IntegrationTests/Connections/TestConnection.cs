@@ -10,7 +10,7 @@ namespace MongoDB.IntegrationTests.Connections
     [TestFixture]
     public class TestConnection
     {
-        protected void WriteBadMessage(Connection conn)
+        private void WriteBadMessage(Connection conn)
         {
             //Write a bad message to the socket to force mongo to shut down our connection.
             var writer = new BinaryWriter(conn.GetStream());

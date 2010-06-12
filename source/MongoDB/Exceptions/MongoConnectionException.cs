@@ -50,7 +50,7 @@ namespace MongoDB
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="connection">The connection.</param>
-        public MongoConnectionException(string message, Connection connection)
+        internal MongoConnectionException(string message, Connection connection)
             :this(message,connection,null){}
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace MongoDB
         /// <param name="message">The message.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="innerException">The inner exception.</param>
-        public MongoConnectionException(string message, Connection connection, Exception innerException)
+        internal MongoConnectionException(string message, Connection connection, Exception innerException)
             :base(message,innerException){
             if(connection == null)
                 throw new ArgumentNullException("connection");

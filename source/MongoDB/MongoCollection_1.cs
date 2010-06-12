@@ -26,11 +26,11 @@ namespace MongoDB
         /// <param name="configuration">The configuration.</param>
         /// <param name="connection">The connection.</param>
         /// <param name="databaseName">Name of the database.</param>
-        /// <param name="name">The name.</param>
-        public MongoCollection(MongoConfiguration configuration, Connection connection, string databaseName, string name)
+        /// <param name="collectionName">The name.</param>
+        internal MongoCollection(MongoConfiguration configuration, Connection connection, string databaseName, string collectionName)
         {
-            //Todo: This should be internal
-            Name = name;
+            //Todo: add public constructors for users to call
+            Name = collectionName;
             DatabaseName = databaseName;
             _configuration = configuration;
             _connection = connection;

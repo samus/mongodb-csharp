@@ -19,16 +19,17 @@ namespace MongoDB
         private Document _options;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "CollectionMetadata" /> class.
+        /// Initializes a new instance of the <see cref="CollectionMetadata"/> class.
         /// </summary>
-        /// <param name = "configuration">The configuration.</param>
-        /// <param name = "databaseName">Name of the database.</param>
-        /// <param name = "name">The name.</param>
-        /// <param name = "connection">The connection.</param>
-        public CollectionMetadata(MongoConfiguration configuration, string databaseName, string name, Connection connection)
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="databaseName">Name of the database.</param>
+        /// <param name="collectionName">The name.</param>
+        /// <param name="connection">The connection.</param>
+        internal CollectionMetadata(MongoConfiguration configuration, string databaseName, string collectionName, Connection connection)
         {
-            _fullName = databaseName + "." + name;
-            _name = name;
+            //Todo: Add public constrcutors for users to call
+            _fullName = databaseName + "." + collectionName;
+            _name = collectionName;
             _database = new MongoDatabase(configuration, connection, databaseName);
         }
 

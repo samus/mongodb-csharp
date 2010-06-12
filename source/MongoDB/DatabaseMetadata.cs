@@ -16,13 +16,14 @@ namespace MongoDB
         private readonly string _name;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "DatabaseMetadata" /> class.
+        /// Initializes a new instance of the <see cref="DatabaseMetadata"/> class.
         /// </summary>
-        /// <param name = "configuration">The configuration.</param>
-        /// <param name = "name">The name.</param>
-        /// <param name = "conn">The conn.</param>
-        public DatabaseMetadata(MongoConfiguration configuration, string name, Connection conn)
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="conn">The conn.</param>
+        internal DatabaseMetadata(MongoConfiguration configuration, string name, Connection conn)
         {
+            //Todo: add public constrcutor for users to call
             _configuration = configuration;
             _connection = conn;
             _name = name;
