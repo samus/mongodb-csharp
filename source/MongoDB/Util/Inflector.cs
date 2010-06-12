@@ -8,7 +8,7 @@ namespace MongoDB.Util
     /// <summary>
     ///   This was ripped out of SubSonic I believe.
     /// </summary>
-    public static class Inflector
+    internal static class Inflector
     {
         private static readonly List<InflectorRule> Plurals = new List<InflectorRule>();
         private static readonly List<InflectorRule> Singulars = new List<InflectorRule>();
