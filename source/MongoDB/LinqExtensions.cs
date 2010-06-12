@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using MongoDB.Linq;
 
-namespace MongoDB.Linq
+namespace MongoDB
 {
     /// <summary>
     /// 
