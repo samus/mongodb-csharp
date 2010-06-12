@@ -14,7 +14,7 @@ namespace Simple
     /// </summary>
     internal class MainClass
     {
-        private IMongoCollection categories;
+        private IMongoCollection<Document> categories;
         private Mongo mongo;
         private IMongoDatabase simple;
 
@@ -36,7 +36,7 @@ namespace Simple
             mongo = new Mongo(connstr);
             mongo.Connect();
             simple = mongo["simple"];
-            categories = simple["categories"];
+            categories = simple.GetCollection<Document>("categories");
             Clean();
 
             var names = new[] {"Bluez", "Jazz", "Classical", "Rock", "Oldies", "Heavy Metal"};

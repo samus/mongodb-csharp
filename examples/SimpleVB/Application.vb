@@ -17,7 +17,7 @@ Namespace Simple
     Public Class Application
         Private mongo as Mongo
         Private simple as IMongoDatabase
-        Private categories as IMongoCollection
+        Private categories As IMongoCollection(Of Document)
         
         Public Shared Sub Main()
             Dim app As New Application()
@@ -37,7 +37,7 @@ Namespace Simple
             mongo = new Mongo(connstr)
             mongo.Connect()
             simple = mongo("simple")
-            categories = simple("categories")
+            categories = simple.GetCollection(Of Document)("categories")
             Clean()
             
             Dim names() As String = {"Bluez", "Jazz", "Classical", "Rock", "Oldies", "Heavy Metal"}
@@ -78,7 +78,7 @@ Namespace Simple
             'Find(new Document()) is equivalent to FindAll()
             'Specifying the cursor in a using block will close it on the server if we decide not
             'to iterate through the whole thing.
-            Dim all As ICursor = categories.Find(New Document())
+            Dim all As ICursor(Of Document) = categories.Find(New Document())
             Try
                 For Each doc As Document In all.Documents
                     Console.WriteLine(doc.ToString())

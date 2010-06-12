@@ -5,6 +5,7 @@ namespace MongoDB {
     /// <summary>
     /// 
     /// </summary>
+    [Obsolete("Uses ICursor<Document> instead. This class will be possible not included in future releases.")]
     public interface ICursor : IDisposable
     {
         /// <summary>
