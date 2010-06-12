@@ -6,6 +6,7 @@ using System.Reflection;
 using MongoDB.Commands;
 using MongoDB.Linq.Expressions;
 using MongoDB.Linq.Translators;
+using MongoDB.Util;
 
 namespace MongoDB.Linq
 {

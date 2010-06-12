@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MongoDB.Linq
+namespace MongoDB.Util
 {
     internal static class TypeHelper
     {

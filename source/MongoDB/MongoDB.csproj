@@ -192,7 +192,7 @@
     <Compile Include="Linq\Translators\PartialEvaluator.cs" />
     <Compile Include="Linq\Translators\RedundantSubqueryRemover.cs" />
     <Compile Include="Linq\Translators\MongoQueryObjectBuilder.cs" />
-    <Compile Include="Linq\TypeHelper.cs" />
+    <Compile Include="Util\TypeHelper.cs" />
     <Compile Include="Mo.cs" />
     <Compile Include="Results\FindAndModifyResult.cs" />
     <Compile Include="Serialization\Builders\ArrayBuilder.cs" />
