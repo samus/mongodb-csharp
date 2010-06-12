@@ -7,7 +7,7 @@ namespace MongoDB.Protocol
     /// <summary>
     ///   Description of Message.
     /// </summary>
-    public abstract class RequestMessageBase : MessageBase, IRequestMessage
+    internal abstract class RequestMessageBase : MessageBase, IRequestMessage
     {
         private readonly BsonWriterSettings _bsonWriterSettings;
 

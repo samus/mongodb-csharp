@@ -16,7 +16,7 @@ namespace MongoDB.Protocol
     /// BSON[]    documents;          // one or more documents to insert into the collection
     /// }
     /// </remarks>
-    public class InsertMessage : MessageBase, IRequestMessage
+    internal class InsertMessage : MessageBase, IRequestMessage
     {
         private readonly BsonWriterSettings _bsonWriterSettings;
         private readonly List<MessageChunk> _chunks = new List<MessageChunk>();

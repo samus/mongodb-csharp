@@ -14,7 +14,7 @@ namespace MongoDB.Protocol
     ///     int64     cursorID;               // cursorID from the OP_REPLY
     /// }
     /// </remarks>
-    public class GetMoreMessage : RequestMessageBase
+    internal class GetMoreMessage : RequestMessageBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetMoreMessage"/> class.

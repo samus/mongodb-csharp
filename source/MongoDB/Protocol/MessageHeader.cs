@@ -14,7 +14,7 @@ namespace MongoDB.Protocol
     ///      int32   opCode;         // request type - see table below
     /// }
     /// </remarks>
-    public class MessageHeader
+    internal class MessageHeader
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHeader"/> class.

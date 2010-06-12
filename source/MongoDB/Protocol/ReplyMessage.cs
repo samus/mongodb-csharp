@@ -19,7 +19,7 @@ namespace MongoDB.Protocol
     ///     BSON[]    documents;              // documents
     /// }
     /// </remarks>
-    public class ReplyMessage<T> : MessageBase where T : class
+    internal class ReplyMessage<T> : MessageBase where T : class
     {
         private readonly BsonReaderSettings _readerSettings;
 

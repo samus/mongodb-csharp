@@ -15,7 +15,7 @@ namespace MongoDB.Protocol
     ///     BSON      document;           // the document data to update with or insert
     /// }
     /// </remarks>
-    public class UpdateMessage : RequestMessageBase
+    internal class UpdateMessage : RequestMessageBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateMessage"/> class.

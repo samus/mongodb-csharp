@@ -12,7 +12,7 @@ namespace MongoDB.Protocol
     ///     cstring   message;   // message for the database
     /// }
     /// </remarks>
-    public class MsgMessage : RequestMessageBase
+    internal class MsgMessage : RequestMessageBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MsgMessage"/> class.

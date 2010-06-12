@@ -15,7 +15,7 @@ namespace MongoDB.Protocol
     /// int64[]   cursorIDs;                // array of cursorIDs to close
     /// }
     /// </remarks>
-    public class KillCursorsMessage : RequestMessageBase
+    internal class KillCursorsMessage : RequestMessageBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="KillCursorsMessage"/> class.

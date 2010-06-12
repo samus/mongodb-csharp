@@ -24,7 +24,7 @@ namespace MongoDB.IntegrationTests.Connections
             writer.Write((byte)0);
         }
 
-        protected QueryMessage GenerateQueryMessage()
+        private QueryMessage GenerateQueryMessage()
         {
             var qdoc = new Document {{"listDatabases", 1.0}};
             //QueryMessage qmsg = new QueryMessage(qdoc,"system.namespaces");

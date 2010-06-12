@@ -5,7 +5,7 @@ namespace MongoDB.Protocol
     /// <summary>
     /// A Message that is to be written to the database.
     /// </summary>
-    public interface IRequestMessage
+    internal interface IRequestMessage
     {
         /// <summary>
         /// Writes the specified stream.

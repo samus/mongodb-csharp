@@ -3,7 +3,7 @@ namespace MongoDB.Protocol
     /// <summary>
     /// Base class for all raw messages
     /// </summary>
-    public abstract class MessageBase
+    internal abstract class MessageBase
     {
         /// <summary>
         /// 

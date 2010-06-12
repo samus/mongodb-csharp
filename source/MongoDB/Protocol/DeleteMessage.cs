@@ -14,7 +14,7 @@ namespace MongoDB.Protocol
     ///     BSON      selector;               // query object.  See below for details.
     /// }
     /// </remarks>
-    public class DeleteMessage : RequestMessageBase
+    internal class DeleteMessage : RequestMessageBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteMessage"/> class.
