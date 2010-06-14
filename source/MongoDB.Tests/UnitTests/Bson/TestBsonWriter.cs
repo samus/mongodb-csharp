@@ -246,5 +246,13 @@ namespace MongoDB.UnitTests.Bson
 
             Assert.AreEqual("GwAAAAtyZWdleABleHByZXNzaW9uAGltZwAA", bson);
         }
+
+        [Test]
+        public void TestCanWriteNagativeDates()
+        {
+            var bson = Serialize(new Document("date", new DateTime(1960, 1, 1)));
+
+            Assert.AreEqual("EwAAAAlkYXRlAIBFaoO2////AA==",bson);
+        }
     }
 }

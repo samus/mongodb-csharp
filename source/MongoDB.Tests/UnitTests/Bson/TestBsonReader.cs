@@ -273,5 +273,15 @@ namespace MongoDB.UnitTests.Bson
             var dateTime = new DateTime(2010, 1, 1, 11, 0, 0, DateTimeKind.Local).AddHours(localtzoffset);
             Assert.AreEqual(dateTime, document["time"]);
         }
+
+        [Test]
+        public void TestCanReadNagativeDates()
+        {
+            const string bson = "EwAAAAlkYXRlAIBFaoO2////AA==";
+
+            var document = Deserialize(bson);
+
+            Assert.AreEqual(new DateTime(1960,1,1),document["date"]);
+        }
     }
 }
