@@ -35,7 +35,8 @@ namespace MongoDB.UnitTests.Configuration
                 mapping.Map<Person>(m =>
                 {
                     m.CollectionName("people");
-                    m.Member("Name").Alias("name").DefaultValue("something").Ignore();
+                    m.Member(x => x.Id).Alias("_id");
+                    m.Member(x => x.Name).Alias("name").DefaultValue("something").Ignore();
                 });
             });
         }
