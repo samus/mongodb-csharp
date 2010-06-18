@@ -48,7 +48,9 @@ namespace MongoDB.Configuration.Mapping.Conventions
             if (type.IsGenericType && !type.IsGenericTypeDefinition)
             {
                 var genericType = type.GetGenericTypeDefinition();
-                if (genericType == typeof(IDictionary<,>) || genericType == typeof(Dictionary<,>))
+                if (genericType == typeof(IDictionary<,>) || 
+                    genericType == typeof(Dictionary<,>) ||
+                    genericType == typeof(SortedList<,>))
                 {
                     var genericArgs = type.GetGenericArguments();
                     Type adapterType = typeof(GenericDictionaryDictionaryAdapter<,>).MakeGenericType(genericArgs[0], genericArgs[1]);

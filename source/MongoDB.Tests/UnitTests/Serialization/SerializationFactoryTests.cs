@@ -213,7 +213,7 @@ namespace MongoDB.UnitTests.Serialization
         {
             var expectedBson = Serialize<Document>(new Document("Property", new Document { { "key1", 10 }, { "key2", 20 } }));
             var obj = new SortedListDictionary { Property = new SortedList<string, int> { { "key1", 10 }, { "key2", 20 } } };
-            var bson = Serialize<GenericDictionary>(obj);
+            var bson = Serialize<SortedListDictionary>(obj);
             Assert.AreEqual(expectedBson, bson);
         }
 
