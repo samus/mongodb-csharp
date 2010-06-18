@@ -281,7 +281,7 @@ namespace MongoDB.UnitTests.Bson
 
             var document = Deserialize(bson);
 
-            Assert.AreEqual(new DateTime(1960,1,1),document["date"]);
+            Assert.AreEqual(new DateTime(1960,1,1).ToUniversalTime(),document["date"]);
         }
     }
 }
