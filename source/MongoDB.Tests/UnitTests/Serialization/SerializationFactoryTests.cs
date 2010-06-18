@@ -203,6 +203,33 @@ namespace MongoDB.UnitTests.Serialization
             Assert.IsTrue(prop.Dict[2].Name == "b");
         }
 
+        public class SortedListDictionary
+        {
+            public SortedList<string, int> Property { get; set; }
+        }
+
+        [Test]
+        public void CanSerializeSortedListDictionary()
+        {
+            var expectedBson = Serialize<Document>(new Document("Property", new Document { { "key1", 10 }, { "key2", 20 } }));
+            var obj = new SortedListDictionary { Property = new SortedList<string, int> { { "key1", 10 }, { "key2", 20 } } };
+            var bson = Serialize<GenericDictionary>(obj);
+            Assert.AreEqual(expectedBson, bson);
+        }
+
+        [Test]
+        public void CanDeserializeSortedListDictionary()
+        {
+            var bson = Serialize<Document>(new Document("Property", new Document { { "key1", 10 }, { "key2", 20 } }));
+            var prop = Deserialize<SortedListDictionary>(bson);
+
+            Assert.IsNotNull(prop);
+            Assert.IsNotNull(prop.Property);
+            Assert.AreEqual(2, prop.Property.Count);
+            Assert.Contains(new KeyValuePair<string, int>("key1", 10), prop.Property);
+            Assert.Contains(new KeyValuePair<string, int>("key2", 20), prop.Property);
+        }
+        
         public class HashSetHelper
         {
             public HashSet<string> Property { get; set; }
