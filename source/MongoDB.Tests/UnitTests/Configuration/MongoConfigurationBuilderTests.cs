@@ -11,6 +11,8 @@ namespace MongoDB.UnitTests.Configuration
         {
             public Guid Id { get; set; }
 
+	    public int Age { get; set; }
+
             public string Name { get; set; }
         }
 
@@ -35,7 +37,7 @@ namespace MongoDB.UnitTests.Configuration
                 mapping.Map<Person>(m =>
                 {
                     m.CollectionName("people");
-                    m.Member(x => x.Id).Alias("_id");
+                    m.Member(x => x.Age).Alias("age");
                     m.Member(x => x.Name).Alias("name").DefaultValue("something").Ignore();
                 });
             });
