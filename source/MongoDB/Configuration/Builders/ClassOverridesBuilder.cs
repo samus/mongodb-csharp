@@ -68,8 +68,14 @@ namespace MongoDB.Configuration.Builders
         /// <returns></returns>
         public MemberOverridesBuilder Member(Expression<Func<T, object>> member)
         {
-            var mex = (MemberExpression)member.Body;
-            return Member(mex.Member.Name);
+            var memberExpression = member.Body as MemberExpression;
+            if (memberExpression == null)
+            {
+                var unaryExpression = member.Body as UnaryExpression;
+                memberExpression = unaryExpression.Operand as MemberExpression;
+            }
+
+            return Member(memberExpression.Member.Name);
         }
     }
 }
