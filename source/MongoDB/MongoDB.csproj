@@ -112,6 +112,7 @@
     <Compile Include="Bson\BsonWriterSettings.cs" />
     <Compile Include="Bson\IBsonObjectBuilder.cs" />
     <Compile Include="Bson\IBsonObjectDescriptor.cs" />
+    <Compile Include="Configuration\Builders\IdOverridesBuilder.cs" />
     <Compile Include="Configuration\CollectionAdapters\ArrayCollectionAdapter.cs" />
     <Compile Include="Configuration\Builders\MappingStoreBuilder.cs" />
     <Compile Include="Configuration\DictionaryAdapters\GenericDictionaryDictionaryAdapter.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Configuration\DictionaryAdapters\HashtableDictionaryAdapter.cs" />
     <Compile Include="Configuration\DictionaryAdapters\DocumentDictionaryAdapter.cs" />
     <Compile Include="Configuration\DictionaryAdapters\IDictionaryAdapter.cs" />
+    <Compile Include="Configuration\Mapping\Auto\IdOverrides.cs" />
     <Compile Include="Configuration\Mapping\Conventions\DefaultDictionaryAdapterConvention.cs" />
     <Compile Include="Configuration\Mapping\Conventions\IDictionaryAdapterConvention.cs" />
     <Compile Include="Configuration\Mapping\Util\ValueConverter.cs" />
