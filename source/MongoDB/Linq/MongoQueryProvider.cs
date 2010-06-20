@@ -245,7 +245,8 @@ namespace MongoDB.Linq
                 spec = queryObject.Query;
 
             cursorType.GetMethod("Spec", new[] { typeof(Document) }).Invoke(cursor, new object[] { spec });
-            cursorType.GetMethod("Fields", new[] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Fields });
+            if(queryObject.Fields.Count > 0)
+                cursorType.GetMethod("Fields", new[] { typeof(Document) }).Invoke(cursor, new object[] { queryObject.Fields });
             cursorType.GetMethod("Limit").Invoke(cursor, new object[] { queryObject.NumberToLimit });
             cursorType.GetMethod("Skip").Invoke(cursor, new object[] { queryObject.NumberToSkip });
 
