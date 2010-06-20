@@ -68,9 +68,11 @@ namespace MongoDB.GridFS
             String filename = "gfi-delete.txt";
             GridFile gf = new GridFile(DB,"gfdelete");
             GridFileInfo gfi = new GridFileInfo(DB,"gfdelete", filename);
+            var id = gfi.Id;
             GridFileStream gfs = gfi.Create();  //TODO Expand Test to make sure that chunks for the file got deleted too.
             gfi.Delete();
             Assert.IsFalse(gf.Exists(filename), "File should have been deleted.");
+            Assert.IsTrue(0 == gf.Chunks.Count(new Document("_id", id)));
         }
         
         [Test]
