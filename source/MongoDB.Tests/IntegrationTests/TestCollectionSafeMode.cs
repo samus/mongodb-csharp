@@ -67,7 +67,7 @@ namespace MongoDB.IntegrationTests
         protected IMongoCollection InitCollection(string name)
         {
             IMongoCollection col = DB[name];
-            col.MetaData.CreateIndex(new Document{{"x", IndexOrder.Ascending}}, true);
+            col.Metadata.CreateIndex(new Document{{"x", IndexOrder.Ascending}}, true);
             for(int x = 0; x < 5; x++){
                 col.Insert(new Document{{"x", x}, {"y", 1}});
             }

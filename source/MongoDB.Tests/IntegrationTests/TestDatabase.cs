@@ -72,7 +72,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestGetLastError(){
             var errcol = DB["errcol"];
-            errcol.MetaData.CreateIndex(new Document {{"x", IndexOrder.Ascending}}, true);
+            errcol.Metadata.CreateIndex(new Document {{"x", IndexOrder.Ascending}}, true);
             var dup = new Document {{"x", 1}, {"y", 2}};
             errcol.Insert(dup);
             var error = DB.GetLastError();
@@ -94,7 +94,7 @@ namespace MongoDB.IntegrationTests
         [Test]
         public void TestGetPrevError(){
             var col = DB["preverror"];
-            col.MetaData.CreateIndex(new Document {{"x", IndexOrder.Ascending}}, true);
+            col.Metadata.CreateIndex(new Document {{"x", IndexOrder.Ascending}}, true);
             var docs = new List<Document>();
             for(var x = 0; x < 10; x++)
                 docs.Add(new Document {{"x", x}, {"y", 2}});

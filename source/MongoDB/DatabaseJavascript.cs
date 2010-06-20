@@ -34,7 +34,7 @@ namespace MongoDB
         /// </remarks>
         private void EnsureIndexExists()
         {
-            _collection.MetaData.CreateIndex(new Document("_id", 1), true);
+            _collection.Metadata.CreateIndex(new Document("_id", 1), true);
         }
 
         /// <summary>

@@ -64,9 +64,9 @@ namespace MongoDB
         ///   Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        public CollectionMetadata MetaData
+        public CollectionMetadata Metadata
         {
-            get { return _collection.MetaData; }
+            get { return _collection.Metadata; }
         }
 
         /// <summary>

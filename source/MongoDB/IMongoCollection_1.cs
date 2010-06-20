@@ -38,7 +38,7 @@ namespace MongoDB
         /// <summary>
         ///   Metadata about the collection such as indexes.
         /// </summary>
-        CollectionMetadata MetaData { get; }
+        CollectionMetadata Metadata { get; }
 
         /// <summary>
         /// Finds and returns the first document in a selector query.

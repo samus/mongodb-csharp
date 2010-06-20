@@ -113,7 +113,7 @@ namespace MongoDB.IntegrationTests
             var exp = reads.FindAll().Hint(hint).Explain();
             Assert.IsTrue(exp.Contains("$err"), "No error found");
 
-            reads.MetaData.CreateIndex("hintindex", hint, false);
+            reads.Metadata.CreateIndex("hintindex", hint, false);
             exp = reads.FindAll().Hint(hint).Explain();
 
             Assert.IsTrue(exp.Contains("cursor"));

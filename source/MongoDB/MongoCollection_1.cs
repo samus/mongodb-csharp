@@ -18,7 +18,7 @@ namespace MongoDB
         private readonly MongoConfiguration _configuration;
         private readonly Connection _connection;
         private MongoDatabase _database;
-        private CollectionMetadata _metaData;
+        private CollectionMetadata _metadata;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="MongoCollection&lt;T&gt;"/> class.
@@ -68,8 +68,8 @@ namespace MongoDB
         /// Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        public CollectionMetadata MetaData {
-            get { return _metaData ?? (_metaData = new CollectionMetadata(_configuration, DatabaseName, Name, _connection)); }
+        public CollectionMetadata Metadata {
+            get { return _metadata ?? (_metadata = new CollectionMetadata(_configuration, DatabaseName, Name, _connection)); }
         }
 
         /// <summary>

@@ -33,14 +33,14 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestGetOptions(){
-            CollectionMetadata cmd = DB["reads"].MetaData;
+            CollectionMetadata cmd = DB["reads"].Metadata;
             Document options = cmd.Options;
             Assert.IsNotNull(options);
         }
 
         [Test]
         public void TestGetIndexes(){
-            CollectionMetadata cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = DB["indextests"].Metadata;
             Dictionary<string, Document> indexes = cmd.Indexes;
 
             Assert.IsNotNull(indexes);
@@ -52,7 +52,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestCreateIndex(){
-            CollectionMetadata cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = DB["indextests"].Metadata;
             cmd.CreateIndex("lastnames", new Document().Add("lname", IndexOrder.Ascending), false);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["lastnames"]);
@@ -60,7 +60,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestCreateIndexNoNames(){
-            CollectionMetadata cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = DB["indextests"].Metadata;
             cmd.CreateIndex(new Document().Add("lname", IndexOrder.Ascending).Add("fname", IndexOrder.Ascending), true);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["_lname_fname_unique_"]);
@@ -68,7 +68,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestDropIndex(){
-            CollectionMetadata cmd = DB["indextests"].MetaData;
+            CollectionMetadata cmd = DB["indextests"].Metadata;
             cmd.CreateIndex("firstnames", new Document().Add("fname", IndexOrder.Ascending), false);
             Dictionary<string, Document> indexes = cmd.Indexes;
             Assert.IsNotNull(indexes["firstnames"]);
@@ -80,7 +80,7 @@ namespace MongoDB.IntegrationTests
         public void TestRename(){
             DB["rename"].Insert(new Document(){{"test", "rename"}});
             Assert.AreEqual(1, DB["rename"].Count());
-            CollectionMetadata cmd = DB["rename"].MetaData;
+            CollectionMetadata cmd = DB["rename"].Metadata;
             cmd.Rename("renamed");
             Assert.IsFalse(DB.GetCollectionNames().Contains(DB.Name + ".rename"), "Shouldn't have found collection");
             Assert.IsTrue(DB.GetCollectionNames().Contains(DB.Name + ".renamed"),"Should have found collection");

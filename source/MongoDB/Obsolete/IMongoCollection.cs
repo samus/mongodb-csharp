@@ -36,7 +36,7 @@ namespace MongoDB
         ///   Gets the meta data.
         /// </summary>
         /// <value>The meta data.</value>
-        CollectionMetadata MetaData { get; }
+        CollectionMetadata Metadata { get; }
 
         /// <summary>
         /// Finds the one.
