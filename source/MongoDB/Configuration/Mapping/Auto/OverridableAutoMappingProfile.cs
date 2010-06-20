@@ -48,7 +48,11 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <returns></returns>
         public MemberInfo FindIdMember(Type classType)
         {
-            return _profile.FindIdMember(classType);
+            return GetIdOverrideValue(
+                classType,
+                o => o.Member,
+                m => m != null,
+                _profile.FindIdMember(classType));
         }
 
         /// <summary>
@@ -173,7 +177,11 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <returns></returns>
         public IIdGenerator GetIdGenerator(Type classType, MemberInfo member)
         {
-            return _profile.GetIdGenerator(classType, member);
+            return GetIdOverrideValue(
+                classType,
+                o => o.Generator,
+                g => g != null,
+                _profile.GetIdGenerator(classType, member));
         }
 
         /// <summary>
@@ -184,7 +192,11 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <returns></returns>
         public object GetIdUnsavedValue(Type classType, MemberInfo member)
         {
-            return _profile.GetIdUnsavedValue(classType, member);
+            return GetIdOverrideValue(
+                classType,
+                o => o.UnsavedValue,
+                v => v != null,
+                _profile.GetIdUnsavedValue(classType, member));
         }
 
         /// <summary>
@@ -233,16 +245,23 @@ namespace MongoDB.Configuration.Mapping.Auto
             return !accept(value) ? defaultValue : value;
         }
 
-        /// <summary>
-        ///   Gets the member override value.
-        /// </summary>
-        /// <typeparam name = "T"></typeparam>
-        /// <param name = "classType">Type of the class.</param>
-        /// <param name = "member">The member.</param>
-        /// <param name = "overrides">The overrides.</param>
-        /// <param name = "accept">The accept.</param>
-        /// <param name = "defaultValue">The default value.</param>
-        /// <returns></returns>
+        private T GetIdOverrideValue<T>(Type classType,
+           Func<IdOverrides, T> overrides,
+           Func<T, bool> accept,
+           T defaultValue)
+        {
+            if (!_overrides.HasOverridesForType(classType))
+                return defaultValue;
+
+            var idOverrides = _overrides.GetOverridesForType(classType).GetIdOverrides();
+            if (idOverrides == null) 
+                return defaultValue;
+
+            var value = overrides(idOverrides);
+
+            return !accept(value) ? defaultValue : value;
+        }
+
         private T GetMemberOverrideValue<T>(Type classType,
             MemberInfo member,
             Func<MemberOverrides, T> overrides,
