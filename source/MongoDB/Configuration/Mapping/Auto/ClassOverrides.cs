@@ -8,7 +8,7 @@ namespace MongoDB.Configuration.Mapping.Auto
     /// </summary>
     public class ClassOverrides
     {
-        private IdOverrides _idOverrides;
+        private readonly IdOverrides _idOverrides;
         private readonly Dictionary<MemberInfo, MemberOverrides> _memberOverrides;
 
         /// <summary>
@@ -22,6 +22,7 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// </summary>
         public ClassOverrides()
         {
+            _idOverrides = null;
             _memberOverrides = new Dictionary<MemberInfo, MemberOverrides>();
         }
 
