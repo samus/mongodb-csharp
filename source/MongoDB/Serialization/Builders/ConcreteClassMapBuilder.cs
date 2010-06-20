@@ -31,7 +31,7 @@ namespace MongoDB.Serialization.Builders
             var memberMap = _classMap.GetMemberMapFromAlias(name);
             if (memberMap != null)
                 memberMap.SetValue(_instance, value);
-            else if (_extendedProperties != null)
+            else if ((!_classMap.HasDiscriminator || _classMap.DiscriminatorAlias != name) && _extendedProperties != null)
                 _extendedProperties.Add(name, value);
         }
 
