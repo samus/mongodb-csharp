@@ -41,8 +41,9 @@ namespace MongoDB.Configuration.Builders
         /// <returns></returns>
         public IdOverridesBuilder Id(MemberInfo member)
         {
-            var overrides = new IdOverrides { Member = member };
-            return new IdOverridesBuilder(overrides);
+            var id = new IdOverrides { Member = member };
+            _overrides.IdOverrides = id;
+            return new IdOverridesBuilder(id);
         }
 
         /// <summary>

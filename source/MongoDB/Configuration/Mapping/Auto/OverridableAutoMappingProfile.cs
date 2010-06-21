@@ -253,7 +253,7 @@ namespace MongoDB.Configuration.Mapping.Auto
             if (!_overrides.HasOverridesForType(classType))
                 return defaultValue;
 
-            var idOverrides = _overrides.GetOverridesForType(classType).GetIdOverrides();
+            var idOverrides = _overrides.GetOverridesForType(classType).IdOverrides;
             if (idOverrides == null) 
                 return defaultValue;
 

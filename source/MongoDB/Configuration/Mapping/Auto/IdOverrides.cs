@@ -7,6 +7,9 @@ using MongoDB.Configuration.IdGenerators;
 
 namespace MongoDB.Configuration.Mapping.Auto
 {
+    /// <summary>
+    /// Overrides the Id member.
+    /// </summary>
     public class IdOverrides
     {
         /// <summary>
