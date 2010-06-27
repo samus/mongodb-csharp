@@ -84,7 +84,7 @@ namespace MongoDB.IntegrationTests.Linq
         {
             var people = Enumerable.ToList(Collection.Linq().Where(x => x.PrimaryAddress.IsInternational && x.Age > 21));
 
-            Assert.AreEqual(0, people.Count);
+            Assert.AreEqual(2, people.Count);
         }
 
         [Test]
