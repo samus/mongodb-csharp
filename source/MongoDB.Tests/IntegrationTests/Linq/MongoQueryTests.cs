@@ -64,7 +64,7 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
-        public void Boolean_Test1()
+        public void Boolean()
         {
             var people = Enumerable.ToList(Collection.Linq().Where(x => x.PrimaryAddress.IsInternational));
 
@@ -72,9 +72,17 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
-        public void Boolean_Test2()
+        public void Boolean_Inverse()
         {
             var people = Enumerable.ToList(Collection.Linq().Where(x => !x.PrimaryAddress.IsInternational));
+
+            Assert.AreEqual(0, people.Count);
+        }
+
+        [Test]
+        public void Boolean_In_Conjunction()
+        {
+            var people = Enumerable.ToList(Collection.Linq().Where(x => x.PrimaryAddress.IsInternational && x.Age > 21));
 
             Assert.AreEqual(0, people.Count);
         }
