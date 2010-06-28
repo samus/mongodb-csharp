@@ -10,7 +10,7 @@ namespace MongoDB.IntegrationTests.Linq
     public class MongoQueryProviderTests : LinqTestsBase
     {
         [Test]
-        public void Boolean_Test1()
+        public void Boolean1()
         {
             var people = Collection.Linq().Where(x => x.PrimaryAddress.IsInternational);
 
@@ -19,12 +19,21 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
-        public void Boolean_Test2()
+        public void Boolean_Inverse()
         {
             var people = Collection.Linq().Where(x => !x.PrimaryAddress.IsInternational);
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
             Assert.AreEqual(new Document("$not", new Document("PrimaryAddress.IsInternational", true)), queryObject.Query);
+        }
+
+        [Test]
+        public void Boolean_In_Conjunction()
+        {
+            var people = Collection.Linq().Where(x => x.PrimaryAddress.IsInternational && x.Age > 21);
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(new Document("PrimaryAddress.IsInternational", true).Add("Age", Op.GreaterThan(21)), queryObject.Query);
         }
 
         [Test]

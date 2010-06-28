@@ -1,10 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
 using MongoDB.Configuration.IdGenerators;
 
 namespace MongoDB.Configuration.Mapping.Auto
 {
     /// <summary>
-    /// 
+    /// Overrides the Id member.
     /// </summary>
     public class IdOverrides
     {

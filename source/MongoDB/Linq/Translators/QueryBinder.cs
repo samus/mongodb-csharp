@@ -36,9 +36,37 @@ namespace MongoDB.Linq.Translators
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
+            ExpressionType nodeType = b.NodeType;
+            bool shouldFlip = false;
+            switch (nodeType)
+            {
+                case ExpressionType.LessThan:
+                    nodeType = ExpressionType.GreaterThanOrEqual;
+                    shouldFlip = true;
+                    break;
+                case ExpressionType.LessThanOrEqual:
+                    nodeType = ExpressionType.GreaterThan;
+                    shouldFlip = true;
+                    break;
+                case ExpressionType.GreaterThan:
+                    nodeType = ExpressionType.LessThanOrEqual;
+                    shouldFlip = true;
+                    break;
+                case ExpressionType.GreaterThanOrEqual:
+                    nodeType = ExpressionType.LessThan;
+                    shouldFlip = true;
+                    break;
+                case ExpressionType.NotEqual:
+                    shouldFlip = true;
+                    break;
+                case ExpressionType.Equal:
+                    shouldFlip = true;
+                    break;
+            }
+
             //reverse the conditionals if the left one is a constant to make things easier in the formatter...
-            if (b.Left.NodeType == ExpressionType.Constant)
-                b = Expression.MakeBinary(b.NodeType, b.Right, b.Left, b.IsLiftedToNull, b.Method, b.Conversion);
+            if (shouldFlip && b.Left.NodeType == ExpressionType.Constant)
+                b = Expression.MakeBinary(nodeType, b.Right, b.Left, b.IsLiftedToNull, b.Method, b.Conversion);
 
             return base.VisitBinary(b);
         }

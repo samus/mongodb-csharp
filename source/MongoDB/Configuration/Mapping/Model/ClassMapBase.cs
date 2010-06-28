@@ -219,6 +219,9 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name = "memberMaps">The member maps.</param>
         internal void AddMemberMaps(IEnumerable<PersistentMemberMap> memberMaps)
         {
+            if (memberMaps.Any(m => m.Alias == "_id"))
+                throw new MongoException("_id is a reserved MongoDB alias and cannot be used for anything other than an Id column.");
+
             _memberMaps.AddRange(memberMaps);
         }
 

@@ -55,7 +55,8 @@ namespace MongoDB.GridFS
             this.db = db;
             this.files = db[bucket + ".files"];
             this.chunks = db[bucket + ".chunks"];
-            this.chunks.Metadata.CreateIndex(new Document().Add("files_id", 1).Add("n", 1), true);
+            this.chunks.MetaData.CreateIndex(new Document().Add("files_id", 1).Add("n", 1), true);
+            this.files.MetaData.CreateIndex(new Document().Add("filename", 1).Add("n", 1), false);
             this.name = bucket;
         }
 
@@ -199,7 +200,7 @@ namespace MongoDB.GridFS
         /// Permanently removes a file from the database. 
         /// </summary>        
         public void Delete(String filename){
-            files.Remove(new Document().Add("filename", filename));
+            this.Delete(new Document().Add("filename", filename));
         }
         
         /// <summary>

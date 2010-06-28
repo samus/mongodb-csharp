@@ -54,6 +54,23 @@ namespace MongoDB.GridFS
                 tw.Close();
             }
             Assert.AreEqual(1, CountChunks("gfcreate", id));
-        }        
+        }
+        
+        [Test]
+        public void TestDeleteRemovesChunks(){
+            Object id;
+            string filename = "deletebyname.txt";
+            string fs = "fs";
+            GridFile gf = new GridFile(DB,fs);
+            using(GridFileStream gfs = gf.Create(filename, FileMode.CreateNew)){
+                id = gfs.GridFileInfo.Id;
+                TextWriter tw = new StreamWriter(gfs);
+                tw.WriteLine("test");
+                tw.Close();
+            }
+            Assert.AreEqual(1, CountChunks(fs, id), "Chunks not found");
+            gf.Delete("deletebyname.txt");
+            Assert.AreEqual(0, CountChunks(fs, id), "Chunks found");
+        }
     }
 }

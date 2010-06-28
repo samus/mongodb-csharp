@@ -27,7 +27,8 @@ namespace MongoDB.Linq.Translators
         protected override Expression VisitBinary(BinaryExpression b)
         {
             int scopeDepth = _scopes.Count;
-            VisitPredicate(b.Left, true);
+            bool hasPredicate = b.NodeType != ExpressionType.And && b.NodeType != ExpressionType.AndAlso && b.NodeType != ExpressionType.Or && b.NodeType != ExpressionType.OrElse;
+            VisitPredicate(b.Left, hasPredicate);
 
             switch (b.NodeType)
             {
@@ -57,7 +58,7 @@ namespace MongoDB.Linq.Translators
                     throw new NotSupportedException(string.Format("The operation {0} is not supported.", b.NodeType));
             }
 
-            VisitPredicate(b.Right, true);
+            VisitPredicate(b.Right, false);
 
             while (_scopes.Count > scopeDepth)
                 PopConditionScope();
