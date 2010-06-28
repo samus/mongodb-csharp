@@ -1,9 +1,10 @@
+using System;
 namespace MongoDB
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IMongo
+    public interface IMongo : IDisposable
     {
         /// <summary>
         /// Gets the connection string.
