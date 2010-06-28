@@ -55,8 +55,8 @@ namespace MongoDB.GridFS
             this.db = db;
             this.files = db[bucket + ".files"];
             this.chunks = db[bucket + ".chunks"];
-            this.chunks.MetaData.CreateIndex(new Document().Add("files_id", 1).Add("n", 1), true);
-            this.files.MetaData.CreateIndex(new Document().Add("filename", 1).Add("n", 1), false);
+            this.chunks.Metadata.CreateIndex(new Document().Add("files_id", 1).Add("n", 1), true);
+            this.files.Metadata.CreateIndex(new Document().Add("filename", 1).Add("n", 1), false);
             this.name = bucket;
         }
 
