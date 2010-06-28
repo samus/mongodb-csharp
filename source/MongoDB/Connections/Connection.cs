@@ -95,8 +95,7 @@ namespace MongoDB.Connections
         /// <returns></returns>
         internal ReplyMessage<T> SendTwoWayMessageCore<T>(IRequestMessage message, BsonReaderSettings readerSettings) where T : class
         {
-            if(!IsConnected)
-                throw new MongoConnectionException("Operation cannot be performed on a closed connection.", this);
+            EnsureOpenConnection();
 
             try
             {
@@ -113,7 +112,6 @@ namespace MongoDB.Connections
                 ReplaceInvalidConnection();
                 throw;
             }
-
         }
 
         /// <summary>
@@ -134,8 +132,7 @@ namespace MongoDB.Connections
         /// <param name="message">The message.</param>
         internal void SendMessageCore(IRequestMessage message)
         {
-            if(!IsConnected)
-                throw new MongoConnectionException("Operation cannot be performed on a closed connection.", this);
+            EnsureOpenConnection();
 
             try
             {
@@ -260,7 +257,6 @@ namespace MongoDB.Connections
             return result;
         }
 
-
         /// <summary>
         /// Sends the command core.
         /// </summary>
@@ -307,6 +303,7 @@ namespace MongoDB.Connections
         {
             if(databaseName == null)
                 throw new ArgumentNullException("databaseName");
+            EnsureOpenConnection();
 
             if(_connection.IsAuthenticated(databaseName))
                 return;
@@ -375,6 +372,17 @@ namespace MongoDB.Connections
 
             // Then mark object as disposed
             _disposed = true;
+        }
+
+        /// <summary>
+        /// Ensures the open connection.
+        /// </summary>
+        private void EnsureOpenConnection()
+        {
+            if(IsConnected)
+                return;
+            
+            throw new MongoConnectionException("Operation cannot be performed on a closed connection.", ConnectionString, null);
         }
     }
 }
