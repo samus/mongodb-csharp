@@ -272,5 +272,25 @@ namespace MongoDB.UnitTests.Serialization
             Assert.IsNotNull(deserialize.Tests);
             Assert.Contains(EnumHelper.Test.A, deserialize.Tests);
         }
+
+        public class ByteArrayHelper
+        {
+            public byte[] Property { get; set; }
+        }
+
+        [Test]
+        public void CanWriteByteArrayPropertyFromBinary()
+        {
+            var bson = Serialize(new Document("Property", new Binary(new byte[] {1, 2, 3, 4})));
+
+            var helper = Deserialize<ByteArrayHelper>(bson);
+
+            Assert.IsNotNull(helper);
+            Assert.AreEqual(4, helper.Property.Length);
+            Assert.AreEqual(1, helper.Property[0]);
+            Assert.AreEqual(2, helper.Property[1]);
+            Assert.AreEqual(3, helper.Property[2]);
+            Assert.AreEqual(4, helper.Property[3]);
+        }
     }
 }
