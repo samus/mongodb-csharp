@@ -8,6 +8,9 @@ namespace MongoDB.Configuration.Mapping.Util
         {
             var valueType = value != null ? value.GetType() : typeof(object);
 
+            if(value==null)
+                return null;
+
             if(valueType != type)
                 try
                 {
@@ -17,12 +20,11 @@ namespace MongoDB.Configuration.Mapping.Util
                         value = Enum.ToObject(type, value);
                     else if(type.IsGenericType &&
                             type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                    {
-                        if(value != null)
-                            value = System.Convert.ChangeType(value, Nullable.GetUnderlyingType(type));
-                    }
+                        value = System.Convert.ChangeType(value, Nullable.GetUnderlyingType(type));
                     else if(code != TypeCode.Object)
                         value = System.Convert.ChangeType(value, type);
+                    else if(valueType==typeof(Binary)&&type==typeof(byte[]))
+                        value = (byte[])(Binary)value;
                 }
                 catch(FormatException exception)
                 {
