@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using MongoDB.Attributes;
 using MongoDB.Configuration.CollectionAdapters;
@@ -104,13 +105,10 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <returns></returns>
         public IEnumerable<MemberInfo> FindMembers(Type classType)
         {
-            foreach (MemberInfo memberInfo in _memberFinder.FindMembers(classType))
-            {
-                var doMap = memberInfo.GetCustomAttribute<MongoIgnoreAttribute>(true) == null;
-
-                if (doMap)
-                    yield return memberInfo;
-            }
+            return from memberInfo in _memberFinder.FindMembers(classType)
+                   let doMap = memberInfo.GetCustomAttribute<MongoIgnoreAttribute>(true) == null
+                   where doMap
+                   select memberInfo;
         }
 
         /// <summary>
