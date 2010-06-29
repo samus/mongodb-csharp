@@ -69,7 +69,7 @@ namespace MongoDB.Configuration.Mapping.Conventions
             if (CollectionTypes.TryGetValue(type, out factory))
                 return factory();
 
-            if (type.IsArray)
+            if(type.IsArray && type != typeof(byte[]))
             {
                 return new ArrayCollectionAdapter();
             }
