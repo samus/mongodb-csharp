@@ -58,7 +58,7 @@ namespace MongoDB.Connections
         /// </summary>
         /// <value>The end point.</value>
         public MongoServerEndPoint EndPoint{
-            get { return _connection.EndPoint; }
+            get { return _connection == null ? null : _connection.EndPoint; }
         }
 
         /// <summary>
