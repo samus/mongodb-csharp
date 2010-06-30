@@ -534,5 +534,22 @@ namespace MongoDB.IntegrationTests
                 Assert.IsTrue(Convert.ToInt32(j)%2 == 0);
             }
         }
+
+        [Test]
+        public void TestHandlingRetrievalOfUnderscoredFieldsAfterFindAndModify()
+        {
+            var updates = DB["updates"];
+            var id = Guid.NewGuid();
+            var doc = new Document()
+                .Add("_id", id)
+                .Add("FirstName", "David")
+                .Add("LastName", "Beckham")
+                .Add("Embedded", new Document().Add("Types", 1));
+            updates.Insert(doc);
+            var find = new Document().Add("_id", id);
+            var modify = new Document().Add("LastName", "Copperfield");
+            var returned = updates.FindAndModify(modify, find, true);
+            Assert.IsInstanceOfType(typeof(Document), returned["Embedded"]);
+        }
     }
 }
