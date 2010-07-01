@@ -118,7 +118,6 @@
     <Compile Include="Configuration\DictionaryAdapters\GenericDictionaryDictionaryAdapter.cs" />
     <Compile Include="Configuration\DictionaryAdapters\GenericSortedListDictionaryAdapter.cs" />
     <Compile Include="Configuration\DictionaryAdapters\HashtableDictionaryAdapter.cs" />
-    <Compile Include="Configuration\DictionaryAdapters\DocumentDictionaryAdapter.cs" />
     <Compile Include="Configuration\DictionaryAdapters\IDictionaryAdapter.cs" />
     <Compile Include="Configuration\Mapping\Auto\IdOverrides.cs" />
     <Compile Include="Configuration\Mapping\Conventions\DefaultDictionaryAdapterConvention.cs" />

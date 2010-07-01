@@ -13,7 +13,6 @@ namespace MongoDB.Configuration.Mapping.Conventions
         /// </summary>
         private static readonly Dictionary<Type, DictionaryTypeFactoryDelegate> DictionaryTypes = new Dictionary<Type, DictionaryTypeFactoryDelegate>
         {
-            {typeof(Document), CreateDocumentType},
             {typeof(IDictionary), CreateHashtableType},
             {typeof(Hashtable), CreateHashtableType},
             {typeof(IEnumerable<DictionaryEntry>), CreateHashtableType}
@@ -59,11 +58,6 @@ namespace MongoDB.Configuration.Mapping.Conventions
             }
 
             return null;
-        }
-
-        private static IDictionaryAdapter CreateDocumentType()
-        {
-            return new DocumentDictionaryAdapter();
         }
 
         private static IDictionaryAdapter CreateHashtableType()

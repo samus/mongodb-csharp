@@ -301,14 +301,15 @@ namespace MongoDB.UnitTests.Serialization
         [Test]
         public void CanReadEmbeddedDocument()
         {
-            var bson = Serialize(new Document("Document", new Document("value", 10)));
+            var bson = Serialize(new Document("Document", new Document("Embedded",new Document("value", 10))));
 
             var helper = Deserialize<EmbeddedDocumentHelper>(bson);
 
             Assert.IsNotNull(helper);
             Assert.IsNotNull(helper.Document);
             Assert.AreEqual(1, helper.Document.Count);
-            var embedded = helper.Document["Document"] as Document;
+
+            var embedded = helper.Document["Embedded"] as Document;
             Assert.IsNotNull(embedded);
             Assert.AreEqual(1, embedded.Count);
             Assert.AreEqual(10, embedded["value"]);
