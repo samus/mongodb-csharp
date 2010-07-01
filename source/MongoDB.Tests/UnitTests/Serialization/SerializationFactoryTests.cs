@@ -292,5 +292,26 @@ namespace MongoDB.UnitTests.Serialization
             Assert.AreEqual(3, helper.Property[2]);
             Assert.AreEqual(4, helper.Property[3]);
         }
+
+        public class EmbeddedDocumentHelper
+        {
+            public Document Document { get; set; }
+        }
+
+        [Test]
+        public void CanReadEmbeddedDocument()
+        {
+            var bson = Serialize(new Document("Document", new Document("value", 10)));
+
+            var helper = Deserialize<EmbeddedDocumentHelper>(bson);
+
+            Assert.IsNotNull(helper);
+            Assert.IsNotNull(helper.Document);
+            Assert.AreEqual(1, helper.Document.Count);
+            var embedded = helper.Document["Document"] as Document;
+            Assert.IsNotNull(embedded);
+            Assert.AreEqual(1, embedded.Count);
+            Assert.AreEqual(10, embedded["value"]);
+        }
     }
 }
