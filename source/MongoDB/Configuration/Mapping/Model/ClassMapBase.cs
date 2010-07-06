@@ -275,9 +275,6 @@ namespace MongoDB.Configuration.Mapping.Model
                 return true;
             }
 
-            if(a is IEnumerable && b is IEnumerable)
-                return false;
-
             return a.Equals(b);
         }
     }
