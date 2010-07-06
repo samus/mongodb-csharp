@@ -10,7 +10,7 @@ namespace MongoDB.IntegrationTests.SecondServer
         [TestFixtureSetUp]
         public void SetUp()
         {
-            ConnectionFactory.Shutdown();
+            ConnectionFactoryFactory.Shutdown();
         }
 
         [Test]

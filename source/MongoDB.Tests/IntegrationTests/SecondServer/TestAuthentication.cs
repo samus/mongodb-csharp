@@ -126,7 +126,7 @@ namespace MongoDB.IntegrationTests.SecondServer
             }
 
             // clean connections
-            ConnectionFactory.Shutdown();
+            ConnectionFactoryFactory.Shutdown();
 	    }
 	}
 }

@@ -11,7 +11,7 @@ namespace MongoDB.IntegrationTests.Connections
         [TestFixtureSetUp]
         public void SetUp()
         {
-            ConnectionFactory.Shutdown();
+            ConnectionFactoryFactory.Shutdown();
         }
 
         [Test]

@@ -37,7 +37,7 @@ namespace MongoDB.IntegrationTests.Connections
         [Test]
         public void TestReconnectOnce()
         {
-            var conn = ConnectionFactory.GetConnection(string.Empty);
+            var conn = ConnectionFactoryFactory.GetConnection(string.Empty);
             conn.Open();
 
             WriteBadMessage(conn);
@@ -60,7 +60,7 @@ namespace MongoDB.IntegrationTests.Connections
         public void TestSendQueryMessage()
         {
             //Connection conn = new Connection("10.141.153.2");
-            var conn = ConnectionFactory.GetConnection(string.Empty);
+            var conn = ConnectionFactoryFactory.GetConnection(string.Empty);
             conn.Open();
 
             var qmsg = GenerateQueryMessage();

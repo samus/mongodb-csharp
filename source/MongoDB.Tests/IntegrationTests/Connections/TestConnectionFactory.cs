@@ -9,32 +9,32 @@ namespace MongoDB.IntegrationTests.Connections
     {
         [TearDown]
         public void TearDown (){
-            ConnectionFactory.Shutdown ();
+            ConnectionFactoryFactory.Shutdown ();
         }
 
         [Test]
         public void TestGetConnection (){
-            var connection1 = ConnectionFactory.GetConnection (string.Empty);
-            var connection2 = ConnectionFactory.GetConnection (string.Empty);
+            var connection1 = ConnectionFactoryFactory.GetConnection (string.Empty);
+            var connection2 = ConnectionFactoryFactory.GetConnection (string.Empty);
             Assert.IsNotNull (connection1);
             Assert.IsNotNull (connection2);
-            Assert.AreEqual (1, ConnectionFactory.PoolCount);
+            Assert.AreEqual (1, ConnectionFactoryFactory.PoolCount);
         }
 
         [Test]
         public void TestCreatePoolForEachUniqeConnectionString (){
-            ConnectionFactory.GetConnection (string.Empty);
-            ConnectionFactory.GetConnection (string.Empty);
-            ConnectionFactory.GetConnection ("Username=test");
-            ConnectionFactory.GetConnection ("Username=test");
-            ConnectionFactory.GetConnection ("Server=localhost");
-            Assert.AreEqual (3, ConnectionFactory.PoolCount);
+            ConnectionFactoryFactory.GetConnection (string.Empty);
+            ConnectionFactoryFactory.GetConnection (string.Empty);
+            ConnectionFactoryFactory.GetConnection ("Username=test");
+            ConnectionFactoryFactory.GetConnection ("Username=test");
+            ConnectionFactoryFactory.GetConnection ("Server=localhost");
+            Assert.AreEqual (3, ConnectionFactoryFactory.PoolCount);
         }
         
         [Test]
         public void TestExceptionWhenMinimumPoolSizeIsGreaterThenMaximumPoolSize (){
             try{
-                ConnectionFactory.GetConnection("MinimumPoolSize=50; MaximumPoolSize=10");
+                ConnectionFactoryFactory.GetConnection("MinimumPoolSize=50; MaximumPoolSize=10");
             }catch(ArgumentException){
             }catch(Exception){
                 Assert.Fail("Wrong exception thrown");

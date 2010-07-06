@@ -7,7 +7,7 @@ namespace MongoDB.Connections
     /// <summary>
     /// 
     /// </summary>
-    internal static class ConnectionFactory
+    internal static class ConnectionFactoryFactory
     {
         private static readonly TimeSpan MaintenaceWakeup = TimeSpan.FromSeconds(10);
         private static readonly Timer MaintenanceTimer = new Timer(o => OnMaintenaceWakeup());
@@ -15,9 +15,9 @@ namespace MongoDB.Connections
         private static readonly object SyncObject = new object();
 
         /// <summary>
-        /// Initializes the <see cref="ConnectionFactory"/> class.
+        /// Initializes the <see cref="ConnectionFactoryFactory"/> class.
         /// </summary>
-        static ConnectionFactory()
+        static ConnectionFactoryFactory()
         {
             MaintenanceTimer.Change(MaintenaceWakeup, MaintenaceWakeup);
         }

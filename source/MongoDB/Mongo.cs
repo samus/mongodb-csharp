@@ -42,7 +42,7 @@ namespace MongoDB
             configuration.ValidateAndSeal();
 
             _configuration = configuration;
-            _connection = ConnectionFactory.GetConnection(configuration.ConnectionString);
+            _connection = ConnectionFactoryFactory.GetConnection(configuration.ConnectionString);
         }
 
         /// <summary>

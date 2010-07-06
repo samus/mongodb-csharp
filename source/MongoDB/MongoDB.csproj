@@ -273,7 +273,7 @@
     <Compile Include="Connections\RawConnection.cs" />
     <Compile Include="CollectionMetadata.cs" />
     <Compile Include="Connections\Connection.cs" />
-    <Compile Include="Connections\ConnectionFactory.cs" />
+    <Compile Include="Connections\ConnectionFactoryFactory.cs" />
     <Compile Include="Connections\ConnectionFactoryBase.cs" />
     <Compile Include="Connections\IConnectionFactory.cs" />
     <Compile Include="Connections\PooledConnectionFactory.cs" />

@@ -31,7 +31,7 @@ namespace MongoDB
         /// <param name="configuration">The configuration.</param>
         public MongoDatabase(MongoConfiguration configuration)
             : this(configuration,
-                ConnectionFactory.GetConnection(configuration.ConnectionString),
+                ConnectionFactoryFactory.GetConnection(configuration.ConnectionString),
                 new MongoConnectionStringBuilder(configuration.ConnectionString).Database)
         {
             //Todo: Add check for null
