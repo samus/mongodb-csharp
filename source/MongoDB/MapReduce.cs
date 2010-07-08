@@ -233,7 +233,7 @@ namespace MongoDB
         /// </summary>
         internal void RetrieveData()
         {
-            if(Command.Command.Contains("map") == false || Command.Command.Contains("reduce") == false)
+            if(Command.Command.ContainsKey("map") == false || Command.Command.ContainsKey("reduce") == false)
                 throw new InvalidOperationException("Cannot execute without a map and reduce function");
 
             IsModifiable = false;

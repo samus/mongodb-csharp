@@ -173,7 +173,7 @@ namespace MongoDB.IntegrationTests
             var query = new Document();
             var result = DB["charreads"].FindOne(query);
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Contains("test"));
+            Assert.IsTrue(result.ContainsKey("test"));
             Assert.AreEqual("1234£56", result["test"]);
         }
 

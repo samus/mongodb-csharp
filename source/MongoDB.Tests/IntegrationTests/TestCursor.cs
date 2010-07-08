@@ -99,9 +99,9 @@ namespace MongoDB.IntegrationTests
         public void TestExplain()
         {
             var exp = DB["reads"].FindAll().Limit(5).Skip(5).Sort("x").Explain();
-            Assert.IsTrue(exp.Contains("cursor"));
-            Assert.IsTrue(exp.Contains("n"));
-            Assert.IsTrue(exp.Contains("nscanned"));
+            Assert.IsTrue(exp.ContainsKey("cursor"));
+            Assert.IsTrue(exp.ContainsKey("n"));
+            Assert.IsTrue(exp.ContainsKey("nscanned"));
         }
 
         [Test]
@@ -111,14 +111,14 @@ namespace MongoDB.IntegrationTests
             var hint = new Document().Add("x", IndexOrder.Ascending);
 
             var exp = reads.FindAll().Hint(hint).Explain();
-            Assert.IsTrue(exp.Contains("$err"), "No error found");
+            Assert.IsTrue(exp.ContainsKey("$err"), "No error found");
 
             reads.Metadata.CreateIndex("hintindex", hint, false);
             exp = reads.FindAll().Hint(hint).Explain();
 
-            Assert.IsTrue(exp.Contains("cursor"));
-            Assert.IsTrue(exp.Contains("n"));
-            Assert.IsTrue(exp.Contains("nscanned"));
+            Assert.IsTrue(exp.ContainsKey("cursor"));
+            Assert.IsTrue(exp.ContainsKey("n"));
+            Assert.IsTrue(exp.ContainsKey("nscanned"));
         }
 
         [Test]

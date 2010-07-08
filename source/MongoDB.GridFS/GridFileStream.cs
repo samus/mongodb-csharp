@@ -257,9 +257,10 @@ namespace MongoDB.GridFS
                 Array.Copy (buffer, data, highestBuffPosition);
                 chunk["data"] = new Binary (data);
             }
-            
-            
-            if (chunk.Contains ("_id")) {
+
+
+            if(chunk.ContainsKey("_id"))
+            {
                 chunks.Save (chunk);
             } else {
                 chunks.Insert (chunk);

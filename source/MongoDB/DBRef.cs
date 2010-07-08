@@ -42,7 +42,7 @@ namespace MongoDB
             _collectionName = (String)document[RefName];
             _id = document[IdName];
             _document = document;
-            if(document.Contains("metadata"))
+            if(document.ContainsKey("metadata"))
                 MetaData = (Document)document["metadata"];
         }
 
@@ -174,7 +174,7 @@ namespace MongoDB
         /// 	<c>true</c> if [is document DB ref] [the specified document]; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsDocumentDBRef(Document document){
-            return document != null && document.Contains(RefName) && document.Contains(IdName);
+            return document != null && document.ContainsKey(RefName) && document.ContainsKey(IdName);
         }
 
         /// <summary>

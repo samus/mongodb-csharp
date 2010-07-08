@@ -225,9 +225,9 @@ namespace MongoDB.Connections
             if(!Convert.ToBoolean(result["ok"]))
             {
                 var msg = string.Empty;
-                if(result.Contains("msg"))
+                if(result.ContainsKey("msg"))
                     msg = (string)result["msg"];
-                else if(result.Contains("errmsg"))
+                else if(result.ContainsKey("errmsg"))
                     msg = (string)result["errmsg"];
                 throw new MongoCommandException(msg, result, command);
             }

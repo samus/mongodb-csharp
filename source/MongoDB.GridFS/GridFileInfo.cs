@@ -68,14 +68,13 @@ namespace MongoDB.GridFS
         /// <value>The aliases.</value>
         public IList<String> Aliases{
             get {
-                if(filedata.Contains("aliases") == false || filedata["aliases"] == null){
+                if(filedata.ContainsKey("aliases") == false || filedata["aliases"] == null){
                     return null;
                 }
                 if(filedata["aliases"] is IList<String>){
                     return (List<String>)filedata["aliases"];
-                }else{
-                    return new List<String>();   
                 }
+                return new List<String>();
             }
             set { filedata["aliases"] = value; }
         }
@@ -280,7 +279,8 @@ namespace MongoDB.GridFS
         /// Deletes all data in a file and sets the length to 0.
         /// </summary>
         public void Truncate(){
-            if(filedata.Contains("_id") == false) return;
+            if(filedata.ContainsKey("_id") == false)
+                return;
             this.gridFile.Chunks.Remove(new Document().Add("files_id", filedata["_id"]));
             this.Length = 0;
             this.gridFile.Files.Save(filedata);

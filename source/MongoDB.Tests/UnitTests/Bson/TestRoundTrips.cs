@@ -34,7 +34,7 @@ namespace MongoDB.UnitTests.Bson
 
             Document copy = WriteAndRead(source);
 
-            Assert.IsTrue(copy.Contains("ref"));
+            Assert.IsTrue(copy.ContainsKey("ref"));
             Assert.IsTrue(copy["ref"].GetType() == typeof(DBRef));
 
             DBRef sref = (DBRef)source["ref"];

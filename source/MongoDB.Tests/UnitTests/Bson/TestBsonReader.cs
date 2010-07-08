@@ -44,7 +44,7 @@ namespace MongoDB.UnitTests.Bson
             var doc = (Document)reader.ReadObject();
             Assert.IsNotNull(doc, "Document was null");
             Assert.AreEqual(buf.Length, reader.Position);
-            Assert.IsTrue(doc.Contains("a"));
+            Assert.IsTrue(doc.ContainsKey("a"));
         }
 
         [Test]
@@ -145,9 +145,9 @@ namespace MongoDB.UnitTests.Bson
             var doc = (Document)reader.ReadObject();
 
             Assert.IsNotNull(doc, "Document was null");
-            Assert.IsTrue(doc.Contains("_id"));
-            Assert.IsTrue(doc.Contains("a"));
-            Assert.IsTrue(doc.Contains("b"));
+            Assert.IsTrue(doc.ContainsKey("_id"));
+            Assert.IsTrue(doc.ContainsKey("a"));
+            Assert.IsTrue(doc.ContainsKey("b"));
             Assert.AreEqual("4a753ad8fac16ea58b290351", (doc["_id"]).ToString());
             Assert.AreEqual(1, Convert.ToInt32(doc["a"]));
             Assert.AreEqual("test", doc["b"]);
@@ -162,7 +162,7 @@ namespace MongoDB.UnitTests.Bson
             var doc = reader.Read();
 
             Assert.IsNotNull(doc, "Document was null");
-            Assert.IsTrue(doc.Contains("test"));
+            Assert.IsTrue(doc.ContainsKey("test"));
             Assert.AreEqual("test", doc["test"]);
         }
 

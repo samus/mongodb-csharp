@@ -44,7 +44,7 @@ namespace MongoDB
                 if(_options != null)
                     return _options;
                 var doc = _database["system.namespaces"].FindOne(new Document().Add("name", _fullName)) ?? new Document();
-                if(doc.Contains("create"))
+                if(doc.ContainsKey("create"))
                     doc.Remove("create");
                 //Not sure why this is here.  The python driver has it.
                 _options = doc;

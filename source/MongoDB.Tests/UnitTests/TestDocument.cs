@@ -42,7 +42,7 @@ namespace MongoDB.UnitTests
             d.Clear();
             Assert.AreEqual(0, d.Count);
             Assert.IsNull(d["one"]);
-            Assert.IsFalse(d.Contains("one"));
+            Assert.IsFalse(d.ContainsKey("one"));
         }
 
         [Test]
@@ -190,7 +190,7 @@ namespace MongoDB.UnitTests
             var d = new Document();
             d["one"] = 1;
             d.Remove("one");
-            Assert.IsFalse(d.Contains("one"));
+            Assert.IsFalse(d.ContainsKey("one"));
         }
 
         [Test]

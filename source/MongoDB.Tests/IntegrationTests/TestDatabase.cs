@@ -57,7 +57,7 @@ namespace MongoDB.IntegrationTests
 
             var target = DB.FollowReference(rf);
             Assert.IsNotNull(target, "FollowReference returned null");
-            Assert.IsTrue(target.Contains("msg"));
+            Assert.IsTrue(target.ContainsKey("msg"));
             Assert.AreEqual(msg, target["msg"]);
         }
 
@@ -120,7 +120,7 @@ namespace MongoDB.IntegrationTests
             var recv = DB.FollowReference(rf);
 
             Assert.IsNotNull(recv);
-            Assert.IsTrue(recv.Contains("msg"));
+            Assert.IsTrue(recv.ContainsKey("msg"));
             Assert.AreEqual(recv["_id"], (long)123);
         }
 

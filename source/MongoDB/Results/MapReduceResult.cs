@@ -99,7 +99,7 @@ namespace MongoDB.Results
         {
             get
             {
-                if(_result.Contains("msg"))
+                if(_result.ContainsKey("msg"))
                     return (String)_result["msg"];
                 return String.Empty;
             }

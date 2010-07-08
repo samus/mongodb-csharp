@@ -294,17 +294,6 @@ namespace MongoDB
         }
 
         /// <summary>
-        /// Determines whether [contains] [the specified key].
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns>
-        /// 	<c>true</c> if [contains] [the specified key]; otherwise, <c>false</c>.
-        /// </returns>
-        public bool Contains(String key){
-            return (_orderedKeys.Contains(key));
-        }
-
-        /// <summary>
         /// Removes the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -449,7 +438,7 @@ namespace MongoDB
             //Todo: Fix any accidental reordering issues.
 
             foreach(var key in _orderedKeys){
-                if(destinationDocument.Contains(key))
+                if(destinationDocument.ContainsKey(key))
                     destinationDocument.Remove(key);
                 destinationDocument[key] = this[key];
             }
