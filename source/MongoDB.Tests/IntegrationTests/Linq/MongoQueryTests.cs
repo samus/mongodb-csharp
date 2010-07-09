@@ -64,6 +64,14 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void Any()
+        {
+            var anyone = Collection.Linq().Any(x => x.Age <= 21);
+
+            Assert.IsTrue(anyone);
+        }
+
+        [Test]
         public void Boolean()
         {
             var people = Enumerable.ToList(Collection.Linq().Where(x => x.PrimaryAddress.IsInternational));
