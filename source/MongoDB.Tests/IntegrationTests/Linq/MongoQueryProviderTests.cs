@@ -123,7 +123,7 @@ namespace MongoDB.IntegrationTests.Linq
             Assert.AreEqual(0, queryObject.Fields.Count);
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
-            Assert.AreEqual(new Document("PrimaryAddress.AddressType", AddressType.Company), queryObject.Query);
+            Assert.AreEqual(new Document("PrimaryAddress.AddressType", (int)AddressType.Company), queryObject.Query);
         }
 
         [Test]
