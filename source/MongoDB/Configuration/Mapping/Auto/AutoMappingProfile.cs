@@ -95,7 +95,16 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <returns></returns>
         public MemberInfo FindIdMember(Type classType)
         {
-            return _conventions.IdConvention.GetIdMember(classType);
+            var members = (from memberInfo in _memberFinder.FindMembers(classType)
+                          let att = memberInfo.GetCustomAttribute<MongoIdAttribute>(true)
+                          where att != null
+                          select memberInfo).ToList();
+
+            if (members.Count > 1)
+                throw new InvalidOperationException("Cannot have more than 1 member marked with a MongoId Attribute.");
+            if(members.Count == 0)
+                return _conventions.IdConvention.GetIdMember(classType);
+            return members[0];
         }
 
         /// <summary>

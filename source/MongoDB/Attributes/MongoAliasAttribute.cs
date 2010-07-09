@@ -21,6 +21,9 @@ namespace MongoDB.Attributes
         public MongoAliasAttribute(string name){
             if(name == null)
                 throw new ArgumentNullException("name");
+            if (name == "_id")
+                throw new ArgumentException("_id is a reserved alias.");
+
             Name = name;
         }
     }

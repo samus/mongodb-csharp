@@ -273,6 +273,18 @@ namespace MongoDB.Linq.Translators
             return subquery;
         }
 
+        private Expression BindAny(Expression source, LambdaExpression predicate)
+        {
+            var projection = VisitSequence(source);
+            _map[predicate.Parameters[0]] = projection.Projector;
+            var where = Visit(predicate.Body);
+            var alias = new Alias();
+            var fieldProjection = _projector.ProjectFields(projection.Projector, alias, projection.Source.Alias);
+            return new ProjectionExpression(
+                new SelectExpression(alias, fieldProjection.Fields, projection.Source, where),
+                fieldProjection.Projector);
+        }
+
         private Expression BindDistinct(Expression source)
         {
             var projection = VisitSequence(source);
