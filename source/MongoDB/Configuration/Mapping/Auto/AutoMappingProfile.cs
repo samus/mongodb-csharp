@@ -247,9 +247,13 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// <param name="classType">Type of the class.</param>
         /// <param name="member">The member.</param>
         /// <returns></returns>
-        public bool GetPersistNull(Type classType, MemberInfo member)
+        public bool GetPersistDefaultValue(Type classType, MemberInfo member)
         {
-            return false;
+            var att = member.GetCustomAttribute<MongoDefaultAttribute>(true);
+            if (att != null)
+                return att.PersistDefaultValue;
+            
+            return true;
         }
 
         /// <summary>

@@ -183,7 +183,7 @@ namespace MongoDB.Configuration.Mapping.Auto
                     MemberReflectionOptimizer.GetGetter(member),
                     MemberReflectionOptimizer.GetSetter(member),
                     _profile.GetAlias(classType, member),
-                    _profile.GetPersistNull(classType, member),
+                    _profile.GetPersistDefaultValue(classType, member),
                     dictionaryAdapter);
 
             var collectionType = _profile.GetCollectionAdapter(classType, member, memberReturnType);
@@ -194,7 +194,7 @@ namespace MongoDB.Configuration.Mapping.Auto
                     MemberReflectionOptimizer.GetGetter(member),
                     MemberReflectionOptimizer.GetSetter(member),
                     _profile.GetAlias(classType, member),
-                    _profile.GetPersistNull(classType, member),
+                    _profile.GetPersistDefaultValue(classType, member),
                     collectionType,
                     _profile.GetCollectionElementType(classType, member, memberReturnType));
 
@@ -207,7 +207,7 @@ namespace MongoDB.Configuration.Mapping.Auto
                 MemberReflectionOptimizer.GetSetter(member),
                 _profile.GetDefaultValue(classType, member),
                 _profile.GetAlias(classType, member),
-                _profile.GetPersistNull(classType, member));
+                _profile.GetPersistDefaultValue(classType, member));
         }
     }
 }

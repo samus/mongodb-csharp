@@ -68,47 +68,6 @@ namespace MongoDB.Serialization.Descriptors
         }
 
         /// <summary>
-        /// Gets the member map from the member name.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        protected PersistentMemberMap GetMemberMapFromMemberName(string name)
-        {
-            var memberMap = ClassMap.GetMemberMapFromMemberName(name);
-            if (memberMap != null)
-                return memberMap;
-
-            if (!name.Contains("."))
-                return null;
-
-            var parts = name.Split('.');
-            memberMap = ClassMap.GetMemberMapFromMemberName(parts[0]);
-            if (memberMap == null)
-                return null;
-
-            var currentType = memberMap.MemberReturnType;
-            for (var i = 1; i < parts.Length; i++)
-            {
-                var collectionMemberMap = memberMap as CollectionMemberMap;
-                if (collectionMemberMap != null)
-                {
-                    currentType = ((CollectionMemberMap)memberMap).ElementType;
-                    if (IsNumeric(parts[i])) //we are an array indexer
-                        continue;
-                }
-                
-                var classMap = _mappingStore.GetClassMap(currentType);
-                memberMap = classMap.GetMemberMapFromAlias(parts[i]);
-                if (memberMap != null)
-                    currentType = memberMap.MemberReturnType;
-                else
-                    break;
-            }
-
-            return memberMap;
-        }
-
-        /// <summary>
         /// Shoulds the persist discriminator.
         /// </summary>
         /// <returns></returns>
@@ -122,21 +81,21 @@ namespace MongoDB.Serialization.Descriptors
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        protected string GetAliasFromMemberName(string name)
+        protected MemberMapAndAlias GetAliasFromMemberName(string name)
         {
             var memberMap = ClassMap.GetMemberMapFromMemberName(name);
             if (memberMap != null)
-                return memberMap.Alias;
+                return new MemberMapAndAlias() { MemberMap = memberMap, Alias = memberMap.Alias };
 
             if (!name.Contains("."))
-                return name;
+                return new MemberMapAndAlias() { Alias = name };
 
             var sb = new StringBuilder();
 
             var parts = name.Split('.');
             memberMap = ClassMap.GetMemberMapFromMemberName(parts[0]);
             if (memberMap == null)
-                return name;
+                return new MemberMapAndAlias() { Alias = name };
 
             sb.Append(memberMap.Alias);
             var currentType = memberMap.MemberReturnType;
@@ -168,7 +127,7 @@ namespace MongoDB.Serialization.Descriptors
                 }
             }
 
-            return sb.ToString();
+            return new MemberMapAndAlias() { MemberMap = memberMap, Alias = sb.ToString() };
         }
 
         protected string TranslateJavascript(string code)
@@ -181,8 +140,15 @@ namespace MongoDB.Serialization.Descriptors
             return str.All(t => char.IsDigit(t));
         }
 
+        protected class MemberMapAndAlias
+        {
+            public string Alias { get; set; }
+
+            public PersistentMemberMap MemberMap { get; set; }
+        }
+
         /// <summary>
-        /// This is an extremely rudimentart lexer designed solely for efficiency.
+        /// This is an extremely rudimentary lexer designed solely for efficiency.
         /// </summary>
         private class JavascriptMemberNameReplacer
         {

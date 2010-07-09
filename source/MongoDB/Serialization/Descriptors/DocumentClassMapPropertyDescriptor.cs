@@ -38,7 +38,9 @@ namespace MongoDB.Serialization.Descriptors
             {
                 var alias = GetAliasFromMemberName(key);
                 var valueAndType = GetValue(key);
-                yield return CreateProperty(alias, valueAndType);
+                if (alias.MemberMap != null && !alias.MemberMap.PersistDefaultValue && object.Equals(alias.MemberMap.DefaultValue, valueAndType.Value))
+                    continue;
+                yield return CreateProperty(alias.Alias, valueAndType);
             }
         }
 
@@ -60,7 +62,7 @@ namespace MongoDB.Serialization.Descriptors
                 return new BsonPropertyValue(typeof(Code), code, false);
             }
 
-            var memberMap = GetMemberMapFromMemberName(name);
+            var memberMap = GetAliasFromMemberName(name).MemberMap;
             var type = typeof(Document);
             bool isDictionary = false;
 

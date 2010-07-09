@@ -115,12 +115,12 @@ namespace MongoDB.Configuration.Mapping.Auto
         object GetIdUnsavedValue(Type classType, MemberInfo member);
 
         /// <summary>
-        /// Gets a value indicating whether the member should be persisted if it is null.
+        /// Gets a value indicating whether the member should be persisted if it is it's default value.
         /// </summary>
         /// <param name="classType">Type of the class.</param>
         /// <param name="member">The member.</param>
         /// <returns></returns>
-        bool GetPersistNull(Type classType, MemberInfo member);
+        bool GetPersistDefaultValue(Type classType, MemberInfo member);
 
         /// <summary>
         /// Indicates whether the class type is a sub class.
