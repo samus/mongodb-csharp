@@ -47,5 +47,16 @@ namespace MongoDB.Configuration.Mapping.Util
 
             return array;
         }
+
+        public static string ConvertKey(object key)
+        {
+            if(key == null)
+                throw new ArgumentNullException("key");
+
+            if(key is Enum)
+                return System.Convert.ToInt64(key).ToString();
+
+            return key.ToString();
+        }
     }
 }

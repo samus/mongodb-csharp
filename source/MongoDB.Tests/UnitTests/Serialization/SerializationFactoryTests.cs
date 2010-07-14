@@ -314,5 +314,36 @@ namespace MongoDB.UnitTests.Serialization
             Assert.AreEqual(1, embedded.Count);
             Assert.AreEqual(10, embedded["value"]);
         }
+
+        public class DictionaryWithEnumAsKeyHelper
+        {
+            public Dictionary<DateTimeKind, int> Dict { get; set; }
+        }
+
+        [Test]
+        public void SerializesAnEnumAsIntWhenItsUsedAsDictionaryKey()
+        {
+            var obj = new DictionaryWithEnumAsKeyHelper { Dict = new Dictionary<DateTimeKind, int> { { DateTimeKind.Utc, 9 } } };
+            var bson = Serialize<DictionaryWithEnumAsKeyHelper>(obj);
+            var doc = Deserialize<Document>(bson);
+
+            Assert.IsNotNull(doc);
+            var dict = doc["Dict"] as Document;
+            Assert.IsNotNull(dict);
+            Assert.AreEqual(1, dict.Count);
+            Assert.AreEqual(9, dict[Convert.ToString((int)DateTimeKind.Utc)]);
+        }
+
+        [Test]
+        public void CanDeserializeADictionaryWithEnumAsKey()
+        {
+            var bson = Serialize<Document>(new Document("Dict", new Dictionary<DateTimeKind,int> {{DateTimeKind.Utc,9}}));
+            var prop = Deserialize<DictionaryWithEnumAsKeyHelper>(bson);
+
+            Assert.IsNotNull(prop);
+            Assert.IsNotNull(prop.Dict);
+            Assert.AreEqual(1,prop.Dict.Count);
+            Assert.AreEqual(9,prop.Dict[DateTimeKind.Utc]);
+        }
     }
 }

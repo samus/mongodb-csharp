@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MongoDB.Configuration.Mapping.Util;
 
 namespace MongoDB.Configuration.DictionaryAdapters
 {
@@ -56,7 +57,7 @@ namespace MongoDB.Configuration.DictionaryAdapters
             var doc = new Document();
 
             foreach (var e in instance)
-                doc.Add(e.Key.ToString(), e.Value);
+                doc.Add(ValueConverter.ConvertKey(e.Key), e.Value);
 
             return doc;
         }
