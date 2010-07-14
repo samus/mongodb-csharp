@@ -128,6 +128,11 @@ namespace MongoDB.Linq.Translators
                 {
                     switch (m.Method.Name)
                     {
+                        case "Any":
+                            if (m.Arguments.Count == 1)
+                                return BindAny(m.Arguments[0], null, m == _root);
+                            else
+                                return BindAny(m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]), m == _root);
                         case "Where":
                             return BindWhere(m.Type, m.Arguments[0], (LambdaExpression)StripQuotes(m.Arguments[1]));
                         case "Select":
@@ -271,6 +276,23 @@ namespace MongoDB.Linq.Translators
             }
 
             return subquery;
+        }
+
+        private Expression BindAny(Expression source, LambdaExpression predicate, bool isRoot)
+        {
+            var projection = VisitSequence(source);
+            var sourceType = projection.Projector.Type;
+
+            MethodInfo method = typeof(Queryable)
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .Where(m => m.Name == "Count")
+                .Single(m => m.GetParameters().Length == (predicate == null ? 1 : 2))
+                .GetGenericMethodDefinition().MakeGenericMethod(sourceType);
+
+            var expression = BindAggregate(source, method, predicate, isRoot);
+
+            return Expression.GreaterThan(
+                expression, Expression.Constant(0));
         }
 
         private Expression BindDistinct(Expression source)

@@ -41,7 +41,12 @@ namespace MongoDB.Serialization.Descriptors
                 yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             foreach (var memberMap in ClassMap.MemberMaps)
-                yield return CreateProperty(memberMap.Alias, GetValue(memberMap.MemberName));
+            {
+                var value = GetValue(memberMap.MemberName);
+                if (!memberMap.PersistDefaultValue && object.Equals(memberMap.DefaultValue, value))
+                    continue;
+                yield return CreateProperty(memberMap.Alias, value);
+            }
 
             if (_extendedProperties == null)
                 yield break;
@@ -62,7 +67,7 @@ namespace MongoDB.Serialization.Descriptors
             
             object value;
 
-            var memberMap = GetMemberMapFromMemberName(name);
+            var memberMap = GetAliasFromMemberName(name).MemberMap;
             if(memberMap != null)
                 value = memberMap.GetValue(_instance);
             else if (_extendedProperties != null)

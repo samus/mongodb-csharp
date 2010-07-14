@@ -55,12 +55,12 @@ namespace MongoDB.Configuration.Builders
         }
 
         /// <summary>
-        /// Persists the null.
+        /// Persists the default value.
         /// </summary>
         /// <returns></returns>
-        public MemberOverridesBuilder PersistNull()
+        public MemberOverridesBuilder PersistDefaultValue()
         {
-            _overrides.PersistIfNull = true;
+            _overrides.PersistDefaultValue = true;
             return this;
         }
     }

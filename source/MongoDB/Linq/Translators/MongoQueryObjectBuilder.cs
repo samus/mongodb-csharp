@@ -9,7 +9,7 @@ namespace MongoDB.Linq.Translators
         private MongoQueryObject _queryObject;
         private QueryAttributes _queryAttributes;
 
-        internal MongoQueryObject Build(ProjectionExpression expression)
+        internal MongoQueryObject Build(Expression expression)
         {
             _queryObject = new MongoQueryObject();
             _queryAttributes = new QueryAttributesGatherer().Gather(expression);

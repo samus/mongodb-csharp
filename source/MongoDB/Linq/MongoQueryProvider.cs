@@ -160,7 +160,7 @@ namespace MongoDB.Linq
             return new ExecutionBuilder().Build(projection, provider);
         }
 
-        private ProjectionExpression Translate(Expression expression)
+        private Expression Translate(Expression expression)
         {
             var rootQueryable = new RootQueryableFinder().Find(expression);
             var elementType = ((IQueryable)((ConstantExpression)rootQueryable).Value).ElementType;
@@ -177,7 +177,7 @@ namespace MongoDB.Linq
             expression = new RedundantFieldRemover().Remove(expression);
             expression = new RedundantSubqueryRemover().Remove(expression);
 
-            return (ProjectionExpression)expression;
+            return expression;
         }
 
         /// <summary>

@@ -36,10 +36,10 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="getter">The getter.</param>
         /// <param name="setter">The setter.</param>
         /// <param name="alias">The alias.</param>
-        /// <param name="persistNull">if set to <c>true</c> [persist null].</param>
+        /// <param name="persistDefaultValue">if set to <c>true</c> [persist default value].</param>
         /// <param name="dictionaryAdapter">The dictionary adapter.</param>
-        public DictionaryMemberMap(string memberName, Func<object, object> getter, Action<object, object> setter, string alias, bool persistNull, IDictionaryAdapter dictionaryAdapter)
-            : base(memberName, typeof(Document), getter, setter, null, alias, persistNull)
+        public DictionaryMemberMap(string memberName, Func<object, object> getter, Action<object, object> setter, string alias, bool persistDefaultValue, IDictionaryAdapter dictionaryAdapter)
+            : base(memberName, typeof(Document), getter, setter, null, alias, persistDefaultValue)
         {
             _dictionaryAdapter = dictionaryAdapter;
         }

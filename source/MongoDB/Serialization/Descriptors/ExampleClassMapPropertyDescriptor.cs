@@ -38,7 +38,14 @@ namespace MongoDB.Serialization.Descriptors
                 yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             foreach (PropertyInfo propertyInfo in _exampleType.GetProperties())
-                yield return CreateProperty(GetAliasFromMemberName(propertyInfo.Name), GetValue(propertyInfo));
+            {
+                var alias = GetAliasFromMemberName(propertyInfo.Name);
+                var value = GetValue(propertyInfo);
+                if (alias.MemberMap != null && !alias.MemberMap.PersistDefaultValue && object.Equals(alias.MemberMap.DefaultValue, value))
+                    continue;
+
+                yield return CreateProperty(alias.Alias, value);
+            }
         }
 
         /// <summary>
@@ -58,7 +65,7 @@ namespace MongoDB.Serialization.Descriptors
             }
 
             bool isDictionary = false;
-            var memberMap = GetMemberMapFromMemberName(propertyInfo.Name);
+            var memberMap = GetAliasFromMemberName(propertyInfo.Name).MemberMap;
             if (memberMap != null)
             {
                 if (memberMap is CollectionMemberMap)

@@ -26,11 +26,11 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <param name="getter">The getter.</param>
         /// <param name="setter">The setter.</param>
         /// <param name="alias">The alias.</param>
-        /// <param name="persistNull">if set to <c>true</c> [persist null].</param>
+        /// <param name="persistDefaultValue">if set to <c>true</c> [persist default value].</param>
         /// <param name="collectionAdapter">Type of the collection.</param>
         /// <param name="elementType">Type of the element.</param>
-        public CollectionMemberMap(string memberName, Type memberReturnType, Func<object, object> getter, Action<object, object> setter, string alias, bool persistNull, ICollectionAdapter collectionAdapter, Type elementType)
-            : base(memberName, memberReturnType, getter, setter, null, alias, persistNull)
+        public CollectionMemberMap(string memberName, Type memberReturnType, Func<object, object> getter, Action<object, object> setter, string alias, bool persistDefaultValue, ICollectionAdapter collectionAdapter, Type elementType)
+            : base(memberName, memberReturnType, getter, setter, null, alias, persistDefaultValue)
         {
             _collectionAdapter = collectionAdapter;
             ElementType = elementType;

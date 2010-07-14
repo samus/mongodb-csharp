@@ -23,9 +23,9 @@
         public bool? Ignore { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether.
+        /// Gets or sets a value indicating whether a member with the default value gets persisted.
         /// </summary>
-        /// <value><c>true</c> if [persist if null]; otherwise, <c>false</c>.</value>
-        public bool? PersistIfNull { get; set; }
+        /// <value>The persist default value.</value>
+        public bool? PersistDefaultValue { get; set; }
     }
 }
