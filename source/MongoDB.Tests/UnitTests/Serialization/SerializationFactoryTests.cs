@@ -337,13 +337,18 @@ namespace MongoDB.UnitTests.Serialization
         [Test]
         public void CanDeserializeADictionaryWithEnumAsKey()
         {
-            var bson = Serialize<Document>(new Document("Dict", new Dictionary<DateTimeKind,int> {{DateTimeKind.Utc,9}}));
+            var bson = Serialize<Document>(new Document("Dict", new Document(( (int)DateTimeKind.Utc ).ToString(), 9)));
             var prop = Deserialize<DictionaryWithEnumAsKeyHelper>(bson);
 
             Assert.IsNotNull(prop);
             Assert.IsNotNull(prop.Dict);
             Assert.AreEqual(1,prop.Dict.Count);
             Assert.AreEqual(9,prop.Dict[DateTimeKind.Utc]);
+        }
+
+        public class DictionaryWithEnumAsValueHelper
+        {
+            public Dictionary<int,DateTimeKind> Dict { get; set; }
         }
     }
 }

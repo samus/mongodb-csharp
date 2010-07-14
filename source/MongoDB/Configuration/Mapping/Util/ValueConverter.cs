@@ -17,7 +17,10 @@ namespace MongoDB.Configuration.Mapping.Util
                     var code = System.Convert.GetTypeCode(value);
 
                     if(type.IsEnum)
-                        value = Enum.ToObject(type, value);
+                        if(value is string)
+                            value = Enum.Parse(type, (string)value);
+                        else
+                            value = Enum.ToObject(type, value);
                     else if(type.IsGenericType &&
                             type.GetGenericTypeDefinition() == typeof(Nullable<>))
                         value = System.Convert.ChangeType(value, Nullable.GetUnderlyingType(type));

@@ -37,7 +37,7 @@ namespace MongoDB.Configuration.DictionaryAdapters
             var list = new SortedList<TKey, TValue>();
 
             foreach(var pair in document)
-                list.Add((TKey)Convert.ChangeType(pair.Key, typeof(TKey)), (TValue)pair.Value);
+                list.Add((TKey)ValueConverter.Convert(pair.Key, typeof(TKey)), (TValue)pair.Value);
 
             return list;
         }
