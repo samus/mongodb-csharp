@@ -35,6 +35,9 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <returns></returns>
         public object CreateDictionary(Document document)
         {
+            if(document==null)
+                return null;
+
             return document.ToDictionary(pair => (TKey)ValueConverter.Convert(pair.Key, typeof(TKey)), pair => (TValue)pair.Value);
         }
 

@@ -34,6 +34,9 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <returns></returns>
         public object CreateDictionary(Document document)
         {
+            if(document == null)
+                return null;
+
             var list = new SortedList<TKey, TValue>();
 
             foreach(var pair in document)

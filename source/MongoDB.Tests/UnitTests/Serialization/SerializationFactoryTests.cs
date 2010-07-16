@@ -346,9 +346,20 @@ namespace MongoDB.UnitTests.Serialization
             Assert.AreEqual(9,prop.Dict[DateTimeKind.Utc]);
         }
 
-        public class DictionaryWithEnumAsValueHelper
+        public class NullDictionaryPropertyHelper
         {
-            public Dictionary<int,DateTimeKind> Dict { get; set; }
+            public Dictionary<string, string> Dict { get; set; }
         }
+
+        [Test]
+        public void CanDeserializeAndNullDictionaryProperty()
+        {
+            var bson = Serialize<Document>(new Document("Dict", null));
+            var prop = Deserialize<NullDictionaryPropertyHelper>(bson);
+
+            Assert.IsNotNull(prop);
+            Assert.IsNull(prop.Dict);
+        }
+
     }
 }
