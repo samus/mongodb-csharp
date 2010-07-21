@@ -34,6 +34,24 @@ namespace MongoDB.Util
         }
 
         /// <summary>
+        /// Serializes for server side.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public static string SerializeForServerSide(object value)
+        {
+            var sb = new StringBuilder();
+            if (value is DateTime)
+            {
+                DateTime d = (DateTime)value;
+                sb.AppendFormat("new Date({0},{1},{2},{3},{4},{5},{6})", d.Year, d.Month, d.Date, d.Hour, d.Minute, d.Second, d.Millisecond);
+            }
+            else
+                SerializeType(value, sb);
+            return sb.ToString();
+        }
+
+        /// <summary>
         ///   Serializes the type.
         /// </summary>
         /// <param name = "value">The value.</param>

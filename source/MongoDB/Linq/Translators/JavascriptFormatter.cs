@@ -240,7 +240,6 @@ namespace MongoDB.Linq.Translators
         protected override NewExpression VisitNew(NewExpression nex)
         {
             _js.Append(new JavascriptObjectFormatter().FormatObject(nex));
-
             return nex;
         }
 
@@ -283,12 +282,7 @@ namespace MongoDB.Linq.Translators
 
         private static string GetJavascriptValueForConstant(ConstantExpression c)
         {
-            if (c.Value == null)
-                return "null";
-            if (c.Type == typeof(string) || c.Type == typeof(StringBuilder))
-                return string.Format(@"""{0}""", c.Value);
-
-            return c.Value.ToString();
+            return JsonFormatter.SerializeForServerSide(c.Value);
         }
 
         private class JavascriptObjectFormatter : MongoExpressionVisitor
