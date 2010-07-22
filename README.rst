@@ -69,9 +69,10 @@ The bug tracker is the same as the Mongodb bug tracker located at http://jira.mo
 Contributors
 ============
 - Sam Corder (samus)
+- Steve Wagner (lanwin)
+- Craig Wilson (craiggwilson)
 - Seth Edwards (Sedward)
 - Arne Classen (Sdether)
-- Steve Wagner (lanwin)
 - Andrew Rondeau (GWBasic)
 - Doug Mayer (dougtmayer)
 - Andrew Kempe
