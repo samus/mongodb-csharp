@@ -81,6 +81,14 @@ namespace Simple
                     collection.Save(circle);
                     collection.Save(sub);
 
+                    var superclass = (from item in db.GetCollection<MyClass>("MyClass").Linq()
+                                where item.Corners > 1
+                                select item.Corners).ToList();
+
+                    var subclass = (from item in db.GetCollection<SubClass>("MyClass").Linq()
+                                    where item.Ratio > 1
+                                    select item.Corners).ToList();
+
                     Console.WriteLine("Count by LINQ on typed collection: {0}", collection.Linq().Count(x => x.Corners > 1));
                     Console.WriteLine("Count by LINQ on typed collection2: {0}", db.GetCollection<SubClass>().Linq().Count(x => x.Corners > 1));
                     //Console.WriteLine("Count by LINQ on typed collection3: {0}", db.GetCollection<SubClass>().Count(new { Corners = Op.GreaterThan(1) }));

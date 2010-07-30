@@ -38,7 +38,10 @@ namespace MongoDB.Serialization.Builders
         public object BuildObject()
         {
             if (_concreteEntityBuilder == null)
-                throw new Exception("Discriminator did not show up.");
+            {
+                //we'll assume that this is the root class in the hierarchy.
+                _concreteEntityBuilder = new ConcreteClassMapBuilder(_classMap);
+            }
 
             return _concreteEntityBuilder.BuildObject();
         }
