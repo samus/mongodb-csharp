@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Configuration.Mapping.Util;
 
 namespace MongoDB.Configuration.DictionaryAdapters
 {
@@ -34,7 +35,10 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <returns></returns>
         public object CreateDictionary(Document document)
         {
-            return document.ToDictionary(pair => (TKey)Convert.ChangeType(pair.Key, typeof(TKey)), pair => (TValue)pair.Value);
+            if(document==null)
+                return null;
+
+            return document.ToDictionary(pair => (TKey)ValueConverter.Convert(pair.Key, typeof(TKey)), pair => (TValue)pair.Value);
         }
 
         /// <summary>
@@ -52,9 +56,10 @@ namespace MongoDB.Configuration.DictionaryAdapters
             var doc = new Document();
 
             foreach (var e in instance)
-                doc.Add(e.Key.ToString(), e.Value);
+                doc.Add(ValueConverter.ConvertKey(e.Key), e.Value);
 
             return doc;
         }
+
     }
 }

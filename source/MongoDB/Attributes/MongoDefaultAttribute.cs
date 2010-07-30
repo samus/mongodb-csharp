@@ -21,6 +21,7 @@ namespace MongoDB.Attributes
         /// Initializes a new instance of the <see cref="MongoDefaultAttribute"/> class.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <param name="persistDefaultValue">if set to <c>true</c> [persist default value].</param>
         public MongoDefaultAttribute(object value, bool persistDefaultValue)
         {
             Value = value;

@@ -37,7 +37,7 @@ namespace MongoDB.IntegrationTests.Linq
                     FirstName = "Jane",
                     LastName = "McJane",
                     Age = 35,
-                    PrimaryAddress = new Address { City = "Paris", IsInternational = true, AddressType = AddressType.Private },
+                    PrimaryAddress = new Address { City = "Paris", IsInternational = false, AddressType = AddressType.Private },
                     Addresses = new List<Address> 
                     {
                         new Address { City = "Paris", AddressType = AddressType.Private }
@@ -76,7 +76,7 @@ namespace MongoDB.IntegrationTests.Linq
         {
             var people = Enumerable.ToList(Collection.Linq().Where(x => x.PrimaryAddress.IsInternational));
 
-            Assert.AreEqual(3, people.Count);
+            Assert.AreEqual(2, people.Count);
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace MongoDB.IntegrationTests.Linq
         {
             var people = Enumerable.ToList(Collection.Linq().Where(x => !x.PrimaryAddress.IsInternational));
 
-            Assert.AreEqual(0, people.Count);
+            Assert.AreEqual(1, people.Count);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace MongoDB.IntegrationTests.Linq
         {
             var people = Enumerable.ToList(Collection.Linq().Where(x => x.PrimaryAddress.IsInternational && x.Age > 21));
 
-            Assert.AreEqual(2, people.Count);
+            Assert.AreEqual(1, people.Count);
         }
 
         [Test]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using MongoDB.Configuration.Mapping.Util;
 
 namespace MongoDB.Configuration.DictionaryAdapters
 {
@@ -33,6 +34,9 @@ namespace MongoDB.Configuration.DictionaryAdapters
         /// <returns></returns>
         public object CreateDictionary(Document document)
         {
+            if(document == null)
+                return null;
+
             var hashtable = new Hashtable();
 
             foreach (var pair in document)
@@ -54,7 +58,7 @@ namespace MongoDB.Configuration.DictionaryAdapters
 
             var doc = new Document();
             foreach (DictionaryEntry entry in hashtable)
-                doc.Add(entry.Key.ToString(), entry.Value);
+                doc.Add(ValueConverter.ConvertKey(entry.Key), entry.Value);
 
             return doc;
         }
