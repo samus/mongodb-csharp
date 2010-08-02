@@ -31,8 +31,22 @@ namespace MongoDB.Serialization.Descriptors
         /// <returns></returns>
         public override IEnumerable<BsonProperty> GetProperties()
         {
-            if (ShouldPersistDiscriminator())
-                yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
+            if(ShouldPersistDiscriminator())
+            {
+                if (_document.ContainsKey("count")) //this is a special case
+                {
+                    var queryDoc = _document["query"] as Document;
+                    if (queryDoc == null)
+                    {
+                        //TODO: implement someway of shoving this value into the doc...
+                        throw new NotSupportedException("Count queries on subclasses using anonymous types is not supported.");
+                    }
+                    else if (!queryDoc.ContainsKey(ClassMap.DiscriminatorAlias))
+                        queryDoc.Append(ClassMap.DiscriminatorAlias, ClassMap.Discriminator);
+                }
+                else
+                    yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
+            }
 
             foreach (string key in _document.Keys)
             {

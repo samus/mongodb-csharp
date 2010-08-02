@@ -1,6 +1,9 @@
 using System;
 using System.Configuration;
+using System.Linq;
 using MongoDB;
+using MongoDB.Configuration;
+using MongoDB.Linq;
 
 namespace Simple
 {
@@ -18,11 +21,93 @@ namespace Simple
         private Mongo mongo;
         private IMongoDatabase simple;
 
+        private class MyClass
+        {
+            public string Name { get; set; }
+            public  int Corners { get; set; }
+        }
+
+        private class SubClass : MyClass
+        {
+            public double Ratio { get; set; }
+        }
+
         public static void Main(string[] args)
         {
-            var main = new MainClass();
-            main.Setup();
-            main.Run();
+            var config = new MongoConfigurationBuilder();
+
+            // COMMENT OUT FROM HERE
+            config.Mapping(mapping =>
+            {
+                mapping.DefaultProfile(profile =>
+                {
+                    profile.SubClassesAre(t => t.IsSubclassOf(typeof(MyClass)));
+                });
+                mapping.Map<MyClass>();
+                mapping.Map<SubClass>();
+            });
+            // TO HERE
+
+            config.ConnectionString("Server=127.0.0.1");
+
+            using (Mongo mongo = new Mongo(config.BuildConfiguration()))
+            {
+                mongo.Connect();
+                try
+                {
+                    var db = mongo.GetDatabase("TestDb");
+                    var collection = db.GetCollection<MyClass>();
+
+                    MyClass square = new MyClass()
+                    {
+                        Corners = 4,
+                        Name = "Square"
+                    };
+
+                    MyClass circle = new MyClass()
+                    {
+                        Corners = 0,
+                        Name = "Circle"
+                    };
+
+                    SubClass sub = new SubClass()
+                    {
+                        Name = "SubClass",
+                        Corners = 6,
+                        Ratio = 3.43
+                    };
+
+                    collection.Save(square);
+                    collection.Save(circle);
+                    collection.Save(sub);
+
+                    var superclass = (from item in db.GetCollection<MyClass>("MyClass").Linq()
+                                where item.Corners > 1
+                                select item.Corners).ToList();
+
+                    var subclass = (from item in db.GetCollection<SubClass>("MyClass").Linq()
+                                    where item.Ratio > 1
+                                    select item.Corners).ToList();
+
+                    Console.WriteLine("Count by LINQ on typed collection: {0}", collection.Linq().Count(x => x.Corners > 1));
+                    Console.WriteLine("Count by LINQ on typed collection2: {0}", db.GetCollection<SubClass>().Linq().Count(x => x.Corners > 1));
+                    //Console.WriteLine("Count by LINQ on typed collection3: {0}", db.GetCollection<SubClass>().Count(new { Corners = Op.GreaterThan(1) }));
+                    Console.WriteLine("Count on typed collection: {0}", collection.Count(new { Corners = Op.GreaterThan(1) }));
+
+                    var coll = db.GetCollection("MyClass");
+                    var count = coll.Count(new Document("Corners", Op.GreaterThan(1)));
+                    Console.WriteLine("Count: {0}", count);
+                    Console.ReadKey();
+                }
+                finally
+                {
+                    mongo.Disconnect();
+                }
+            }
+
+            //var main = new MainClass();
+            //main.Setup();
+            //main.Run();
         }
 
         /// <summary>
