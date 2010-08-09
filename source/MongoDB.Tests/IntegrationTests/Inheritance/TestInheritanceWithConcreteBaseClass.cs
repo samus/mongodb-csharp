@@ -9,7 +9,7 @@ namespace MongoDB.IntegrationTests.Inheritance
     [TestFixture]
     public class TestInheritanceWithConcreteBaseClass : MongoTestBase
     {
-        abstract class Animal
+        class Animal
         {
             public Oid Id { get; set; }
 
@@ -31,6 +31,12 @@ namespace MongoDB.IntegrationTests.Inheritance
         public override string TestCollections
         {
             get { return "Animal"; }
+        }
+
+        [SetUp]
+        public void TestSetup()
+        {
+            CleanDB();
         }
 
         protected override Configuration.MongoConfigurationBuilder GetConfiguration()
@@ -56,7 +62,7 @@ namespace MongoDB.IntegrationTests.Inheritance
         public void Should_persist_discriminator_using_base_class_collection()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             var docCollection = DB.GetCollection<Document>("Animal");
@@ -64,11 +70,11 @@ namespace MongoDB.IntegrationTests.Inheritance
             var docs = docCollection.FindAll().Sort("Age", IndexOrder.Ascending).Documents.ToList();
 
             Assert.AreEqual(new[] { "Cat", "Tiger" }, (List<string>)docs[0]["_t"]);
-            Assert.AreEqual("Bear", (string)docs[1]["_t"]);
+            Assert.IsNull(docs[1]["_t"]);
         }
 
         [Test]
-        public void Should_persist_discriminator_using_concrete_class_collection()
+        public void Should_persist_discriminator_using_inherited_class_collection()
         {
             var animalCollection = DB.GetCollection<Cat>();
             animalCollection.Save(new Lion() { Age = 20 });
@@ -86,7 +92,7 @@ namespace MongoDB.IntegrationTests.Inheritance
         public void Should_fetch_with_base_class_collection()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             var animals = animalCollection.FindAll().Sort("Age", IndexOrder.Ascending).Documents.ToList();
@@ -94,7 +100,7 @@ namespace MongoDB.IntegrationTests.Inheritance
             Assert.AreEqual(2, animals.Count);
             Assert.IsInstanceOfType(typeof(Tiger), animals[0]);
             Assert.AreEqual(19, animals[0].Age);
-            Assert.IsInstanceOfType(typeof(Bear), animals[1]);
+            Assert.IsInstanceOfType(typeof(Animal), animals[1]);
             Assert.AreEqual(20, animals[1].Age);
         }
 
@@ -102,7 +108,7 @@ namespace MongoDB.IntegrationTests.Inheritance
         public void Should_fetch_with_base_class_collection_through_linq()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             var animals = (from a in animalCollection.Linq()
@@ -112,15 +118,15 @@ namespace MongoDB.IntegrationTests.Inheritance
             Assert.AreEqual(2, animals.Count);
             Assert.IsInstanceOfType(typeof(Tiger), animals[0]);
             Assert.AreEqual(19, animals[0].Age);
-            Assert.IsInstanceOfType(typeof(Bear), animals[1]);
+            Assert.IsInstanceOfType(typeof(Animal), animals[1]);
             Assert.AreEqual(20, animals[1].Age);
         }
 
         [Test]
-        public void Should_fetch_with_concrete_class_collection()
+        public void Should_fetch_with_inherited_class_collection()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             var catCollection = DB.GetCollection<Cat>();
@@ -133,10 +139,10 @@ namespace MongoDB.IntegrationTests.Inheritance
         }
 
         [Test]
-        public void Should_fetch_with_concrete_class_collection_through_linq()
+        public void Should_fetch_with_inherited_class_collection_through_linq()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             var catCollection = DB.GetCollection<Cat>();
@@ -154,7 +160,7 @@ namespace MongoDB.IntegrationTests.Inheritance
         public void Should_get_correct_count_with_base_class_collection()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             Assert.AreEqual(2, animalCollection.Count());
@@ -164,17 +170,17 @@ namespace MongoDB.IntegrationTests.Inheritance
         public void Should_get_correct_count_with_base_class_collection_using_linq()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             Assert.AreEqual(2, animalCollection.Linq().Count());
         }
 
         [Test]
-        public void Should_get_correct_count_with_concrete_class_collection()
+        public void Should_get_correct_count_with_inherited_class_collection()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             var catCollection = DB.GetCollection<Cat>();
@@ -183,10 +189,10 @@ namespace MongoDB.IntegrationTests.Inheritance
         }
 
         [Test]
-        public void Should_get_correct_count_with_concrete_class_collection_using_linq()
+        public void Should_get_correct_count_with_inherited_class_collection_using_linq()
         {
             var animalCollection = DB.GetCollection<Animal>();
-            animalCollection.Save(new Bear() { Age = 20 });
+            animalCollection.Save(new Animal() { Age = 20 });
             animalCollection.Save(new Tiger() { Age = 19 });
 
             var catCollection = DB.GetCollection<Cat>();
