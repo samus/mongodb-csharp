@@ -25,6 +25,6 @@ namespace MongoDB
         /// <summary>
         /// g - Eliminates unescaped white space from the pattern. 
         /// </summary>
-        IgnorePatternWhitespace = 3
+        IgnorePatternWhitespace = 4
     }
 }

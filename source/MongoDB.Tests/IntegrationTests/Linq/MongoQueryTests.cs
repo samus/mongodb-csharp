@@ -371,6 +371,16 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void Regex_IsMatch_CaseInsensitive()
+        {
+            var people = (from p in Collection.Linq()
+                          where Regex.IsMatch(p.FirstName, "joe", RegexOptions.IgnoreCase)
+                          select p).ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test]
         public void Single()
         {
             var person = Collection.Linq().Where(x => x.Age == 21).Single();

@@ -39,6 +39,16 @@ namespace MongoDB
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="MongoRegex"/> class.
+        /// </summary>
+        /// <param name="expression">The Regex expression.</param>
+        /// <param name="options">The Regex options.</param>
+        public MongoRegex(string expression, RegexOptions options)
+            : this(new Regex(expression, options))
+        {
+        }
+
+        /// <summary>
         ///   Initializes a new instance of the <see cref = "MongoRegex" /> class.
         /// </summary>
         /// <param name = "regex">The regex.</param>
