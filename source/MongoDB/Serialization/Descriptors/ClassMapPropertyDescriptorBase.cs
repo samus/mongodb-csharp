@@ -71,9 +71,9 @@ namespace MongoDB.Serialization.Descriptors
         /// Shoulds the persist discriminator.
         /// </summary>
         /// <returns></returns>
-        protected bool ShouldPersistDiscriminator()
+        protected bool ShouldAddDiscriminator()
         {
-            return (ClassMap.IsPolymorphic && ClassMap.HasDiscriminator) || ClassMap.IsSubClass;
+            return ClassMap.IsSubClass;
         }
 
         /// <summary>

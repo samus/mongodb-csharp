@@ -34,7 +34,7 @@ namespace MongoDB.Serialization.Descriptors
         /// <returns></returns>
         public override IEnumerable<BsonProperty> GetProperties()
         {
-            if (ShouldPersistDiscriminator())
+            if (ShouldAddDiscriminator())
                 yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             foreach (PropertyInfo propertyInfo in _exampleType.GetProperties())

@@ -211,7 +211,12 @@ namespace MongoDB
             try
             {
                 var command = new Document
-                {                    {"findandmodify", Name},                    {"query", spec},                    {"update", EnsureUpdateDocument(document)},                    {"sort", sort},                    {"new", returnNew}
+                {
+                    {"findandmodify", Name},
+                    {"query", spec},
+                    {"update", EnsureUpdateDocument(document)},
+                    {"sort", sort},
+                    {"new", returnNew}
                 };
 
                 var response = _connection.SendCommand<FindAndModifyResult<T>>(_configuration.SerializationFactory,
