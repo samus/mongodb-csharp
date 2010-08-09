@@ -35,7 +35,7 @@ namespace MongoDB.Serialization
             if (_classMap.HasId)
                 yield return _classMap.IdMap.Alias;
 
-            if (_classMap.IsPolymorphic && _classMap.HasDiscriminator)
+            if (_classMap.IsSubClass)
                 yield return _classMap.DiscriminatorAlias;
 
             foreach (var memberMap in _classMap.MemberMaps)

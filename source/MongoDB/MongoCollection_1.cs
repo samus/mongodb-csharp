@@ -7,6 +7,7 @@ using MongoDB.Connections;
 using MongoDB.Protocol;
 using MongoDB.Results;
 using MongoDB.Util;
+using MongoDB.Configuration.Mapping.Model;
 
 namespace MongoDB
 {
@@ -601,6 +602,26 @@ namespace MongoDB
             }
 
             return document;
+        }
+
+        private Document ConvertObjectToDocument(object document)
+        {
+            Document doc = document as Document;
+            if (doc != null)
+                return doc;
+
+            if (document is T)
+            {
+                var classMap = _configuration.MappingStore.GetClassMap(typeof(T));
+                foreach (PersistentMemberMap memberMap in classMap)
+                {
+                    doc[memberMap.MemberName] = memberMap.GetValue(document);
+                }
+            }
+            else //anonymous type...
+            {
+
+            }
         }
     }
 }
