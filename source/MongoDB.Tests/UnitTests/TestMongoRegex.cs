@@ -81,7 +81,7 @@ namespace MongoDB.UnitTests
         {
             var regex = new MongoRegex("expression", null)
             {
-                Options = MongoRegexOption.IgnoreCase & MongoRegexOption.IgnorePatternWhitespace
+                Options = MongoRegexOption.IgnoreCase | MongoRegexOption.IgnorePatternWhitespace
             };
 
             Assert.AreEqual("ig",regex.RawOptions);
