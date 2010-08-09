@@ -46,11 +46,27 @@ namespace MongoDB.UnitTests
         }
 
         [Test]
+        public void MongoRegexOptionFlagsAreIndependent()
+        {
+            var regex = new MongoRegex("expression", MongoRegexOption.IgnoreCase);
+            Assert.AreEqual("expression", regex.Expression);
+            Assert.AreEqual("i", regex.RawOptions);
+        }
+
+        [Test]
         public void CanBeConstructedWithMongoRegexOption()
         {
             var regex = new MongoRegex("expression", MongoRegexOption.IgnoreCase | MongoRegexOption.IgnorePatternWhitespace | MongoRegexOption.Multiline);
             Assert.AreEqual("expression", regex.Expression);
             Assert.AreEqual("img", regex.RawOptions);
+        }
+
+        [Test]
+        public void CanBeConstructedWithRegexOptions()
+        {
+            var regex = new MongoRegex("expression", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            Assert.AreEqual("expression", regex.Expression);
+            Assert.AreEqual("im", regex.RawOptions);
         }
 
         [Test]

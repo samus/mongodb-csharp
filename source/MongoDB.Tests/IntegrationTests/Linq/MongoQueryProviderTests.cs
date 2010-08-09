@@ -355,6 +355,20 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void Regex_IsMatch_CaseInsensitive()
+        {
+            var people = from p in Collection.Linq()
+                         where Regex.IsMatch(p.FirstName, "Joe", RegexOptions.IgnoreCase)
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("FirstName", new MongoRegex("Joe", MongoRegexOption.IgnoreCase)), queryObject.Query);
+        }
+
+        [Test]
         public void SingleEqualConstraint()
         {
             var people = Collection.Linq().Where(p => "Jack" == p.FirstName);
