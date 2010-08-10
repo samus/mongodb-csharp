@@ -31,7 +31,7 @@ namespace MongoDB.Serialization.Descriptors
         /// <returns></returns>
         public override IEnumerable<BsonProperty> GetProperties()
         {
-            if(ShouldPersistDiscriminator())
+            if(ShouldAddDiscriminator())
             {
                 if (_document.ContainsKey("count")) //this is a special case
                 {
@@ -65,7 +65,7 @@ namespace MongoDB.Serialization.Descriptors
         /// <returns></returns>
         private BsonPropertyValue GetValue(string name)
         {
-            if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
+            if (ClassMap.DiscriminatorAlias == name && ShouldAddDiscriminator())
                 return new BsonPropertyValue(ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             var value = _document[name];

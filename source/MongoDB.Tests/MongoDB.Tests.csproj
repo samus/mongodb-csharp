@@ -89,6 +89,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IntegrationTests\Inheritance\TestInheritanceWithConcreteBaseClass.cs" />
+    <Compile Include="IntegrationTests\Inheritance\TestInheritanceWithAbstractBaseClass.cs" />
     <Compile Include="IntegrationTests\SecondServer\TestPooledConnectionFactory.cs" />
     <Compile Include="IntegrationTests\Linq\LinqDomain.cs" />
     <Compile Include="IntegrationTests\Linq\MapReduceTests.cs" />

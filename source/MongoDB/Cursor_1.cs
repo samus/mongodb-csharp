@@ -5,6 +5,9 @@ using MongoDB.Connections;
 using MongoDB.Protocol;
 using MongoDB.Serialization;
 using System.Linq;
+using MongoDB.Util;
+using MongoDB.Configuration.Mapping.Model;
+using MongoDB.Configuration.Mapping;
 
 namespace MongoDB
 {
@@ -25,6 +28,7 @@ namespace MongoDB
         private int _skip;
         private bool _keepCursor;
         private readonly ISerializationFactory _serializationFactory;
+        private readonly IMappingStore _mappingStore;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Cursor&lt;T&gt;"/> class.
@@ -33,7 +37,7 @@ namespace MongoDB
         /// <param name="connection">The conn.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="collectionName">Name of the collection.</param>
-        internal Cursor(ISerializationFactory serializationFactory, Connection connection, string databaseName, string collectionName)
+        internal Cursor(ISerializationFactory serializationFactory, IMappingStore mappingStore, Connection connection, string databaseName, string collectionName)
         {
             //Todo: add public constrcutor for users to call
             IsModifiable = true;
@@ -41,6 +45,7 @@ namespace MongoDB
             _databaseName = databaseName;
             FullCollectionName = databaseName + "." + collectionName;
             _serializationFactory = serializationFactory;
+            _mappingStore = mappingStore;
         }
 
         /// <summary>
@@ -54,8 +59,8 @@ namespace MongoDB
         /// <param name="limit">The limit.</param>
         /// <param name="skip">The skip.</param>
         /// <param name="fields">The fields.</param>
-        internal Cursor(ISerializationFactory serializationFactory, Connection connection, string databaseName, string collectionName, object spec, int limit, int skip, object fields)
-            : this(serializationFactory, connection, databaseName, collectionName)
+        internal Cursor(ISerializationFactory serializationFactory, IMappingStore mappingStore, Connection connection, string databaseName, string collectionName, object spec, int limit, int skip, object fields)
+            : this(serializationFactory, mappingStore, connection, databaseName, collectionName)
         {
             //Todo: add public constrcutor for users to call
             if (spec == null)
@@ -333,7 +338,7 @@ namespace MongoDB
                     NumberToReturn = _limit,
                     NumberToSkip = _skip,
                     Options = _options,
-                    ReturnFieldSelector = _fields
+                    ReturnFieldSelector = ConvertFieldSelectorToDocument(_fields)
                 };
             }
             else
@@ -390,6 +395,53 @@ namespace MongoDB
             _specOpts.CopyTo(document);
             document["$query"] = _spec;
             return document;
+        }
+
+        private Document ConvertFieldSelectorToDocument(object document)
+        {
+            Document doc;
+            if (document == null)
+                doc = new Document();
+            else
+                doc = ConvertExampleToDocument(document) as Document;
+
+            if (doc == null)
+                throw new NotSupportedException("An entity type is not supported in field selection. Use either a document or an anonymous type.");
+
+            var classMap = _mappingStore.GetClassMap(typeof(T));
+            if (doc.Count > 0 && (classMap.IsPolymorphic || classMap.IsSubClass))
+                doc[classMap.DiscriminatorAlias] = true;
+
+            return doc.Count == 0 ? null : doc;
+        }
+
+        private object ConvertExampleToDocument(object document)
+        {
+            if (document == null)
+                return null;
+
+            Document doc = document as Document;
+            if (doc != null)
+                return doc;
+
+            doc = new Document();
+
+            if (!(document is T)) //some type that is being used as an example
+            {
+                foreach (var prop in document.GetType().GetProperties())
+                {
+                    if (!prop.CanRead)
+                        continue;
+
+                    object value = prop.GetValue(document, null);
+                    if (!TypeHelper.IsNativeToMongo(prop.PropertyType))
+                        value = ConvertExampleToDocument(value);
+
+                    doc[prop.Name] = value;
+                }
+            }
+
+            return doc;
         }
     }
 }

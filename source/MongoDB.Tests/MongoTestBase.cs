@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using NUnit.Framework;
+using MongoDB.Configuration;
 
 namespace MongoDB
 {
@@ -13,12 +14,6 @@ namespace MongoDB
                 return this.Mongo["tests"];
             }
         }
-
-        /// <summary>
-        /// Gets or sets the connection string.
-        /// </summary>
-        /// <value>The connection string.</value>
-        public string ConnectionString { get; private set; }
 
         /// <summary>
         /// Comma separated list of collections to clean at startup.
@@ -40,10 +35,7 @@ namespace MongoDB
         /// </summary>
         [TestFixtureSetUp]
         public virtual void Init(){
-            ConnectionString = ConfigurationManager.AppSettings["tests"];
-            if(String.IsNullOrEmpty(ConnectionString))
-                throw new ArgumentNullException("Connection string not found.");
-            this.Mongo = new Mongo(ConnectionString);
+            this.Mongo = new Mongo(GetConfiguration().BuildConfiguration());
             this.Mongo.Connect();
             CleanDB();
             OnInit();
@@ -61,6 +53,13 @@ namespace MongoDB
                 DB["$cmd"].FindOne(new Document(){{"drop", col.Trim()}});
                 //Console.WriteLine("Dropping " + col);
             }
+        }
+
+        protected virtual MongoConfigurationBuilder GetConfiguration()
+        {
+            var builder = new MongoConfigurationBuilder();
+            builder.ReadConnectionStringFromAppSettings("tests");
+            return builder;
         }
     }
 }

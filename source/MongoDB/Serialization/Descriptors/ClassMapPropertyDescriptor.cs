@@ -37,7 +37,7 @@ namespace MongoDB.Serialization.Descriptors
             if (ClassMap.HasId)
                 yield return CreateProperty(ClassMap.IdMap.Alias, ClassMap.IdMap.MemberReturnType, ClassMap.GetId(_instance), false);
 
-            if (ShouldPersistDiscriminator())
+            if (ShouldAddDiscriminator())
                 yield return CreateProperty(ClassMap.DiscriminatorAlias, ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
 
             foreach (var memberMap in ClassMap.MemberMaps)
@@ -62,7 +62,7 @@ namespace MongoDB.Serialization.Descriptors
         /// <returns></returns>
         private BsonPropertyValue GetValue(string name)
         {
-            if (ClassMap.DiscriminatorAlias == name && ShouldPersistDiscriminator())
+            if (ClassMap.DiscriminatorAlias == name && ShouldAddDiscriminator())
                 return new BsonPropertyValue(ClassMap.Discriminator.GetType(), ClassMap.Discriminator, false);
             
             object value;

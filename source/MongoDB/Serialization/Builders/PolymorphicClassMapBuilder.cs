@@ -41,6 +41,8 @@ namespace MongoDB.Serialization.Builders
             {
                 //we'll assume that this is the root class in the hierarchy.
                 _concreteEntityBuilder = new ConcreteClassMapBuilder(_classMap);
+                foreach (var pair in _properties)
+                    _concreteEntityBuilder.AddProperty(pair.Key, pair.Value);
             }
 
             return _concreteEntityBuilder.BuildObject();

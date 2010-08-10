@@ -7,6 +7,7 @@ using MongoDB.Connections;
 using MongoDB.Protocol;
 using MongoDB.Results;
 using MongoDB.Util;
+using MongoDB.Configuration.Mapping.Model;
 
 namespace MongoDB
 {
@@ -158,7 +159,7 @@ namespace MongoDB
         public ICursor<T> Find(object spec, int limit, int skip, object fields){
             if (spec == null)
                 spec = new Document();
-            return new Cursor<T>(_configuration.SerializationFactory, _connection, DatabaseName, Name, spec, limit, skip, fields);
+            return new Cursor<T>(_configuration.SerializationFactory, _configuration.MappingStore, _connection, DatabaseName, Name, spec, limit, skip, fields);
         }
 
         /// <summary>
@@ -211,7 +212,12 @@ namespace MongoDB
             try
             {
                 var command = new Document
-                {                    {"findandmodify", Name},                    {"query", spec},                    {"update", EnsureUpdateDocument(document)},                    {"sort", sort},                    {"new", returnNew}
+                {
+                    {"findandmodify", Name},
+                    {"query", spec},
+                    {"update", EnsureUpdateDocument(document)},
+                    {"sort", sort},
+                    {"new", returnNew}
                 };
 
                 var response = _connection.SendCommand<FindAndModifyResult<T>>(_configuration.SerializationFactory,

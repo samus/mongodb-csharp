@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using System.Configuration;
 
 namespace MongoDB.IntegrationTests
 {
@@ -126,7 +127,7 @@ namespace MongoDB.IntegrationTests
 
         [Test]
         public void TestCanCreateFromConnectionString(){
-            var builder = new MongoConnectionStringBuilder(ConnectionString) {Database = "tests"};
+            var builder = new MongoConnectionStringBuilder(ConfigurationManager.AppSettings["tests"]) {Database = "tests"};
             /*
             using(var database = new MongoDatabase(builder.ToString()))
             {

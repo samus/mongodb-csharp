@@ -145,6 +145,9 @@ namespace MongoDB.Configuration.Mapping.Model
             if(!_hasProtectedOrPublicConstructor)
                 throw new MissingMethodException("No public or protected constructor found on type " + ClassType.FullName);
 
+            if (ClassType.IsAbstract)
+                throw new MongoException("Unable to create an instance of an abstract class.");
+
             //TODO: figure out how to support custom activators...
             var instance = Activator.CreateInstance(ClassType, true);
 
