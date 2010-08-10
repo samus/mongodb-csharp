@@ -225,7 +225,11 @@ namespace MongoDB.Linq.Translators
                     else
                         throw new InvalidQueryException(string.Format("Only the static Regex.IsMatch is supported.", m.Method.Name));
 
-                    AddCondition(new MongoRegex(value));
+                    var regexOptions = RegexOptions.None;
+                    if (m.Arguments.Count > 2)
+                        regexOptions = EvaluateConstant<RegexOptions>(m.Arguments[2]);
+
+                    AddCondition(new MongoRegex(value, regexOptions));
                     PopConditionScope();
                     return m;
                 }

@@ -17,7 +17,10 @@ namespace MongoDB.Configuration.Mapping.Util
                     var code = System.Convert.GetTypeCode(value);
 
                     if(type.IsEnum)
-                        value = Enum.ToObject(type, value);
+                        if(value is string)
+                            value = Enum.Parse(type, (string)value);
+                        else
+                            value = Enum.ToObject(type, value);
                     else if(type.IsGenericType &&
                             type.GetGenericTypeDefinition() == typeof(Nullable<>))
                         value = System.Convert.ChangeType(value, Nullable.GetUnderlyingType(type));
@@ -46,6 +49,17 @@ namespace MongoDB.Configuration.Mapping.Util
                 array.SetValue(Convert(elements[i], type), i);
 
             return array;
+        }
+
+        public static string ConvertKey(object key)
+        {
+            if(key == null)
+                throw new ArgumentNullException("key");
+
+            if(key is Enum)
+                return System.Convert.ToInt64(key).ToString();
+
+            return key.ToString();
         }
     }
 }
