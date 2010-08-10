@@ -17,7 +17,7 @@ namespace MongoDB.Protocol
     ///     [ BSON      returnFieldSelector; ]  // OPTIONAL : selector indicating the fields to return.  See below for details.
     /// }
     /// </remarks>
-    internal class QueryMessage<T> : RequestMessageBase
+    internal class QueryMessage : RequestMessageBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="QueryMessage"/> class.

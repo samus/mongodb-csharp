@@ -54,5 +54,24 @@ namespace MongoDB.Util
         {
             return IsNullableType(type) ? type.GetGenericArguments()[0] : type;
         }
+
+        internal static bool IsNativeToMongo(Type type)
+        {
+            var typeCode = Type.GetTypeCode(type);
+
+            if (typeCode != TypeCode.Object)
+                return true;
+
+            if (type == typeof(Guid))
+                return true;
+
+            if (type == typeof(Oid))
+                return true;
+
+            if (type == typeof(byte[]))
+                return true;
+
+            return false;
+        }
     }
 }

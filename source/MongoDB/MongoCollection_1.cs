@@ -159,7 +159,7 @@ namespace MongoDB
         public ICursor<T> Find(object spec, int limit, int skip, object fields){
             if (spec == null)
                 spec = new Document();
-            return new Cursor<T>(_configuration.SerializationFactory, _connection, DatabaseName, Name, spec, limit, skip, fields);
+            return new Cursor<T>(_configuration.SerializationFactory, _configuration.MappingStore, _connection, DatabaseName, Name, spec, limit, skip, fields);
         }
 
         /// <summary>
@@ -602,26 +602,6 @@ namespace MongoDB
             }
 
             return document;
-        }
-
-        private Document ConvertObjectToDocument(object document)
-        {
-            Document doc = document as Document;
-            if (doc != null)
-                return doc;
-
-            if (document is T)
-            {
-                var classMap = _configuration.MappingStore.GetClassMap(typeof(T));
-                foreach (PersistentMemberMap memberMap in classMap)
-                {
-                    doc[memberMap.MemberName] = memberMap.GetValue(document);
-                }
-            }
-            else //anonymous type...
-            {
-
-            }
         }
     }
 }
