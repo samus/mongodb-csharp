@@ -142,7 +142,6 @@
     <Compile Include="UnitTests\TestMo.cs" />
     <Compile Include="IntegrationTests\TestMongo.cs" />
     <Compile Include="UnitTests\IO\TestMsgMessage.cs" />
-    <Compile Include="IntegrationTests\TestB.cs" />
     <None Include="Test-Data\tests.charreads.txt" />
     <None Include="Test-Data\tests.reads.txt" />
     <None Include="Test-Data\tests.smallreads.txt" />
