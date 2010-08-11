@@ -6,7 +6,6 @@ using MongoDB.Protocol;
 using MongoDB.Serialization;
 using System.Linq;
 using MongoDB.Util;
-using MongoDB.Configuration.Mapping.Model;
 using MongoDB.Configuration.Mapping;
 
 namespace MongoDB
@@ -34,6 +33,7 @@ namespace MongoDB
         /// Initializes a new instance of the <see cref="Cursor&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="serializationFactory">The serialization factory.</param>
+        /// <param name="mappingStore">The mapping store.</param>
         /// <param name="connection">The conn.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="collectionName">Name of the collection.</param>
@@ -52,6 +52,7 @@ namespace MongoDB
         /// Initializes a new instance of the <see cref="Cursor&lt;T&gt;"/> class.
         /// </summary>
         /// <param name="serializationFactory">The serialization factory.</param>
+        /// <param name="mappingStore">The mapping store.</param>
         /// <param name="connection">The conn.</param>
         /// <param name="databaseName">Name of the database.</param>
         /// <param name="collectionName">Name of the collection.</param>
