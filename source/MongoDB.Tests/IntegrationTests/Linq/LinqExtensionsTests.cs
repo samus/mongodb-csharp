@@ -16,6 +16,8 @@ namespace MongoDB.IntegrationTests.Linq
             public int Age { get; set; }
 
             public Address Address { get; set; }
+
+            public string[] Aliases { get; set; }
         }
 
         private class Address
@@ -43,7 +45,7 @@ namespace MongoDB.IntegrationTests.Linq
         {
             personCollection = this.DB.GetCollection<Person>("people");
             personCollection.Delete(new { }, true);
-            personCollection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42, Address = new Address { City = "London" } }, true);
+            personCollection.Insert(new Person { FirstName = "Bob", LastName = "McBob", Age = 42, Address = new Address { City = "London" }, Aliases = new[]{"Blub"} }, true);
             personCollection.Insert(new Person { FirstName = "Jane", LastName = "McJane", Age = 35, Address = new Address { City = "Paris" } }, true);
             personCollection.Insert(new Person { FirstName = "Joe", LastName = "McJoe", Age = 21, Address = new Address { City = "Chicago" } }, true);
 
@@ -66,6 +68,15 @@ namespace MongoDB.IntegrationTests.Linq
             var people = personCollection.Find(x => x.Age > 21).Documents;
 
             Assert.AreEqual(2, people.Count());
+        }
+
+        [Test]
+        public void FindOne_WithAny()
+        {
+            var person = personCollection.FindOne(e => e.Aliases.Any(a=>a=="Blub"));
+
+            Assert.IsNotNull(person);
+            Assert.AreEqual("Bob",person.FirstName);
         }
 
     }
