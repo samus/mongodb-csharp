@@ -7,7 +7,6 @@ using MongoDB.Connections;
 using MongoDB.Protocol;
 using MongoDB.Results;
 using MongoDB.Util;
-using MongoDB.Configuration.Mapping.Model;
 
 namespace MongoDB
 {
@@ -183,7 +182,7 @@ namespace MongoDB
         /// <returns>A <see cref="Document"/></returns>
         /// <see cref="IndexOrder"/>
         public T FindAndModify(object document, object spec, object sort){
-            return FindAndModify(document, spec, sort);
+            return FindAndModify(document, spec, sort, false);
         }
 
         /// <summary>
