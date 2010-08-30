@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using MongoDB.Configuration.Mapping.Auto;
 using MongoDB.Configuration.Mapping.Model;
 
@@ -11,6 +12,7 @@ namespace MongoDB.Configuration.Mapping
     {
         private readonly IAutoMapper _autoMapper;
         private readonly Dictionary<Type, IClassMap> _autoMaps;
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         private readonly IMappingStore _wrappedMappingStore;
 
         /// <summary>
@@ -71,23 +73,42 @@ namespace MongoDB.Configuration.Mapping
         /// <returns></returns>
         public IClassMap GetClassMap(Type classType)
         {
-            IClassMap classMap;
-
-            if(_autoMaps.TryGetValue(classType, out classMap))
-                return classMap;
-
-            if(_wrappedMappingStore != null)
+            try
             {
-                classMap = _wrappedMappingStore.GetClassMap(classType);
-                if(classMap != null)
+                _lock.EnterUpgradeableReadLock();
+
+                IClassMap classMap;
+                if(_autoMaps.TryGetValue(classType, out classMap))
                     return classMap;
+
+                if(_wrappedMappingStore != null)
+                {
+                    classMap = _wrappedMappingStore.GetClassMap(classType);
+                    if(classMap != null)
+                        return classMap;
+                }
+
+                classMap = _autoMapper.CreateClassMap(classType, GetClassMap);
+
+                try
+                {
+                    _lock.EnterWriteLock();
+
+                    _autoMaps.Add(classType, classMap);
+
+                    return classMap;
+                }
+                finally
+                {
+                    if(_lock.IsWriteLockHeld)
+                        _lock.ExitWriteLock();
+                }
             }
-
-            classMap = _autoMapper.CreateClassMap(classType, GetClassMap);
-
-            _autoMaps.Add(classType, classMap);
-
-            return classMap;
+            finally
+            {
+                if(_lock.IsUpgradeableReadLockHeld)
+                    _lock.ExitUpgradeableReadLock();
+            }
         }
     }
 }
