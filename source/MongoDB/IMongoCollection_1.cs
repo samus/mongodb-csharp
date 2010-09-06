@@ -148,11 +148,12 @@ namespace MongoDB
         /// <param name="selector">The selector.</param>
         /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
         /// <see cref="IndexOrder"/></param>
-        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
         /// <param name="fields">The fields.</param>
+        /// <param name="remove">if set to <c>true</c> [remove].</param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
         /// <param name="upsert">if set to <c>true</c> [upsert].</param>
         /// <returns>A <see cref="Document"/></returns>
-        T FindAndModify(object document, object selector, object sort, bool returnNew,object fields,bool upsert);
+        T FindAndModify(object document, object selector, object sort, object fields, bool remove, bool returnNew, bool upsert);
 
         /// <summary>
         ///   Entrypoint into executing a map/reduce query against the collection.
