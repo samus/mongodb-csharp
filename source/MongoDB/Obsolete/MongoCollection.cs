@@ -173,18 +173,35 @@ namespace MongoDB
         }
 
         /// <summary>
-        ///   Executes a query and atomically applies a modifier operation to the first document returning the original document
-        ///   by default.
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
         /// </summary>
-        /// <param name = "document">The document.</param>
-        /// <param name = "spec"><see cref = "Document" /> to find the document.</param>
-        /// <param name = "sort"><see cref = "Document" /> containing the names of columns to sort on with the values being the
-        ///   <see cref = "IndexOrder" /></param>
-        /// <param name = "returnNew">if set to <c>true</c> [return new].</param>
-        /// <returns>A <see cref = "Document" /></returns>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
+        /// <see cref="IndexOrder"/></param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <returns>A <see cref="Document"/></returns>
         public Document FindAndModify(Document document, Document spec, Document sort, bool returnNew)
         {
-            return _collection.FindAndModify(document, spec, sort, returnNew);
+            return _collection.FindAndModify(document, spec, sort, returnNew, null, false);
+        }
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
+        /// <see cref="IndexOrder"/></param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <param name="fields">The fields.</param>
+        /// <param name="upsert">if set to <c>true</c> [upsert].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        public Document FindAndModify(Document document, Document spec, Document sort, bool returnNew, Document fields, bool upsert)
+        {
+            return _collection.FindAndModify(document, spec, sort, returnNew, fields, upsert);
         }
 
         /// <summary>

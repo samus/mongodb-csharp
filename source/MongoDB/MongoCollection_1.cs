@@ -182,7 +182,7 @@ namespace MongoDB
         /// <returns>A <see cref="Document"/></returns>
         /// <see cref="IndexOrder"/>
         public T FindAndModify(object document, object spec, object sort){
-            return FindAndModify(document, spec, sort, false);
+            return FindAndModify(document, spec, sort, false, null, false);
         }
 
         /// <summary>
@@ -194,7 +194,21 @@ namespace MongoDB
         /// <param name="returnNew">if set to <c>true</c> [return new].</param>
         /// <returns>A <see cref="Document"/></returns>
         public T FindAndModify(object document, object spec, bool returnNew){
-            return FindAndModify(document, spec, new Document(), returnNew);
+            return FindAndModify(document, spec, new Document(), returnNew,null,false);
+        }
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
+        /// <see cref="IndexOrder"/></param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        public T FindAndModify(object document, object spec, object sort, bool returnNew)
+        {
+            return FindAndModify(document, spec, sort, returnNew, null, false);
         }
 
         /// <summary>
@@ -206,8 +220,11 @@ namespace MongoDB
         /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
         /// <see cref="IndexOrder"/></param>
         /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <param name="fields">The fields.</param>
+        /// <param name="upsert">if set to <c>true</c> [upsert].</param>
         /// <returns>A <see cref="Document"/></returns>
-        public T FindAndModify(object document, object spec, object sort, bool returnNew){
+        public T FindAndModify(object document, object spec, object sort, bool returnNew,object fields,bool upsert)
+        {
             try
             {
                 var command = new Document
@@ -216,7 +233,9 @@ namespace MongoDB
                     {"query", spec},
                     {"update", EnsureUpdateDocument(document)},
                     {"sort", sort},
-                    {"new", returnNew}
+                    {"new", returnNew},
+                    {"fields", fields},
+                    {"upsert", upsert}
                 };
 
                 var response = _connection.SendCommand<FindAndModifyResult<T>>(_configuration.SerializationFactory,

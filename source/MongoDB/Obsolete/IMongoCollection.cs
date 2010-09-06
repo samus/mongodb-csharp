@@ -273,5 +273,19 @@ namespace MongoDB
         /// <param name = "document">The document.</param>
         /// <param name = "safemode">if set to <c>true</c> [safemode].</param>
         void Save(Document document, bool safemode);
+
+        /// <summary>
+        /// Executes a query and atomically applies a modifier operation to the first document returning the original document
+        /// by default.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="spec"><see cref="Document"/> to find the document.</param>
+        /// <param name="sort"><see cref="Document"/> containing the names of columns to sort on with the values being the
+        /// <see cref="IndexOrder"/></param>
+        /// <param name="returnNew">if set to <c>true</c> [return new].</param>
+        /// <param name="fields">The fields.</param>
+        /// <param name="upsert">if set to <c>true</c> [upsert].</param>
+        /// <returns>A <see cref="Document"/></returns>
+        Document FindAndModify(Document document, Document spec, Document sort, bool returnNew, Document fields, bool upsert);
     }
 }
