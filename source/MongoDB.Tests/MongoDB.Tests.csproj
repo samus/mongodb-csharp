@@ -108,6 +108,7 @@
     <Compile Include="IntegrationTests\Linq\MongoQueryTests.cs" />
     <Compile Include="IntegrationTests\Linq\MongoQueryProviderTests.cs" />
     <Compile Include="UnitTests\Configuration\MongoConfigurationTests.cs" />
+    <Compile Include="UnitTests\MongoTimestampTests.cs" />
     <Compile Include="UnitTests\Serialization\Builders\DocumentPropertyTests.cs" />
     <Compile Include="UnitTests\Serialization\Builders\EmbeddedClassPropertyTests.cs" />
     <Compile Include="UnitTests\Serialization\Builders\EnumerablePropertyTests.cs" />
