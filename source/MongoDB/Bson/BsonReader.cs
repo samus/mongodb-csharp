@@ -142,6 +142,9 @@ namespace MongoDB.Bson
                 case BsonType.Long:
                     Position += 8;
                     return _reader.ReadInt64();
+                case BsonType.Timestamp:
+                    Position += 8;
+                    return new MongoTimestamp(_reader.ReadInt64());
                 case BsonType.Date:
                     return ReadDateTime();
                 case BsonType.Oid:

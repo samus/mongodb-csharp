@@ -254,5 +254,13 @@ namespace MongoDB.UnitTests.Bson
 
             Assert.AreEqual("EwAAAAlkYXRlAIBFaoO2////AA==",bson);
         }
+
+        [Test]
+        public void TestCanWriteMongoTimestap()
+        {
+            var bson = Serialize(new Document("ts", new MongoTimestamp(long.MaxValue-10)));
+
+            Assert.AreEqual("EQAAABF0cwD1////////fwA=", bson);
+        }
     }
 }
