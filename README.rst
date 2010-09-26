@@ -42,6 +42,7 @@ The best point to start is our Wiki at http://github.com/mongodb-csharp/mongodb-
 Another good source for how to use the driver is its unit tests. Basic usage can be found in the TestCollection set of test cases.
 
 At the simplest query the database like this:
+```csharp
  using MongoDB;
  using(Mongo mongo = new Mongo("localhost"))
  {
@@ -52,6 +53,7 @@ At the simplest query the database like this:
 	 Document result = collection.FindOne(new Document("field1",10));	 
 	 Console.WriteLine(result["value"]);
  }
+```
 
 There is also a growing number of samples in the examples directory.
 
