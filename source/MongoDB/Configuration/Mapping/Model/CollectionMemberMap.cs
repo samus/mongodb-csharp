@@ -44,6 +44,10 @@ namespace MongoDB.Configuration.Mapping.Model
         public override object GetValue(object instance)
         {
             var elements = _collectionAdapter.GetElementsFromCollection(base.GetValue(instance));
+
+            if(elements == null)
+                return null;
+
             var list = new ArrayList();
             
             foreach (var element in elements)
