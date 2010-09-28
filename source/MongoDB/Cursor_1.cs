@@ -237,7 +237,8 @@ namespace MongoDB
         /// </summary>
         /// <value>The documents.</value>
         public IEnumerable<T> Documents {
-            get {
+            get
+            {
                 do
                 {
                     _reply = RetrieveData<T>();
@@ -245,10 +246,18 @@ namespace MongoDB
                     if(_reply == null)
                         throw new InvalidOperationException("Expecting reply but get null");
 
+                    if(_limit > 0 && CursorPosition > _limit)
+                    {
+                        foreach(var document in _reply.Documents.Take(_limit - _reply.StartingFrom))
+                            yield return document;
+                        
+                        yield break;
+                    }
+
                     foreach(var document in _reply.Documents)
                         yield return document;
                 }
-                while(Id > 0 && _limit<CursorPosition);
+                while(Id > 0);
 
                 if(!_keepCursor)
                     Dispose(true);
