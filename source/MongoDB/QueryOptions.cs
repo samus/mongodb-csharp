@@ -18,7 +18,7 @@
         /// <summary>
         /// Slave OK
         /// </summary>
-        SlaveOK = 4,
+        SlaveOk = 4,
         /// <summary>
         /// No cursor timeout
         /// </summary>
