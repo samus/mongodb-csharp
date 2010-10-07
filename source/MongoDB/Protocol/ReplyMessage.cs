@@ -37,7 +37,7 @@ namespace MongoDB.Protocol
         /// normally zero, non-zero on query failure     
         /// </summary>
         /// <value>The response flag.</value>
-        public int ResponseFlag { get; set; }
+        public ResponseFlags ResponseFlag { get; set; }
 
         /// <summary>
         /// id of the cursor created for this query response 
@@ -71,7 +71,7 @@ namespace MongoDB.Protocol
             stream = new BufferedStream(stream, 256);
             var reader = new BinaryReader(stream);
             Header = ReadHeader(reader);
-            ResponseFlag = reader.ReadInt32();
+            ResponseFlag = (ResponseFlags)reader.ReadInt32();
             CursorId = reader.ReadInt64();
             StartingFrom = reader.ReadInt32();
             NumberReturned = reader.ReadInt32();
