@@ -366,7 +366,18 @@ namespace MongoDB
                 Id = reply.CursorId;
 
                 if((reply.ResponseFlag & ResponseFlags.QueryFailure)!=0)
-                    throw new MongoException("Server returned query fail. Review server log to get the error.");
+                {
+                    var error = "Review server log to get the error.";
+
+                    if(reply.Documents.Length > 0)
+                    {
+                        var document = reply.Documents[0] as Document;
+                        if(document != null)
+                            error = Convert.ToString(document["$err"]);
+                    }
+    
+                    throw new MongoException("The query failed on server. "+error);
+                }
                 
                 return reply;
             }
