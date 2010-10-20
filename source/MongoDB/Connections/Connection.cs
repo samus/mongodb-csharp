@@ -247,11 +247,27 @@ namespace MongoDB.Connections
         public T SendCommand<T>(ISerializationFactory factory, string database, Type rootType, object command) 
             where T : CommandResultBase
         {
+            return SendCommand<T>(factory, database, rootType, command, true);
+        }
+
+        /// <summary>
+        /// Sends the command.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="factory">The factory.</param>
+        /// <param name="database">The database.</param>
+        /// <param name="rootType">Type of serialization root.</param>
+        /// <param name="command">The spec.</param>
+        /// <param name="throw">if set to <c>true</c> [@throw].</param>
+        /// <returns></returns>
+        public T SendCommand<T>(ISerializationFactory factory, string database, Type rootType, object command, bool @throw)
+            where T : CommandResultBase
+        {
             AuthenticateIfRequired(database);
 
             var result = SendCommandCore<T>(factory, database, rootType, command);
 
-            if(!result.Success)
+            if(@throw && !result.Success)
                 throw new MongoCommandException(result.ErrorMessage, null, null);
 
             return result;
