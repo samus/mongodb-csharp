@@ -631,8 +631,60 @@ namespace MongoDB
         /// <returns>
         /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<KeyValuePair<string, object>> GetEnumerator(){
-            return _orderedKeys.Select(orderedKey => new KeyValuePair<string, object>(orderedKey, _dictionary[orderedKey])).GetEnumerator();
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
+        private class Enumerator : IEnumerator<KeyValuePair<string, object>>, IDictionaryEnumerator
+        {
+            private readonly Document _doc;
+            private readonly IEnumerator<string> _keysEnum;
+            public Enumerator(Document doc)
+            {
+                _doc = doc;
+                _keysEnum = doc._orderedKeys.GetEnumerator();
+            }
+
+            public void Dispose()
+            {
+                _keysEnum.Dispose();
+            }
+
+            public bool MoveNext()
+            {
+                return _keysEnum.MoveNext();
+            }
+
+            public void Reset()
+            {
+                _keysEnum.Reset();
+            }
+
+            public KeyValuePair<string, object> Current
+            {
+                get { return new KeyValuePair<string, object>(_keysEnum.Current, _doc[_keysEnum.Current]); }
+            }
+
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
+
+            public object Key
+            {
+                get { return _keysEnum.Current; }
+            }
+
+            public object Value
+            {
+                get { return _doc[_keysEnum.Current]; }
+            }
+
+            public DictionaryEntry Entry
+            {
+                get { return new DictionaryEntry(_keysEnum.Current, _doc[_keysEnum.Current]); }
+            }
         }
 
         /// <summary>
