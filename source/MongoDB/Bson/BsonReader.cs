@@ -19,6 +19,7 @@ namespace MongoDB.Bson
         private readonly Stream _stream;
         private readonly bool _readLocalTime;
 
+        private Decoder _decoder;
         private byte[] _byteBuffer;
         private char[] _charBuffer;
 
@@ -194,40 +195,34 @@ namespace MongoDB.Bson
         public string ReadString(){
             EnsureBuffers();
 
-            var builder = new StringBuilder();
-            var offset = 0;
-            do{
-                var count = offset;
-                byte readByte = 0;
-
-                while(count < MaxCharBytesSize && (readByte = _reader.ReadByte()) > 0)
-                    _byteBuffer[count++] = readByte;
-                
-                var byteCount = count - offset;
-                Position += byteCount;
-
-                if(count == 0)
-                    break; //first byte read was the terminator.
-                
-                var lastFullCharStop = GetLastFullCharStop(count - 1);
-
-                var charCount = Encoding.UTF8.GetChars(_byteBuffer, 0, lastFullCharStop + 1, _charBuffer, 0);
-                builder.Append(_charBuffer, 0, charCount);
-
-                if(lastFullCharStop < byteCount - 1){
-                    offset = byteCount - lastFullCharStop - 1;
-                    //Copy end bytes to begining
-                    Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
-                }
-                else
-                    offset = 0;
-
-                if(readByte == 0)
-                    break;
+            int totalBytesRead = 0;
+            StringBuilder builder = null;
+            try
+            {
+                do
+                {
+                    int count = 0;
+                    byte readByte = 0;
+                    while (count < MaxCharBytesSize && (readByte = _reader.ReadByte()) > 0)
+                        _byteBuffer[count++] = readByte;
+                    var charCount = _decoder.GetChars(_byteBuffer, 0, count, _charBuffer, 0,
+                                                      readByte==0);
+                    totalBytesRead += count;
+                    if (builder == null)
+                    {
+                        if (readByte == 0)
+                            return new string(_charBuffer, 0, charCount);
+                        builder = new StringBuilder(charCount);
+                    }
+                    builder.Append(_charBuffer, 0, charCount);
+                    if (readByte == 0)
+                        return builder.ToString();
+                } while (true);
             }
-            while(true);
-            Position++;
-            return builder.ToString();
+            finally
+            {
+                Position += totalBytesRead+1;
+            }
         }
 
         /// <summary>
@@ -254,40 +249,31 @@ namespace MongoDB.Bson
 
             EnsureBuffers();
 
-            var builder = new StringBuilder(length);
-            
-            var totalBytesRead = 0;
-            var offset = 0;
-            do{
-                var count = ((length - totalBytesRead) > MaxCharBytesSize - offset)
-                                ? (MaxCharBytesSize - offset)
-                                :
-                                    (length - totalBytesRead);
-
-                var byteCount = _reader.BaseStream.Read(_byteBuffer, offset, count);
-                totalBytesRead += byteCount;
-                byteCount += offset;
-
-                var lastFullCharStop = GetLastFullCharStop(byteCount - 1);
-
-                if(byteCount == 0)
-                    throw new EndOfStreamException("Unable to read beyond the end of the stream.");
-
-                var charCount = Encoding.UTF8.GetChars(_byteBuffer, 0, lastFullCharStop + 1, _charBuffer, 0);
-                builder.Append(_charBuffer, 0, charCount);
-
-                if(lastFullCharStop < byteCount - 1){
-                    offset = byteCount - lastFullCharStop - 1;
-                    //Copy end bytes to begining
-                    Array.Copy(_byteBuffer, lastFullCharStop + 1, _byteBuffer, 0, offset);
-                }
-                else
-                    offset = 0;
+            int totalBytesRead = 0;
+            StringBuilder builder = null;
+            try
+            {
+                do
+                {
+                    var count = Math.Min(length - totalBytesRead, MaxCharBytesSize);
+                    var byteCount = _reader.BaseStream.Read(_byteBuffer, 0, count);
+                    var charCount = _decoder.GetChars(_byteBuffer, 0, byteCount, _charBuffer, 0,
+                                                      totalBytesRead + byteCount == length);
+                    totalBytesRead += byteCount;
+                    if (builder == null)
+                    {
+                        if (totalBytesRead == length)
+                            return new string(_charBuffer, 0, charCount);
+                        builder = new StringBuilder(length);
+                    }
+                    builder.Append(_charBuffer, 0, charCount);
+                    if (totalBytesRead == length)
+                        return builder.ToString();
+                } while (true);
+            } finally
+            {
+                Position += totalBytesRead;
             }
-            while(totalBytesRead < length);
-
-            Position += totalBytesRead;
-            return builder.ToString();
         }
 
         /// <summary>
@@ -402,7 +388,9 @@ namespace MongoDB.Bson
         /// Ensures the buffers.
         /// </summary>
         private void EnsureBuffers(){
-            if(_byteBuffer == null)
+            if (_decoder==null)
+                _decoder = Encoding.UTF8.GetDecoder();
+            if (_byteBuffer == null)
                 _byteBuffer = new byte[MaxCharBytesSize];
             if(_charBuffer != null)
                 return;
