@@ -109,7 +109,7 @@ namespace MongoDB.Bson
             var arrayType = GetTypeForIEnumerable(doc);
             var listType = genericListType.MakeGenericType(arrayType);
 
-            var list = (IList)Activator.CreateInstance(listType);
+            var list = (IList)Activator.CreateInstance(listType,doc.Count);
 
             foreach(var key in doc.Keys)
                 list.Add(doc[key]);
