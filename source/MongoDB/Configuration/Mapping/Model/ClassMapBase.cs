@@ -148,7 +148,7 @@ namespace MongoDB.Configuration.Mapping.Model
         ///   Creates an instance of the entity.
         /// </summary>
         /// <returns></returns>
-        public virtual object CreateInstance()
+        public object CreateInstance()
         {
             if(!_hasProtectedOrPublicConstructor)
                 throw new MissingMethodException("No public or protected constructor found on type " + ClassType.FullName);

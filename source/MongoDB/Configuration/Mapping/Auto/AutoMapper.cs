@@ -75,22 +75,12 @@ namespace MongoDB.Configuration.Mapping.Auto
         /// </summary>
         /// <param name = "classType">Type of the entity.</param>
         /// <returns></returns>
-        private IClassMap CreateClassMap(Type classType)
-        {
-            ClassMapBase classMap;
-            try
+        private ClassMap CreateClassMap(Type classType){
+            var classMap = new ClassMap(classType)
             {
-                classMap = (ClassMapBase)Activator.CreateInstance(typeof(ClassMap<>).MakeGenericType(classType));
-                classMap.CollectionName = _profile.GetCollectionName(classType);
-                classMap.DiscriminatorAlias = _profile.GetDiscriminatorAlias(classType);
-            }
-            catch
-            {
-                classMap = new ClassMap(classType) {
-                    CollectionName = _profile.GetCollectionName(classType),
-                    DiscriminatorAlias = _profile.GetDiscriminatorAlias(classType)
-                };
-            }
+                CollectionName = _profile.GetCollectionName(classType),
+                DiscriminatorAlias = _profile.GetDiscriminatorAlias(classType)
+            };
             //if(!classType.IsInterface && !classType.IsAbstract)
             //    classMap.Discriminator = _profile.GetDiscriminator(classType);
 

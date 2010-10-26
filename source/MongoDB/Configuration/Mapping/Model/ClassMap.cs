@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Linq;
 
 namespace MongoDB.Configuration.Mapping.Model
 {
     /// <summary>
-    /// 
     /// </summary>
     public class ClassMap : ClassMapBase
     {
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "ClassMap&lt;T&gt;" /> class.
+        ///   Initializes a new instance of the <see cref = "ClassMap" /> class.
         /// </summary>
-        public ClassMap(Type type)
-            : base(type)
-        {
+        /// <param name = "classType">Type of the entity.</param>
+        public ClassMap(Type classType)
+            : base(classType){
         }
 
         /// <summary>
@@ -46,37 +44,8 @@ namespace MongoDB.Configuration.Mapping.Model
         /// <value>
         ///   <c>true</c> if this class map is a subclass; otherwise, <c>false</c>.
         /// </value>
-        public override bool IsSubClass
-        {
+        public override bool IsSubClass{
             get { return false; }
-        }
-
-    }
-
-    /// <summary>
-    /// </summary>
-    public class ClassMap<T> : ClassMap where T:new()
-    {
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "ClassMap&lt;T&gt;" /> class.
-        /// </summary>
-        public ClassMap()
-            : base(typeof(T))
-        {
-        }
-
-        /// <summary>
-        /// Creates an instance of the entity.
-        /// </summary>
-        /// <returns>a new entity instance</returns>
-        public override object CreateInstance()
-        {
-            T instance = new T();
-
-            //initialize all default values in case something isn't specified when reader the document.
-            foreach (var memberMap in MemberMaps.Where(x => x.DefaultValue != null))
-                memberMap.SetValue(instance, memberMap.DefaultValue);
-            return instance;
         }
     }
 }
