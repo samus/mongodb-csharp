@@ -167,6 +167,15 @@ namespace MongoDB.Linq.Translators
                             return m;
                         }
                         throw new NotSupportedException("The method Count with a predicate is not supported for field.");
+                    case "SequenceEqual":
+                        field = m.Arguments[0] as FieldExpression;
+                        if (field != null)
+                        {
+                            VisitPredicate(field, true);
+                            AddCondition(EvaluateConstant<object>(m.Arguments[1]));
+                            PopConditionScope();
+                        }
+                        return m;
                 }
             }
             else if(typeof(ICollection<>).IsOpenTypeAssignableFrom(m.Method.DeclaringType) || typeof(IList).IsAssignableFrom(m.Method.DeclaringType))
