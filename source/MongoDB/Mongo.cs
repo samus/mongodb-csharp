@@ -9,7 +9,7 @@ namespace MongoDB
     /// <summary>
     ///   Description of Mongo.
     /// </summary>
-    public class Mongo : IDisposable, IMongo
+    public class Mongo : IMongo
     {
         private readonly MongoConfiguration _configuration;
         private readonly Connection _connection;
@@ -18,7 +18,7 @@ namespace MongoDB
         ///   Initializes a new instance of the <see cref = "Mongo" /> class.
         /// </summary>
         public Mongo()
-            : this(new MongoConfiguration())
+            : this(MongoConfiguration.Default)
         {
         }
 
@@ -27,7 +27,7 @@ namespace MongoDB
         /// </summary>
         /// <param name = "connectionString">The connection string.</param>
         public Mongo(string connectionString)
-            : this(new MongoConfiguration {ConnectionString = connectionString})
+            : this(MongoConfiguration.Default.Clone(connectionString))
         {
         }
 

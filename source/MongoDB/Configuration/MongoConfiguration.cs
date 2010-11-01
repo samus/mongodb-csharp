@@ -48,6 +48,24 @@ namespace MongoDB.Configuration
             }
         }
 
+        /// <summary>
+        /// Clones the specified configuration with a new 
+        /// connection string.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        /// <returns></returns>
+        public MongoConfiguration Clone(string connectionString)
+        {
+            return new MongoConfiguration
+            {
+                ConnectionString = connectionString,
+                MappingStore = _mappingStore,
+                ReadLocalTime = _readLocalTime,
+                SerializationFactory = _serializationFactory,
+                IsModifiable = false
+            };
+        }
+
         ///<summary>
         ///</summary>
         public bool IsModifiable { get; private set; }
