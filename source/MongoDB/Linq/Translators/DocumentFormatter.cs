@@ -138,7 +138,6 @@ namespace MongoDB.Linq.Translators
                         PopConditionScope(); //elemMatch
                         PopConditionScope(); //field
                         return m;
-
                     case "Contains":
                         if (m.Arguments.Count != 2)
                             throw new NotSupportedException("Only the Contains method with 2 arguments is supported.");

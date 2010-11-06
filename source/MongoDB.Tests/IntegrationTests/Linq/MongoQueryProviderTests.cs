@@ -24,7 +24,7 @@ namespace MongoDB.IntegrationTests.Linq
             var people = Collection.Linq().Where(x => !x.PrimaryAddress.IsInternational);
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
-            Assert.AreEqual(new Document("$not", new Document("PrimaryAddress.IsInternational", true)), queryObject.Query);
+            Assert.AreEqual(new Document("PrimaryAddress.IsInternational", false), queryObject.Query);
         }
 
         [Test]
