@@ -94,6 +94,7 @@
     <Compile Include="IntegrationTests\SecondServer\TestPooledConnectionFactory.cs" />
     <Compile Include="IntegrationTests\Linq\LinqDomain.cs" />
     <Compile Include="IntegrationTests\Linq\MapReduceTests.cs" />
+    <Compile Include="Issues\Issue19.cs" />
     <Compile Include="UnitTests\Bson\BsonTestBase.cs" />
     <Compile Include="UnitTests\Bson\TestBsonBinary.cs" />
     <Compile Include="UnitTests\Bson\TestRoundTrips.cs" />

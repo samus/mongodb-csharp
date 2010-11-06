@@ -183,12 +183,24 @@ namespace MongoDB.Linq.Translators
                 {
                     case "Contains":
                         field = m.Arguments[0] as FieldExpression;
-                        if (field == null)
-                            throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
-                        VisitPredicate(field, true);
-                        AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
-                        PopConditionScope();
-                        return m;
+                        if (field != null)
+                        {
+                            VisitPredicate(field, true);
+                            AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
+                            PopConditionScope();
+                            return m;
+                        }
+
+                        field = m.Object as FieldExpression;
+                        if (field != null)
+                        {
+                            VisitPredicate(m.Object, true);
+                            AddCondition(EvaluateConstant<object>(m.Arguments[0]));
+                            PopConditionScope();
+                            return m;
+                        }
+
+                        throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
                 }
             }
             else if (m.Method.DeclaringType == typeof(string))
