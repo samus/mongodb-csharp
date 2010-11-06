@@ -153,6 +153,20 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void NestedArray_Contains()
+        {
+            var people = from p in Collection.Linq()
+                         where p.EmployerIds.Contains(1)
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("EmployerIds", 1), queryObject.Query);
+        }
+
+        [Test]
         public void NestedArray_Length()
         {
             var people = from p in Collection.Linq()

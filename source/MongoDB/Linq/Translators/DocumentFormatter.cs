@@ -243,6 +243,28 @@ namespace MongoDB.Linq.Translators
                     return m;
                 }
             }
+            else if (m.Method.DeclaringType.IsArray)
+            {
+                if (m.Method.Name == "Contains")
+                {
+                    field = m.Object as FieldExpression;
+                    if (field != null)
+                    {
+                        VisitPredicate(field, true);
+                        AddCondition(EvaluateConstant<object>(m.Arguments[0]));
+                        PopConditionScope();
+                        return m;
+                    }
+
+                    field = m.Arguments[0] as FieldExpression;
+                    if (field == null)
+                        throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
+                    VisitPredicate(field, true);
+                    AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object));
+                    PopConditionScope();
+                    return m;
+                }
+            }
 
             throw new NotSupportedException(string.Format("The method {0} is not supported.", m.Method.Name));
         }
