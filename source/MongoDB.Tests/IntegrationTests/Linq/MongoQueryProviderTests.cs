@@ -40,8 +40,8 @@ namespace MongoDB.IntegrationTests.Linq
         public void Chained()
         {
             var people = Collection.Linq()
-                .Select(x => new {Name = x.FirstName + x.LastName, x.Age})
-                .Where(x => x.Age > 21)
+                .Select(x => new {Name = x.FirstName + x.LastName, fluffy = x.Age})
+                .Where(x => x.fluffy > 21)
                 .Select(x => x.Name);
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
