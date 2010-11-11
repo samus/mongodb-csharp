@@ -61,7 +61,7 @@ namespace MongoDB.Connections
             var endPoint = GetNextEndPoint();
             try
             {
-                return new RawConnection(endPoint, Builder.ConnectionTimeout);
+                return new RawConnection(endPoint, Builder.ConnectionTimeout, Builder.ConnectionLifetime);
             }catch(SocketException exception){
                 throw new MongoConnectionException("Failed to connect to server " + endPoint, ConnectionString, endPoint, exception);
             }
