@@ -114,12 +114,21 @@ namespace MongoDB.IntegrationTests
         }
 
         [Test]
-        public void TestExplain()
+        public void TestExplainWithSort()
         {
             var exp = DB["reads"].FindAll().Limit(5).Skip(5).Sort("x").Explain();
             Assert.IsTrue(exp.ContainsKey("cursor"));
-            Assert.IsTrue(exp.ContainsKey("n"));
-            Assert.IsTrue(exp.ContainsKey("nscanned"));
+            Assert.AreEqual(9999, exp.Get("nscanned"));
+            Assert.AreEqual(10,exp.Get("n"));
+        }
+
+        [Test]
+        public void TestExplain()
+        {
+            var exp = DB["reads"].FindAll().Limit(5).Skip(5).Explain();
+            Assert.IsTrue(exp.ContainsKey("cursor"));
+            Assert.AreEqual(10, exp.Get("nscanned"));
+            Assert.AreEqual(5, exp.Get("n"));
         }
 
         [Test]
