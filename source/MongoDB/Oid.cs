@@ -99,7 +99,7 @@ namespace MongoDB
         {
             if(ReferenceEquals(other, null))
                 return 1;
-            var otherBytes = other.ToByteArray();
+            var otherBytes = other._bytes;
             for(var x = 0; x < _bytes.Length; x++)
                 if(_bytes[x] < otherBytes[x])
                     return -1;
