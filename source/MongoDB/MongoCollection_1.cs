@@ -608,7 +608,7 @@ namespace MongoDB
         /// <returns></returns>
         private object EnsureUpdateDocument(object document)
         {
-            var descriptor = _configuration.SerializationFactory.GetObjectDescriptor(typeof(T));
+            var descriptor = _configuration.SerializationFactory.GetObjectDescriptor(document.GetType());
 
             var foundOp = descriptor.GetMongoPropertyNames(document)
                 .Any(name => name.IndexOf('$') == 0);
