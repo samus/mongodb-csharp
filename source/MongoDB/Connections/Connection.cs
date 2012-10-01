@@ -97,20 +97,20 @@ namespace MongoDB.Connections
         {
             EnsureOpenConnection();
 
-            try
+            lock(_connection)
             {
-                var reply = new ReplyMessage<T>(readerSettings);
-                lock(_connection)
-                {
-                    message.Write(_connection.GetStream());
-                    reply.Read(_connection.GetStream());
-                }
-                return reply;
-            }
-            catch(IOException)
-            {
-                ReplaceInvalidConnection();
-                throw;
+                try
+                    {
+                        var reply = new ReplyMessage<T>(readerSettings);
+                        message.Write(_connection.GetStream());
+                        reply.Read(_connection.GetStream());
+                        return reply;
+                    }
+                    catch(IOException)
+                    {
+                        ReplaceInvalidConnection();
+                        throw;
+                    }
             }
         }
 
@@ -133,20 +133,20 @@ namespace MongoDB.Connections
         internal void SendMessageCore(IRequestMessage message)
         {
             EnsureOpenConnection();
-
-            try
+            lock(_connection)
             {
-                lock(_connection)
-                {
-                    message.Write(_connection.GetStream());
-                }
+                try
+                    {
+                        message.Write(_connection.GetStream());
+                    }
+                    catch(IOException)
+                    {
+                        //Sending doesn't seem to always trigger the detection of a closed socket.
+                        ReplaceInvalidConnection();
+                        throw;
+                    }
             }
-            catch(IOException)
-            {
-                //Sending doesn't seem to always trigger the detection of a closed socket.
-                ReplaceInvalidConnection();
-                throw;
-            }
+            
         }
 
         /// <summary>
