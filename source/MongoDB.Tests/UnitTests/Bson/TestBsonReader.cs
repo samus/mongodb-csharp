@@ -283,5 +283,18 @@ namespace MongoDB.UnitTests.Bson
 
             Assert.AreEqual(new DateTime(1960,1,1).ToUniversalTime(),document["date"]);
         }
+
+        [Test]
+        public void TestCanReadMongoTimestamp()
+        {
+            const string bson = "EQAAABF0cwD1////////fwA=";
+
+            var document = Deserialize(bson);
+
+            Assert.IsNotNull(document);
+            var ts = (MongoTimestamp)document["ts"];
+            Assert.IsNotNull(ts);
+            Assert.AreEqual(long.MaxValue-10,ts.Value);
+        }
     }
 }

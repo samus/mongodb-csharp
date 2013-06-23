@@ -138,7 +138,6 @@ namespace MongoDB.Linq.Translators
                         PopConditionScope(); //elemMatch
                         PopConditionScope(); //field
                         return m;
-
                     case "Contains":
                         if (m.Arguments.Count != 2)
                             throw new NotSupportedException("Only the Contains method with 2 arguments is supported.");
@@ -167,6 +166,15 @@ namespace MongoDB.Linq.Translators
                             return m;
                         }
                         throw new NotSupportedException("The method Count with a predicate is not supported for field.");
+                    case "SequenceEqual":
+                        field = m.Arguments[0] as FieldExpression;
+                        if (field != null)
+                        {
+                            VisitPredicate(field, true);
+                            AddCondition(EvaluateConstant<object>(m.Arguments[1]));
+                            PopConditionScope();
+                        }
+                        return m;
                 }
             }
             else if(typeof(ICollection<>).IsOpenTypeAssignableFrom(m.Method.DeclaringType) || typeof(IList).IsAssignableFrom(m.Method.DeclaringType))
@@ -175,12 +183,24 @@ namespace MongoDB.Linq.Translators
                 {
                     case "Contains":
                         field = m.Arguments[0] as FieldExpression;
-                        if (field == null)
-                            throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
-                        VisitPredicate(field, true);
-                        AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
-                        PopConditionScope();
-                        return m;
+                        if (field != null)
+                        {
+                            VisitPredicate(field, true);
+                            AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object).OfType<object>().ToArray());
+                            PopConditionScope();
+                            return m;
+                        }
+
+                        field = m.Object as FieldExpression;
+                        if (field != null)
+                        {
+                            VisitPredicate(m.Object, true);
+                            AddCondition(EvaluateConstant<object>(m.Arguments[0]));
+                            PopConditionScope();
+                            return m;
+                        }
+
+                        throw new InvalidQueryException(string.Format("The mongo field must be the argument in method {0}.", m.Method.Name));
                 }
             }
             else if (m.Method.DeclaringType == typeof(string))
@@ -230,6 +250,28 @@ namespace MongoDB.Linq.Translators
                         regexOptions = EvaluateConstant<RegexOptions>(m.Arguments[2]);
 
                     AddCondition(new MongoRegex(value, regexOptions));
+                    PopConditionScope();
+                    return m;
+                }
+            }
+            else if (m.Method.DeclaringType.IsArray)
+            {
+                if (m.Method.Name == "Contains")
+                {
+                    field = m.Object as FieldExpression;
+                    if (field != null)
+                    {
+                        VisitPredicate(field, true);
+                        AddCondition(EvaluateConstant<object>(m.Arguments[0]));
+                        PopConditionScope();
+                        return m;
+                    }
+
+                    field = m.Arguments[0] as FieldExpression;
+                    if (field == null)
+                        throw new InvalidQueryException("A mongo field must be a part of the Contains method.");
+                    VisitPredicate(field, true);
+                    AddCondition("$in", EvaluateConstant<IEnumerable>(m.Object));
                     PopConditionScope();
                     return m;
                 }

@@ -6,10 +6,10 @@ namespace MongoDB.Configuration.Mapping.Util
     {
         public static object Convert(object value, Type type)
         {
-            var valueType = value != null ? value.GetType() : typeof(object);
+            if(value == null)
+                return type.IsValueType ? Activator.CreateInstance(type) : null;
 
-            if(value==null)
-                return null;
+            var valueType = value.GetType();
 
             if(valueType != type)
                 try
@@ -43,6 +43,9 @@ namespace MongoDB.Configuration.Mapping.Util
 
         public static Array ConvertArray(object[] elements, Type type)
         {
+            if(elements == null)
+                return null;
+
             var array = Array.CreateInstance(type, elements.Length);
 
             for(var i = 0; i < elements.Length; i++)

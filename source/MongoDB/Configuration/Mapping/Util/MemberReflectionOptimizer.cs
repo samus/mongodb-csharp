@@ -13,6 +13,7 @@ namespace MongoDB.Configuration.Mapping.Util
     {
         private static readonly Dictionary<string, Func<object, object>> GetterCache = new Dictionary<string, Func<object, object>>();
         private static readonly Dictionary<string, Action<object, object>> SetterCache = new Dictionary<string, Action<object, object>>();
+        private static readonly Dictionary<RuntimeTypeHandle, Func<object>> CreatorCache = new Dictionary<RuntimeTypeHandle, Func<object>>();
         private static readonly object SyncObject = new object();
 
         /// <summary>
@@ -222,6 +223,31 @@ namespace MongoDB.Configuration.Mapping.Util
             }
 
             return setter;
+        }
+
+        /// <summary>
+        /// Gets an instance creator
+        /// </summary>
+        /// <param name="type">Type to instantiate</param>
+        /// <returns>A delegate to create an object of the given type</returns>
+        public static Func<object> GetCreator(Type type)
+        {
+            Func<object> creator;
+            RuntimeTypeHandle runtimeTypeHandle = type.TypeHandle;
+            lock (SyncObject)
+            {
+                if (CreatorCache.TryGetValue(runtimeTypeHandle, out creator))
+                    return creator;
+            }
+            ConstructorInfo defaultConstructor = type.GetConstructor(BindingFlags.Instance |
+                                BindingFlags.Public |
+                                BindingFlags.NonPublic, null, new Type[0], new ParameterModifier[0]);
+            creator = Expression.Lambda<Func<object>>(Expression.New(defaultConstructor)).Compile();
+            lock (SyncObject)
+            {
+                CreatorCache[runtimeTypeHandle] = creator;
+            }
+            return creator;
         }
 
         /// <summary>

@@ -119,7 +119,7 @@ namespace MongoDB.Connections
                 return false;
 
             if(Builder.ConnectionLifetime != TimeSpan.Zero)
-                if(connection.CreationTime.Add(Builder.ConnectionLifetime) < DateTime.Now)
+                if(connection.Lifetime < DateTime.UtcNow)
                     return false;
 
             return true;

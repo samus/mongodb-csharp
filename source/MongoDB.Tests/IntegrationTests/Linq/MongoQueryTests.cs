@@ -201,6 +201,15 @@ namespace MongoDB.IntegrationTests.Linq
         }
 
         [Test]
+        public void LocalEnumerable_SequenceEqual()
+        {
+            var ids = new[] {1, 2};
+            var people = Collection.Linq().Where(x => x.EmployerIds.SequenceEqual(ids)).ToList();
+
+            Assert.AreEqual(1, people.Count);
+        }
+
+        [Test]
         public void LocalEnumerable_Contains()
         {
             var names = new[] { "Joe", "Bob" };

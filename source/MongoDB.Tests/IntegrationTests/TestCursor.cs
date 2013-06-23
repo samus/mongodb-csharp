@@ -9,7 +9,7 @@ namespace MongoDB.IntegrationTests
     {
         public override string TestCollections
         {
-            get { return "sorts,hintindex,smallreads,reads"; }
+            get { return "sorts,hintindex,smallreads,reads,largereads"; }
         }
 
         public override void OnInit()
@@ -23,6 +23,10 @@ namespace MongoDB.IntegrationTests
             var reads = DB["reads"];
             for(var j = 1; j < 10000; j++)
                 reads.Insert(new Document {{"x", 4}, {"h", "hi"}, {"j", j}});
+
+            var properties = Enumerable.Range(1, 500).ToDictionary(x => x.ToString(), x => (object)x).ToArray();
+            var largereads = DB["largereads"];
+            largereads.Insert(Enumerable.Range(1, 3000).Select(i => new Document(properties)));
         }
 
         [Test]
@@ -34,6 +38,21 @@ namespace MongoDB.IntegrationTests
             var reads = c.Documents.Count();
             Assert.IsTrue(reads > 0, "No documents were returned.");
             Assert.AreEqual(5, reads);
+        }
+
+        [Test]
+        public void TestCanLimitWithLargeResultSet()
+        {
+            var count = DB["largereads"].FindAll().Limit(2000).Documents.Count();
+
+            Assert.AreEqual(2000,count);
+        }
+
+        [Test]
+        [ExpectedException(typeof(MongoException))]
+        public void TestThrowsAnExceptionIfServerReturnsAQueryFailure()
+        {
+            DB["largereads"].FindAll().Sort("j").Documents.Any();
         }
 
         [Test]
@@ -59,11 +78,10 @@ namespace MongoDB.IntegrationTests
             foreach(var doc in c.Documents)
             {
                 reads++;
-                if(c.Id != id)
-                {
-                    idchanges++;
-                    id = c.Id;
-                }
+                if(c.Id == id)
+                    continue;
+                idchanges++;
+                id = c.Id;
             }
             Assert.IsTrue(reads > 0, "No documents were returned.");
             Assert.IsTrue(idchanges > 0, String.Format("ReadMore message never sent. {0} changes seen", idchanges));
@@ -96,12 +114,21 @@ namespace MongoDB.IntegrationTests
         }
 
         [Test]
-        public void TestExplain()
+        public void TestExplainWithSort()
         {
             var exp = DB["reads"].FindAll().Limit(5).Skip(5).Sort("x").Explain();
             Assert.IsTrue(exp.ContainsKey("cursor"));
-            Assert.IsTrue(exp.ContainsKey("n"));
-            Assert.IsTrue(exp.ContainsKey("nscanned"));
+            Assert.AreEqual(9999, exp.Get("nscanned"));
+            Assert.AreEqual(10,exp.Get("n"));
+        }
+
+        [Test]
+        public void TestExplain()
+        {
+            var exp = DB["reads"].FindAll().Limit(5).Skip(5).Explain();
+            Assert.IsTrue(exp.ContainsKey("cursor"));
+            Assert.AreEqual(10, exp.Get("nscanned"));
+            Assert.AreEqual(5, exp.Get("n"));
         }
 
         [Test]

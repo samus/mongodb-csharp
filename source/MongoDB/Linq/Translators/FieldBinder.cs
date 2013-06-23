@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using MongoDB.Linq.Expressions;
 using MongoDB.Util;
+using System.Reflection;
 
 namespace MongoDB.Linq.Translators
 {
@@ -18,11 +19,13 @@ namespace MongoDB.Linq.Translators
         private Alias _alias;
         private FieldFinder _finder;
         private Type _elementType;
+        private Dictionary<MemberInfo, Expression> _memberMap;
 
         public Expression Bind(Expression expression, Type elementType)
         {
             _alias = new Alias();
-            _finder = new FieldFinder();
+            _memberMap = new Dictionary<MemberInfo, Expression>();
+            _finder = new FieldFinder(_memberMap);
             _elementType = elementType;
             return Visit(expression);
         }
@@ -39,6 +42,22 @@ namespace MongoDB.Linq.Translators
             return base.Visit(exp);
         }
 
+        protected override NewExpression VisitNew(NewExpression nex)
+        {
+            var newNex = base.VisitNew(nex);
+            if (newNex != nex && newNex.Members != null) //we only get Members when it is an anonymous type
+            {
+                var properties = newNex.Type.GetProperties();
+                var joined = from param in newNex.Constructor.GetParameters()
+                             join prop in properties on param.Name equals prop.Name
+                             select new { Parameter = param, Property = prop };
+
+                foreach (var j in joined)
+                    _memberMap[j.Property] = newNex.Arguments[j.Parameter.Position];
+            }
+            return newNex;
+        }
+
         protected override Expression VisitParameter(ParameterExpression p)
         {
             if(p.Type == _elementType)
@@ -51,6 +70,12 @@ namespace MongoDB.Linq.Translators
         {
             private Stack<string> _fieldParts;
             private bool _isBlocked;
+            private readonly Dictionary<MemberInfo, Expression> _memberMap;
+
+            public FieldFinder(Dictionary<MemberInfo, Expression> memberMap)
+            {
+                _memberMap = memberMap;
+            }
 
             public string Find(Expression expression)
             {
@@ -98,9 +123,20 @@ namespace MongoDB.Linq.Translators
                 var declaringType = m.Member.DeclaringType;
                 if (!IsNativeToMongo(declaringType) && !IsCollection(declaringType))
                 {
-                    _fieldParts.Push(m.Member.Name);
-                    Visit(m.Expression);
-                    return m;
+                    Expression e;
+                    if (_memberMap.TryGetValue(m.Member, out e) && e is FieldExpression)
+                    {
+                        _fieldParts.Push(((FieldExpression)e).Name);
+                        _memberMap[m.Member] = e;
+                        Visit(m.Expression);
+                        return m;
+                    }
+                    else if (e == null)
+                    {
+                        _fieldParts.Push(m.Member.Name);
+                        Visit(m.Expression);
+                        return m;
+                    }
                 }
 
                 _isBlocked = true;

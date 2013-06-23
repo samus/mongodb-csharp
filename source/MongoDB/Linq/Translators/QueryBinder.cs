@@ -202,6 +202,17 @@ namespace MongoDB.Linq.Translators
             return _map.TryGetValue(p, out e) ? e : p;
         }
 
+        protected override Expression VisitUnary(UnaryExpression u)
+        {
+            switch (u.NodeType)
+            {
+                case ExpressionType.Not:
+                    return Visit(Expression.Equal(u.Operand, Expression.Constant(false)));
+            }
+
+            return u;
+        }
+
         private Expression BindAggregate(Expression source, MethodInfo method, LambdaExpression argument, bool isRoot)
         {
             var returnType = method.ReturnType;

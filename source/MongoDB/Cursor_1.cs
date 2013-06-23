@@ -207,8 +207,11 @@ namespace MongoDB
         /// <returns></returns>
         public Document Explain(){
             TryModify();
-            _specOpts["$explain"] = true;
 
+            var savedLimit = _limit;
+
+            _specOpts["$explain"] = true;
+            _limit = _limit * -1;
             var explainResult = RetrieveData<Document>();
             try
             {
@@ -223,6 +226,8 @@ namespace MongoDB
             {
                 if(explainResult.CursorId > 0)
                     KillCursor(explainResult.CursorId);
+
+                _limit = savedLimit;
             }
         }
 
@@ -237,7 +242,8 @@ namespace MongoDB
         /// </summary>
         /// <value>The documents.</value>
         public IEnumerable<T> Documents {
-            get {
+            get
+            {
                 do
                 {
                     _reply = RetrieveData<T>();
@@ -245,10 +251,18 @@ namespace MongoDB
                     if(_reply == null)
                         throw new InvalidOperationException("Expecting reply but get null");
 
+                    if(_limit > 0 && CursorPosition > _limit)
+                    {
+                        foreach(var document in _reply.Documents.Take(_limit - _reply.StartingFrom))
+                            yield return document;
+                        
+                        yield break;
+                    }
+
                     foreach(var document in _reply.Documents)
                         yield return document;
                 }
-                while(Id > 0 && _limit<CursorPosition);
+                while(Id > 0);
 
                 if(!_keepCursor)
                     Dispose(true);
@@ -353,8 +367,22 @@ namespace MongoDB
             {
 
                 var reply = _connection.SendTwoWayMessage<TReply>(message, readerSettings, _databaseName);
-                
+
                 Id = reply.CursorId;
+
+                if((reply.ResponseFlag & ResponseFlags.QueryFailure)!=0)
+                {
+                    var error = "Review server log to get the error.";
+
+                    if(reply.Documents.Length > 0)
+                    {
+                        var document = reply.Documents[0] as Document;
+                        if(document != null)
+                            error = Convert.ToString(document["$err"]);
+                    }
+    
+                    throw new MongoException("The query failed on server. "+error);
+                }
                 
                 return reply;
             }

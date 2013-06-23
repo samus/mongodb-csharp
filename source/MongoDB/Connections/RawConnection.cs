@@ -19,14 +19,16 @@ namespace MongoDB.Connections
         /// </summary>
         /// <param name="endPoint">The end point.</param>
         /// <param name="connectionTimeout">The connection timeout.</param>
-        public RawConnection(MongoServerEndPoint endPoint,TimeSpan connectionTimeout)
+        /// <param name="connectionLifetime">The connection lifetime.</param>
+        public RawConnection(MongoServerEndPoint endPoint,TimeSpan connectionTimeout,TimeSpan connectionLifetime)
         {
             if(endPoint == null)
                 throw new ArgumentNullException("endPoint");
 
             EndPoint = endPoint;
             CreationTime = DateTime.UtcNow;
-            
+            Lifetime = connectionLifetime != TimeSpan.Zero ? CreationTime.Add(connectionLifetime) : DateTime.MaxValue;
+
             _client.NoDelay = true;
             _client.ReceiveTimeout = (int)connectionTimeout.TotalMilliseconds;
             _client.SendTimeout = (int)connectionTimeout.TotalMilliseconds;
@@ -78,6 +80,12 @@ namespace MongoDB.Connections
         /// </summary>
         /// <value>The creation time.</value>
         public DateTime CreationTime { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the lifetime time.
+        /// </summary>
+        /// <value>The lifetime time.</value>
+        public DateTime Lifetime { get; private set; }
 
         /// <summary>
         /// Gets or sets the end point.

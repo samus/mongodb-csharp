@@ -24,7 +24,7 @@ namespace MongoDB.IntegrationTests.Linq
             var people = Collection.Linq().Where(x => !x.PrimaryAddress.IsInternational);
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
-            Assert.AreEqual(new Document("$not", new Document("PrimaryAddress.IsInternational", true)), queryObject.Query);
+            Assert.AreEqual(new Document("PrimaryAddress.IsInternational", false), queryObject.Query);
         }
 
         [Test]
@@ -40,8 +40,8 @@ namespace MongoDB.IntegrationTests.Linq
         public void Chained()
         {
             var people = Collection.Linq()
-                .Select(x => new {Name = x.FirstName + x.LastName, x.Age})
-                .Where(x => x.Age > 21)
+                .Select(x => new {Name = x.FirstName + x.LastName, fluffy = x.Age})
+                .Where(x => x.fluffy > 21)
                 .Select(x => x.Name);
 
             var queryObject = ((IMongoQueryable)people).GetQueryObject();
@@ -150,6 +150,20 @@ namespace MongoDB.IntegrationTests.Linq
             Assert.AreEqual(0, queryObject.NumberToLimit);
             Assert.AreEqual(0, queryObject.NumberToSkip);
             Assert.AreEqual(new Document("FirstName", Op.In("Jack", "Bob")), queryObject.Query);
+        }
+
+        [Test]
+        public void NestedArray_Contains()
+        {
+            var people = from p in Collection.Linq()
+                         where p.EmployerIds.Contains(1)
+                         select p;
+
+            var queryObject = ((IMongoQueryable)people).GetQueryObject();
+            Assert.AreEqual(0, queryObject.Fields.Count);
+            Assert.AreEqual(0, queryObject.NumberToLimit);
+            Assert.AreEqual(0, queryObject.NumberToSkip);
+            Assert.AreEqual(new Document("EmployerIds", 1), queryObject.Query);
         }
 
         [Test]

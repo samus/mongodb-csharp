@@ -74,6 +74,9 @@ namespace MongoDB.Bson
                     else
                         _writer.Write((long)obj);
                     return;
+                case BsonType.Timestamp:
+                    _writer.Write(((MongoTimestamp)obj).Value);
+                    return;
                 case BsonType.Date:
                     Write((DateTime)obj);
                     return;
@@ -334,6 +337,7 @@ namespace MongoDB.Bson
                     return 4;
                 case BsonType.Long:
                 case BsonType.Date:
+                case BsonType.Timestamp:
                     return 8;
                 case BsonType.Oid:
                     return 12;
@@ -556,6 +560,7 @@ namespace MongoDB.Bson
 
             if(obj is Enum) //special case enums               
                 type = Enum.GetUnderlyingType(type);
+            
             if(type == typeof(Double))
                 return BsonType.Number;
             if(type == typeof(Single))
@@ -568,6 +573,8 @@ namespace MongoDB.Bson
                 return BsonType.Integer;
             if(type == typeof(long))
                 return BsonType.Long;
+            if(type == typeof(MongoTimestamp))
+                return BsonType.Timestamp;
             if(type == typeof(bool))
                 return BsonType.Boolean;
             if(type == typeof(Oid))
@@ -600,6 +607,7 @@ namespace MongoDB.Bson
                 return BsonType.Symbol;
             if(type == typeof(byte[]))
                 return BsonType.Binary;
+            
             if(_descriptor.IsArray(obj))
                 return BsonType.Array;
             if(_descriptor.IsObject(obj))

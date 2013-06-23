@@ -1,14 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Globalization;
 using MongoDB.Bson;
 
 namespace MongoDB.Serialization.Descriptors
 {
     internal class ArrayDescriptor : IPropertyDescriptor
     {
+        private const int MaxIntCache = 100;
+        private static readonly NumberFormatInfo NumberFormat = CultureInfo.InvariantCulture.NumberFormat;
+
         private readonly Type _elementType;
         private readonly IEnumerable _enumerable;
+
+        private static readonly string[] IntStringCache;
+
+        static ArrayDescriptor()
+        {
+            IntStringCache = new string[MaxIntCache];
+            for(int i=0; i<MaxIntCache; i++)
+            {
+                IntStringCache[i] = i.ToString(NumberFormat);
+            }
+        }
+
+        private static string ToString(int num)
+        {
+            if (num >= 0 && num < IntStringCache.Length)
+                return IntStringCache[num];
+            return num.ToString(NumberFormat);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ArrayDescriptor"/> class.
@@ -35,7 +57,7 @@ namespace MongoDB.Serialization.Descriptors
             int i = 0;
             foreach (var element in _enumerable)
             {
-                yield return new BsonProperty(i.ToString()) { Value = GetValue(element) };
+                yield return new BsonProperty(ToString(i)) { Value = GetValue(element) };
                 i++;
             }
         }

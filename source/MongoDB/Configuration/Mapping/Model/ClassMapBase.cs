@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using MongoDB.Configuration.Mapping.Util;
 
 namespace MongoDB.Configuration.Mapping.Model
 {
@@ -12,6 +13,7 @@ namespace MongoDB.Configuration.Mapping.Model
     {
         private readonly List<PersistentMemberMap> _memberMaps;
         private readonly List<SubClassMap> _subClassMaps;
+        private Func<object> _creator;
         private readonly bool _hasProtectedOrPublicConstructor;
 
         /// <summary>
@@ -136,6 +138,12 @@ namespace MongoDB.Configuration.Mapping.Model
             get { return _subClassMaps.AsReadOnly(); }
         }
 
+        private void EnsureCreator()
+        {
+            if (_creator == null)
+                _creator = MemberReflectionOptimizer.GetCreator(ClassType);
+        }
+
         /// <summary>
         ///   Creates an instance of the entity.
         /// </summary>
@@ -148,10 +156,12 @@ namespace MongoDB.Configuration.Mapping.Model
             if (ClassType.IsAbstract)
                 throw new MongoException("Unable to create an instance of an abstract class.");
 
-            //TODO: figure out how to support custom activators...
-            var instance = Activator.CreateInstance(ClassType, true);
+            EnsureCreator();
 
-            //initialize all default values in case something isn't specified when reader the document.
+            //TODO: figure out how to support custom activators...
+            object instance = _creator.Invoke();
+
+            //initialize all default values in case something isn't specified when reader the document.)
             foreach(var memberMap in MemberMaps.Where(x => x.DefaultValue != null))
                 memberMap.SetValue(instance, memberMap.DefaultValue);
 

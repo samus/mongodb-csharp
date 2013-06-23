@@ -14,7 +14,7 @@ namespace MongoDB.IntegrationTests
             using(var m = new Mongo())
             {
                 //Connection string not needed since connect not called and it would screw up the test.
-                Assert.AreEqual(string.Empty, m.ConnectionString);
+                Assert.AreEqual(_connectionString, m.ConnectionString);
             }
         }
 
